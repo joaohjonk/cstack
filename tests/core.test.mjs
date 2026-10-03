@@ -2,6 +2,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import YAML from 'yaml';
 import { compile, diffRecipes, placeholders } from '../scripts/lib/prompt.mjs';
@@ -316,4 +318,18 @@ test('router: with no needs, flagship models lead a final and draft models lead 
   // the registry itself: no draft model leads an unqualified image route
   const live = route(JSON.parse(fs.readFileSync(path.join(ROOT, 'registry', 'models.json'), 'utf8')), { modality: 'image' });
   assert.ok(live.candidates.slice(0, 3).every((c) => /flagship/.test(c.why)), live.chain.join(', '));
+});
+
+test('brand check names workspace files by absolute path in every line (field test F16)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack f16 '));
+  const ws = path.join(dir, 'ws');
+  const cli = (...a) => spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), ...a], { encoding: 'utf8' });
+  assert.equal(cli('brand', 'init', ws, '--name', 'F16').status, 0);
+  fs.mkdirSync(path.join(ws, 'state'), { recursive: true });
+  fs.appendFileSync(path.join(ws, 'state', 'cost-ledger.jsonl'), '{"provider": 3}\n');
+  const r = cli('brand', 'check', '--ws', ws);
+  assert.equal(r.status, 1);
+  const fails = r.stdout.split('\n').filter((l) => l.includes('FAIL '));
+  assert.ok(fails.some((l) => l.includes(path.join(ws, 'state', 'cost-ledger.jsonl'))), r.stdout);
+  assert.ok(!/\.\.\//.test(r.stdout), r.stdout);
 });

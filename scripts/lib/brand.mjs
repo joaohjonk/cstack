@@ -51,12 +51,12 @@ export function checkBrand(ws) {
   const r = new Report();
   const cfgPath = ['cstack.config.yaml', 'cstack.config.yml', 'cstack.config.json'].map((f) => path.join(ws, f)).find(exists);
   if (!cfgPath) {
-    r.error(rel(ws), 'no cstack.config.yaml; run `cstack brand init` (not walking a folder that is not a workspace)');
+    r.error(shown(ws), 'no cstack.config.yaml; run `cstack brand init` (not walking a folder that is not a workspace)');
     return r;
   }
   const cfg = readData(cfgPath);
-  if (!cfg?.budget) r.warn(rel(cfgPath), 'no budget envelope: paid provider calls will be blocked');
-  for (const res of validateTree(ws, { base: ws, skip: ['node_modules', '.git'] })) if (!res.ok) r.error(res.file, `[${res.schema}] ${res.errors}`);
+  if (!cfg?.budget) r.warn(shown(cfgPath), 'no budget envelope: paid provider calls will be blocked');
+  for (const res of validateTree(ws, { base: ws, skip: ['node_modules', '.git'], display: shown })) if (!res.ok) r.error(res.file, `[${res.schema}] ${res.errors}`);
   const bsPath = path.join(ws, 'brand', 'brand-system.json');
   if (exists(bsPath)) {
     const bs = readData(bsPath);
@@ -74,7 +74,7 @@ export function checkBrand(ws) {
     r.note(`brand-system: ${fields} fields (${Object.entries(by).map(([k, v]) => `${k} ${v}`).join(', ')}); ${open.length} open conflicts`);
     const inferred = by.inferred ?? 0;
     if (fields && inferred / fields > 0.5) r.warn('brand-system', `${Math.round((100 * inferred) / fields)}% of fields are inferred; confirm the consequential ones with the owner`);
-  } else r.warn(rel(ws), 'no brand/brand-system.json yet');
+  } else r.warn(shown(ws), 'no brand/brand-system.json yet');
   if (exists(contextMapPath(ws))) {
     const tasks = readData(contextMapPath(ws))?.tasks ?? {};
     const known = exists(bsPath) ? new Set(Object.keys(readData(bsPath).sections ?? {})) : null;
@@ -90,7 +90,7 @@ export function checkBrand(ws) {
   // secrets must never sit in brand state
   for (const f of walk(ws, (p) => /\.(json|ya?ml|md|jsonl|txt)$/.test(p) && !p.includes('node_modules'))) {
     const t = readText(f);
-    if (/(sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|fal_[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{30,})/.test(t)) r.error(rel(f), 'looks like a credential; keep keys in env vars or a secret store');
+    if (/(sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|fal_[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{30,})/.test(t)) r.error(shown(f), 'looks like a credential; keep keys in env vars or a secret store');
   }
   return r;
 }
