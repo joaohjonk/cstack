@@ -52,6 +52,7 @@ Follow the compact pattern: objective → gold standard → evidence → referen
 
 - Never merge territories into a polite middle. If the owner likes parts of two, make the merge a new, explicit territory and critique it again.
 - A territory with no product truth or no tension is cut.
+- **Not obvious, but true.** Write each territory's first-to-mind version (what a quick brainstorm or a model offers first) and move past it. Keep ideas that surprise and decode into a real product fact; cut the obvious and the unfounded.
 - Inevitability test: if the brand's name were removed, would the work still feel like it could only be this brand?
 
 ## Outputs, files written, state updated
@@ -62,7 +63,7 @@ Follow the compact pattern: objective → gold standard → evidence → referen
 
 ## Evals required
 
-- Fixture: `beautiful-but-off-brand.yaml` (distinguish beauty from brand fit), `make-it-cooler.yaml`.
+- Fixture: `beautiful-but-off-brand.yaml` (distinguish beauty from brand fit), `make-it-cooler.yaml`, `obvious-first-idea.yaml`.
 - `creative-review` lenses STRATEGIST, BRAND DIRECTOR, ART DIRECTOR, CULTURE on the territories doc.
 
 ## Handoff
@@ -73,6 +74,8 @@ Follow the compact pattern: objective → gold standard → evidence → referen
 
 - Three versions of the same idea in different colors.
 - Option addiction: more territories instead of a decision.
+- First-to-mind ideas (underdog story, golden ticket, holiday stunt) as a direction.
+- Only iterating on what works finds a local maximum; the next tier usually needs a new story for a new audience.
 - Names of admired studios as the direction ("make it like X"); transfer mechanisms.
 
 ## Examples

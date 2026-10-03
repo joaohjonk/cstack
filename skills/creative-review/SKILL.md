@@ -44,7 +44,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 4. **Axes** (0-2 or null, each with evidence and the anchor case): beauty, brand fit, cultural vitality, message clarity, craft, product truth, commercial usefulness, novelty, correctness. Never summed.
 5. **Disagreements stay visible**. The orchestrator writes an explicit tradeoff ("keeping the harsher light: brand director and photographer outweigh commerce's concern; mitigated by a clearer PDP crop").
 6. **Decision**: promote / fix (with the minimum fix and owner of the fix) / reject / human review.
-7. **Pairwise mode**: A vs B per lens, then overall with reasons; ask the owner when lenses split.
+7. **Pairwise mode**: A vs B per lens, then overall with reasons; ask the owner when lenses split. A winner with the wrong audience loses.
 8. **Page mode** (a repo home, landing page, guide, long post): add INFORMATION ARCHITECTURE to EDITOR and judge the read with measured evidence (length, where the first action sits, repetition, figure legibility). Steps: [references/page-mode.md](references/page-mode.md).
 
 ## Decision rules
@@ -62,7 +62,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Evals required
 
-- Fixtures: `beautiful-but-off-brand.yaml`, `agent-output-fails-verify.yaml` (fix → re-verify, no rationalizing), `ai-judge-not-owner.yaml` (owner preference overrides the judge), `long-page-no-map.yaml` (page mode).
+- Fixtures: `wrong-audience-winner.yaml`, `beautiful-but-off-brand.yaml`, `agent-output-fails-verify.yaml` (fix → re-verify, no rationalizing), `ai-judge-not-owner.yaml` (owner preference overrides the judge), `long-page-no-map.yaml` (page mode).
 
 ## Handoff
 

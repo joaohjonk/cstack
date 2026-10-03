@@ -1,0 +1,20 @@
+id: wrong-audience-winner
+tier: T2
+skills:
+- creative-review
+depends_on:
+- skills/creative-review/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: In pairwise mode, a variant that wins on clicks from the wrong audience does not win.
+cannot_isolate: The grader cannot check audience data quality, only that the review asks who the winner won.
+setup: 'Two thumbnail and title variants for a Tessel Kiln video on glaze testing. A has 2.1x the click-through of B, but its viewers are mostly outside the brand''s audience (short watch time, few saves, comments about an unrelated meme); B''s viewers are potters who watch to the end and save. Request: ''which one do we keep?''.'
+expected:
+  must:
+  - checks who each variant won, not only how many
+  - recommends B, or asks the owner, with the audience mismatch stated
+  must_not:
+  - picks A on click-through alone
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

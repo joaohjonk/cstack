@@ -52,6 +52,7 @@ Web research on primary sources **every time rules may have changed** (re-check 
 - Uncertain stays uncertain. The output says "uncertain: needs counsel" rather than "compliant".
 - Category saturation never lowers the proof bar.
 - Check the loudest element first. If the most prominent number or phrase on a pack, page or ad is itself a claim (a nutrient figure, a percentage, a superlative), it needs proof that meets the strictest applicable test (for nutrients, the quality-adjusted rule where one applies) before layout is approved; an unproven hero becomes a design change, not a footnote.
+- Validity lines (sold out, ranked first, a customer's words) are claims: kept with dated proof and an expiry.
 - Approved claims enter brand state with `approval: current`, `scope`, and an `expires` or review date.
 - A synthetic presenter never gives a testimonial or claims personal results; AI disclosure stays on (see `video-direction`).
 
@@ -63,7 +64,7 @@ Web research on primary sources **every time rules may have changed** (re-check 
 
 ## Evals required
 
-- Fixture: `compliance-claim-uncertain.yaml` (retrieve current primary source and mark uncertainty).
+- Fixture: `compliance-claim-uncertain.yaml` (retrieve current primary source and mark uncertainty), `validity-line-without-proof.yaml`.
 - Review lens COMPLIANCE in `creative-review`.
 
 ## Handoff

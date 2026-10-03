@@ -42,11 +42,12 @@ None paid. Read-only CLI: `cstack brand context`, `cstack search`, `cstack linea
 
 ## Process
 
-1. **Restate the job** in one sentence: what should the audience think, feel or do, and why now?
+1. **Restate the job** in one sentence: what should the audience think, feel or do, and why now? Then three lines: identities, emotions, actions.
 2. **Classify inputs** (FACT / HARD_CONSTRAINT / SOFT_CONSTRAINT / CAMPAIGN_DIRECTION / REFERENCE_MECHANISM / OPEN_CREATIVE_SPACE / UNKNOWN).
 3. **Gold-standard counterfactual.** Write three lines: what would an exceptional human team do with ample time? (research, references, prototypes, shoots, tests). This is the target process; AI compresses parts of it, it does not lower the ambition.
 4. **Challenge the ask** with the forcing questions, answering from brand state where possible:
    - Is the requested artifact the right artifact? (recommend another if not, and say why)
+   - Where will it live (shelf at a distance, feed, counter, inbox)? Design for that place.
    - What is the job of the piece: brand-building, conversion, culture, or a stated mix?
    - What product truth can carry the idea?
    - What tension is interesting (category, culture, audience)?
@@ -61,6 +62,7 @@ None paid. Read-only CLI: `cstack brand context`, `cstack search`, `cstack linea
 - If the answer to "is this the right artifact" is no, the brief recommends the better artifact and keeps the requested one as an alternative. The owner chooses.
 - "Make it cooler" style asks are diagnosed into named defects (hierarchy, light, casting, copy, novelty, cultural register) before any change is proposed.
 - Success criteria must be observable (a reviewer can say pass/fail) and include at least one product-truth criterion and one brand-fit criterion.
+- Name the ring served: core (practitioners others copy), participants or fans. Brand-building goes to the core; outer rings get conversion work. Collaborations need shared values, then a complementary audience.
 - Do not produce creative executions here. A headline or image idea may appear only as an illustration of the framing.
 
 ## Outputs, files written, state updated
