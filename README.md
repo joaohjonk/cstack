@@ -266,7 +266,9 @@ Among them:
 
 **In culture, products and systems.** Ana Andjelic, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
 
-**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. This is an ode to them: unrelated to brand work, and impossible to forget.
+**In business.** On and its founders, Phil Knight's *Shoe Dog*, Chip Wilson of lululemon, Hamilton Helmer's *7 Powers*, Andrew Chen, A.G. Lafley and Roger Martin's *Playing to Win*, and Marcus Aurelius's *Meditations*.
+
+**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. Dan Keeling and Mark Andrew of Noble Rot showed the wine world through a different lens entirely. This is an ode to them: unrelated to brand work, and impossible to forget.
 
 **At home.** Chico da Silva, Bertô, Carlos Motta, Paulo Monteiro da Silva, Rochegaussen and Fred Peclat made a few things I have the privilege to look at every day.
 
