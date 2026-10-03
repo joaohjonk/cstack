@@ -17,6 +17,9 @@ export const SVG_HELP = `cstack svg <sub> (deterministic checks for marks and ic
       favicon.svg (cleaned), favicon.ico (16/32/48), apple-touch-icon.png (180), icon-192.png, icon-512.png,
       maskable-512.png (safe zone checked), monochrome.svg, site.webmanifest, kit.json. Never overwrites the input;
       refuses an existing --out unless --force.
+  legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117] [--json]
+      for figures (README images, diagrams, social cards): at each display width, text smaller than --min-px CSS px and
+      text under WCAG contrast against the ground painted beneath it. Outlined type is estimated from its ink height (~).
 Any FAIL exits 1.`;
 
 const BOOL = ['json', 'force'];
@@ -92,6 +95,24 @@ export async function runSvg(sub, args = [], ws = process.cwd()) {
       const out = path.resolve(a.out);
       const rep = await buildKit(file, { out, bg: str(a.bg) ?? '#ffffff', name: str(a.name), force: !!a.force, display: here });
       return done(rep, formatKit(rep, here(out)));
+    }
+    case 'legibility': {
+      if (!a._.length) throw new Error('usage: cstack svg legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117] [--json]');
+      const { legibilityFiles, formatLegibility, MIN_TEXT_PX } = await import('./legibility.mjs');
+      const { svgFiles } = await import('./lint.mjs');
+      const nums = (v, name) => {
+        const n = String(v).split(',').map(Number);
+        if (n.some((x) => !(x > 0))) throw new Error(`--${name} takes positive numbers, e.g. 324,830`);
+        return n;
+      };
+      const widths = str(a.width) ? nums(a.width, 'width') : [324, 830];
+      const minPx = str(a['min-px']) ? nums(a['min-px'], 'min-px')[0] : MIN_TEXT_PX;
+      const pages = str(a.page) ? String(a.page).split(',').map((p) => p.trim().toLowerCase()) : ['#ffffff'];
+      if (pages.some((p) => !/^#[0-9a-f]{6}$/.test(p))) throw new Error('--page takes #rrggbb colours, e.g. #ffffff,#0d1117');
+      const files = svgFiles(a._.map((p) => resolveIn(String(p), ws)));
+      if (!files.length) throw new Error(`no .svg files in ${a._.join(', ')}`);
+      const rep = legibilityFiles(files, { widths, minPx, pages }, here);
+      return done(rep, formatLegibility(rep));
     }
     case undefined:
     case 'help':

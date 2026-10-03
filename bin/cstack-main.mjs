@@ -129,6 +129,7 @@ const COMMANDS = {
   'mockup render': 'composite approved art onto a template package (quad, cylinder, mesh; displacement, shading; licence gate): cstack mockup render --template <dir> --art <file.png|svg> --out <file.png> [--placement id] [--force] [--internal]',
   'mockup verify': 'prove the art survived: inverse-warp each placement to flat art space and diff it (mean, edges, worst-tile SSIM, heatmap): cstack mockup verify --template <dir> --art <file> --render <file.png> [--placement id]; exits 1 on FAIL',
   'mockup check': 'validate a template package (placements, footprints, layer files, licence): cstack mockup check --template <dir>',
+  'svg legibility': 'can a figure be read where it is shown: text size at each display width and text contrast on its ground: cstack svg legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117]; exits 1 on FAIL',
   'svg lint': 'lint marks and icon sets: structure and security, viewBox, complexity, palette, strokes across a set, grid against an icon grammar: cstack svg lint <file|dir...> [--grammar icons.tokens.json] [--palette ...]; exits 1 on FAIL',
   'svg reduce': 'does a mark survive small sizes? renders 16-64 px on white, black and one colour, fails where counters close or parts merge (Chromium): cstack svg reduce <file.svg|png> [--sizes 16,24,32,48,64]',
   'svg kit': 'favicon and app-icon kit from a vector master (svg, ico, apple-touch, 192/512, maskable with the safe zone checked, manifest): cstack svg kit <file.svg> --out dir [--bg #fff] [--name "Brand"]',

@@ -10,7 +10,7 @@ Multi-lens, not committee mush. The author never certifies its own work. [Shared
 
 ## When to use
 
-- Every artifact before it is presented as final (images, sequences, pages, packs, decks, copy).
+- Every artifact before it is presented as final (images, sequences, pages, packs, decks, copy), including long-form pages such as a repo home (page mode).
 - Choosing between options (pairwise).
 - The owner asks "is this good?" or "why does this feel off?".
 
@@ -38,13 +38,14 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Process
 
-1. **Gates first** (cheap → expensive): schema/size audits, `brand-verify`, `product-fidelity`, compliance flags. Any hard fail → decision `fix` with the failing gate; skip aesthetics.
+1. **Gates first** (cheap → expensive): schema/size audits, `brand-verify`, `product-fidelity`, compliance flags, `cstack svg legibility` on figures at the widths they are shown. Any hard fail → decision `fix` with the failing gate; skip aesthetics.
 2. **Pick lenses** relevant to the artifact (not all eleven every time): STRATEGIST (right problem?), BRAND DIRECTOR (is this ours?), ART DIRECTOR (coherent, specific visual idea?), PHOTOGRAPHER (intentional photograph? lens, light, contact, materials), TYPE DIRECTOR (type doing real work? the review axes in the type-director primer, with `cstack type qa` evidence), EDITOR (what to remove?), CULTURE (belongs in the world now?), COPY (sharp, ownable?), COMMERCE (helps someone understand and buy?), PRODUCTION (can it ship?), COMPLIANCE (anything risky or false?).
 3. **Each lens independently**: verdict, 1-3 evidence points tied to the artifact, the one change it would make.
 4. **Axes** (0-2 or null, each with evidence and the anchor case): beauty, brand fit, cultural vitality, message clarity, craft, product truth, commercial usefulness, novelty, correctness. Never summed.
 5. **Disagreements stay visible**. The orchestrator writes an explicit tradeoff ("keeping the harsher light: brand director and photographer outweigh commerce's concern; mitigated by a clearer PDP crop").
 6. **Decision**: promote / fix (with the minimum fix and owner of the fix) / reject / human review.
 7. **Pairwise mode**: A vs B per lens, then overall with reasons; ask the owner when lenses split.
+8. **Page mode** (a repo home, landing page, guide, long post): add INFORMATION ARCHITECTURE to EDITOR and judge the read with measured evidence (length, where the first action sits, repetition, figure legibility). Steps: [references/page-mode.md](references/page-mode.md).
 
 ## Decision rules
 
@@ -61,7 +62,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Evals required
 
-- Fixtures: `beautiful-but-off-brand.yaml`, `agent-output-fails-verify.yaml` (fix → re-verify, no rationalizing), `ai-judge-not-owner.yaml` (owner preference overrides the judge).
+- Fixtures: `beautiful-but-off-brand.yaml`, `agent-output-fails-verify.yaml` (fix → re-verify, no rationalizing), `ai-judge-not-owner.yaml` (owner preference overrides the judge), `long-page-no-map.yaml` (page mode).
 
 ## Handoff
 

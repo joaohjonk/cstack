@@ -44,7 +44,7 @@ export function buildModel(doc) {
   const viewBox = rootViewBox(root);
   const ref = viewBox ?? { x: 0, y: 0, w: 100, h: 100 };
   const diag = Math.hypot(ref.w, ref.h) / Math.SQRT2;
-  const m = { root, css, ids, viewBox, shapes: [], hidden: [], empty: [], transforms: [], badTransforms: [], useErrors: [], texts: [], images: [] };
+  const m = { root, css, ids, viewBox, shapes: [], hidden: [], empty: [], transforms: [], badTransforms: [], useErrors: [], texts: [], textRuns: [], images: [] };
 
   const visit = (el, parentStyle, ctm, opacity, ctx) => {
     const tag = tagOf(el);
@@ -119,6 +119,8 @@ export function buildModel(doc) {
     }
     if (tag === 'text') {
       if (own) m.texts.push(el);
+      // live text for legibility checks: painted after m.shapes[order - 1], sized in user units before the root viewBox
+      m.textRuns.push({ el, line: el.line, style, ctm: M, opacity: op, order: m.shapes.length, fill: paintOf(style.fill, style.color), fontSize: parseLength(style['font-size'], 16) ?? 16, x: parseLength(String(el.attrs.x ?? '0').split(/[\s,]+/)[0], ref.w) ?? 0, y: parseLength(String(el.attrs.y ?? '0').split(/[\s,]+/)[0], ref.h) ?? 0, text: textOf(el).trim() });
       return;
     }
     if (tag === 'image') {

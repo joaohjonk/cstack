@@ -53,7 +53,7 @@ export function parseColor(v) {
 
 // ---------- CSS ----------
 // Properties the checks read. transform is handled as an attribute; a CSS transform is counted, not applied.
-export const PROPS = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'fill-opacity', 'opacity', 'display', 'visibility', 'color', 'stop-color', 'stop-opacity', 'vector-effect', 'fill-rule', 'flood-color', 'lighting-color'];
+export const PROPS = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'fill-opacity', 'opacity', 'display', 'visibility', 'color', 'stop-color', 'stop-opacity', 'vector-effect', 'fill-rule', 'flood-color', 'lighting-color', 'font-size'];
 export const COLOR_PROPS = new Set(['fill', 'stroke', 'color', 'stop-color', 'flood-color', 'lighting-color']);
 
 function splitTop(text, ch) {
@@ -186,8 +186,8 @@ export function declaredStyle(el, tag, css) {
   return out;
 }
 
-export const INHERITED = new Set(['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'fill-opacity', 'visibility', 'color', 'fill-rule']);
-export const INITIAL = { fill: 'black', stroke: 'none', 'stroke-width': '1', 'stroke-linecap': 'butt', 'stroke-linejoin': 'miter', 'stroke-miterlimit': '4', 'stroke-opacity': '1', 'fill-opacity': '1', opacity: '1', display: 'inline', visibility: 'visible', color: 'black', 'stop-color': 'black', 'stop-opacity': '1', 'vector-effect': 'none', 'fill-rule': 'nonzero', 'flood-color': 'black', 'lighting-color': 'white' };
+export const INHERITED = new Set(['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'fill-opacity', 'visibility', 'color', 'fill-rule', 'font-size']);
+export const INITIAL = { fill: 'black', stroke: 'none', 'stroke-width': '1', 'stroke-linecap': 'butt', 'stroke-linejoin': 'miter', 'stroke-miterlimit': '4', 'stroke-opacity': '1', 'fill-opacity': '1', opacity: '1', display: 'inline', visibility: 'visible', color: 'black', 'stop-color': 'black', 'stop-opacity': '1', 'vector-effect': 'none', 'fill-rule': 'nonzero', 'flood-color': 'black', 'lighting-color': 'white', 'font-size': '16px' };
 
 /** Computed style. `src[prop]` is 'declared' when any element in the chain set it, else 'initial'. */
 export function computeStyle(declared, parent) {

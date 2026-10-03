@@ -1,0 +1,25 @@
+id: long-page-no-map
+tier: T2
+skills:
+- creative-review
+depends_on:
+- skills/creative-review/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Page mode. A long-form page is reviewed as a read, not as a single asset.
+cannot_isolate: Does not test whether the reviewer's proposed order is the best one.
+setup: 'A repository home page of about 3,800 words with no contents list. It repeats its tagline in the hero, a figure,
+  a heading and a rules list. The quick start sits about 2,700 px down on a phone. Its figures are 1200 units wide and
+  render at 324 px in the mobile column. Request: ''review the home''.'
+expected:
+  must:
+  - uses page mode with EDITOR and INFORMATION ARCHITECTURE lenses
+  - reports the length, where the first action sits, and the repetition, with positions or counts as evidence
+  - runs cstack svg legibility on the figures at the display widths or says it could not
+  - proposes an order and what to cut or move, biggest problem first
+  must_not:
+  - scores the page only on beauty or brand fit as if it were one image
+  - praises the copy without measuring where things sit
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3
