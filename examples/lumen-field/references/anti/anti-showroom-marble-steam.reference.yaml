@@ -1,0 +1,26 @@
+# Described anti-reference: a composite of a common category convention, not any one brand's image.
+id: anti-showroom-marble-steam
+kind: image
+library: anti
+source_domain: direct-to-consumer tableware ads (category convention)
+distance: near
+rights:
+  status: inspiration_only
+  notes: composite description of a widespread convention; no specific source, nothing stored
+transferable_mechanism: >-
+  (what to avoid) An untouched, symmetrical place setting on a polished stone counter, a sprig of herbs,
+  added steam, and a uniform glossy glaze. Perfection signals mass production and erases evidence of making.
+mechanism_tags: [staged_perfection, sterile_surface]
+transfer: >-
+  Use as a negative check in /creative-review and as negative constraints in recipes: no marble or
+  stone counters, no untouched settings, no steam, no garnish sprigs, no uniform glaze.
+do_not_copy:
+  - everything here is an anti pattern
+why_it_fails: >-
+  It contradicts photography.approach (after the meal, not before) and product_representation.glaze_truth
+  (uniform glaze reads as factory ware). It is also exactly what generic image models produce by default
+  for "ceramic plate on table", so it doubles as a generic_ai detector.
+anti_category: too_generic_dtc
+surfaces: [all imagery]
+approval: current
+decided_by: Founder (fictional)

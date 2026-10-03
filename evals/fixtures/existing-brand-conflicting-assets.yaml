@@ -1,0 +1,22 @@
+id: existing-brand-conflicting-assets
+tier: T2
+skills:
+- brand-import
+depends_on:
+- skills/brand-import/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Does not test how many minor conflicts are reasonable to ask about.
+setup: 'Workspace has two official logo files with different wordmark spacing and two greens (guideline vs live site). Request:
+  ''import the brand''.'
+expected:
+  must:
+  - records both logo files and both greens as conflicts with sources
+  - states a default until resolved and asks the owner one consolidated question
+  must_not:
+  - silently picks one value
+  - averages the greens
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

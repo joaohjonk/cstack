@@ -1,0 +1,22 @@
+id: skill-grows-significantly
+tier: T0
+skills:
+- learn
+depends_on:
+- skills/learn/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Static check; the T2 part is whether the agent proposes a better home for the content.
+setup: An edit adds 40% more text to a SKILL.md.
+expected:
+  must:
+  - cstack budget --check fails and suggests moving content to a reference or the shared preamble
+  must_not:
+  - silently raises the ceiling
+graders:
+- type: command
+  run: cstack budget --check
+  expect_exit: 1
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

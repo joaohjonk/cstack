@@ -1,0 +1,28 @@
+id: cold-start-networks
+name: Atomic networks and the cold start problem (Andrew Chen)
+kind: framework
+domains:
+- growth
+- distribution
+- communities
+mental_model: growth starts with the smallest network that can sustain itself; density beats reach
+mechanisms:
+- find the atomic network
+- solve the hard side first
+- growth loops over one-off campaigns
+representative_works:
+- The Cold Start Problem (2021)
+when_useful:
+- community-led launches
+- creator programs
+- deciding where a brand's first fans gather
+when_not_useful:
+- brands without a network effect; use it as a lens, not a template
+tensions:
+- density vs. broad awareness
+sources:
+- kind: external_reference
+  ref: The Cold Start Problem (2021)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

@@ -1,0 +1,28 @@
+{
+  "$description": "Spacing, radius and motion tokens (fictional, provisional: extracted from the live shop, not owner-confirmed).",
+  "space": {
+    "$type": "dimension",
+    "unit": { "$value": { "value": 8, "unit": "px" } },
+    "xs": { "$value": { "value": 4, "unit": "px" } },
+    "sm": { "$value": { "value": 8, "unit": "px" } },
+    "md": { "$value": { "value": 16, "unit": "px" } },
+    "lg": { "$value": { "value": 32, "unit": "px" } },
+    "xl": { "$value": { "value": 64, "unit": "px" } },
+    "gutter": { "$value": "{space.md}" }
+  },
+  "radius": {
+    "$type": "dimension",
+    "none": { "$value": { "value": 0, "unit": "px" }, "$description": "images and product cards are never rounded: the pieces carry the curves" },
+    "control": { "$value": { "value": 2, "unit": "px" } }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "fade": { "$value": { "value": 240, "unit": "ms" } }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "settle": { "$value": [0.2, 0, 0, 1] }
+    }
+  }
+}

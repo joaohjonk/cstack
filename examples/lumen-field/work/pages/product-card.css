@@ -1,0 +1,3 @@
+/* Hand-written example page style for the lint demo: every colour is a brand token value. */
+.product-card { background: #f2eee6; color: #23211e; border-top: 1px solid #b9b3a8; border-radius: 0; padding: 16px; }
+.product-card .price { color: var(--color-text); font-family: var(--font-family-body); }

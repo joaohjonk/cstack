@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/common.schema.json",
+  "title": "cstack shared definitions",
+  "description": "Shared building blocks. Every brand fact in cstack is a Field: a value plus where it came from, how sure we are, how permanent it is and whether a human approved it.",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "entity_ref": {
+      "description": "Reference to a brand-world entity, e.g. @PRODUCT_STICK_01",
+      "type": "string",
+      "pattern": "^@?[A-Z][A-Z_]*_[A-Z0-9_]+$"
+    },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "input_class": {
+      "description": "Section 3.4: classification of every input to a task.",
+      "enum": ["FACT", "HARD_CONSTRAINT", "SOFT_CONSTRAINT", "CAMPAIGN_DIRECTION", "REFERENCE_MECHANISM", "OPEN_CREATIVE_SPACE", "UNKNOWN"]
+    },
+    "permanence": { "enum": ["core", "seasonal", "campaign", "experimental"] },
+    "approval": {
+      "description": "Lifecycle status. locked = owner only; current = the rule today; testing = run labelled; provisional = default an owner can overrule; inferred = model/extraction output nobody confirmed; conflict/unknown = never ship as fact; deprecated/killed/historical = kept to explain.",
+      "enum": ["locked", "current", "testing", "provisional", "inferred", "conflict", "unknown", "deprecated", "killed", "historical"]
+    },
+    "confidence": {
+      "description": "high = verified against a primary source or explicit human statement; medium = consistent evidence, not confirmed; low = single weak signal or model inference.",
+      "enum": ["high", "medium", "low"]
+    },
+    "source_kind": {
+      "description": "Section 23 source precedence, highest first.",
+      "enum": ["user_instruction", "approved_brand_state", "official_asset", "live_brand_behavior", "campaign_exception", "extracted_pattern", "external_reference", "model_inference"]
+    },
+    "source_ref": {
+      "type": "object",
+      "required": ["kind", "ref"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "$ref": "#/$defs/source_kind" },
+        "ref": { "type": "string", "description": "file path with optional :line or #anchor, URL, decision id (e.g. OWNER-A4), or provider job id" },
+        "quote": { "type": "string", "maxLength": 400 },
+        "captured_at": { "$ref": "#/$defs/date" },
+        "by": { "type": "string", "description": "person, skill or provider that produced the evidence" }
+      }
+    },
+    "field": {
+      "description": "A sourced brand value. Use for anything an agent might otherwise invent.",
+      "type": "object",
+      "required": ["value", "sources", "confidence", "approval"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {},
+        "input_class": { "$ref": "#/$defs/input_class" },
+        "sources": { "type": "array", "items": { "$ref": "#/$defs/source_ref" } },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "last_updated": { "$ref": "#/$defs/date" },
+        "permanence": { "$ref": "#/$defs/permanence" },
+        "approval": { "$ref": "#/$defs/approval" },
+        "scope": { "type": "string", "description": "core, or a campaign id; defaults to core" },
+        "expires": { "type": "string", "description": "date or review condition, required for campaign and model-specific values" },
+        "superseded_by": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "section": {
+      "description": "A brand-system section: named fields, each a Field.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/field" }
+    },
+    "money": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "unit": { "type": "string", "description": "per image, per second, per megapixel, per 1M tokens..." }
+      }
+    },
+    "snapshot": {
+      "description": "A time-bound fact about a provider (price, latency). Never permanent truth.",
+      "type": "object",
+      "required": ["value", "source", "last_verified"],
+      "properties": {
+        "value": {},
+        "source": { "type": "string" },
+        "last_verified": { "oneOf": [{ "$ref": "#/$defs/date" }, { "type": "null" }] }
+      }
+    },
+    "judgment_axes": {
+      "description": "Section 3.8 / 8: distinct judgments that are never collapsed into one scalar.",
+      "enum": ["beauty", "brand_fit", "cultural_vitality", "message_clarity", "craft", "product_truth", "commercial_usefulness", "novelty", "correctness"]
+    },
+    "failure_type": {
+      "enum": ["brand_drift", "product_drift", "generic_ai", "visual_cliche", "reference_overcopy", "wrong_cultural_register", "overpolished", "underartdirected", "bad_hands", "anatomy", "material_failure", "lighting_incoherence", "type_failure", "layout_failure", "message_failure", "claim_risk", "compliance_failure", "cro_failure", "campaign_incoherence", "beautiful_but_wrong", "unintended_reframe", "secret_leak", "provider_failure", "moodboard_mimicry", "reference_monoculture", "adjective_prompting", "option_addiction", "context_dumping", "taste_without_reality", "canon_ossification", "retired_rule_resurfaced", "self_certified", "other"]
+    }
+  }
+}

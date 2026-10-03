@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/creative-performance.schema.json",
+  "title": "Creative performance record",
+  "description": "Section 17. Creative feature decomposition + metrics. Observational data never implies causation.",
+  "type": "object",
+  "required": [
+    "id",
+    "artifact_ref",
+    "channel",
+    "metrics"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "artifact_ref": {
+      "type": "string"
+    },
+    "experiment_id": {
+      "type": "string"
+    },
+    "channel": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string"
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "hook_type": {
+          "type": "string"
+        },
+        "first_frame": {
+          "type": "string"
+        },
+        "product_timing": {
+          "type": "string"
+        },
+        "face": {
+          "type": "string"
+        },
+        "setting": {
+          "type": "string"
+        },
+        "appeal": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "headline_architecture": {
+          "type": "string"
+        },
+        "copy_density": {
+          "type": "string"
+        },
+        "pacing": {
+          "type": "string"
+        },
+        "shot_count": {
+          "type": "string"
+        },
+        "camera_behavior": {
+          "type": "string"
+        },
+        "visual_novelty": {
+          "type": "string"
+        },
+        "creator_vs_studio": {
+          "type": "string"
+        },
+        "cta": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "offer": {
+          "type": "string"
+        },
+        "landing_page_match": {
+          "type": "string"
+        }
+      }
+    },
+    "variable_tested": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "spend": {
+      "$ref": "common.schema.json#/$defs/money"
+    },
+    "confounds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "read": {
+      "enum": [
+        "repeated",
+        "confounded",
+        "single_observation",
+        "inconclusive"
+      ]
+    },
+    "brand_building_vs_conversion": {
+      "type": "string"
+    }
+  }
+}

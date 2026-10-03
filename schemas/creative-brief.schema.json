@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/creative-brief.schema.json",
+  "title": "Creative brief / creative design doc",
+  "description": "Output of /office-hours (section 26). Downstream skills consume this instead of re-asking. Inputs are classified per section 3.4.",
+  "type": "object",
+  "required": [
+    "id",
+    "brand_id",
+    "requested_artifact",
+    "job_of_the_piece",
+    "inputs"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "brand_id": {
+      "type": "string"
+    },
+    "date": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "requested_artifact": {
+      "type": "string"
+    },
+    "recommended_artifact": {
+      "type": "string",
+      "description": "may differ from what was asked; say why in reframe"
+    },
+    "reframe": {
+      "type": "string"
+    },
+    "job_of_the_piece": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "brand_building",
+        "conversion",
+        "culture",
+        "mixed"
+      ]
+    },
+    "audience": {
+      "type": "object",
+      "properties": {
+        "who": {
+          "type": "string"
+        },
+        "think": {
+          "type": "string"
+        },
+        "feel": {
+          "type": "string"
+        },
+        "do": {
+          "type": "string"
+        }
+      }
+    },
+    "product_truth": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "facts that carry the idea; each must resolve to brand state"
+    },
+    "tension": {
+      "type": "string"
+    },
+    "conventions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "convention",
+          "move"
+        ],
+        "properties": {
+          "convention": {
+            "type": "string"
+          },
+          "move": {
+            "enum": [
+              "use",
+              "invert",
+              "ignore"
+            ]
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "permission": {
+      "type": "string",
+      "description": "what this brand may do that competitors may not"
+    },
+    "inevitability_test": {
+      "type": "string",
+      "description": "what would make it feel inevitable rather than decorated"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "item",
+          "class"
+        ],
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "class": {
+            "$ref": "common.schema.json#/$defs/input_class"
+          },
+          "source": {
+            "$ref": "common.schema.json#/$defs/source_ref"
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "string",
+      "description": "core or campaign id"
+    },
+    "surfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "success_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "axis": {
+            "$ref": "common.schema.json#/$defs/judgment_axes"
+          },
+          "criterion": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget": {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "markets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "question",
+          "default"
+        ],
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "default": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "handoff": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

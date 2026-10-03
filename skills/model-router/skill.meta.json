@@ -1,0 +1,61 @@
+{
+  "slug": "model-router",
+  "type": "capability",
+  "summary": "Pick the current best model for a job from the dated registry, verify freshness, micro-benchmark when uncertain, record why and a fallback chain",
+  "tags": [
+    "models",
+    "routing",
+    "benchmark",
+    "providers"
+  ],
+  "triggers": [
+    "which model",
+    "best model for",
+    "model is stale",
+    "switch model",
+    "benchmark models"
+  ],
+  "not_for": [
+    "prompt-director",
+    "generate-media"
+  ],
+  "required_inputs": [
+    "job capabilities"
+  ],
+  "outputs": [
+    "work/routing/*.md",
+    "registry/models.json"
+  ],
+  "writes": [
+    "registry/models.json",
+    "work/routing/"
+  ],
+  "cost_class": "low",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": [
+    "prompt-director",
+    "generate-media",
+    "creative-autoresearch"
+  ],
+  "evals": [
+    "evals/fixtures/model-list-stale.yaml"
+  ],
+  "baseline": "incumbent",
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": [],
+  "optional_providers": []
+}

@@ -1,0 +1,78 @@
+name: campaign
+status: template
+summary: A campaign from brief to sequenced, verified, channel-ready assets with lineage.
+entry_skill: workflow
+triggers:
+- campaign
+- launch campaign
+- seasonal campaign
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: brief
+  skill: office-hours
+  gate: owner
+- id: cultural-scan
+  skill: cultural-scan
+  gate: auto
+- id: competitors
+  skill: competitor-intel
+  gate: auto
+  fallback: skip with reason if a recent map exists
+- id: territories
+  skill: creative-direction
+  gate: owner
+- id: reference-mechanisms
+  skill: taste-search
+  gate: auto
+- id: shot-roles
+  skill: campaign-sequence
+  outputs:
+  - campaigns/*.campaign.yaml
+  gate: owner
+- id: shot-dna
+  skill: shot-dna
+  gate: auto
+- id: routing
+  skill: model-router
+  gate: auto
+- id: recipes
+  skill: prompt-director
+  gate: auto
+- id: production
+  skill: generate-media
+  does: probes -> selection -> stills (spend plan approved first)
+  gate: owner
+- id: fidelity
+  skill: product-fidelity
+  gate: auto
+- id: edit-retouch
+  skill: image-edit
+  gate: auto
+- id: copy
+  skill: copywriting
+  gate: auto
+- id: claims
+  skill: claims-proof
+  gate: auto
+- id: sequence-review
+  skill: campaign-sequence
+  gate: auto
+- id: brand-verify
+  skill: brand-verify
+  gate: auto
+- id: cultural-fit
+  skill: cultural-scan
+  does: cultural-fit mode on the finished sequence
+  gate: auto
+- id: final-review
+  skill: creative-review
+  gate: owner
+- id: channel-adaptations
+  does: deterministic crops/exports per channel with audits
+  outputs:
+  - work/exports/
+  gate: auto
+- id: lineage-and-retro
+  skill: learn
+  gate: auto

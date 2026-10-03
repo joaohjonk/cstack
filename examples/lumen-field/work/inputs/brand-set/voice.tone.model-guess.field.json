@@ -1,0 +1,11 @@
+{
+  "value": "warm, poetic, slow-living",
+  "input_class": "UNKNOWN",
+  "sources": [
+    { "kind": "model_inference", "ref": "generic ceramics-category copy patterns", "captured_at": "2026-10-03", "by": "example" }
+  ],
+  "confidence": "low",
+  "permanence": "core",
+  "approval": "inferred",
+  "notes": "demo input: a lower-precedence guess that `cstack brand set` must refuse to write over voice.tone (user_instruction)"
+}

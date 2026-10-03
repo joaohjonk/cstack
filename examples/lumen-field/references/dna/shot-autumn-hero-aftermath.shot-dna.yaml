@@ -1,0 +1,48 @@
+# Shot DNA for the proposed hero (source: proposed). Decomposes the shot into decisions, not adjectives.
+id: shot-autumn-hero-aftermath
+source: proposed
+reference_id: ref-breakfast-piece-aftermath
+shot_role: RITUAL
+what: two Ochre Run dinner plates on the studio table a few minutes after lunch, one with a torn heel of bread and a smear of sauce, a spoon resting across the rim of the other
+why: makes "real, used, each one different" visible without people in frame
+message: these plates get used, and each one is its own
+subject: "@PRODUCT_DINNER_PLATE_OCHRE_RUN, two pieces from the same batch"
+action: none in frame; the meal has just ended
+human_behavior: implied by traces (pushed-back linen, a spoon left on a rim); no hands, no people
+product_role: hero; the nearer plate's rim break and speckle are the sharpest thing in the frame
+camera:
+  format: medium-format feel, 4:5 vertical
+  focal_length_equivalent: 50-65mm
+  distance: about 1.2 m
+  height: seated eye level
+  angle: 30-40 degrees down onto the table
+  perspective: natural, no wide-angle distortion of the rims
+composition: nearer plate lower-left third, second plate cut by the top edge; window side on the left; 40% of the frame is bare oak
+lighting: north window from frame-left, late afternoon, no fill
+lighting_recipe: LIGHT_NORTH_WINDOW_LATE
+exposure_behavior: exposed for glaze highlights; shadow side of the table falls to soft grey, not black
+focus_behavior: focus on the nearer rim break; the second plate softly out of focus
+materials: speckled stoneware, raw foot ring visible on the tilted second plate, scrubbed oak, washed linen
+surfaces: "@LOCATION_STUDIO_TABLE"
+props: torn bread heel, a little sauce, one spoon, a folded linen napkin pushed aside
+environment: lime-washed wall at the top edge, nothing else
+color_logic: ash-white and oak ground; the glaze is the only saturated colour; no added ochre props
+texture: speckle and crumb texture must resolve at 100%
+imperfection: a cutlery scuff on the glaze, crumbs off the plate edge
+post_process: minimal grade toward the palette ground; no glaze recolouring
+emotional_temperature: calm, a little warm, unhurried
+transferable_mechanism: aftermath as evidence of use (from ref-breakfast-piece-aftermath)
+brand_fit: matches photography.approach and product_representation.glaze_truth; avoids both anti references
+do_not_copy:
+  - old-master dark backgrounds or varnished grade
+  - period props (pewter, glassware, oysters)
+risks:
+  - image models smooth speckle and glaze the foot ring; composite the real product rather than generate it
+  - scale drift because dimensions are UNKNOWN
+entities: ["@PRODUCT_DINNER_PLATE_OCHRE_RUN", "@LOCATION_STUDIO_TABLE", "@LIGHT_NORTH_WINDOW_LATE"]
+imperfections:
+  - kind: cutlery scuff on the glaze
+    purpose: evidence of use, the brief's core mechanism
+  - kind: crumbs past the plate edge
+    purpose: breaks the staged symmetry the anti reference warns about
+fixed: [camera, lighting, composition]

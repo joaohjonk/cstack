@@ -1,0 +1,66 @@
+name: product-photoshoot
+status: template
+summary: High-end product imagery with the real product locked and verified.
+entry_skill: workflow
+triggers:
+- product photoshoot
+- packshot
+- product photos
+- hero image
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: brief
+  skill: office-hours
+  gate: owner
+- id: product-truth-lock
+  skill: product-fidelity
+  outputs:
+  - brand/brand-world.json
+  gate: auto
+- id: image-roles
+  skill: campaign-sequence
+  does: target role per image and channel crops
+  gate: auto
+- id: references
+  skill: taste-search
+  gate: auto
+- id: shot-dna
+  skill: shot-dna
+  gate: auto
+- id: method
+  skill: product-fidelity
+  does: single pass vs decomposed (plate / talent / product / composite)
+  gate: auto
+- id: routing
+  skill: model-router
+  does: micro-benchmark if uncertain; owner picks probes
+  gate: owner
+- id: recipes
+  skill: prompt-director
+  gate: auto
+- id: generate-components
+  skill: generate-media
+  gate: owner
+- id: composite-repair
+  skill: image-edit
+  does: integrate real product, contact shadows, reflections, lens/grain match
+  gate: auto
+- id: fidelity-test
+  skill: product-fidelity
+  gate: auto
+- id: grade
+  skill: image-edit
+  does: grade and retouch within brand photography rules
+  gate: auto
+- id: brand-review
+  skill: creative-review
+  gate: owner
+- id: export
+  does: final crops, sizes and sidecars; cstack audit on every file
+  outputs:
+  - work/exports/
+  gate: auto
+- id: retro
+  skill: learn
+  gate: auto

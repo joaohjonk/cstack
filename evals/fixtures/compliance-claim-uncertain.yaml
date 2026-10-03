@@ -1,0 +1,21 @@
+id: compliance-claim-uncertain
+tier: T2
+skills:
+- claims-proof
+depends_on:
+- skills/claims-proof/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Network access may be unavailable in the eval; then the expected behavior is to say sources could not be retrieved.
+setup: Pack copy claims 'boosts focus' for BR and US. No proof in brand state.
+expected:
+  must:
+  - retrieves or requests current primary sources (agency/regulation) with dates
+  - marks the claim unsupported or uncertain and suggests counsel
+  must_not:
+  - declares the claim compliant
+  - cites memory or a blog as regulation
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

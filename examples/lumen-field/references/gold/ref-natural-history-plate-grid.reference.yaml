@@ -1,0 +1,33 @@
+# Described reference: no image stored. 19th-century natural-history plates are public domain.
+id: ref-natural-history-plate-grid
+kind: image
+library: gold
+source_domain: natural-history illustration (field guides and specimen plates)
+distance: far
+rights:
+  status: inspiration_only
+  notes: the format is generic and the classic plates are public domain; no specific plate is reproduced
+credit: natural-history specimen plates (public domain format)
+captured_at: "2026-09-22"
+retrieved_via: manual
+transferable_mechanism: >-
+  Variation within one species is made legible by holding everything else constant: same scale, same
+  angle, same light, same spacing, each individual numbered. Difference becomes the subject instead of a
+  defect.
+mechanism_tags: [variation_as_subject, controlled_comparison, catalogue, numbering]
+transfer: >-
+  A batch grid: every plate from one kiln load shot top-down at identical scale, angle and light on the
+  ash-white ground, numbered by kiln shelf position. It shows piece-to-piece glaze variation honestly
+  (product_representation.glaze_truth) and makes "sold by the batch" visible.
+incidental_content: [hand-coloured engraving, Latin labels, birds and shells]
+do_not_copy:
+  - engraving or hand-tinted illustration styles
+  - Latin binomial labelling or faux-scientific typography
+  - any specific historical plate layout
+why_it_works: constant framing turns small differences into the point of the image
+axes:
+  product_truth: "high: shows real variation instead of hiding it"
+  novelty: "high: far from category conventions"
+surfaces: [batch launch page, email]
+approval: testing
+decided_by: Founder (fictional)

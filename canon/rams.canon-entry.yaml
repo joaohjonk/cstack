@@ -1,0 +1,30 @@
+id: rams
+name: Dieter Rams
+kind: person
+domains:
+- product design
+- industrial design
+mental_model: 'less but better: every element must earn its place through use'
+mechanisms:
+- remove what does not serve use
+- honesty of materials and function
+- long-lived design over fashion
+representative_works:
+- Ten principles for good design
+- Braun products 1955-1995
+- Vitsoe 606 shelving system
+when_useful:
+- product representation
+- packaging hierarchy
+- editing a cluttered layout
+when_not_useful:
+- brands built on excess, ornament or humor; keep counterexamples (maximalism, vernacular) in the canon so restraint
+  does not become dogma
+tensions:
+- 'restraint vs. distinctiveness: restraint is now a common look in premium categories'
+sources:
+- kind: external_reference
+  ref: Ten principles for good design
+added: '2026-10-03'
+added_by: cstack seed
+status: current

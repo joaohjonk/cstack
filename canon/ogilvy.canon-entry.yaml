@@ -1,0 +1,28 @@
+id: ogilvy
+name: David Ogilvy
+kind: person
+domains:
+- advertising
+- copywriting
+- direct response
+mental_model: 'research-led persuasion: the consumer is not a moron, specific facts sell, and the headline does
+  most of the work'
+mechanisms:
+- lead with a specific, factual benefit
+- test and measure
+- long copy when the buyer needs information
+representative_works:
+- Ogilvy on Advertising (1983)
+- Confessions of an Advertising Man (1963)
+when_useful:
+- conversion copy, product truth and proof, ad headlines
+when_not_useful:
+- culture-led brand work where the idea is a behavior, not a claim; dated gender and audience assumptions
+tensions:
+- measurable response vs. long-term brand distinctiveness
+sources:
+- kind: external_reference
+  ref: Ogilvy on Advertising (1983)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

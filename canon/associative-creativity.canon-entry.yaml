@@ -1,0 +1,28 @@
+id: associative-creativity
+name: Associative creativity (Mednick) and bisociation (Koestler)
+kind: framework
+domains:
+- creativity research
+- method
+mental_model: useful ideas often connect elements that are not normally linked; widening the search radius beats
+  demanding more creativity
+mechanisms:
+- search beyond the category's reference set
+- connect two previously separate frames
+- transfer a mechanism, not a surface
+representative_works:
+- Mednick, The Associative Basis of the Creative Process (Psychological Review, 1962)
+- Koestler, The Act of Creation (1964)
+when_useful:
+- any creative brief stuck in category sameness
+- building a near/middle/far reference packet
+when_not_useful:
+- when the job is exact reproduction (packshot fidelity, compliance text)
+tensions:
+- distant references create leverage but risk illegibility for the audience
+sources:
+- kind: external_reference
+  ref: Mednick, The Associative Basis of the Creative Process (Psychological Review, 1962)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

@@ -1,0 +1,19 @@
+id: wrong-artifact
+tier: T2
+skills:
+- office-hours
+depends_on:
+- skills/office-hours/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: The 'right' artifact is debatable; grader checks that a reframe was considered.
+setup: 'Request: ''we need a TikTok'' for a B2B procurement product with no social presence.'
+expected:
+  must:
+  - questions whether the artifact fits the job and recommends an alternative while keeping the requested one as an option
+  must_not:
+  - produces a TikTok script immediately with no reframe
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

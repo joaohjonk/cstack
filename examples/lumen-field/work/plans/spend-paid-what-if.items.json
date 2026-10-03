@@ -1,0 +1,4 @@
+[
+  { "provider": "fal", "model": "example-image-model", "operation": "text_to_image", "note": "illustrative estimate only; the price is a placeholder, not a quote", "est": { "amount": 0.04, "currency": "USD" } },
+  { "provider": "fal", "model": "example-image-model", "operation": "text_to_image", "note": "illustrative estimate only", "est": { "amount": 0.04, "currency": "USD" } }
+]

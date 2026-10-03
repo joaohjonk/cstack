@@ -1,0 +1,75 @@
+{
+  "slug": "image-edit",
+  "type": "capability",
+  "summary": "Repair one region or composite official assets while preserving everything else; crop, edit, paste back, match",
+  "tags": [
+    "edit",
+    "retouch",
+    "composite",
+    "inpaint"
+  ],
+  "triggers": [
+    "fix this part",
+    "hands wrong",
+    "label wrong",
+    "retouch",
+    "composite the logo",
+    "one region"
+  ],
+  "not_for": [
+    "generate-media",
+    "product-fidelity"
+  ],
+  "required_inputs": [
+    "source image",
+    "region",
+    "defect"
+  ],
+  "outputs": [
+    "work/*/v*/"
+  ],
+  "writes": [
+    "work/",
+    "state/lineage.jsonl",
+    "state/failures.jsonl"
+  ],
+  "optional_providers": [
+    "fal"
+  ],
+  "cost_class": "low",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": [
+    "product-fidelity",
+    "creative-review",
+    "brand-verify"
+  ],
+  "evals": [
+    "evals/fixtures/one-region-wrong.yaml"
+  ],
+  "baseline": "last_approved",
+  "deterministic_steps": [
+    "crop",
+    "paste with feather",
+    "color match",
+    "outside-region diff"
+  ],
+  "generative_steps": [
+    "masked crop edit"
+  ],
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": []
+}

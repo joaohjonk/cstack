@@ -1,0 +1,71 @@
+{
+  "slug": "claims-proof",
+  "type": "capability",
+  "summary": "Claims architecture tied to proof and current primary regulatory sources per jurisdiction, marking uncertainty",
+  "tags": [
+    "claims",
+    "compliance",
+    "regulatory",
+    "proof",
+    "packaging"
+  ],
+  "triggers": [
+    "can we say",
+    "claim",
+    "compliance",
+    "label requirements",
+    "ANVISA",
+    "FDA",
+    "mandatory statements"
+  ],
+  "not_for": [
+    "copywriting",
+    "brand-verify"
+  ],
+  "required_inputs": [
+    "claims",
+    "jurisdictions"
+  ],
+  "outputs": [
+    "work/claims/*.md"
+  ],
+  "writes": [
+    "work/claims/",
+    "brand/brand-system.json"
+  ],
+  "cost_class": "low",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": [
+    "copywriting",
+    "workflow"
+  ],
+  "evals": [
+    "evals/fixtures/compliance-claim-uncertain.yaml"
+  ],
+  "approval_gates": [
+    {
+      "id": "counsel",
+      "after_step": "risk rating",
+      "artifact": "work/claims/*.md",
+      "never_self_approve": true
+    }
+  ],
+  "baseline": "n/a",
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": [],
+  "optional_providers": []
+}

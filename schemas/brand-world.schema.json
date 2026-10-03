@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/brand-world.schema.json",
+  "title": "Brand world / entity system",
+  "description": "Section 6. Reusable, addressable entities (@PRODUCT_STICK_01). Locked entities may only be used, never re-imagined.",
+  "type": "object",
+  "required": [
+    "brand_id",
+    "entities"
+  ],
+  "properties": {
+    "brand_id": {
+      "type": "string"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "immutable_traits",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(PRODUCT|PACKAGING|CAST|LOCATION|PROP|SURFACE|LIGHT|WARDROBE|CAMERA|GRAPHIC_DEVICE|TYPE_TREATMENT|MOTION_BEHAVIOR|SOUND|CAMPAIGN_DIRECTION)_[A-Z0-9_]+$"
+          },
+          "kind": {
+            "enum": [
+              "PRODUCT",
+              "PACKAGING",
+              "CAST",
+              "LOCATION",
+              "PROP",
+              "SURFACE",
+              "LIGHT",
+              "WARDROBE",
+              "CAMERA",
+              "GRAPHIC_DEVICE",
+              "TYPE_TREATMENT",
+              "MOTION_BEHAVIOR",
+              "SOUND",
+              "CAMPAIGN_DIRECTION"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "locked",
+              "current",
+              "testing",
+              "deprecated"
+            ]
+          },
+          "canonical_files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "path",
+                "role"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "master",
+                    "reference",
+                    "mask",
+                    "vector",
+                    "3d",
+                    "spec"
+                  ]
+                },
+                "sha256": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "immutable_traits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowed_variation": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "forbidden_drift": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reference_images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "model_notes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "model_id",
+                "note"
+              ],
+              "properties": {
+                "model_id": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                },
+                "last_verified": {
+                  "type": "string"
+                },
+                "evidence": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "generation_history": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scope": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/source_ref"
+            }
+          }
+        }
+      }
+    }
+  }
+}

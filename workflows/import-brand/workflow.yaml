@@ -1,0 +1,52 @@
+name: import-brand
+status: template
+summary: Ingest an existing brand into sourced state and verify it on known artifacts.
+entry_skill: workflow
+triggers:
+- import our brand
+- existing brand
+- brand audit
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: asset-discovery
+  does: inventory assets/official, docs, repos, design files and URLs with hashes
+  outputs:
+  - briefs/import-report-*.md
+  gate: auto
+- id: capture-live
+  skill: browse
+  does: screenshots and computed styles of the live site
+  outputs:
+  - work/browse/
+  gate: auto
+  fallback: text-only fetch; note missing screenshots
+- id: extract
+  skill: brand-import
+  does: Taste extract where appropriate; Figma variables if available
+  gate: auto
+  fallback: local CSS/SVG parsing
+- id: normalize-and-merge
+  skill: brand-import
+  outputs:
+  - brand/brand-system.json
+  - brand/tokens/
+  - brand/brand-world.json
+  gate: auto
+- id: confirm-consequential
+  does: owner resolves consequential conflicts only
+  gate: owner
+- id: seed-libraries
+  skill: taste-search
+  outputs:
+  - references/gold
+  - references/anti
+  gate: auto
+- id: verify-known-artifacts
+  skill: brand-verify
+  outputs:
+  - state/evals.jsonl
+  gate: auto
+- id: retro
+  skill: learn
+  gate: auto

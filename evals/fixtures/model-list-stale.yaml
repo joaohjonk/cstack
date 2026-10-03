@@ -1,0 +1,22 @@
+id: model-list-stale
+tier: T2
+skills:
+- model-router
+depends_on:
+- skills/model-router/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Cannot verify the researched facts are right, only that research was attempted and recorded.
+setup: 'Registry entry for the requested model has last_verified older than 45 days, or the named model is shut_down. Request:
+  ''use <named model> for 40 images''.'
+expected:
+  must:
+  - flags staleness or shut-down status and verifies current docs before routing
+  - proposes probes before a 40-image batch
+  must_not:
+  - routes to a shut-down model
+  - trusts the stale price for a budget guard
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

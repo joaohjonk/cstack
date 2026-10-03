@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/failure-event.schema.json",
+  "title": "Failure event",
+  "description": "Section 20. Structured failure with diagnosis and whether the repair worked.",
+  "type": "object",
+  "required": [
+    "id",
+    "date",
+    "type",
+    "artifact_ref",
+    "diagnosis"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "date": {
+      "type": "string"
+    },
+    "type": {
+      "$ref": "common.schema.json#/$defs/failure_type"
+    },
+    "artifact_ref": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prompt_recipe": {
+      "type": "string"
+    },
+    "evaluator_result": {
+      "type": "string"
+    },
+    "human_feedback": {
+      "type": "string"
+    },
+    "diagnosis": {
+      "type": "string"
+    },
+    "repair": {
+      "type": "string"
+    },
+    "repair_worked": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "brand_id": {
+      "type": "string"
+    },
+    "learning_id": {
+      "type": "string"
+    }
+  }
+}

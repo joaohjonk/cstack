@@ -1,0 +1,30 @@
+id: tadao-ando
+name: Tadao Ando
+kind: person
+domains:
+- architecture
+- space
+- light
+mental_model: 'material honesty, restraint and light as the subject: emptiness and procession make meaning'
+mechanisms:
+- one material carried with total consistency
+- light as the event in a still space
+- 'procession: the route to a space is part of the experience'
+- negative space as a positive element
+representative_works:
+- Church of the Light (1989)
+- Chichu Art Museum (2004)
+when_useful:
+- photography lighting and set direction
+- retail and unboxing sequence
+- pacing a landing page or film as a procession
+when_not_useful:
+- as concrete-and-shadow styling; transfer the procession and light logic
+tensions:
+- austerity vs. warmth and hospitality
+sources:
+- kind: external_reference
+  ref: Church of the Light (1989)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

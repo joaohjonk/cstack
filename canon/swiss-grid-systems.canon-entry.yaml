@@ -1,0 +1,27 @@
+id: swiss-grid-systems
+name: Swiss / International Typographic Style and grid systems (Muller-Brockmann)
+kind: framework
+domains:
+- typography
+- layout
+- editorial
+mental_model: the grid as an ethical and practical commitment to clarity and order
+mechanisms:
+- modular grids with legal column spans
+- objective, flush-left typography
+- asymmetric balance
+- information hierarchy carried by scale and position rather than decoration
+representative_works:
+- Josef Muller-Brockmann, Grid Systems in Graphic Design (1981)
+when_useful:
+- landing pages, decks, packaging back panels, any dense information
+when_not_useful:
+- as a historical costume; operationalize the principles, not the posters
+tensions:
+- rational order vs. contemporary digital behavior and expressive type
+sources:
+- kind: external_reference
+  ref: Josef Muller-Brockmann, Grid Systems in Graphic Design (1981)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

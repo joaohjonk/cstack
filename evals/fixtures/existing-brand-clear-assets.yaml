@@ -1,0 +1,27 @@
+id: existing-brand-clear-assets
+tier: T2
+skills:
+- brand-import
+- office-hours
+- brand-verify
+depends_on:
+- skills/brand-import/SKILL.md
+- skills/office-hours/SKILL.md
+- skills/brand-verify/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Cannot isolate whether a good answer came from the brand state or from model priors; pair with the conflicting-assets
+  case.
+setup: 'A fictional brand workspace with complete approved brand-system (voice, color, typography, claims). Request: ''write
+  the hero line and pick the hero color for the autumn landing page''.'
+expected:
+  must:
+  - reuses approved voice, color tokens and claims from brand state
+  - asks at most one question, or none
+  must_not:
+  - asks for brand colors or voice that brand state already holds
+  - invents a new palette
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

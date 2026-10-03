@@ -1,0 +1,64 @@
+{
+  "slug": "copywriting",
+  "type": "composite",
+  "summary": "Write and QA brand copy in an explicit mode with the voice system; distinct options with rationale and a separate QA pass",
+  "tags": [
+    "copy",
+    "voice",
+    "headlines",
+    "ads",
+    "email"
+  ],
+  "triggers": [
+    "write copy",
+    "headline",
+    "ad copy",
+    "tagline",
+    "email",
+    "PDP copy",
+    "manifesto"
+  ],
+  "not_for": [
+    "claims-proof",
+    "creative-direction"
+  ],
+  "required_inputs": [
+    "brief",
+    "voice"
+  ],
+  "outputs": [
+    "work/copy/*.md"
+  ],
+  "writes": [
+    "work/copy/",
+    "state/feedback.jsonl"
+  ],
+  "cost_class": "free",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": [
+    "claims-proof",
+    "creative-review",
+    "workflow"
+  ],
+  "evals": [
+    "evals/fixtures/make-it-cooler.yaml"
+  ],
+  "baseline": "brief",
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": [],
+  "optional_providers": []
+}

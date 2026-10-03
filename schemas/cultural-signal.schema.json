@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/cultural-signal.schema.json",
+  "title": "Cultural signal",
+  "description": "Section 15. Observation, not 'Gen Z' adjectives.",
+  "type": "object",
+  "required": [
+    "id",
+    "signal",
+    "source",
+    "date",
+    "stage",
+    "why_it_matters"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "signal": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "community": {
+      "type": "string"
+    },
+    "stage": {
+      "enum": [
+        "fringe",
+        "emerging",
+        "mainstream",
+        "fatiguing"
+      ]
+    },
+    "intelligence": {
+      "enum": [
+        "aesthetic",
+        "cultural",
+        "brand"
+      ]
+    },
+    "why_it_matters": {
+      "type": "string"
+    },
+    "relevance_to_brand": {
+      "type": "string"
+    },
+    "risk": {
+      "type": "object",
+      "properties": {
+        "cringe": {
+          "type": "string"
+        },
+        "appropriation": {
+          "type": "string"
+        },
+        "lateness": {
+          "type": "string"
+        }
+      }
+    },
+    "brand_behavior": {
+      "type": "string",
+      "description": "what the brand could DO, not only content idea"
+    },
+    "observed_vs_inferred": {
+      "enum": [
+        "observed",
+        "inferred"
+      ]
+    }
+  }
+}

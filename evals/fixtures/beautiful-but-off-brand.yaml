@@ -1,0 +1,26 @@
+id: beautiful-but-off-brand
+tier: T2
+skills:
+- creative-review
+- brand-verify
+- creative-direction
+depends_on:
+- skills/creative-review/SKILL.md
+- skills/brand-verify/SKILL.md
+- skills/creative-direction/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Does not test the reviewer's aesthetic accuracy.
+setup: 'A polished image that violates brand photography rules (cold studio light vs. brand''s warm flash recipe). Request:
+  ''review this''.'
+expected:
+  must:
+  - separates beauty from brand fit explicitly
+  - decision is fix or reject citing the rule
+  must_not:
+  - approves because it is beautiful
+  - gives one blended score
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/learning-event.schema.json",
+  "title": "Learning event / promoted learning",
+  "description": "Section 28A. Raw events append to state/learnings.jsonl; promoted ones also land in docs/learnings.md or a skill/provider note/eval.",
+  "type": "object",
+  "required": [
+    "id",
+    "date",
+    "kind",
+    "statement",
+    "scope",
+    "confidence"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "date": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "observation",
+        "failure",
+        "approval",
+        "model_quirk",
+        "performance",
+        "human_edit",
+        "candidate",
+        "promoted",
+        "retired"
+      ]
+    },
+    "statement": {
+      "type": "string"
+    },
+    "scope": {
+      "enum": [
+        "durable",
+        "brand_specific",
+        "campaign_specific",
+        "model_specific",
+        "tool_specific"
+      ]
+    },
+    "brand_id": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "artifact_type": {
+      "type": "string"
+    },
+    "confidence": {
+      "$ref": "common.schema.json#/$defs/confidence"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/source_ref"
+      }
+    },
+    "replaces": {
+      "type": "string"
+    },
+    "should_become": {
+      "enum": [
+        "principle",
+        "skill_rule",
+        "provider_note",
+        "eval",
+        "anti_example",
+        "fixture",
+        "archive_only"
+      ]
+    },
+    "target": {
+      "type": "string",
+      "description": "file/skill where it was promoted"
+    },
+    "expires": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,879 @@
+{
+  "generated_by": "cstack index",
+  "note": "GENERATED from skills/*/skill.meta.json. Do not edit by hand; run `cstack index`.",
+  "count": 22,
+  "skills": [
+    {
+      "slug": "brand-import",
+      "type": "playbook",
+      "status": "beta",
+      "summary": "Ingest an existing brand into sourced brand state, tokens, entities and seed gold/anti libraries",
+      "tags": [
+        "brand",
+        "import",
+        "provenance",
+        "tokens"
+      ],
+      "triggers": [
+        "import brand",
+        "existing brand",
+        "brand guidelines",
+        "conflicting assets",
+        "brand state stale"
+      ],
+      "required_inputs": [
+        "official assets or brand URLs"
+      ],
+      "outputs": [
+        "brand/brand-system.json",
+        "brand/brand-world.json",
+        "brand/tokens/*.tokens.json",
+        "references/gold",
+        "references/anti"
+      ],
+      "handoff": [
+        "brand-verify",
+        "taste-search",
+        "identity-system",
+        "office-hours"
+      ],
+      "cost_class": "low",
+      "context_class": "l",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/brand-import/SKILL.md",
+      "tokens": 1620
+    },
+    {
+      "slug": "brand-verify",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Deterministic brand gates then a brand-adherence verifier, fix and re-verify once before a human",
+      "tags": [
+        "verify",
+        "brand adherence",
+        "tokens",
+        "QA"
+      ],
+      "triggers": [
+        "is this on brand",
+        "verify",
+        "brand check",
+        "before delivery",
+        "validate import"
+      ],
+      "required_inputs": [
+        "artifact"
+      ],
+      "outputs": [
+        "state/evals.jsonl",
+        "work/verify/*.md"
+      ],
+      "handoff": [
+        "creative-review",
+        "identity-system",
+        "image-edit",
+        "copywriting",
+        "learn"
+      ],
+      "cost_class": "low",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/brand-verify/SKILL.md",
+      "tokens": 1114
+    },
+    {
+      "slug": "browse",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Headless browser for brand work: responsive screenshots, PDFs, snapshots, computed-style tokens, media provenance and page QA",
+      "tags": [
+        "browser",
+        "screenshots",
+        "QA",
+        "capture",
+        "web"
+      ],
+      "triggers": [
+        "screenshot",
+        "capture the site",
+        "browse",
+        "check the page on mobile",
+        "extract styles",
+        "PDF of the page"
+      ],
+      "required_inputs": [
+        "url"
+      ],
+      "outputs": [
+        "work/browse/*/run.json"
+      ],
+      "handoff": [
+        "brand-import",
+        "competitor-intel",
+        "taste-search",
+        "brand-verify",
+        "creative-review"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": false,
+      "required_providers": [
+        "playwright-core + chromium"
+      ],
+      "path": "skills/browse/SKILL.md",
+      "tokens": 1118
+    },
+    {
+      "slug": "campaign-sequence",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Plan and critique a campaign as a sequence of shot roles with jobs, DNA and channel crops",
+      "tags": [
+        "campaign",
+        "sequence",
+        "shot roles",
+        "channels"
+      ],
+      "triggers": [
+        "campaign plan",
+        "shot list",
+        "sequence",
+        "images lack narrative",
+        "channel adaptation"
+      ],
+      "required_inputs": [
+        "direction",
+        "channels"
+      ],
+      "outputs": [
+        "campaigns/*.campaign.yaml",
+        "work/campaigns/*/sequence.png"
+      ],
+      "handoff": [
+        "shot-dna",
+        "prompt-director",
+        "product-fidelity",
+        "copywriting",
+        "creative-review"
+      ],
+      "cost_class": "free",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/campaign-sequence/SKILL.md",
+      "tokens": 998
+    },
+    {
+      "slug": "claims-proof",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Claims architecture tied to proof and current primary regulatory sources per jurisdiction, marking uncertainty",
+      "tags": [
+        "claims",
+        "compliance",
+        "regulatory",
+        "proof",
+        "packaging"
+      ],
+      "triggers": [
+        "can we say",
+        "claim",
+        "compliance",
+        "label requirements",
+        "ANVISA",
+        "FDA",
+        "mandatory statements"
+      ],
+      "required_inputs": [
+        "claims",
+        "jurisdictions"
+      ],
+      "outputs": [
+        "work/claims/*.md"
+      ],
+      "handoff": [
+        "copywriting",
+        "workflow"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/claims-proof/SKILL.md",
+      "tokens": 1183
+    },
+    {
+      "slug": "competitor-intel",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Build a dated competitor corpus from public sources and map conventions, white space, saturated claims and fatigue",
+      "tags": [
+        "competitors",
+        "category",
+        "research",
+        "intelligence"
+      ],
+      "triggers": [
+        "competitors",
+        "category conventions",
+        "what are others doing",
+        "white space",
+        "ad library",
+        "market research"
+      ],
+      "required_inputs": [
+        "competitor list or category"
+      ],
+      "outputs": [
+        "state/competitors.jsonl",
+        "work/competitors/*-category-map.md"
+      ],
+      "handoff": [
+        "office-hours",
+        "creative-direction",
+        "claims-proof",
+        "copywriting"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/competitor-intel/SKILL.md",
+      "tokens": 1138
+    },
+    {
+      "slug": "copywriting",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Write and QA brand copy in an explicit mode with the voice system; distinct options with rationale and a separate QA pass",
+      "tags": [
+        "copy",
+        "voice",
+        "headlines",
+        "ads",
+        "email"
+      ],
+      "triggers": [
+        "write copy",
+        "headline",
+        "ad copy",
+        "tagline",
+        "email",
+        "PDP copy",
+        "manifesto"
+      ],
+      "required_inputs": [
+        "brief",
+        "voice"
+      ],
+      "outputs": [
+        "work/copy/*.md"
+      ],
+      "handoff": [
+        "claims-proof",
+        "creative-review",
+        "workflow"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/copywriting/SKILL.md",
+      "tokens": 976
+    },
+    {
+      "slug": "creative-autoresearch",
+      "type": "playbook",
+      "status": "beta",
+      "summary": "Bounded keep/discard experiments on one mutable surface against a frozen fixture, with budgets, regressions and stop conditions",
+      "tags": [
+        "experiments",
+        "autoresearch",
+        "optimization",
+        "overnight"
+      ],
+      "triggers": [
+        "optimize the recipe",
+        "overnight run",
+        "experiment",
+        "improve at scale",
+        "A/B the method"
+      ],
+      "required_inputs": [
+        "fixture",
+        "mutable surface",
+        "budgets",
+        "stop conditions"
+      ],
+      "outputs": [
+        "experiments/results.tsv",
+        "experiments/runs/*/report.md"
+      ],
+      "handoff": [
+        "prompt-director",
+        "model-router",
+        "learn"
+      ],
+      "cost_class": "high",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/creative-autoresearch/SKILL.md",
+      "tokens": 1200
+    },
+    {
+      "slug": "creative-direction",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Develop three distinct territories, critique and mutate them, and recommend one direction with a rejection list",
+      "tags": [
+        "direction",
+        "territories",
+        "art direction",
+        "verbal direction"
+      ],
+      "triggers": [
+        "creative direction",
+        "art direction",
+        "campaign idea",
+        "territories",
+        "concept",
+        "feels generic"
+      ],
+      "required_inputs": [
+        "approved brief"
+      ],
+      "outputs": [
+        "work/direction/*-territories.md"
+      ],
+      "handoff": [
+        "identity-system",
+        "campaign-sequence",
+        "shot-dna",
+        "copywriting",
+        "workflow"
+      ],
+      "cost_class": "free",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/creative-direction/SKILL.md",
+      "tokens": 1189
+    },
+    {
+      "slug": "creative-review",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Independent multi-lens review with hard gates, distinct axes against a baseline, visible disagreement and an explicit tradeoff",
+      "tags": [
+        "review",
+        "critique",
+        "lenses",
+        "evals"
+      ],
+      "triggers": [
+        "review this",
+        "is this good",
+        "which is better",
+        "critique",
+        "feels off",
+        "A or B"
+      ],
+      "required_inputs": [
+        "artifact",
+        "brief or baseline"
+      ],
+      "outputs": [
+        "state/evals.jsonl",
+        "work/reviews/*.md"
+      ],
+      "handoff": [
+        "image-edit",
+        "copywriting",
+        "identity-system",
+        "brand-verify",
+        "learn"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/creative-review/SKILL.md",
+      "tokens": 1274
+    },
+    {
+      "slug": "cultural-scan",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Observe dated cultural signals and turn them into ownable brand behaviors scored on legibility, repetition, mobility, aggregation and organization",
+      "tags": [
+        "culture",
+        "signals",
+        "community",
+        "rituals"
+      ],
+      "triggers": [
+        "cultural relevance",
+        "what is happening in culture",
+        "trends",
+        "cultural fit",
+        "belongs in the world now",
+        "rituals"
+      ],
+      "required_inputs": [
+        "brief",
+        "audience"
+      ],
+      "outputs": [
+        "state/culture.jsonl",
+        "work/culture/*.md"
+      ],
+      "handoff": [
+        "creative-direction",
+        "campaign-sequence",
+        "copywriting",
+        "learn"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/cultural-scan/SKILL.md",
+      "tokens": 1354
+    },
+    {
+      "slug": "generate-media",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Guarded paid generation: estimate first, probes before finals, idempotent calls, pending re-attach, sidecars and size audits",
+      "tags": [
+        "generation",
+        "image",
+        "video",
+        "cost",
+        "ledger"
+      ],
+      "triggers": [
+        "generate",
+        "render",
+        "make the image",
+        "run the batch",
+        "image to video",
+        "upscale"
+      ],
+      "required_inputs": [
+        "compiled recipe",
+        "model",
+        "budget envelope"
+      ],
+      "outputs": [
+        "work/**/*.gen.json"
+      ],
+      "handoff": [
+        "creative-review",
+        "product-fidelity",
+        "image-edit",
+        "campaign-sequence",
+        "learn"
+      ],
+      "cost_class": "high",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [
+        "media provider"
+      ],
+      "path": "skills/generate-media/SKILL.md",
+      "tokens": 1250
+    },
+    {
+      "slug": "identity-system",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Turn a chosen identity direction into DTCG tokens, type hierarchy, grid and composition rules, logo usage and component contracts",
+      "tags": [
+        "identity",
+        "tokens",
+        "typography",
+        "grid",
+        "motion"
+      ],
+      "triggers": [
+        "design system",
+        "tokens",
+        "type scale",
+        "grid",
+        "brand system",
+        "logo usage rules"
+      ],
+      "required_inputs": [
+        "selected direction",
+        "owner decision"
+      ],
+      "outputs": [
+        "brand/tokens/*.tokens.json",
+        "brand/rules/brand-rules.yaml",
+        "work/system/specimen.html"
+      ],
+      "handoff": [
+        "brand-verify",
+        "copywriting",
+        "workflow"
+      ],
+      "cost_class": "free",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/identity-system/SKILL.md",
+      "tokens": 1411
+    },
+    {
+      "slug": "image-edit",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Repair one region or composite official assets while preserving everything else; crop, edit, paste back, match",
+      "tags": [
+        "edit",
+        "retouch",
+        "composite",
+        "inpaint"
+      ],
+      "triggers": [
+        "fix this part",
+        "hands wrong",
+        "label wrong",
+        "retouch",
+        "composite the logo",
+        "one region"
+      ],
+      "required_inputs": [
+        "source image",
+        "region",
+        "defect"
+      ],
+      "outputs": [
+        "work/*/v*/"
+      ],
+      "handoff": [
+        "product-fidelity",
+        "creative-review",
+        "brand-verify"
+      ],
+      "cost_class": "low",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/image-edit/SKILL.md",
+      "tokens": 1080
+    },
+    {
+      "slug": "learn",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Capture corrections, pairs, failures and quirks; run the taste loop; promote repeated evidence with provenance; weekly retro",
+      "tags": [
+        "learning",
+        "memory",
+        "retro",
+        "preferences"
+      ],
+      "triggers": [
+        "remember this",
+        "never do this again",
+        "retro",
+        "what did we learn",
+        "owner correction",
+        "do not relearn"
+      ],
+      "required_inputs": [
+        "state events"
+      ],
+      "outputs": [
+        "state/learnings.jsonl",
+        "docs/learnings.md",
+        "work/retro/*.md"
+      ],
+      "handoff": [
+        "prompt-director",
+        "brand-verify",
+        "model-router",
+        "identity-system",
+        "creative-autoresearch"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/learn/SKILL.md",
+      "tokens": 1260
+    },
+    {
+      "slug": "model-router",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Pick the current best model for a job from the dated registry, verify freshness, micro-benchmark when uncertain, record why and a fallback chain",
+      "tags": [
+        "models",
+        "routing",
+        "benchmark",
+        "providers"
+      ],
+      "triggers": [
+        "which model",
+        "best model for",
+        "model is stale",
+        "switch model",
+        "benchmark models"
+      ],
+      "required_inputs": [
+        "job capabilities"
+      ],
+      "outputs": [
+        "work/routing/*.md",
+        "registry/models.json"
+      ],
+      "handoff": [
+        "prompt-director",
+        "generate-media",
+        "creative-autoresearch"
+      ],
+      "cost_class": "low",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/model-router/SKILL.md",
+      "tokens": 1201
+    },
+    {
+      "slug": "office-hours",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Interrogate and reframe a creative request, then write a creative brief downstream skills consume",
+      "tags": [
+        "brief",
+        "strategy",
+        "reframe"
+      ],
+      "triggers": [
+        "new creative request",
+        "brief",
+        "make it cooler",
+        "is this the right artifact",
+        "what should we make"
+      ],
+      "required_inputs": [
+        "owner request"
+      ],
+      "outputs": [
+        "briefs/*.creative-brief.yaml"
+      ],
+      "handoff": [
+        "workflow",
+        "taste-search",
+        "cultural-scan",
+        "creative-direction",
+        "copywriting",
+        "claims-proof"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/office-hours/SKILL.md",
+      "tokens": 1562
+    },
+    {
+      "slug": "product-fidelity",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Lock the real product as an entity, choose a production method that preserves it, and audit outputs for drift",
+      "tags": [
+        "product",
+        "packshot",
+        "fidelity",
+        "compositing"
+      ],
+      "triggers": [
+        "packshot",
+        "product photo",
+        "label looks wrong",
+        "product looks off",
+        "PDP image"
+      ],
+      "required_inputs": [
+        "product masters"
+      ],
+      "outputs": [
+        "brand/brand-world.json",
+        "work/*/fidelity.md"
+      ],
+      "handoff": [
+        "image-edit",
+        "brand-verify",
+        "creative-review",
+        "learn"
+      ],
+      "cost_class": "medium",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/product-fidelity/SKILL.md",
+      "tokens": 1266
+    },
+    {
+      "slug": "prompt-director",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Compile versioned prompt recipes with slots, deterministic variants, model syntax and a stable prefix; diff by component",
+      "tags": [
+        "prompts",
+        "recipes",
+        "slots",
+        "compiler"
+      ],
+      "triggers": [
+        "write the prompt",
+        "prompt recipe",
+        "prompts drift",
+        "compile prompt",
+        "prompt diff"
+      ],
+      "required_inputs": [
+        "shot dna or brief",
+        "target model"
+      ],
+      "outputs": [
+        "recipes/*.prompt-recipe.yaml"
+      ],
+      "handoff": [
+        "model-router",
+        "generate-media",
+        "image-edit",
+        "creative-autoresearch"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/prompt-director/SKILL.md",
+      "tokens": 1265
+    },
+    {
+      "slug": "shot-dna",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Decompose a reference or plan a shot into camera, composition, named lighting recipe, materials, imperfection, mechanism and do-not-copy",
+      "tags": [
+        "photography",
+        "shot dna",
+        "lighting",
+        "camera"
+      ],
+      "triggers": [
+        "shot dna",
+        "decompose this photo",
+        "plan a shot",
+        "why does this image work",
+        "lighting recipe",
+        "looks like AI"
+      ],
+      "required_inputs": [
+        "reference image or shot role"
+      ],
+      "outputs": [
+        "references/dna/*.shot-dna.yaml"
+      ],
+      "handoff": [
+        "prompt-director",
+        "product-fidelity",
+        "campaign-sequence",
+        "model-router"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/shot-dna/SKILL.md",
+      "tokens": 1337
+    },
+    {
+      "slug": "taste-search",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Find and curate near, middle and far references with Source, Mechanism, Transfer, rights and do-not-copy across the user's research tools",
+      "tags": [
+        "references",
+        "taste",
+        "research",
+        "associative distance"
+      ],
+      "triggers": [
+        "references",
+        "moodboard",
+        "inspiration",
+        "what should it look like",
+        "find examples",
+        "reference packet"
+      ],
+      "required_inputs": [
+        "brief or intent"
+      ],
+      "outputs": [
+        "references/*/*.reference.yaml",
+        "work/references/*-packet.md"
+      ],
+      "handoff": [
+        "shot-dna",
+        "creative-direction",
+        "prompt-director",
+        "brand-import"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/taste-search/SKILL.md",
+      "tokens": 1565
+    },
+    {
+      "slug": "workflow",
+      "type": "playbook",
+      "status": "beta",
+      "summary": "Run create-brand, import-brand, campaign, product-photoshoot, paid-social, landing-page, packaging or deck as a resumable plan",
+      "tags": [
+        "workflow",
+        "orchestration",
+        "plan"
+      ],
+      "triggers": [
+        "create a brand",
+        "import our brand",
+        "campaign",
+        "product shoot",
+        "paid social",
+        "landing page",
+        "packaging",
+        "deck",
+        "resume"
+      ],
+      "required_inputs": [
+        "workflow name",
+        "workspace"
+      ],
+      "outputs": [
+        "work/plans/*.md"
+      ],
+      "handoff": [
+        "office-hours",
+        "learn"
+      ],
+      "cost_class": "medium",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/workflow/SKILL.md",
+      "tokens": 1190
+    }
+  ]
+}

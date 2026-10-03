@@ -1,0 +1,61 @@
+name: landing-page
+status: template
+summary: A landing page from objective to verified, accessible, conversion-reviewed build.
+entry_skill: workflow
+triggers:
+- landing page
+- LP
+- product page
+- PDP
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: objective-audience
+  skill: office-hours
+  gate: owner
+- id: messaging-hierarchy
+  skill: copywriting
+  gate: auto
+- id: brand-state
+  does: cstack brand context + tokens build
+  outputs:
+  - brand/generated/tokens.css
+  gate: auto
+- id: references
+  skill: taste-search
+  does: functional -> formal -> cultural-quality -> distant references; Refero/Mobbin/Ecomm.Design when available
+  gate: auto
+- id: architecture
+  does: 'page architecture: sections, order, objections, evidence, CTA'
+  gate: auto
+- id: copy
+  skill: copywriting
+  gate: auto
+- id: claims
+  skill: claims-proof
+  gate: auto
+- id: visual-system
+  skill: identity-system
+  does: components and rules used by this page
+  gate: auto
+- id: build
+  does: build with tokens only (host coding tools); no raw values
+  gate: auto
+- id: responsive-qa
+  skill: browse
+  does: qa + shots at 375/768/1440
+  gate: auto
+- id: accessibility
+  skill: browse
+  does: alt, labels, contrast, focus, reduced motion
+  gate: auto
+- id: brand-verify
+  skill: brand-verify
+  gate: auto
+- id: conversion-review
+  skill: creative-review
+  does: COMMERCE, COPY, EDITOR lenses; Baymard guidance only via a human with access
+  gate: owner
+- id: performance-hooks
+  does: analytics events and experiment ids documented
+  gate: auto

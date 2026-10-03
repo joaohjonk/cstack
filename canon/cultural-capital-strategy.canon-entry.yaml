@@ -1,0 +1,35 @@
+id: cultural-capital-strategy
+name: Brands as cultural actors (Ana Andjelic's cultural strategy work)
+kind: framework
+domains:
+- cultural strategy
+- brand theory
+- community
+mental_model: brands accrue meaning by building cultural assets that a community can decode, repeat and carry, not
+  by chasing relevance
+mechanisms:
+- 'legibility: the group can decode it'
+- 'repetition: it recurs until recognizable'
+- 'mobility: it travels across media and people'
+- 'aggregation: small assets reinforce one another'
+- 'organization: people, objects, rituals and ideas form one world'
+- cultural assets generate cultural derivatives
+representative_works:
+- The Business of Aspiration (book)
+- writing on how brands make culture
+when_useful:
+- brand worldbuilding
+- deciding which recurring rituals, symbols and objects a brand should own
+- culture-led campaign strategy
+when_not_useful:
+- pure performance-marketing tasks
+- 'as a voice to imitate: use the mechanisms, never the author''s voice'
+tensions:
+- cultural depth vs. short-term conversion pressure
+- community ownership vs. brand control
+sources:
+- kind: external_reference
+  ref: The Business of Aspiration (book)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

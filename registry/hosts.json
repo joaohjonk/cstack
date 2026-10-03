@@ -1,0 +1,14 @@
+{
+  "updated": "2026-10-03",
+  "source": "docs/research/agent-skills.md section 1.4 and 4.4 (host docs as documented on 2026-10-03)",
+  "default": ["agents", "claude-code"],
+  "note": "Install into agents + claude-code by default. Cursor and OpenCode also scan .claude/skills, so installing into every compatible dir at one scope produces duplicates. Other hosts are opt-in.",
+  "hosts": [
+    { "id": "agents", "name": "Portable .agents/skills (Codex, Cursor, Gemini CLI, OpenCode)", "project_dir": ".agents/skills", "user_dir": ".agents/skills", "max_description_chars": 1024 },
+    { "id": "claude-code", "name": "Claude Code", "project_dir": ".claude/skills", "user_dir": ".claude/skills", "max_description_chars": 1024, "notes": "does not document .agents/skills; plugin skills would be namespaced /cstack:<skill>" },
+    { "id": "codex", "name": "Codex", "project_dir": ".agents/skills", "user_dir": ".agents/skills", "max_description_chars": 1024, "notes": "drops skills with descriptions over 1024 chars; optional <skill>/agents/openai.yaml generated from skill.meta.json host_overrides" },
+    { "id": "cursor", "name": "Cursor", "project_dir": ".cursor/skills", "user_dir": ".cursor/skills", "max_description_chars": 1024, "notes": "also reads .agents/skills and .claude/skills; do not install to both" },
+    { "id": "gemini-cli", "name": "Gemini CLI", "project_dir": ".gemini/skills", "user_dir": ".gemini/skills", "max_description_chars": 1024, "notes": "activation asks the user for consent; .agents/skills alias wins within a tier" },
+    { "id": "opencode", "name": "OpenCode", "project_dir": ".opencode/skills", "user_dir": ".config/opencode/skills", "max_description_chars": 1024, "notes": "enforces name regex ^[a-z0-9]+(-[a-z0-9]+)*$ and name == directory" }
+  ]
+}

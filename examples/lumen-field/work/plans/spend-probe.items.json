@@ -1,0 +1,5 @@
+[
+  { "provider": "mock", "model": "plate-v0", "operation": "text_to_image", "recipe": "recipes/autumn-hero-plate.prompt-recipe.yaml", "variant": "traces[0]", "est": { "amount": 0, "currency": "USD" } },
+  { "provider": "mock", "model": "plate-v0", "operation": "text_to_image", "recipe": "recipes/autumn-hero-plate.prompt-recipe.yaml", "variant": "traces[1]", "est": { "amount": 0, "currency": "USD" } },
+  { "provider": "mock", "model": "plate-v0", "operation": "text_to_image", "recipe": "recipes/autumn-hero-plate.prompt-recipe.yaml", "variant": "traces[2]", "est": { "amount": 0, "currency": "USD" } }
+]

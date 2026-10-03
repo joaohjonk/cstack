@@ -1,0 +1,33 @@
+id: vignelli
+name: Massimo Vignelli
+kind: person
+domains:
+- identity
+- systems
+- typography
+- wayfinding
+mental_model: 'reduction + systems: a small set of rules applied with discipline beats endless bespoke decisions'
+mechanisms:
+- limit the typeface palette to very few families
+- a grid as the governing structure of every page
+- one system that scales across signage, print and product
+- semantic, syntactic and pragmatic correctness as a review frame
+representative_works:
+- The Vignelli Canon (book)
+- 1972 New York City subway map
+- Unigrid system for the US National Park Service
+when_useful:
+- building a brand system that many people and agents must apply consistently
+- cleaning up an incoherent identity
+when_not_useful:
+- brands whose value is warmth, mess or vernacular texture
+- when reduction would erase the product truth
+tensions:
+- rigor vs. expressiveness
+- 'his subway map was praised by designers and rejected by many riders: system elegance is not the same as usability'
+sources:
+- kind: external_reference
+  ref: The Vignelli Canon (book)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

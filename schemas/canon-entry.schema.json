@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/canon-entry.schema.json",
+  "title": "Canon entry (practitioner / world index)",
+  "description": "Section 28. Retrievable reasoning, not authority worship: a person, studio, work, place or scene recorded for the MENTAL MODEL it contributes, when it helps, when it misleads, and the tensions it carries. Never used to imitate a living person's voice or to put a name in a generation prompt.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "kind",
+    "domains",
+    "mental_model",
+    "mechanisms",
+    "when_useful",
+    "when_not_useful"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "person",
+        "studio",
+        "brand",
+        "book",
+        "publication",
+        "campaign",
+        "artifact",
+        "place",
+        "scene",
+        "institution",
+        "framework"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mental_model": {
+      "type": "string",
+      "description": "one line: what way of thinking this entry contributes (e.g. reduction + systems; relational perception)"
+    },
+    "mechanisms": {
+      "type": "array",
+      "description": "transferable mechanisms, each usable without naming the source",
+      "items": {
+        "type": "string"
+      }
+    },
+    "representative_works": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "when_useful": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "when_not_useful": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "distance_from": {
+      "type": "object",
+      "description": "category -> near|middle|far, so the canon can be searched by associative distance",
+      "additionalProperties": {
+        "enum": [
+          "near",
+          "middle",
+          "far"
+        ]
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/source_ref"
+      }
+    },
+    "added_by": {
+      "type": "string"
+    },
+    "added": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "status": {
+      "enum": [
+        "current",
+        "testing",
+        "historical",
+        "deprecated"
+      ]
+    }
+  }
+}

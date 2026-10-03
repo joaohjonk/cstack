@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/experiment-run.schema.json",
+  "title": "Experiment run spec",
+  "description": "Section 12A. Bounded keep/discard loop over a frozen fixture and evaluator.",
+  "type": "object",
+  "required": [
+    "run_id",
+    "fixture",
+    "baseline_version",
+    "mutable_surface",
+    "primary_metric",
+    "guardrails",
+    "spend_budget",
+    "max_experiments",
+    "stop_conditions"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "fixture": {
+      "type": "string"
+    },
+    "baseline_version": {
+      "type": "string"
+    },
+    "mutable_surface": {
+      "type": "string",
+      "description": "the ONE thing that may change (e.g. prompt.slot.lighting, model, ref_set, crop)"
+    },
+    "frozen": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "primary_metric": {
+      "type": "object",
+      "required": [
+        "name",
+        "method"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "pairwise_vs_incumbent",
+            "rubric_axis",
+            "deterministic",
+            "human_pref",
+            "provider_score"
+          ]
+        },
+        "higher_is_better": {
+          "type": "boolean"
+        }
+      }
+    },
+    "guardrails": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "rule"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rule": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "regression_fixtures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "time_budget_minutes": {
+      "type": "number"
+    },
+    "spend_budget": {
+      "$ref": "common.schema.json#/$defs/money"
+    },
+    "max_experiments": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evaluator": {
+      "type": "string"
+    },
+    "seeds_per_candidate": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "program": {
+      "type": "string",
+      "description": "path to the human-editable program.md that steers proposals"
+    }
+  }
+}

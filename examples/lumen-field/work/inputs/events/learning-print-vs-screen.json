@@ -1,0 +1,13 @@
+{
+  "kind": "observation",
+  "statement": "Printed colour specs (matched to physical samples) and screen specs (sampled from a stylesheet) drift apart for the same named colour; import both as separate sources and surface the conflict instead of picking or averaging.",
+  "scope": "durable",
+  "brand_id": "lumen-field",
+  "confidence": "medium",
+  "evidence": [
+    { "kind": "official_asset", "ref": "assets/official/glaze-palette-v2.md", "quote": "Kiln Ochre | accent | #B8742A" },
+    { "kind": "official_asset", "ref": "assets/official/swing-tag-print-spec.md", "quote": "sRGB equivalent #C98A3E" }
+  ],
+  "should_become": "principle",
+  "tags": ["topic:color-source-drift"]
+}

@@ -1,0 +1,120 @@
+# Evals
+
+Evals answer one question: does this still behave the way we said it would? cstack runs the cheapest evidence first and spends money only where a change can break something.
+
+## Tiers
+
+| Tier | What runs | Cost | When |
+|---|---|---|---|
+| **T0** static | `cstack validate` (schemas compile, skill contract, `skill.meta.json`, index freshness, governed data files, workflow skill references, no home paths, no credential-looking strings), `cstack budget --check` | free | always |
+| **T1** unit / fixture | `node --test tests/*.test.mjs` (core libs, providers via the mock, browser) | free | code, schemas or tests changed |
+| **T2** behavior | fixtures in `evals/fixtures/` run on a cheap model and graded | low | a touched skill or a declared dependency changed |
+| **T3** live | provider smoke: dry run first, then one bounded live call if credentials exist | paid, bounded | a provider adapter changed |
+| **T4** release | end-to-end workflow on a fixture brand plus multimodal gates | manual | before a release |
+
+```bash
+npm run check          # T0 + T1: validate, budget --check, node --test
+cstack health          # per-skill validity, budget, fixture count, cost class, staleness, known failures
+```
+
+`evals/live/` and `evals/release/` are reserved for T3 and T4 records. A harness that runs T2 fixtures automatically (`cstack evals run`) is planned (v0.2, see [backlog-v0.2.md](backlog-v0.2.md)). Until it exists, a person or an agent runs a T2 fixture by following it and records the result with `cstack eval --file`.
+
+## Diff-aware plan
+
+```bash
+cstack evals plan                       # changes since HEAD~1, plus unstaged and untracked files
+cstack evals plan --since main
+cstack evals plan --files skills/taste-search/SKILL.md,providers/fal.mjs
+```
+
+```text
+changed files: 2
+T0: cstack validate | cstack budget --check
+T1: -
+T2: no-brand-vague-aesthetic
+T3: provider smoke: fal (dry-run first, then one bounded live call if credentials exist)
+T4: manual: run before releases (end-to-end workflow on a fixture brand + multimodal gates)
+why T2: touched skills taste-search
+```
+
+Selection rules (`scripts/lib/evalplan.mjs`):
+
+- **T0** always.
+- **T1** when anything under `scripts/`, `bin/`, `schemas/`, `tests/` or `package.json` changed.
+- **T2** gets every fixture whose `skills` include a touched `skills/<slug>/`, or whose `depends_on` globs match a changed file. A fixture marked `tier: T3` goes to T3 instead.
+- **T3** gets a provider smoke for each changed `providers/<id>.mjs`.
+- **Unknown change, full gate.** A changed file outside the known areas (skills, providers, code, workflows, templates, fixtures, docs, examples, references, experiments, state, `registry/models.json`, the generated index, `evals/static/`) selects every T2 fixture. An undeclared dependency means "run everything cheap".
+- The shared preamble is listed in every fixture's `depends_on`, so editing it selects all T2 fixtures.
+
+Pass `--json` to get the plan as data: `changed`, `tiers`, `why`, `full`.
+
+## Fixture format
+
+One YAML file per behavior case in `evals/fixtures/`:
+
+```yaml
+id: beautiful-but-off-brand            # by convention, the filename stem
+tier: T2                               # T0 | T2 | T3 (T1 lives in tests/)
+skills: [creative-review, brand-verify]
+depends_on:                            # globs; a change here selects the fixture
+  - skills/creative-review/SKILL.md
+  - skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: What a pass does NOT prove, so nobody over-reads it.
+setup: The situation and the request, in plain words.
+expected:
+  must:     [behaviors that have to appear]
+  must_not: [behaviors that fail the case]
+graders:
+  - type: tool_used
+    pattern: cstack spend plan
+  - type: llm
+    rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3                                # repeat to beat model noise
+```
+
+### Graders
+
+| Type | Fields | Checks |
+|---|---|---|
+| `command` | `run`, `expect_exit` | a deterministic command and its exit code, e.g. `cstack budget --check` → `1` |
+| `tool_used` | `pattern` | the transcript shows the agent ran a command (e.g. `cstack spend plan`) |
+| `regex` | `pattern` | a pattern in the output |
+| `llm` | `rubric` | a judge model reads the transcript against `must` / `must_not` and cites lines |
+
+Order graders from deterministic to judged. If a `command` grader can decide the case, the `llm` grader only covers what the command cannot.
+
+The v0.1 suite has 20 fixtures: 19 at T2 and one at T0. Examples: `make-it-cooler` (diagnose before changing), `expensive-overnight-batch` (probes and a spend plan before 200 calls), `existing-brand-conflicting-assets` (surface the conflict, never average), `ai-judge-not-owner`, `model-list-stale`, `skill-grows-significantly`, `retired-rule-in-template`.
+
+## Judgment separation
+
+These rules are in the shared preamble, the `creative-review` and `brand-verify` skills, and the eval schema.
+
+1. **The author never certifies its own work.** Generation is followed by deterministic gates, then an independent reviewer (a different model, a provider verifier, or a fresh context given only the brief, brand context and artifact), then the owner when stakes are meaningful. Record the reviewer in `evaluator.kind` (`deterministic | llm_judge | vision_judge | provider_verifier | human`) and set `separate_from_author`.
+2. **Gates before taste.** Hard gates (size audit, token lint, product fidelity, compliance) are pass/fail. Any hard fail means decision `fix`, and aesthetics are skipped.
+3. **Judgments stay plural.** The axes are beauty, brand_fit, cultural_vitality, message_clarity, craft, product_truth, commercial_usefulness, novelty and correctness. Each is scored 0–2 or `null` with evidence and an anchor, and they are never summed. A composite exists only if a workflow declares one, and hard gates still block it.
+4. **Judge against a baseline**: brief, reference, incumbent or last approved. Say which in `baseline`.
+5. **An AI judge is never the owner.** A verifier score is evidence about rules and adherence, not taste certification. Owner decisions (approve, reject, gold, anti, pairwise with a reason) go to `cstack feedback` and outrank any judge. When they disagree, the disagreement is logged as a learning candidate, not argued away (fixture `ai-judge-not-owner`).
+6. **Calibrate before trusting.** A taste judge is usable only after it agrees with the owner's own pairwise picks. Pairwise capture is the default so that calibration becomes possible.
+
+## Records
+
+Every record is schema-checked and appended to the workspace. `id` and `date` are filled in when missing.
+
+| Command | File | Schema | Holds |
+|---|---|---|---|
+| `cstack eval --file r.json` | `state/evals.jsonl` | `eval` | one judgment: evaluator, baseline, gates, axes, lenses, provider verdict, failures, recommendations, `decision` (`promote | fix | reject | human_review | pending`), tradeoff, cost |
+| `cstack feedback --file f.json` | `state/feedback.jsonl` | `feedback-event` | owner preference: `approve | reject | gold | anti | pairwise | comment | region_critique | edit`, pair `{a, b, winner, margin}`, region, reason codes |
+| `cstack failure --file e.json` | `state/failures.jsonl` | `failure-event` | `type` from the failure taxonomy, diagnosis, repair, `repair_worked` |
+
+```json
+{ "artifact_ref": "work/out/cup-hero/cup-hero_1.png",
+  "evaluator": { "kind": "vision_judge", "name": "creative-review", "separate_from_author": true },
+  "baseline": "brief",
+  "gates": [{ "id": "size_audit", "result": "pass" }, { "id": "product_fidelity", "result": "fail", "evidence": "handle redrawn as a loop" }],
+  "axes": [{ "axis": "brand_fit", "score": 1, "evidence": "linen and window light match the photography rules" },
+           { "axis": "product_truth", "score": 0, "evidence": "pulled-strap handle missing" }],
+  "decision": "fix" }
+```
+
+`cstack health` counts known failures per skill from the repo's `state/failures.jsonl` (matched on `task`). Repeated failures feed [learnings.md](learnings.md).

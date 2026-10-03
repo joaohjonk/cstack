@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture Home</title>
+<style>
+  :root { --brand-ink: #1a2b3c; --space-m: 24px; }
+  body { margin: 0; padding: 16px; font-family: "Fixture Sans", Georgia, serif; color: #1a2b3c; background: #fafafa; }
+  h1 { color: #c0392b; font-size: 40px; }
+  .cta { background: #2e86de; color: #ffffff; border: 0; border-radius: 8px; padding: 12px 20px; font-size: 18px; }
+  .faint { color: #bbbbbb; background: #ffffff; }
+  .wide { width: 1200px; height: 40px; background: #eeeeee; }
+  img { width: 40px; height: 40px; }
+</style>
+</head>
+<body>
+  <h1>Fixture Home</h1>
+  <nav><a href="/about">About</a> <a href="/logout">Log out</a> <a href="https://example.invalid/away">Elsewhere</a></nav>
+  <p class="faint">Low contrast copy</p>
+  <button class="cta" type="button">Get started</button>
+  <img id="ok" src="/ok.svg" alt="A green square">
+  <img id="noalt" src="/ok.svg">
+  <img id="broken" src="/missing.png" alt="Missing file">
+  <form>
+    <label for="q">Search</label> <input id="q" name="q">
+    <label for="pw">Password</label> <input id="pw" name="password" type="password">
+  </form>
+  <div class="wide"></div>
+</body>
+</html>

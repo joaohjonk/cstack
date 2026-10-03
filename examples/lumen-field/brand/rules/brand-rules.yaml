@@ -1,0 +1,43 @@
+# Lumen Field brand rules (fictional example). Tokens hold atomic values; this file holds RELATIONSHIPS.
+# check: deterministic -> enforced by code that exists today; check: judge -> an independent reviewer cites the rule id.
+version: 0.1
+rules:
+  - id: R-COLOR-01
+    scope: core
+    rule: built pages use only brand colour tokens; any raw hex must be an explicit, recorded exception
+    check: deterministic   # cstack tokens lint <files> --ws examples/lumen-field
+    source: brand/tokens/color.tokens.json
+  - id: R-COLOR-02
+    scope: core
+    rule: Kiln Ochre is never used as a fill or background until conflict CF-2026-10-03-color-accent is resolved; neither candidate value may be averaged into a third
+    check: judge
+    source: brand/brand-system.json#conflicts
+  - id: R-IMG-01
+    scope: core
+    rule: product imagery is 4:5 for listings and 1:1 for the grid; no other aspect ratios on the shop
+    check: deterministic   # cstack audit <file> --aspect 4:5
+    source: live_brand_behavior https://lumen-field.example/shop (provisional)
+  - id: R-IMG-02
+    scope: core
+    rule: the glaze in any image matches the product master photo; speckle, pooling and the raw foot ring stay visible (product_representation.glaze_truth)
+    check: judge   # /product-fidelity reviewer; no deterministic colour-match checker exists yet
+    source: brand/brand-system.json#product_representation.glaze_truth
+  - id: R-IMG-03
+    scope: core
+    rule: tables are shown after a meal, never before; no staged steam, sprinkled garnish or untouched place settings
+    check: judge
+    source: brand/brand-system.json#photography.approach
+  - id: R-LAYOUT-01
+    scope: core
+    rule: product photographs and cards keep square corners (radius.none); only form controls take radius.control
+    check: judge
+    source: brand/tokens/space.tokens.json
+  - id: R-COPY-01
+    scope: core
+    rule: no word from banned_language.words appears in any copy, alt text or prompt
+    check: judge   # a deterministic word-list checker would be easy to add; until it exists this stays judge
+    source: brand/brand-system.json#banned_language.words
+  - id: R-GEN-01
+    scope: core
+    rule: never approximate the studio mark or the display face inside a generated image; composite official assets (none supplied yet, see provenance.gaps)
+    check: judge

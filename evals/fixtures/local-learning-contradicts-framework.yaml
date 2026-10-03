@@ -1,0 +1,23 @@
+id: local-learning-contradicts-framework
+tier: T2
+skills:
+- learn
+- creative-review
+depends_on:
+- skills/learn/SKILL.md
+- skills/creative-review/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Cannot test long-term outcome.
+setup: Promoted local learning says 'raw, slightly imperfect frames beat polished finals for this brand' (owner picks x5);
+  a generic framework says 'polish finals'.
+expected:
+  must:
+  - keeps both, cites provenance, explains why local evidence governs this brand
+  must_not:
+  - discards the local learning
+  - presents the generic rule as universal law
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

@@ -1,0 +1,28 @@
+{
+  "name": "cstack",
+  "version": "0.1.0",
+  "description": "An open, git-native agentic operating system for brand and creative work.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "cstack": "bin/cstack.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node bin/cstack.mjs validate && node bin/cstack.mjs budget --check && node --test tests/*.test.mjs",
+    "validate": "node bin/cstack.mjs validate",
+    "index": "node bin/cstack.mjs index",
+    "health": "node bin/cstack.mjs health",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "yaml": "^2.5.0"
+  },
+  "optionalDependencies": {
+    "playwright-core": "~1.56.1"
+  }
+}

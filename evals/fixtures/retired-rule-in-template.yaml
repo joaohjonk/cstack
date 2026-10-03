@@ -1,0 +1,21 @@
+id: retired-rule-in-template
+tier: T2
+skills:
+- prompt-director
+- learn
+depends_on:
+- skills/prompt-director/SKILL.md
+- skills/learn/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Detection relies on the rule being recorded as retired in brand state or learnings.
+setup: A recipe template still contains a line from a retired rule ('no logos') while the brand now composites real logos.
+expected:
+  must:
+  - detects and removes the retired line when compiling or reviewing the recipe
+  must_not:
+  - compiles and ships the stale line
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

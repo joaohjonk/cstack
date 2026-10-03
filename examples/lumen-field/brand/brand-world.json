@@ -1,0 +1,97 @@
+{
+  "brand_id": "lumen-field",
+  "entities": [
+    {
+      "id": "PRODUCT_DINNER_PLATE_OCHRE_RUN",
+      "kind": "PRODUCT",
+      "name": "Dinner plate, glaze \"Ochre Run\" (autumn batch)",
+      "description": "Wheel-thrown stoneware dinner plate with a wide flat well and a low, slightly flared rim. Glaze breaks from ochre to near-white where it thins over the rim; iron speckle throughout. Raw, unglazed foot ring.",
+      "status": "current",
+      "canonical_files": [
+        { "path": "assets/product/plate-ochre-run/master-top.jpg", "role": "master" },
+        { "path": "assets/product/plate-ochre-run/master-profile.jpg", "role": "reference" }
+      ],
+      "immutable_traits": [
+        "wide flat well, low flared rim (no coupe shape)",
+        "glaze breaks lighter at the rim edge",
+        "visible iron speckle across the whole glazed surface",
+        "raw unglazed foot ring, slightly darker than the glaze",
+        "no decals, no printed pattern, no gold or metallic edge"
+      ],
+      "allowed_variation": [
+        "speckle density and placement (every piece differs)",
+        "glaze pooling depth in the well",
+        "use marks: crumbs, a smear of sauce, cutlery scuffs"
+      ],
+      "forbidden_drift": [
+        "evenly sprayed, uniform glaze",
+        "glossy porcelain-white body",
+        "a glazed foot ring",
+        "recoloured glaze to match a palette swatch",
+        "scale drift: plate rendered as a side plate or a platter (dimensions UNKNOWN, see brand-system known_uncertainties.product_dimensions)"
+      ],
+      "reference_images": [],
+      "model_notes": [],
+      "generation_history": [],
+      "scope": "autumn batch",
+      "sources": [
+        { "kind": "user_instruction", "ref": "assets/official/owner-interview-2026-09-14.md#3", "quote": "Glaze pools and speckles differ piece to piece, and that is the point.", "captured_at": "2026-09-14" },
+        { "kind": "official_asset", "ref": "assets/official/care-card.md", "quote": "Unglazed foot rings are left raw on purpose", "captured_at": "2026-03-01" }
+      ]
+    },
+    {
+      "id": "LOCATION_STUDIO_TABLE",
+      "kind": "LOCATION",
+      "name": "The long table by the glazing room window",
+      "description": "A scrubbed pale-oak trestle table, about three metres long, along a single tall north-facing window in the studio. Lime-washed wall behind; glaze buckets and ware boards just out of frame.",
+      "status": "testing",
+      "immutable_traits": [
+        "pale scrubbed oak with knife marks and glaze drips",
+        "lime-washed off-white wall, no tiles, no shelving in frame",
+        "single window side: light always enters from one side"
+      ],
+      "allowed_variation": [
+        "linen or bare wood",
+        "bread, fruit, leftovers of a real meal",
+        "chairs pushed back or absent"
+      ],
+      "forbidden_drift": [
+        "marble, terrazzo or polished concrete surfaces",
+        "kitchen islands, pendant lamps, open-plan show-home interiors",
+        "fake plants and decorative styling props"
+      ],
+      "scope": "core",
+      "sources": [
+        { "kind": "model_inference", "ref": "description assembled from the owner interview and listing photos; owner has not confirmed this location as the standard set", "captured_at": "2026-09-21", "by": "shot-dna" }
+      ]
+    },
+    {
+      "id": "LIGHT_NORTH_WINDOW_LATE",
+      "kind": "LIGHT",
+      "name": "North window, late afternoon",
+      "description": "Lighting recipe: one large soft source from the side (the north window), late afternoon so it is slightly warm and low. No fill card; the shadow side falls off into a soft grey so glaze depth reads. Exposure set for the glaze highlights, not the shadows.",
+      "status": "testing",
+      "immutable_traits": [
+        "single soft key from one side, roughly 90 degrees to camera",
+        "no fill: shadow side open but unlit",
+        "highlights on glaze kept below clipping so speckle survives",
+        "no rim light, no visible strobes or reflectors"
+      ],
+      "allowed_variation": [
+        "key height from table level to 45 degrees",
+        "colour temperature 4300-5200 K",
+        "a thin bounce from the lime wall"
+      ],
+      "forbidden_drift": [
+        "flat frontal flash",
+        "dramatic chiaroscuro with black backgrounds",
+        "golden-hour lens flare",
+        "multiple shadows from multiple sources"
+      ],
+      "scope": "core",
+      "sources": [
+        { "kind": "live_brand_behavior", "ref": "https://lumen-field.example/shop", "quote": "9 of 12 listing photos lit from one window side with open shadows", "captured_at": "2026-09-20" }
+      ]
+    }
+  ]
+}

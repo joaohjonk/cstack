@@ -1,0 +1,75 @@
+{
+  "slug": "product-fidelity",
+  "type": "capability",
+  "summary": "Lock the real product as an entity, choose a production method that preserves it, and audit outputs for drift",
+  "tags": [
+    "product",
+    "packshot",
+    "fidelity",
+    "compositing"
+  ],
+  "triggers": [
+    "packshot",
+    "product photo",
+    "label looks wrong",
+    "product looks off",
+    "PDP image"
+  ],
+  "not_for": [
+    "generate-media",
+    "brand-verify",
+    "image-edit"
+  ],
+  "required_inputs": [
+    "product masters"
+  ],
+  "outputs": [
+    "brand/brand-world.json",
+    "work/*/fidelity.md"
+  ],
+  "writes": [
+    "brand/brand-world.json",
+    "state/evals.jsonl",
+    "state/failures.jsonl"
+  ],
+  "cost_class": "medium",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": [
+    "image-edit",
+    "brand-verify",
+    "creative-review",
+    "learn"
+  ],
+  "evals": [
+    "evals/fixtures/exact-product-photo.yaml",
+    "evals/fixtures/one-region-wrong.yaml"
+  ],
+  "baseline": "reference",
+  "deterministic_steps": [
+    "size audit",
+    "silhouette compare",
+    "color delta",
+    "label overlay"
+  ],
+  "generative_steps": [
+    "plates",
+    "integration"
+  ],
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": [],
+  "optional_providers": []
+}

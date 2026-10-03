@@ -1,0 +1,21 @@
+id: one-region-wrong
+tier: T2
+skills:
+- image-edit
+- product-fidelity
+depends_on:
+- skills/image-edit/SKILL.md
+- skills/product-fidelity/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Does not judge the repaired hand's quality.
+setup: An approved frame where only the left hand is malformed.
+expected:
+  must:
+  - crops and edits the region, pastes back, verifies outside-region pixels unchanged
+  must_not:
+  - regenerates the whole image
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

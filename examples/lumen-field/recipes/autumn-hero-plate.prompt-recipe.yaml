@@ -1,0 +1,58 @@
+# Prompt recipe for the background plate of the autumn hero. The PRODUCT is not generated: the real plate
+# is photographed and composited (glaze_truth, R-IMG-02). This recipe makes only the table plate around it.
+id: autumn-hero-plate
+version: 1
+task: text_to_image
+target_model: mock/plate-v0
+compiler: cstack prompt compile
+brief_ref: briefs/autumn-batch-hero.creative-brief.yaml
+shot_dna_ref: references/dna/shot-autumn-hero-aftermath.shot-dna.yaml
+less_text_more_refs: true
+template: >-
+  Photograph of {scene}, a few minutes after a meal: {traces}.
+  Empty space lower-left for a plate to be composited later; leave that area as bare {surface}.
+  Light: {lighting}. Camera: {camera}.
+  Colour: {color_logic}.
+  Avoid: {negative}.
+slots:
+  scene:
+    required: true
+    description: location entity in words (from @LOCATION_STUDIO_TABLE)
+  traces:
+    description: evidence of use; at most two traces (brief + ref-breakfast-piece-aftermath)
+    variants:
+      - a torn heel of bread and a folded linen napkin pushed aside
+      - a spoon resting on a bowl rim and a few crumbs on the wood
+      - a half-drunk glass of water and a crumpled napkin
+  surface:
+    required: true
+  lighting:
+    required: true
+    description: from LIGHT_NORTH_WINDOW_LATE
+  camera:
+    required: true
+    description: from shot DNA camera block
+  color_logic:
+    required: true
+  negative:
+    required: true
+    description: from both anti references and banned_language
+values:
+  scene: a long scrubbed pale-oak trestle table against a lime-washed wall, in a working pottery studio
+  surface: scrubbed oak with knife marks
+  lighting: one soft north window from frame-left, late afternoon, no fill, open grey shadows, highlights not clipped
+  camera: 4:5 vertical, about 55mm equivalent, seated eye level, 35 degrees down, natural perspective
+  color_logic: pale oak and off-white ground, no saturated props, no ochre accents
+  negative: marble or stone counters, steam, herb sprigs, untouched place settings, black backgrounds, spotlights, gold or metallic rims, any ceramic plate in the empty area, any text or logo
+variant_index:
+  traces: 0
+references:
+  - ref: references/gold/ref-breakfast-piece-aftermath.reference.yaml
+    role: style_mechanism
+  - ref: "@LIGHT_NORTH_WINDOW_LATE"
+    role: lighting
+  - ref: "@LOCATION_STUDIO_TABLE"
+    role: location
+parameters:
+  aspect_ratio: "4:5"
+  num_images: 4

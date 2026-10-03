@@ -1,0 +1,68 @@
+{
+  "slug": "creative-review",
+  "type": "composite",
+  "summary": "Independent multi-lens review with hard gates, distinct axes against a baseline, visible disagreement and an explicit tradeoff",
+  "tags": [
+    "review",
+    "critique",
+    "lenses",
+    "evals"
+  ],
+  "triggers": [
+    "review this",
+    "is this good",
+    "which is better",
+    "critique",
+    "feels off",
+    "A or B"
+  ],
+  "not_for": [
+    "brand-verify",
+    "claims-proof"
+  ],
+  "required_inputs": [
+    "artifact",
+    "brief or baseline"
+  ],
+  "outputs": [
+    "state/evals.jsonl",
+    "work/reviews/*.md"
+  ],
+  "writes": [
+    "state/evals.jsonl",
+    "state/failures.jsonl",
+    "state/feedback.jsonl"
+  ],
+  "cost_class": "low",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": [
+    "image-edit",
+    "copywriting",
+    "identity-system",
+    "brand-verify",
+    "learn"
+  ],
+  "evals": [
+    "evals/fixtures/beautiful-but-off-brand.yaml",
+    "evals/fixtures/agent-output-fails-verify.yaml",
+    "evals/fixtures/ai-judge-not-owner.yaml"
+  ],
+  "baseline": "brief",
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": [],
+  "optional_providers": []
+}

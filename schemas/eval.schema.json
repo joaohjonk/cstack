@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/eval.schema.json",
+  "title": "Eval record",
+  "description": "Section 18. One judgment on one artifact. Layered: gates are pass/fail; axes are separate; never one scalar unless a workflow declares a weighted composite.",
+  "type": "object",
+  "required": [
+    "id",
+    "artifact_ref",
+    "date",
+    "evaluator",
+    "decision"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "artifact_ref": {
+      "type": "string"
+    },
+    "artifact_version": {
+      "type": "string"
+    },
+    "date": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "evaluator": {
+      "type": "object",
+      "required": [
+        "kind",
+        "name"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "deterministic",
+            "llm_judge",
+            "vision_judge",
+            "provider_verifier",
+            "human"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "separate_from_author": {
+          "type": "boolean"
+        }
+      }
+    },
+    "baseline": {
+      "type": "string",
+      "description": "what this is judged relative to: brief, reference, incumbent, previous approved (section 1.4A, Trail of Bits)"
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "result"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "warn",
+              "fail",
+              "pending",
+              "n/a"
+            ]
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "axes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "axis",
+          "score"
+        ],
+        "properties": {
+          "axis": {
+            "$ref": "common.schema.json#/$defs/judgment_axes"
+          },
+          "score": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 2
+          },
+          "anchor": {
+            "type": "string",
+            "description": "anchor case cited"
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "lenses": {
+      "type": "array",
+      "description": "section 27 independent reviewer lenses; disagreement survives",
+      "items": {
+        "type": "object",
+        "required": [
+          "lens",
+          "verdict"
+        ],
+        "properties": {
+          "lens": {
+            "enum": [
+              "strategist",
+              "brand_director",
+              "art_director",
+              "photographer",
+              "type_director",
+              "editor",
+              "culture",
+              "copy",
+              "commerce",
+              "production",
+              "compliance"
+            ]
+          },
+          "verdict": {
+            "enum": [
+              "ship",
+              "revise",
+              "kill"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "fix": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provider_verdict": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "job_id": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/failure_type"
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "decision": {
+      "enum": [
+        "promote",
+        "fix",
+        "reject",
+        "human_review",
+        "pending"
+      ]
+    },
+    "tradeoff": {
+      "type": "string",
+      "description": "the orchestrator's explicit tradeoff when lenses disagree"
+    },
+    "cost": {
+      "$ref": "common.schema.json#/$defs/money"
+    }
+  }
+}

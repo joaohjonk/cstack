@@ -1,0 +1,96 @@
+name: create-brand
+status: template
+summary: 'Build a new brand from zero: problem, strategy, culture, references, territories, system, world, applications, verification.'
+entry_skill: workflow
+triggers:
+- create a brand
+- new brand
+- brand from zero
+- naming and identity
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: office-hours
+  skill: office-hours
+  outputs:
+  - briefs/*.creative-brief.yaml
+  gate: owner
+- id: category-research
+  skill: competitor-intel
+  outputs:
+  - work/competitors/*-category-map.md
+  gate: auto
+  fallback: browse public category pages; label as heuristic
+- id: strategy-positioning
+  does: 'strategy, positioning, beliefs, tensions and value proposition written into brand-system with approval: testing (office-hours
+    + creative-direction lenses)'
+  outputs:
+  - brand/brand-system.json
+  gate: owner
+- id: culture
+  skill: cultural-scan
+  outputs:
+  - work/culture/*.md
+  gate: auto
+- id: references
+  skill: taste-search
+  outputs:
+  - references/
+  - work/references/*-packet.md
+  gate: owner
+  fallback: local canon + public web
+- id: territories
+  skill: creative-direction
+  does: identity, verbal and art-direction territories
+  outputs:
+  - work/direction/*-territories.md
+  gate: auto
+- id: selection
+  does: owner selects one territory (pairwise feedback recorded)
+  outputs:
+  - state/feedback.jsonl
+  gate: owner
+- id: systemization
+  skill: identity-system
+  outputs:
+  - brand/tokens/
+  - brand/rules/brand-rules.yaml
+  gate: owner
+- id: voice
+  skill: copywriting
+  does: voice system, vocabulary, banned language, naming lines
+  outputs:
+  - work/copy/*.md
+  gate: auto
+- id: brand-world
+  does: first entities (products, packaging, light, surfaces, cast) in brand-world.json
+  outputs:
+  - brand/brand-world.json
+  gate: auto
+- id: applications
+  skill: workflow
+  does: 2-3 key applications (e.g. landing page hero, pack front, launch post) via the matching workflows at probe depth
+  outputs:
+  - work/
+  gate: auto
+- id: verification
+  skill: brand-verify
+  outputs:
+  - state/evals.jsonl
+  gate: auto
+- id: review
+  skill: creative-review
+  outputs:
+  - work/reviews/*.md
+  gate: owner
+- id: brand-state
+  does: promote approved fields to current; brandbook page generated from brand-system + tokens
+  outputs:
+  - brand/brand-system.json
+  - work/system/brandbook.html
+  gate: auto
+- id: retro
+  skill: learn
+  outputs:
+  - work/retro/*.md
+  gate: auto

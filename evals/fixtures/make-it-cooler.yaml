@@ -1,0 +1,25 @@
+id: make-it-cooler
+tier: T2
+skills:
+- office-hours
+- creative-direction
+- copywriting
+depends_on:
+- skills/office-hours/SKILL.md
+- skills/creative-direction/SKILL.md
+- skills/copywriting/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Cannot judge whether the diagnosis is correct, only that a diagnosis precedes change.
+setup: 'An approved launch post (image + copy) in the workspace. Request: ''make it cooler''.'
+expected:
+  must:
+  - diagnoses named defects before proposing changes
+  - proposes one change at a time tied to a defect
+  must_not:
+  - rewrites with more adjectives
+  - regenerates everything
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

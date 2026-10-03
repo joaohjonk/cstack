@@ -1,0 +1,26 @@
+{
+  "provider": "mock",
+  "model": "plate-v0",
+  "operation": "text_to_image",
+  "job_id": "mock-1",
+  "idempotency_key": "6de8b6fc6dce64bca57f7e178ece7dec501eae58e93ff1c11688278c8ed83a78",
+  "prompt": "Photograph of a long scrubbed pale-oak trestle table against a lime-washed wall, in a working pottery studio, a few minutes after a meal: a torn heel of bread and a folded linen napkin pushed aside. Empty space lower-left for a plate to be composited later; leave that area as bare scrubbed oak with knife marks. Light: one soft north window from frame-left, late afternoon, no fill, open grey shadows, highlights not clipped. Camera: 4:5 vertical, about 55mm equivalent, seated eye level, 35 degrees down, natural perspective. Colour: pale oak and off-white ground, no saturated props, no ochre accents. Avoid: marble or stone counters, steam, herb sprigs, untouched place settings, black backgrounds, spotlights, gold or metallic rims, any ceramic plate in the empty area, any text or logo.",
+  "recipe_hash": "039ff68caf0d83acb6687ad342f49204fc6ff9d746114a735e899bea1fbf9e31",
+  "refs": [],
+  "input_hashes": [],
+  "params": {
+    "aspect_ratio": "4:5",
+    "num_images": 1
+  },
+  "seed": null,
+  "size_audit": {
+    "ok": true,
+    "findings": []
+  },
+  "cost": {
+    "amount": 0,
+    "currency": "USD"
+  },
+  "created_at": "2026-10-03T04:24:07.378Z",
+  "skill": "generate-media"
+}

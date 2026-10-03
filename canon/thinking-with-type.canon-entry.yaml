@@ -1,0 +1,26 @@
+id: thinking-with-type
+name: Thinking with Type (Ellen Lupton)
+kind: book
+domains:
+- typography
+- pedagogy
+mental_model: 'typography as letter, text and grid: three scales of decisions that must agree'
+mechanisms:
+- choose type for the text's job and length
+- measure, leading and tracking as a system
+- hierarchy through few, clear contrasts
+representative_works:
+- Thinking with Type (2004, 2nd ed. 2010)
+when_useful:
+- type director reviews
+- type tokens and type hierarchy rules
+when_not_useful:
+- expressive display type that deliberately breaks reading conventions
+tensions:
+- readability defaults vs. brand voice
+sources:
+- kind: external_reference
+  ref: Thinking with Type (2004, 2nd ed. 2010)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

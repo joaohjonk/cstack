@@ -1,0 +1,110 @@
+{
+  "tolerance": 0.1,
+  "catalog_ceiling": 2935,
+  "skills": {
+    "brand-import": {
+      "ceiling": 1620,
+      "set": "2026-10-03"
+    },
+    "brand-verify": {
+      "ceiling": 1114,
+      "set": "2026-10-03"
+    },
+    "browse": {
+      "ceiling": 1118,
+      "set": "2026-10-03"
+    },
+    "campaign-sequence": {
+      "ceiling": 998,
+      "set": "2026-10-03"
+    },
+    "claims-proof": {
+      "ceiling": 1183,
+      "set": "2026-10-03"
+    },
+    "competitor-intel": {
+      "ceiling": 1138,
+      "set": "2026-10-03"
+    },
+    "copywriting": {
+      "ceiling": 976,
+      "set": "2026-10-03"
+    },
+    "creative-autoresearch": {
+      "ceiling": 1200,
+      "set": "2026-10-03"
+    },
+    "creative-direction": {
+      "ceiling": 1189,
+      "set": "2026-10-03"
+    },
+    "creative-review": {
+      "ceiling": 1274,
+      "set": "2026-10-03"
+    },
+    "cultural-scan": {
+      "ceiling": 1354,
+      "set": "2026-10-03"
+    },
+    "generate-media": {
+      "ceiling": 1250,
+      "set": "2026-10-03"
+    },
+    "identity-system": {
+      "ceiling": 1411,
+      "set": "2026-10-03"
+    },
+    "image-edit": {
+      "ceiling": 1080,
+      "set": "2026-10-03"
+    },
+    "learn": {
+      "ceiling": 1260,
+      "set": "2026-10-03"
+    },
+    "model-router": {
+      "ceiling": 1201,
+      "set": "2026-10-03"
+    },
+    "office-hours": {
+      "ceiling": 1562,
+      "set": "2026-10-03"
+    },
+    "product-fidelity": {
+      "ceiling": 1266,
+      "set": "2026-10-03"
+    },
+    "prompt-director": {
+      "ceiling": 1265,
+      "set": "2026-10-03"
+    },
+    "shot-dna": {
+      "ceiling": 1337,
+      "set": "2026-10-03"
+    },
+    "taste-search": {
+      "ceiling": 1565,
+      "set": "2026-10-03"
+    },
+    "workflow": {
+      "ceiling": 1190,
+      "set": "2026-10-03"
+    }
+  },
+  "history": [
+    {
+      "date": "2026-10-03",
+      "slug": "image-edit",
+      "from": 1048,
+      "to": 1080,
+      "reason": "points to cstack edit paste / region_paste.mjs"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "shot-dna",
+      "from": 1330,
+      "to": 1337,
+      "reason": "names cstack lint shot-dna as the T1 check"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+id: competitor-observation-vs-inference
+tier: T2
+skills:
+- competitor-intel
+depends_on:
+- skills/competitor-intel/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Fixture pages are static; freshness is not tested.
+setup: Five competitor PDP URLs captured as fixtures.
+expected:
+  must:
+  - observation fields contain only what is on the page with URL and date; inferences labelled with confidence
+  must_not:
+  - mixes guesses about sales into observations
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

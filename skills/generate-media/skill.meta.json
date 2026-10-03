@@ -1,0 +1,89 @@
+{
+  "slug": "generate-media",
+  "type": "capability",
+  "summary": "Guarded paid generation: estimate first, probes before finals, idempotent calls, pending re-attach, sidecars and size audits",
+  "tags": [
+    "generation",
+    "image",
+    "video",
+    "cost",
+    "ledger"
+  ],
+  "triggers": [
+    "generate",
+    "render",
+    "make the image",
+    "run the batch",
+    "image to video",
+    "upscale"
+  ],
+  "not_for": [
+    "shot-dna",
+    "prompt-director",
+    "model-router",
+    "image-edit"
+  ],
+  "required_inputs": [
+    "compiled recipe",
+    "model",
+    "budget envelope"
+  ],
+  "outputs": [
+    "work/**/*.gen.json"
+  ],
+  "writes": [
+    "work/",
+    "state/cost-ledger.jsonl",
+    "state/pending-jobs/",
+    "state/lineage.jsonl"
+  ],
+  "required_providers": [
+    "media provider"
+  ],
+  "optional_providers": [
+    "fal",
+    "mock"
+  ],
+  "cost_class": "high",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": [
+    "creative-review",
+    "product-fidelity",
+    "image-edit",
+    "campaign-sequence",
+    "learn"
+  ],
+  "evals": [
+    "evals/fixtures/expensive-overnight-batch.yaml"
+  ],
+  "approval_gates": [
+    {
+      "id": "spend",
+      "after_step": "plan batch",
+      "artifact": "spend plan",
+      "never_self_approve": true
+    }
+  ],
+  "baseline": "n/a",
+  "fallback": {
+    "when_missing": [
+      "provider key"
+    ],
+    "mode": "blocked"
+  },
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  }
+}

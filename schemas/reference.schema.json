@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/reference.schema.json",
+  "title": "Reference (with mechanism)",
+  "description": "Sections 7-8. A reference is stored with WHY it works. Separates transferable mechanism from incidental content and literal elements that must not be copied.",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "library",
+    "rights",
+    "transferable_mechanism"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "kind": {
+      "enum": [
+        "image",
+        "video",
+        "site",
+        "deck",
+        "packaging",
+        "typography",
+        "campaign",
+        "text",
+        "other"
+      ]
+    },
+    "library": {
+      "enum": [
+        "canon",
+        "gold",
+        "anti",
+        "inspiration",
+        "competitor",
+        "own_asset"
+      ]
+    },
+    "uri": {
+      "type": "string"
+    },
+    "local_path": {
+      "type": "string"
+    },
+    "sha256": {
+      "type": "string"
+    },
+    "rights": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "owned",
+            "licensed",
+            "inspiration_only",
+            "unknown"
+          ]
+        },
+        "holder": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "credit": {
+      "type": "string",
+      "description": "who made it; never placed in a generation prompt"
+    },
+    "captured_at": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "retrieved_via": {
+      "type": "string",
+      "description": "skill/provider that found it (taste-search, cosmos, manual)"
+    },
+    "shot_dna_ref": {
+      "type": "string"
+    },
+    "transferable_mechanism": {
+      "type": "string",
+      "description": "the MECHANISM (Source -> Mechanism -> Transfer). Test: remove the image and the principle still explains itself."
+    },
+    "source_domain": {
+      "type": "string",
+      "description": "the field the reference comes from (category, fashion, architecture, publishing, ritual, interfaces ...)"
+    },
+    "distance": {
+      "enum": [
+        "near",
+        "middle",
+        "far"
+      ],
+      "description": "associative distance from the brand's category: near improves fluency, far creates leverage. A healthy packet mixes them."
+    },
+    "mechanism_tags": {
+      "type": "array",
+      "description": "search the graph by mechanism: ritual, compression, modularity, reveal, scarcity, wayfinding, restraint ...",
+      "items": {
+        "type": "string"
+      }
+    },
+    "transfer": {
+      "type": "string",
+      "description": "how the mechanism lands in this brand's work (casting, pacing, packaging, layout, behaviour), not the look"
+    },
+    "incidental_content": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "do_not_copy": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "why_it_works": {
+      "type": "string"
+    },
+    "why_it_fails": {
+      "type": "string",
+      "description": "required when library = anti"
+    },
+    "anti_category": {
+      "enum": [
+        "too_luxury",
+        "too_generic_dtc",
+        "too_wellness",
+        "too_tech",
+        "too_editorial",
+        "too_sterile",
+        "too_ai",
+        "wrong_cultural_register",
+        "wrong_product_fidelity",
+        "wrong_type_behavior",
+        "beautiful_but_not_this_brand",
+        "other"
+      ]
+    },
+    "axes": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "common.schema.json#/$defs/judgment_axes"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "surfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval": {
+      "$ref": "common.schema.json#/$defs/approval"
+    },
+    "decided_by": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "library": {
+            "const": "anti"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "why_it_fails"
+        ]
+      }
+    }
+  ]
+}

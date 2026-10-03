@@ -1,0 +1,50 @@
+# cstack CI: T0 static checks + T1 tests on Node 20 and 22. No secrets, no paid calls, no browser download.
+# Browser tests skip with a reason when Chromium is absent (playwright-core is an optional dependency).
+name: check
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # evals plan diffs against the PR base
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check (validate + budgets + tests)
+        run: npm run check
+
+      - name: Setup script smoke test (dry run)
+        run: CSTACK_SETUP_DRY_RUN=1 ./setup
+
+      - name: Eval plan for this PR (informational)
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          plan="$(node bin/cstack.mjs evals plan --since "origin/${{ github.base_ref || 'main' }}" || true)"
+          printf '%s\n' "$plan"
+          { echo '### cstack evals plan'; echo '```'; printf '%s\n' "$plan"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

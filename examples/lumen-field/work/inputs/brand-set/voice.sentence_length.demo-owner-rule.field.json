@@ -1,0 +1,11 @@
+{
+  "value": "product copy under 40 words per piece",
+  "input_class": "HARD_CONSTRAINT",
+  "sources": [
+    { "kind": "user_instruction", "ref": "demo input (not part of the example's history)", "quote": "Demo: the owner tightens the copy length rule", "captured_at": "2026-10-03", "by": "README demo" }
+  ],
+  "confidence": "high",
+  "permanence": "core",
+  "approval": "current",
+  "notes": "demo input for `brand stale`; never applied to the shipped example"
+}

@@ -1,0 +1,31 @@
+id: albers
+name: Josef Albers
+kind: person
+domains:
+- color
+- perception
+- pedagogy
+mental_model: 'relational perception: a value only means something next to its neighbors, so judge in context, by
+  experiment'
+mechanisms:
+- evaluate colors, words and assets in-system, never in isolation
+- train judgment through repeated side-by-side comparison
+- the same element changes meaning with its surroundings
+representative_works:
+- Interaction of Color (1963)
+- Homage to the Square series
+when_useful:
+- palette decisions
+- 'review sessions: always compare A against B in the real layout'
+- teaching a team what the brand is through contrast
+when_not_useful:
+- as a source of a look; the lesson is the method, not the squares
+tensions:
+- 'experiment-led judgment vs. fixed rules in a token file: the token records the decision, the experiment earns
+  it'
+sources:
+- kind: external_reference
+  ref: Interaction of Color (1963)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

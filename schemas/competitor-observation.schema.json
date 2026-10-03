@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/competitor-observation.schema.json",
+  "title": "Competitor observation",
+  "description": "Section 16. Normalized observation; observation and inference are separate fields.",
+  "type": "object",
+  "required": [
+    "id",
+    "competitor",
+    "captured_at",
+    "observed",
+    "access"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "competitor": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "captured_at": {
+      "type": "string"
+    },
+    "screenshot": {
+      "type": "string"
+    },
+    "channel": {
+      "type": "string"
+    },
+    "observed": {
+      "type": "object",
+      "properties": {
+        "positioning": {
+          "type": "string"
+        },
+        "offer": {
+          "type": "string"
+        },
+        "claim": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string"
+        },
+        "hook": {
+          "type": "string"
+        },
+        "creative_format": {
+          "type": "string"
+        },
+        "visual_grammar": {
+          "type": "string"
+        },
+        "casting": {
+          "type": "string"
+        },
+        "product_role": {
+          "type": "string"
+        },
+        "cta": {
+          "type": "string"
+        }
+      }
+    },
+    "performance_proxy": {
+      "type": "object",
+      "properties": {
+        "metric": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "inference": {
+      "type": "string"
+    },
+    "access": {
+      "enum": [
+        "public",
+        "user_provided",
+        "authenticated_with_permission"
+      ]
+    }
+  }
+}

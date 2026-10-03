@@ -1,0 +1,14 @@
+{
+  "kind": "human_edit",
+  "statement": "Owner strikes boutique marketing verbs ('curated', 'elevate') on sight; product and launch copy should lead with clay, glaze and making facts.",
+  "scope": "brand_specific",
+  "brand_id": "lumen-field",
+  "artifact_type": "copy",
+  "confidence": "high",
+  "evidence": [
+    { "kind": "user_instruction", "ref": "state/feedback.jsonl (edit on briefs/autumn-batch-hero.creative-brief.yaml)", "captured_at": "2026-10-03", "by": "Founder (fictional)" },
+    { "kind": "user_instruction", "ref": "assets/official/owner-interview-2026-09-14.md#4", "quote": "Never say artisanal. We are a workshop, not a boutique." }
+  ],
+  "should_become": "skill_rule",
+  "tags": ["topic:banned-language", "copy"]
+}

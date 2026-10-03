@@ -1,0 +1,1246 @@
+{
+  "updated": "2026-10-03",
+  "source": "docs/research/research-tools.md (primary sources fetched or searched on 2026-10-03)",
+  "conventions": {
+    "auth_env_origin": "Each access entry marks auth_env_origin: 'vendor' when the vendor documents the env var name, 'cstack' when cstack proposes the name because the vendor documents none.",
+    "mcp_tool_patterns": "Claude Code names MCP tools mcp__<server>__<tool>. <server> is whatever the user named the server (claude.ai connectors use the display name, e.g. mcp__Figma__*). Match the server segment case-insensitively and also match tool-name fingerprints, never one exact server name.",
+    "confidence": "high = read on a vendor-owned page today; medium = vendor page partially confirmed or third-party source only; low = inferred; 'unverified' in a value means no source was found."
+  },
+  "tools": [
+    {
+      "id": "cosmos",
+      "name": "Cosmos",
+      "layer": "taste_culture",
+      "roles": [
+        "photography",
+        "campaigns",
+        "graphics",
+        "fashion",
+        "editorial",
+        "objects",
+        "visual worlds"
+      ],
+      "priority": 5,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://www.cosmos.so (human use in a standard browser)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free account; paid tiers unverified",
+          "source": "https://tostracker.app/document/cosmosso-tos",
+          "confidence": "medium"
+        },
+        {
+          "mode": "export",
+          "official": false,
+          "endpoint_or_package": "user shares public cluster URLs or downloads/saves images and drops them into the project",
+          "auth_env": [],
+          "auth_env_origin": "cstack",
+          "plan": "n/a",
+          "source": "cstack fallback design",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "No official Cosmos MCP or public API found. '@polarity-lab/cosmos-mcp' (env COSMOS_TOKEN) is an unrelated personal knowledge-graph server; do not treat it as Cosmos.",
+        "source": "https://www.getdrio.com/mcp/io-github-teampolarity-cosmos-mcp/md",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__cosmos_so__*",
+          "mcp__cosmos-so__*"
+        ],
+        "mcp_exclude_packages": [
+          "@polarity-lab/cosmos-mcp"
+        ],
+        "env": [],
+        "cli": [],
+        "files": [
+          "refs/cosmos/**",
+          "references/cosmos/**"
+        ]
+      },
+      "returns": [
+        "images and clusters curated by the user (via export only)"
+      ],
+      "tos_notes": "ToS section 8(F) forbids accessing, searching or downloading with any engine, software, tool, agent, robot, crawler or data-mining tool other than Cosmos-provided software or generally available browsers. Agent-driven browsing of Cosmos is therefore not allowed; a human browsing and exporting is.",
+      "fallback": "Ask the user to paste public cluster URLs or export saved images into the project; route open taste search to Are.na (API) or Taste Labs (MCP) and say Cosmos was not queried.",
+      "cstack_skills": [
+        "taste-search",
+        "cultural-scan",
+        "creative-direction"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "refero",
+      "name": "Refero",
+      "layer": "ux_ui_patterns",
+      "roles": [
+        "UX/UI screens",
+        "flows",
+        "interaction patterns",
+        "visual styles"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://api.refero.design/mcp (HTTP)",
+          "auth_env": [
+            "REFERO_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "paid plan required: Pro, Team or Lifetime; up to 8,000 MCP tool calls per licensed user per month, no rollover",
+          "source": "https://doc.refero.design/mcp/getting-started.md",
+          "confidence": "high"
+        }
+      ],
+      "auth_notes": "OAuth preferred; Bearer token (Authorization: Bearer <token>) also documented.",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__refero__*",
+          "mcp__Refero__*"
+        ],
+        "env": [
+          "REFERO_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "sites and apps (web, iOS)",
+        "styles (visual direction)",
+        "screens (UI patterns, components)",
+        "flows (user journeys)"
+      ],
+      "tos_notes": "Call limits exist 'to protect the service from automated abuse'; higher limits via a business program. Full ToS not reviewed.",
+      "fallback": "Use Mobbin MCP if present; otherwise browse public product pages of the named competitors within their ToS, or ask the user for screenshots.",
+      "cstack_skills": [
+        "competitor-intel",
+        "creative-direction"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "landing-page"
+      ]
+    },
+    {
+      "id": "mobbin",
+      "name": "Mobbin",
+      "layer": "ux_ui_patterns",
+      "roles": [
+        "shipped app and web flows",
+        "product patterns",
+        "website sections"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://api.mobbin.com/mcp (streamable HTTP, hosted only)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified (docs do not state a plan tier)",
+          "source": "https://github.com/mobbin/mobbin-mcp-server",
+          "confidence": "high"
+        }
+      ],
+      "auth_notes": "OAuth sign-in in a browser on first use; 'no API key to configure'.",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__mobbin__*",
+          "mcp__Mobbin__*"
+        ],
+        "mcp_tool_fingerprints": [
+          "search_screens",
+          "search_flows",
+          "search_sections"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "UI screens",
+        "multi-step flows (onboarding, checkout)",
+        "website sections (pricing pages, footers)",
+        "low-res previews plus high-res image_url (expires after 30 days)"
+      ],
+      "tos_notes": "Image URLs expire after 30 days; do not hotlink them in durable artifacts, copy only what the plan's terms allow. Full ToS not reviewed.",
+      "fallback": "Use Refero MCP if present; otherwise ask the user for screenshots or browse public pages within ToS.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "landing-page"
+      ]
+    },
+    {
+      "id": "ecomm-design",
+      "name": "Ecomm.Design",
+      "layer": "ecommerce_references",
+      "roles": [
+        "real Shopify/DTC stores",
+        "PDPs",
+        "PLPs",
+        "homepages",
+        "tech filters"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://ecomm.design/ (public gallery; e.g. /platform/shopify-stores)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "public gallery; paid tiers unverified",
+          "source": "https://ecomm.design/",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "No API or MCP found.",
+        "source": "search 2026-10-03",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__ecomm_design__*",
+          "mcp__ecomm-design__*"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "store examples by platform, category and tech (via browsing)"
+      ],
+      "tos_notes": "unverified: terms not reviewed. Use light, human-paced browsing of public pages only.",
+      "fallback": "Browse the public gallery to collect store URLs, then visit the stores themselves; or ask the user for a list of reference stores.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "landing-page"
+      ]
+    },
+    {
+      "id": "baymard",
+      "name": "Baymard Institute",
+      "layer": "ux_research_rules",
+      "roles": [
+        "PDP, cart, search and checkout usability guidelines",
+        "benchmarks"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://baymard.com/blog and https://baymard.com/free-ux-research (free articles); Baymard Premium for full guidelines",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free articles public; full guideline database needs Baymard Premium (personal seat)",
+          "source": "https://baymard.com/blog/baymard-premium-launch",
+          "confidence": "medium"
+        },
+        {
+          "mode": "export",
+          "official": false,
+          "endpoint_or_package": "user with a Premium seat pastes the relevant guideline text or summary into the session",
+          "auth_env": [],
+          "auth_env_origin": "cstack",
+          "plan": "Premium",
+          "source": "https://Baymard.com/terms-and-conditions",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "No public API or MCP found. Baymard ships its own AI products (UX-Ray site audit, an AI search assistant) inside its web app.",
+        "source": "https://baymard.com/product/ux-ray",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__baymard__*"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "usability guidelines and research findings (via human access)"
+      ],
+      "tos_notes": "Terms explicitly prohibit 'any automated extracting, processing, scraping, or reverse-engineering methods'. Premium content may not be redistributed, paraphrased or shared outside the subscribing organization, and accounts are strictly personal. Never automate Baymard; never commit Premium text to a public repo.",
+      "fallback": "Cite only free public Baymard articles the user or a human opened, or general heuristics labelled as such; ask a Premium user to check specific guidelines and keep their notes private.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "landing-page"
+      ]
+    },
+    {
+      "id": "particl",
+      "name": "Particl",
+      "layer": "market_intelligence",
+      "roles": [
+        "DTC market intelligence",
+        "which brands, products and promotions work",
+        "pricing",
+        "sales estimates"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.particl.com/mcp",
+          "auth_env": [
+            "PARTICL_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "API key from the 'Claude & ChatGPT' page of the dashboard; most tools consume export credits included with paid plans",
+          "source": "https://www.particl.com/docs/mcp/quickstart",
+          "confidence": "high"
+        }
+      ],
+      "auth_notes": "API key; header name not stated on the pages read (see https://www.particl.com/docs/mcp/authentication).",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__particl__*",
+          "mcp__Particl__*"
+        ],
+        "env": [
+          "PARTICL_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "company search",
+        "products",
+        "marketing analysis",
+        "events/promotions",
+        "market trends"
+      ],
+      "tos_notes": "Credit-metered; full ToS not reviewed.",
+      "fallback": "Public signals only: brand sites, public promo pages, Meta Ad Library; label all sales numbers as unavailable rather than estimating.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "paid-social"
+      ]
+    },
+    {
+      "id": "builtwith",
+      "name": "BuiltWith",
+      "layer": "stack_identification",
+      "roles": [
+        "technology, theme and app detection for a domain",
+        "lead lists by technology"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://api.builtwith.com/mcp (hosted) or self-hosted from github.com/builtwith/builtwith-mcp (stdio or http://127.0.0.1:8787/mcp)",
+          "auth_env": [
+            "BUILTWITH_API_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "BuiltWith API key (paid API credits); exact plan gating unverified",
+          "source": "https://mcpservers.org/servers/builtwith/builtwith-mcp",
+          "confidence": "medium"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "https://api.builtwith.com (key via ?KEY= or 'Authorization: API <key>')",
+          "auth_env": [
+            "BUILTWITH_API_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "credit-based API; the separate MCP-registry endpoint is free and limited to 1 req/s",
+          "source": "https://api.builtwith.com/mcp-api",
+          "confidence": "high"
+        }
+      ],
+      "notes": "api.builtwith.com/mcp-api documents an endpoint that indexes remote MCP servers across the web; that is different from technology lookup. The vendor page and the GitHub listing disagree on the hosted auth header (Authorization: API vs Bearer); probe both.",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__builtwith__*",
+          "mcp__BuiltWith__*"
+        ],
+        "env": [
+          "BUILTWITH_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "technologies with confidence scores",
+        "CMS/ecommerce platform",
+        "analytics and ad stacks",
+        "hosting",
+        "company details",
+        "trends"
+      ],
+      "tos_notes": "Credit-metered; full ToS not reviewed.",
+      "fallback": "Store Leads if present; otherwise inspect the public page source within ToS (e.g. Shopify theme name in page markup) and label findings as heuristic.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "store-leads",
+      "name": "Store Leads",
+      "layer": "stack_identification",
+      "roles": [
+        "ecommerce store database",
+        "installed apps",
+        "themes",
+        "technologies",
+        "estimated sales and traffic"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "https://storeleads.app/json/api/v1/all/ (Authorization: Bearer <key>)",
+          "auth_env": [
+            "STORELEADS_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "paid account required; Pro/Elite 5 req/s, Enterprise 20 req/s",
+          "source": "https://storeleads.app/api",
+          "confidence": "high"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "unverified: the API page lists an 'MCP Server' but no URL was captured",
+          "auth_env": [
+            "STORELEADS_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "unverified",
+          "source": "https://storeleads.app/api",
+          "confidence": "low"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__storeleads__*",
+          "mcp__store_leads__*",
+          "mcp__store-leads__*"
+        ],
+        "env": [
+          "STORELEADS_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "domain records",
+        "apps and app reviews",
+        "technologies",
+        "themes",
+        "social accounts",
+        "historical domain data"
+      ],
+      "tos_notes": "Paid API; full ToS not reviewed.",
+      "fallback": "BuiltWith if present; otherwise public page-source inspection labelled heuristic.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "helium10",
+      "name": "Helium 10",
+      "layer": "amazon_intelligence",
+      "roles": [
+        "Amazon ASINs",
+        "keywords and rank tracking",
+        "sales estimates",
+        "Walmart and TikTok Shop data"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "Helium 10 MCP via AI connectors (Claude, ChatGPT, Codex); server URL not stated on the page read",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Diamond plan or higher; 1,000 calls/month included, top-up $50 per 500 calls",
+          "source": "https://kb.helium10.com/hc/en-us/articles/51580564409883-Getting-Started-with-Helium-10-MCP",
+          "confidence": "high"
+        }
+      ],
+      "auth_notes": "OAuth 2.0.",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__helium10__*",
+          "mcp__helium_10__*",
+          "mcp__Helium_10__*"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "keyword search volume and rank",
+        "product research",
+        "listing optimization",
+        "profit and inventory (own account)",
+        "ads",
+        "Market Tracker 360",
+        "TikTok product discovery"
+      ],
+      "tos_notes": "Quota-metered; full ToS not reviewed.",
+      "fallback": "SmartScout or Nexscope if present; otherwise public Amazon product pages read by a human, with no sales estimates.",
+      "cstack_skills": [
+        "competitor-intel",
+        "copywriting"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "smartscout",
+      "name": "SmartScout",
+      "layer": "amazon_intelligence",
+      "roles": [
+        "Amazon brands, sellers, ASINs",
+        "search terms",
+        "ad spy",
+        "revenue estimates"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.smartscout.com/ (early access)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "vendor page: Enterprise plan with API access; a no-API connector is 'coming soon'. A third-party guide says Business ($299/mo) gets a 'Snapshot MCP' (conflict, unverified)",
+          "source": "https://www.smartscout.com/amazon-data-mcp",
+          "confidence": "medium"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "SmartScout developer API (details unverified)",
+          "auth_env": [
+            "SMARTSCOUT_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "Enterprise (unverified)",
+          "source": "https://revenuegeeks.com/software/smartscout/mcp",
+          "confidence": "low"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__smartscout__*",
+          "mcp__SmartScout__*"
+        ],
+        "mcp_tool_fingerprints": [
+          "ad_spy_search",
+          "get_relevant_products",
+          "get_relevant_search_terms",
+          "get_account_capabilities"
+        ],
+        "env": [
+          "SMARTSCOUT_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "analytics queries over brands/ASINs/categories",
+        "ad spy",
+        "relevant products and search terms",
+        "seller and revenue estimates"
+      ],
+      "tos_notes": "full ToS not reviewed.",
+      "fallback": "Helium 10 or Nexscope if present; otherwise no sales estimates.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "nexscope",
+      "name": "Nexscope",
+      "layer": "amazon_intelligence",
+      "roles": [
+        "Amazon and multi-marketplace product data",
+        "reviews",
+        "A+ content",
+        "keywords",
+        "product video tools"
+      ],
+      "priority": 2,
+      "experimental": true,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Nexscope data APIs, docs at https://www.nexscope.ai/api-docs (API key; credit-based, 10-313 credits per call)",
+          "auth_env": [
+            "NEXSCOPE_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "credit-based",
+          "source": "https://www.nexscope.ai/api-docs",
+          "confidence": "medium"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "unverified: docs reference MCP tools at https://www.nexscope.ai/mcp-map; server URL not captured",
+          "auth_env": [
+            "NEXSCOPE_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "unverified",
+          "source": "https://www.nexscope.ai/api-docs",
+          "confidence": "low"
+        },
+        {
+          "mode": "mcp",
+          "official": false,
+          "endpoint_or_package": "viaSocket-hosted Nexscope connector (per-user URL)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "viaSocket account",
+          "source": "https://viasocket.com/mcp/nexscope",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__nexscope__*",
+          "mcp__Nexscope__*"
+        ],
+        "env": [
+          "NEXSCOPE_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "product details, pricing, sales metrics",
+        "customer reviews",
+        "keyword demand",
+        "A+ and listing content",
+        "category trends"
+      ],
+      "tos_notes": "full ToS not reviewed. Treat as experimental.",
+      "fallback": "Helium 10 or SmartScout; otherwise ask the user to export reviews from their own seller tools.",
+      "cstack_skills": [
+        "competitor-intel",
+        "copywriting"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "foreplay",
+      "name": "Foreplay",
+      "layer": "ad_references",
+      "roles": [
+        "Meta/TikTok/other ad references",
+        "swipe files and boards",
+        "competitor brand tracking"
+      ],
+      "priority": 5,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://public.api.foreplay.co/mcp",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Foreplay account (OAuth); pricing at foreplay.co/pricing",
+          "source": "https://foreplay.co/mcp",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Foreplay Public API, docs https://public.api.foreplay.co/docs",
+          "auth_env": [
+            "FOREPLAY_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "current (non-legacy) plans include 10,000 credits/month; 1 credit = 1 ad record; extra credit tiers 100k/250k/500k",
+          "source": "https://help.foreplay.co/en/articles/9082255-credits-and-pricing",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__foreplay__*",
+          "mcp__Foreplay__*"
+        ],
+        "env": [
+          "FOREPLAY_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "ad creatives",
+        "copy and CTAs",
+        "landing page URLs",
+        "live status and running duration",
+        "timestamps",
+        "transcripts",
+        "the user's swipe files and boards"
+      ],
+      "tos_notes": "Credit-metered; full ToS not reviewed. API docs page rendered empty to the fetcher, so key header is unverified.",
+      "fallback": "Meta Ad Library API or public Ad Library pages, TikTok Creative Center (human browsing); or ask the user to export a board.",
+      "cstack_skills": [
+        "competitor-intel",
+        "creative-direction",
+        "copywriting"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "paid-social"
+      ]
+    },
+    {
+      "id": "shortimize",
+      "name": "Shortimize",
+      "layer": "short_video_tracking",
+      "roles": [
+        "competitor TikTok/Reels/Shorts tracking",
+        "outliers",
+        "account and video analytics"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "https://api.shortimize.com (GET /authenticate to check a key)",
+          "auth_env": [
+            "SHORTIMIZE_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "basic API on all paid plans; Premium API add-on $150/mo (higher rate limits, webhooks); 5/15/30 req/min by tier",
+          "source": "https://docs.shortimize.com/docs/integration",
+          "confidence": "high"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://api.shortimize.com/mcp (POST), uses the same API key",
+          "auth_env": [
+            "SHORTIMIZE_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "all paid plans (since 2026-03-24)",
+          "source": "https://features.shortimize.com/changelog/mcp-and-api-add-on-now-available-on-all-plans",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__shortimize__*",
+          "mcp__Shortimize__*"
+        ],
+        "env": [
+          "SHORTIMIZE_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "tracked accounts and videos",
+        "collections",
+        "historical stats",
+        "video and account analytics"
+      ],
+      "tos_notes": "Only data for accounts the user tracks; full ToS not reviewed.",
+      "fallback": "TikTok Creative Center (human browsing) or user-supplied links; no outlier stats claimed.",
+      "cstack_skills": [
+        "competitor-intel",
+        "cultural-scan"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "paid-social"
+      ]
+    },
+    {
+      "id": "really-good-emails",
+      "name": "Really Good Emails",
+      "layer": "email_references",
+      "roles": [
+        "email design and copy references"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://reallygoodemails.com (public gallery)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified",
+          "source": "unverified (no API or MCP found in search 2026-10-03)",
+          "confidence": "low"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__really_good_emails__*",
+          "mcp__reallygoodemails__*"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "email examples (via browsing)"
+      ],
+      "tos_notes": "unverified: terms not reviewed.",
+      "fallback": "Human-paced browsing of public pages, or ask the user to forward/export reference emails.",
+      "cstack_skills": [
+        "copywriting",
+        "creative-direction"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "figma",
+      "name": "Figma",
+      "layer": "own_design_system",
+      "roles": [
+        "the user's own components, variables/tokens, files, screenshots, Code Connect"
+      ],
+      "priority": 5,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "Remote server https://mcp.figma.com/mcp (recommended); desktop server via the Figma desktop app (local URL commonly http://127.0.0.1:3845/mcp, unverified this pass)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Dev or Full seat on Professional (200/day, 10/min), Organization (200/day, 15/min), Enterprise (600/day, 20/min); View/Collab seats 6/month (Starter 20/month)",
+          "source": "https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Figma REST API https://api.figma.com (X-Figma-Token header)",
+          "auth_env": [
+            "FIGMA_ACCESS_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "any account; personal access token",
+          "source": "unverified this pass (general Figma developer docs)",
+          "confidence": "medium"
+        }
+      ],
+      "auth_notes": "OAuth; only clients listed in the Figma MCP Catalog can connect. Enterprise-managed auth for Claude via Okta XAA.",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__figma__*",
+          "mcp__Figma__*",
+          "mcp__figma-desktop__*",
+          "mcp__plugin_*_figma__*"
+        ],
+        "mcp_tool_fingerprints": [
+          "get_design_context",
+          "get_variable_defs",
+          "get_metadata",
+          "get_screenshot",
+          "search_design_system",
+          "whoami"
+        ],
+        "env": [
+          "FIGMA_ACCESS_TOKEN"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "design context (code reference) for a node",
+        "variables/tokens",
+        "metadata",
+        "screenshots",
+        "library components",
+        "Code Connect mappings"
+      ],
+      "tos_notes": "Rate limits per seat; whoami, create_new_file and add_code_connect_map are exempt.",
+      "fallback": "Ask the user to export tokens (JSON) or share frames as PNG; never infer tokens from screenshots without labelling them as estimates.",
+      "cstack_skills": [
+        "brand-import",
+        "creative-direction"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "landing-page"
+      ]
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify (Dev MCP, UCP/Storefront MCP)",
+      "layer": "own_commerce",
+      "roles": [
+        "the user's own catalog, variants, cart and policies",
+        "Shopify API docs and schemas"
+      ],
+      "priority": 5,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "UCP MCP at https://{shop}/api/ucp/mcp (Catalog, Cart, Checkout MCP; requests must include an agent profile)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "public storefront endpoint of any Shopify store",
+          "source": "https://shopify.dev/apps/build/storefront-mcp/servers/storefront",
+          "confidence": "high"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "Storefront MCP https://{shop}/api/mcp: catalog and cart tools (search_catalog, get_product_details, get_cart, update_cart) deprecated in favour of UCP; search_shop_policies_and_faqs remains",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "any Shopify store",
+          "source": "https://shopify.dev/apps/build/storefront-mcp/servers/storefront",
+          "confidence": "high"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "npx -y @shopify/dev-mcp@latest (local, no auth; docs and API schemas only, no store data)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://shopify-dev.shopifycloud.com/docs/apps/build/devmcp",
+          "confidence": "high"
+        },
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "shopify (Shopify CLI) for authenticated store-management tasks via the AI Toolkit plugin/skills",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "store staff/partner access",
+          "source": "https://shopify-dev.shopifycloud.com/docs/apps/build/devmcp",
+          "confidence": "medium"
+        }
+      ],
+      "standards": [
+        {
+          "name": "Universal Commerce Protocol (UCP)",
+          "notes": "Open standard from Google and Shopify for agent commerce.",
+          "source": "https://developers.googleblog.com/en/under-the-hood-universal-commerce-protocol-ucp/",
+          "confidence": "medium"
+        },
+        {
+          "name": "WebMCP",
+          "notes": "Browser-native tool exposure for agents; Chrome early preview. Spec status and API surface unverified this pass.",
+          "source": "https://specification.website/spec/agent-readiness/webmcp/",
+          "confidence": "low"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__shopify__*",
+          "mcp__shopify-dev-mcp__*",
+          "mcp__shopify_dev__*",
+          "mcp__Shopify__*"
+        ],
+        "mcp_tool_fingerprints": [
+          "search_catalog",
+          "get_product_details",
+          "update_cart",
+          "search_shop_policies_and_faqs"
+        ],
+        "env": [],
+        "cli": [
+          "shopify"
+        ],
+        "files": [
+          "shopify.app.toml",
+          "config/settings_schema.json"
+        ],
+        "probe": "POST https://{shop}/api/ucp/mcp tools/list (public; needs agent profile)"
+      },
+      "returns": [
+        "products, variants, prices, availability",
+        "cart and checkout URL",
+        "shop policies and FAQs",
+        "Shopify API docs and GraphQL schemas (Dev MCP)"
+      ],
+      "tos_notes": "Storefront/UCP endpoints are public by design; respect store rate limits and the agent-profile requirement.",
+      "fallback": "Ask for the store domain and probe the public UCP endpoint; otherwise ask for a product CSV export from the Shopify admin.",
+      "cstack_skills": [
+        "brand-import",
+        "copywriting"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "landing-page"
+      ]
+    },
+    {
+      "id": "taste-labs",
+      "name": "Taste Labs",
+      "layer": "taste_culture",
+      "roles": [
+        "brand extraction",
+        "reference search",
+        "brand-adherence verification"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.tastelabs.com/mcp (streamable HTTP)",
+          "auth_env": [
+            "TASTE_API_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "credit-based; key from engine.tastelabs.com",
+          "source": "docs/research/taste-labs.md (vendor docs ai-tools/mcp.md)",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "https://api.tastelabs.com (X-API-Key header)",
+          "auth_env": [
+            "TASTE_API_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "credit-based",
+          "source": "docs/research/taste-labs.md",
+          "confidence": "high"
+        }
+      ],
+      "auth_notes": "MCP: OAuth 2.1 or Authorization: Bearer taste_... key with extractor:website scope.",
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__taste-engine__*",
+          "mcp__taste_engine__*",
+          "mcp__tastelabs__*",
+          "mcp__taste__*"
+        ],
+        "mcp_tool_fingerprints": [
+          "list_brand_extractions"
+        ],
+        "env": [
+          "TASTE_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "brand system extraction from a website",
+        "similar-reference search (alpha)",
+        "brand-adherence judgments (alpha)"
+      ],
+      "tos_notes": "See docs/research/taste-labs.md.",
+      "fallback": "See docs/research/taste-labs.md 'Fallback when no key and no MCP is present'.",
+      "cstack_skills": [
+        "taste-search",
+        "brand-import",
+        "creative-direction"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "arena",
+      "name": "Are.na",
+      "layer": "taste_culture",
+      "roles": [
+        "user and public channels of visual and cultural references"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Are.na v3 REST API (developer hub https://www.are.na/developers; v2 docs at dev.are.na deprecated)",
+          "auth_env": [
+            "ARENA_ACCESS_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "personal access tokens or OAuth apps; plan gating unverified",
+          "source": "https://www.are.na/developers",
+          "confidence": "high"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "unverified: developer hub lists 'MCP server, CLI, and more to come' under Resources; URL not captured",
+          "auth_env": [
+            "ARENA_ACCESS_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "unverified",
+          "source": "https://www.are.na/developers",
+          "confidence": "low"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__arena__*",
+          "mcp__are_na__*",
+          "mcp__are-na__*",
+          "mcp__Are_na__*"
+        ],
+        "env": [
+          "ARENA_ACCESS_TOKEN"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "channels",
+        "blocks (images, links, text)",
+        "search results"
+      ],
+      "tos_notes": "Rate limits and AI-use terms not documented on the hub page; unverified.",
+      "fallback": "Public channel pages viewed by a human, or ask the user for channel URLs.",
+      "cstack_skills": [
+        "taste-search",
+        "cultural-scan"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "meta-ad-library",
+      "name": "Meta Ad Library API",
+      "layer": "ad_references",
+      "roles": [
+        "ads running on Meta platforms",
+        "page-level ad history"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Graph API /ads_archive (search_terms, ad_reached_countries required, search_page_ids, ad_type, publisher_platforms, delivery dates)",
+          "auth_env": [
+            "META_ACCESS_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "free; OAuth access token from a Meta developer app (identity-confirmation requirements: unverified, primary page unreachable)",
+          "source": "https://developers.facebook.com/docs/graph-api/reference/ads_archive/",
+          "confidence": "high"
+        },
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://www.facebook.com/ads/library/ (public UI)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://www.facebook.com/ads/library/api/ (unreachable this pass)",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__meta_ads__*",
+          "mcp__meta-ads__*",
+          "mcp__facebook__*"
+        ],
+        "env": [
+          "META_ACCESS_TOKEN"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "archived ads matching keyword or page",
+        "ad metadata (fields selectable)"
+      ],
+      "tos_notes": "API returns ads that did not reach the EU only if they are about social issues, elections or politics. Commercial ads outside the EU are not available via API.",
+      "fallback": "Foreplay if present; otherwise a human browses the public Ad Library UI and pastes links.",
+      "cstack_skills": [
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "paid-social"
+      ]
+    },
+    {
+      "id": "tiktok-creative-center",
+      "name": "TikTok Creative Center / Commercial Content API",
+      "layer": "ad_references",
+      "roles": [
+        "top ads",
+        "trending hashtags, sounds and creators",
+        "ad library"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "TikTok Creative Center (ads.tiktok.com business creative center UI)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free; no public API for Creative Center found",
+          "source": "https://ads.tiktok.com/resources/help/article/creative-center",
+          "confidence": "medium"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Commercial Content API: POST https://open.tiktokapis.com/v2/research/adlib/ad/query/ (client-credentials bearer token)",
+          "auth_env": [
+            "TIKTOK_CLIENT_KEY",
+            "TIKTOK_CLIENT_SECRET"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "approved applications only (review process); supported countries listed separately",
+          "source": "https://developers.tiktok.com/doc/commercial-content-api-getting-started",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__tiktok__*"
+        ],
+        "env": [
+          "TIKTOK_CLIENT_KEY",
+          "TIKTOK_CLIENT_SECRET"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "ad library records by keyword, country and date (API)",
+        "trend and top-ad views (UI)"
+      ],
+      "tos_notes": "Commercial Content API is gated by application approval; scraping Creative Center via third-party actors is not an official route.",
+      "fallback": "Shortimize or Foreplay if present; otherwise a human browses Creative Center and pastes links.",
+      "cstack_skills": [
+        "cultural-scan",
+        "competitor-intel"
+      ],
+      "last_verified": "2026-10-03",
+      "cstack_workflows": [
+        "paid-social"
+      ]
+    }
+  ]
+}

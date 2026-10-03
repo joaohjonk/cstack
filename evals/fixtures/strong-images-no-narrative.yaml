@@ -1,0 +1,19 @@
+id: strong-images-no-narrative
+tier: T2
+skills:
+- campaign-sequence
+depends_on:
+- skills/campaign-sequence/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Role labels are subjective; the grader checks for role-level critique, not for specific cuts.
+setup: 'Eight approved, individually strong images with no sequence. Request: ''are we ready to launch this campaign?''.'
+expected:
+  must:
+  - critiques roles and sequence, names redundant frames and missing roles
+  must_not:
+  - praises images individually and approves
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

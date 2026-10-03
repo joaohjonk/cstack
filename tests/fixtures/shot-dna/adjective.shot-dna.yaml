@@ -1,0 +1,11 @@
+# Deliberately failing lint fixture (schema-valid): lighting is adjectives only.
+id: DNA-adjective-only
+source: proposed
+what: A fictional jar of honey on a table.
+why: Test fixture.
+camera:
+  focal_length_equivalent: 50mm
+composition: Centred.
+lighting: Cinematic, moody and premium.
+transferable_mechanism: none (fixture)
+do_not_copy: []

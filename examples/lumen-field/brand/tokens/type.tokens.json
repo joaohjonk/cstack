@@ -1,0 +1,21 @@
+{
+  "$description": "Typography tokens (fictional). Families are generic stacks: the licensed display face is not yet named by the owner (brand-system typography.display notes).",
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "display": { "$value": ["Iowan Old Style", "Palatino", "Georgia", "serif"], "$description": "stand-in for the humanist serif; replace when the owner names the licensed face" },
+      "body": { "$value": ["system-ui", "Helvetica Neue", "Arial", "sans-serif"] }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 }
+    },
+    "size": {
+      "$type": "dimension",
+      "body": { "$value": { "value": 16, "unit": "px" }, "$description": "brand-system typography.body (provisional)" },
+      "small": { "$value": { "value": 13, "unit": "px" } },
+      "heading": { "$value": { "value": 28, "unit": "px" } }
+    }
+  }
+}

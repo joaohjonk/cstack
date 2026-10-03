@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.*
+__pycache__/
+# brand work never lives in cstack itself (cstack is brand-agnostic)
+docs/research/private-*.md
+docs/research/_RESEARCH_BRIEF.md
+private/
+.cstack/
+state/cache/

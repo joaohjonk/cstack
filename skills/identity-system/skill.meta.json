@@ -1,0 +1,79 @@
+{
+  "slug": "identity-system",
+  "type": "composite",
+  "summary": "Turn a chosen identity direction into DTCG tokens, type hierarchy, grid and composition rules, logo usage and component contracts",
+  "tags": [
+    "identity",
+    "tokens",
+    "typography",
+    "grid",
+    "motion"
+  ],
+  "triggers": [
+    "design system",
+    "tokens",
+    "type scale",
+    "grid",
+    "brand system",
+    "logo usage rules"
+  ],
+  "not_for": [
+    "creative-direction",
+    "brand-import"
+  ],
+  "required_inputs": [
+    "selected direction",
+    "owner decision"
+  ],
+  "outputs": [
+    "brand/tokens/*.tokens.json",
+    "brand/rules/brand-rules.yaml",
+    "work/system/specimen.html"
+  ],
+  "writes": [
+    "brand/"
+  ],
+  "optional_providers": [
+    "figma-mcp"
+  ],
+  "cost_class": "free",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": [
+    "brand-verify",
+    "copywriting",
+    "workflow"
+  ],
+  "evals": [
+    "evals/fixtures/existing-brand-clear-assets.yaml"
+  ],
+  "approval_gates": [
+    {
+      "id": "system",
+      "after_step": "specimen",
+      "artifact": "work/system/specimen.html",
+      "never_self_approve": true
+    }
+  ],
+  "baseline": "brief",
+  "deterministic_steps": [
+    "token build",
+    "contrast math",
+    "raw-value lint"
+  ],
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": []
+}

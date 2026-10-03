@@ -1,0 +1,21 @@
+# Fictional reference decomposition (no real brand). Linted by `cstack validate` / `cstack lint shot-dna`.
+id: DNA-counter-flash
+source: reference
+shot_role: PRODUCT
+what: A cold drink on a cafe counter, shot as evidence inside a lived room.
+why: Direct flash separates a crisp product from a warm, slightly dark interior, so the frame reads as a found moment.
+camera:
+  format: small-sensor digital feel
+  focal_length_equivalent: 35mm
+  distance: 0.6 m
+  height: counter height
+  angle: slight down-angle
+composition: Product left of centre, crop cuts the lip of the glass, counter edge as a diagonal.
+lighting: On-camera direct flash, ambient underexposed about 1.5 stops under 3200K tungsten practicals; hard shadow falls camera-left.
+lighting_recipe: LIGHT_flash_underexposed_ambient
+materials: Condensation on glass, worn laminate counter.
+imperfection: Inconvenient crop through the glass lip.
+transferable_mechanism: Flash isolates the product as evidence inside a lived, warm room.
+do_not_copy:
+  - the cafe interior
+  - the cup shape

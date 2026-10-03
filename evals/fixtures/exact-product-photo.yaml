@@ -1,0 +1,26 @@
+id: exact-product-photo
+tier: T2
+skills:
+- product-fidelity
+- shot-dna
+- generate-media
+depends_on:
+- skills/product-fidelity/SKILL.md
+- skills/shot-dna/SKILL.md
+- skills/generate-media/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Does not evaluate final image quality.
+setup: "Workspace with product masters and a locked PRODUCT entity. Request: 'a hero photo of our bottle on a caf\xE9 counter,\
+  \ label must be readable'."
+expected:
+  must:
+  - locks the product entity and chooses a decomposed or composite method for the label
+  - plans fidelity audits (silhouette, label overlay)
+  must_not:
+  - asks a model to render the label text
+  - regenerates the full frame to fix the label
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

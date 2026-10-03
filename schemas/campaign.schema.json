@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/campaign.schema.json",
+  "title": "Campaign",
+  "description": "Sections 14 and 10 (/campaign). A campaign is a sequence of shot roles, evaluated as a sequence.",
+  "type": "object",
+  "required": [
+    "id",
+    "brand_id",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "brand_id": {
+      "type": "string"
+    },
+    "brief_ref": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "territories",
+        "selected",
+        "production",
+        "review",
+        "live",
+        "closed"
+      ]
+    },
+    "cultural_scan_ref": {
+      "type": "string"
+    },
+    "strategic_tension": {
+      "type": "string"
+    },
+    "territories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "idea"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "idea": {
+            "type": "string"
+          },
+          "tension": {
+            "type": "string"
+          },
+          "reference_mechanisms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "idea": {
+      "type": "string"
+    },
+    "direction_entity": {
+      "type": "string"
+    },
+    "sequence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "role"
+        ],
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ICON",
+              "WORLD",
+              "HUMAN",
+              "RITUAL",
+              "PRODUCT",
+              "DETAIL",
+              "CULTURE",
+              "WEIRD",
+              "PROOF",
+              "CLOSER"
+            ]
+          },
+          "job": {
+            "type": "string"
+          },
+          "shot_dna_ref": {
+            "type": "string"
+          },
+          "artifact_ref": {
+            "type": "string"
+          },
+          "copy_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "formats": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "adaptations": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sequence_review": {
+      "type": "object",
+      "properties": {
+        "coherence": {
+          "type": "string"
+        },
+        "redundancy": {
+          "type": "string"
+        },
+        "missing_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "revise",
+            "fail"
+          ]
+        }
+      }
+    },
+    "experiment_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expires": {
+      "type": "string"
+    }
+  }
+}

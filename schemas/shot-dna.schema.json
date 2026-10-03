@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/shot-dna.schema.json",
+  "title": "Shot DNA",
+  "description": "Section 7. Decomposes a reference or a proposed photograph into transferable decisions. Store why it works, not only the image.",
+  "type": "object",
+  "required": [
+    "id",
+    "source",
+    "what",
+    "why",
+    "camera",
+    "composition",
+    "lighting",
+    "transferable_mechanism",
+    "do_not_copy"
+  ],
+  "properties": {
+    "what": {
+      "type": "string"
+    },
+    "why": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "human_behavior": {
+      "type": "string"
+    },
+    "product_role": {
+      "type": "string"
+    },
+    "composition": {
+      "type": "string"
+    },
+    "lighting": {
+      "type": "string"
+    },
+    "exposure_behavior": {
+      "type": "string"
+    },
+    "focus_behavior": {
+      "type": "string"
+    },
+    "motion_behavior": {
+      "type": "string"
+    },
+    "materials": {
+      "type": "string"
+    },
+    "surfaces": {
+      "type": "string"
+    },
+    "wardrobe": {
+      "type": "string"
+    },
+    "props": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "color_logic": {
+      "type": "string"
+    },
+    "texture": {
+      "type": "string"
+    },
+    "imperfection": {
+      "type": "string"
+    },
+    "post_process": {
+      "type": "string"
+    },
+    "emotional_temperature": {
+      "type": "string"
+    },
+    "cultural_signal": {
+      "type": "string"
+    },
+    "transferable_mechanism": {
+      "type": "string"
+    },
+    "brand_fit": {
+      "type": "string"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "source": {
+      "enum": [
+        "reference",
+        "proposed",
+        "produced"
+      ]
+    },
+    "reference_id": {
+      "type": "string"
+    },
+    "shot_role": {
+      "enum": [
+        "ICON",
+        "WORLD",
+        "HUMAN",
+        "RITUAL",
+        "PRODUCT",
+        "DETAIL",
+        "CULTURE",
+        "WEIRD",
+        "PROOF",
+        "CLOSER"
+      ]
+    },
+    "camera": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "focal_length_equivalent": {
+          "type": "string"
+        },
+        "distance": {
+          "type": "string"
+        },
+        "height": {
+          "type": "string"
+        },
+        "angle": {
+          "type": "string"
+        },
+        "perspective": {
+          "type": "string"
+        }
+      }
+    },
+    "do_not_copy": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/entity_ref"
+      }
+    },
+    "lighting_recipe": {
+      "type": "string",
+      "description": "id from the photographic recipe library (e.g. LIGHT_flash_underexposed_ambient)"
+    },
+    "imperfections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "purpose"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "anti-AI realism layer; each needs a purpose that serves the art direction"
+    },
+    "fixed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "dimension names locked for refinement (section 3.7)"
+    }
+  }
+}

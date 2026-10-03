@@ -1,0 +1,1772 @@
+[
+  {
+    "model_id": "gpt-image-2.5-sunburst",
+    "provider": "openai",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "mask-inpainting",
+      "transparent-background",
+      "multi-turn-edit"
+    ],
+    "known_strengths": [
+      "OpenAI positions it for edit precision / inpainting and premium production workflows; default model of v1/images/edits",
+      "Ranked #1/#2 on Artificial Analysis T2I and Editing arenas (Sep 2026 page) — third-party, see model-landscape.md"
+    ],
+    "known_weaknesses": [
+      "Most expensive tier on AA (~$210.7 per 1k images at quality=max)",
+      "Token-priced: cost varies with quality/size; estimate before batch"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "mask"
+    ],
+    "max_refs": 16,
+    "resolution": "1024x1024 / 1536x1024 / 1024x1536 plus custom WxH up to 3840x2160 (multiples of 16, aspect 1:3–3:1); quality low|medium|high|xhigh|max|auto",
+    "pricing_snapshot": {
+      "value": {
+        "text_input_per_1M": 5.0,
+        "image_input_per_1M": 8.0,
+        "cached_input_discount": "75%",
+        "image_output_per_1M": 30.0,
+        "batch_image_output_per_1M": 15.0
+      },
+      "unit": "USD per 1M tokens",
+      "currency": "USD",
+      "source_url": "https://developers.openai.com/api/docs/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst",
+      "https://openai.com/index/introducing-chatgpt-images-2-5/",
+      "https://developers.openai.com/api/reference/resources/images/methods/edit"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct",
+    "notes": "Snapshot gpt-image-2.5-sunburst-2026-09-08. Endpoints: v1/images/generations, v1/images/edits, Batch. Announced 2026-09-08."
+  },
+  {
+    "model_id": "gpt-image-2.5-flare",
+    "provider": "openai",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "mask-inpainting",
+      "transparent-background",
+      "multi-turn-edit"
+    ],
+    "known_strengths": [
+      "OpenAI positions it as the fastest high-quality everyday generator; 'higher-quality images than GPT-Image-2 at 50% lower latency' (vendor claim)",
+      "Ranked #1/#2 on Artificial Analysis T2I and Editing arenas (Sep 2026 page) — third-party, see model-landscape.md"
+    ],
+    "known_weaknesses": [
+      "Most expensive tier on AA (~$210.7 per 1k images at quality=max)",
+      "Streaming and function calling not supported (flare model page)"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "mask"
+    ],
+    "max_refs": 16,
+    "resolution": "1024x1024 / 1536x1024 / 1024x1536 plus custom WxH up to 3840x2160 (multiples of 16, aspect 1:3–3:1); quality low|medium|high|xhigh|max|auto",
+    "pricing_snapshot": {
+      "value": {
+        "text_input_per_1M": 5.0,
+        "image_input_per_1M": 8.0,
+        "cached_input_discount": "75%",
+        "image_output_per_1M": 30.0,
+        "batch_image_output_per_1M": 15.0
+      },
+      "unit": "USD per 1M tokens",
+      "currency": "USD",
+      "source_url": "https://developers.openai.com/api/docs/pricing"
+    },
+    "latency_snapshot": "flare: vendor claims 50% lower latency than gpt-image-2; no measured number",
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://developers.openai.com/api/docs/models/gpt-image-2.5-flare",
+      "https://openai.com/index/introducing-chatgpt-images-2-5/",
+      "https://developers.openai.com/api/reference/resources/images/methods/edit"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct",
+    "notes": "Snapshot gpt-image-2.5-flare-2026-09-08. Endpoints: v1/images/generations, v1/images/edits, Batch , Responses, Chat Completions. Announced 2026-09-08."
+  },
+  {
+    "model_id": "gpt-image-2",
+    "provider": "openai",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "mask-inpainting"
+    ],
+    "known_strengths": [
+      "Previous OpenAI flagship (Apr 2026); still #3 T2I on AA Sep 2026; used under the hood by Higgsfield product-photoshoot skill"
+    ],
+    "known_weaknesses": [
+      "Superseded by 2.5 family at same token price"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "mask"
+    ],
+    "max_refs": 16,
+    "resolution": "same size rules as gpt-image-2.5 (custom up to 3840x2160)",
+    "pricing_snapshot": {
+      "value": {
+        "text_input_per_1M": 5.0,
+        "image_input_per_1M": 8.0,
+        "image_output_per_1M": 30.0,
+        "batch_image_output_per_1M": 15.0
+      },
+      "unit": "USD per 1M tokens",
+      "currency": "USD",
+      "source_url": "https://developers.openai.com/api/docs/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://developers.openai.com/api/docs/pricing",
+      "https://developers.openai.com/api/reference/resources/images/methods/edit"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct",
+    "notes": "Snapshot gpt-image-2-2026-04-21."
+  },
+  {
+    "model_id": "sora-2 / sora-2-pro",
+    "provider": "openai",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video"
+    ],
+    "known_strengths": [],
+    "known_weaknesses": [
+      "Videos API deprecated; scheduled permanent shutdown 2026-09-24 (i.e. already past as of 2026-10-03). Do not route."
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 1,
+    "resolution": "720x1280, 1280x720, 1024x1792, 1792x1024; 4/8/12 s",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://developers.openai.com/api/reference/resources/videos/methods/create"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct (shut down)",
+    "notes": "Kept in registry only as a tombstone so the router never selects it."
+  },
+  {
+    "model_id": "gemini-3.1-flash-image",
+    "provider": "google",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "multi-turn-edit",
+      "text-rendering"
+    ],
+    "known_strengths": [
+      "'Nano Banana 2'; strong price/quality (#6 T2I on AA Sep 2026); Higgsfield default for character/cartoon work",
+      "Supports 0.5K–4K output"
+    ],
+    "known_weaknesses": [
+      "SynthID watermark on all outputs"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 10,
+    "resolution": "0.5K (512) / 1K / 2K / 4K",
+    "pricing_snapshot": {
+      "value": {
+        "per_image_0.5K": 0.045,
+        "per_image_1K": 0.067,
+        "per_image_2K": 0.101,
+        "per_image_4K": 0.151,
+        "batch_per_image_1K": 0.034,
+        "output_per_1M_tokens": 60.0,
+        "input_per_1M_tokens": 0.5
+      },
+      "unit": "USD per image (derived from token price)",
+      "currency": "USD",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://ai.google.dev/gemini-api/docs/pricing",
+      "https://ai.google.dev/gemini-api/docs/image-generation"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; fal; Runway (gemini_image3.1_flash); Higgsfield (nano_banana_flash)",
+    "notes": "max_refs=10 per Gemini image-generation doc summary (medium confidence on the exact count). Also on fal as 'Nano Banana 2' at $0.08/image (fal.ai/pricing)."
+  },
+  {
+    "model_id": "gemini-3.1-flash-lite-image",
+    "provider": "google",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference"
+    ],
+    "known_strengths": [
+      "'Nano Banana 2 Lite'; cheapest Google image model; Google recommends migrating legacy Nano Banana to it",
+      "Up to 14 reference images"
+    ],
+    "known_weaknesses": [
+      "1K only"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 14,
+    "resolution": "1K; aspect 1:1,3:2,2:3,3:4,4:3,4:5,5:4,9:16,16:9,21:9",
+    "pricing_snapshot": {
+      "value": {
+        "per_image_1K": 0.0336,
+        "batch_per_image_1K": 0.0168
+      },
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://ai.google.dev/gemini-api/docs/pricing",
+      "https://ai.google.dev/gemini-api/docs/image-generation"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; Higgsfield",
+    "notes": null
+  },
+  {
+    "model_id": "gemini-3-pro-image",
+    "provider": "google",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "text-rendering"
+    ],
+    "known_strengths": [
+      "'Nano Banana Pro'; higher fidelity on harder briefs (Higgsfield catalog)"
+    ],
+    "known_weaknesses": [
+      "Pricier than Nano Banana 2 while ranking lower on AA T2I (Sep 2026)"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "1K / 2K / 4K",
+    "pricing_snapshot": {
+      "value": {
+        "per_image_1K_2K": 0.134,
+        "per_image_4K": 0.24,
+        "flex_batch_output_per_1M": 60.0,
+        "output_per_1M": 120.0
+      },
+      "unit": "USD per image (Vertex AI)",
+      "currency": "USD",
+      "source_url": "https://cloud.google.com/vertex-ai/generative-ai/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://cloud.google.com/vertex-ai/generative-ai/pricing",
+      "https://ai.google.dev/gemini-api/docs/image-generation"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Vertex; fal ($0.15/image); Runway; Higgsfield",
+    "notes": "Not listed on Gemini API pricing page today; price from Vertex AI. max_refs conflicting in fetched summaries (6 vs 14) -> null."
+  },
+  {
+    "model_id": "imagen-4 (ultra / standard / fast)",
+    "provider": "google",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image"
+    ],
+    "known_strengths": [],
+    "known_weaknesses": [
+      "Gemini API docs state Imagen is shut down there; still priced on Vertex AI"
+    ],
+    "input_types": [
+      "text"
+    ],
+    "max_refs": 0,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": {
+        "ultra": 0.06,
+        "standard": 0.04,
+        "fast": 0.02
+      },
+      "unit": "USD per image (Vertex AI)",
+      "currency": "USD",
+      "source_url": "https://cloud.google.com/vertex-ai/generative-ai/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://ai.google.dev/gemini-api/docs/image-generation",
+      "https://cloud.google.com/vertex-ai/generative-ai/pricing"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Vertex only",
+    "notes": "Legacy; prefer Gemini image models."
+  },
+  {
+    "model_id": "gemini-omni-1.1-flash",
+    "provider": "google",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "reference-to-video",
+      "conversational-video-edit",
+      "native-audio"
+    ],
+    "known_strengths": [
+      "#3 on AA image-to-video (Sep 2026)",
+      "Multi-turn video editing via Interactions API previous_interaction_id"
+    ],
+    "known_weaknesses": [
+      "5–10 s clips; 4K is upscaled"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "video"
+    ],
+    "max_refs": 6,
+    "resolution": "360p / 720p (default) / 1080p / 4K (upscaled); 16:9, 9:16; 5–10 s",
+    "pricing_snapshot": {
+      "value": {
+        "input_per_1M": 1.5,
+        "video_output_per_1M": 17.5,
+        "approx_per_second_720p": 0.1
+      },
+      "unit": "USD per 1M tokens",
+      "currency": "USD",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://ai.google.dev/gemini-api/docs/pricing",
+      "https://ai.google.dev/gemini-api/docs/omni"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; Runway (gemini_omni_flash_1.1); Higgsfield",
+    "notes": "Max 6 images + 3 video clips (≤3 s each) per Gemini docs. Higgsfield documents 0–7 images / 0–1 video for its wrapper."
+  },
+  {
+    "model_id": "veo-3.1 (standard / fast / lite)",
+    "provider": "google",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "first-last-frame",
+      "reference-images",
+      "video-extension",
+      "native-audio"
+    ],
+    "known_strengths": [
+      "Scene extension and last-frame control (Google positions Veo for these)",
+      "Lite tier for volume"
+    ],
+    "known_weaknesses": [
+      "4/6/8 s only; 1080p and 4K require 8 s; extension 720p only; English-only prompts; 2-day server retention"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "video"
+    ],
+    "max_refs": 3,
+    "resolution": "720p / 1080p / 4K (not Lite); 16:9, 9:16; 24 fps",
+    "pricing_snapshot": {
+      "value": {
+        "standard_av_720p_1080p": 0.4,
+        "standard_av_4k": 0.6,
+        "standard_video_only_720p_1080p": 0.2,
+        "fast_av_720p": 0.1,
+        "fast_av_1080p": 0.12,
+        "fast_av_4k": 0.3,
+        "lite_av_720p": 0.05,
+        "lite_av_1080p": 0.08
+      },
+      "unit": "USD per '1 count' as printed on Vertex pricing (unit almost certainly per second of output; verify)",
+      "currency": "USD",
+      "source_url": "https://cloud.google.com/vertex-ai/generative-ai/pricing"
+    },
+    "latency_snapshot": "11 s minimum to 6 min at peak (Gemini Veo doc)",
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://ai.google.dev/gemini-api/docs/veo",
+      "https://cloud.google.com/vertex-ai/generative-ai/pricing"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "direct; Vertex; Runway; Higgsfield",
+    "notes": "Gemini API id veo-3.1-generate-preview (+Fast/Lite variants). Async long-running operation, poll ~10 s."
+  },
+  {
+    "model_id": "flux-3-image",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "bbox-layout-control"
+    ],
+    "known_strengths": [
+      "Unified generate+edit endpoint; bounding boxes in prompt for layout; up to 10 references"
+    ],
+    "known_weaknesses": [
+      "Released 2026-10-01: no independent benchmarks yet"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 10,
+    "resolution": "768sq / 1K / 2K (~4MP) / 4K (~16MP)",
+    "pricing_snapshot": {
+      "value": {
+        "768sq": 0.041,
+        "1k": 0.048,
+        "2k": 0.1,
+        "4k": 0.607
+      },
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "direct",
+    "notes": "Exact API endpoint id not confirmed (release notes describe it; video endpoint is POST /v1/flux-3-video)."
+  },
+  {
+    "model_id": "flux-3-video",
+    "provider": "black-forest-labs",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "video-continuation",
+      "video-edit",
+      "native-audio",
+      "keyframes",
+      "draft-mode"
+    ],
+    "known_strengths": [
+      "Draft mode $0.06/s for cheap composition probes",
+      "Up to 20 s with multilingual audio/lipsync",
+      "2K/4K added 2026-09-10"
+    ],
+    "known_weaknesses": [
+      "New (2026-08-04); no AA ranking seen"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "video"
+    ],
+    "max_refs": null,
+    "resolution": "HD / FHD / QHD (2560x1440) / UHD (3840x2176); up to 20 s; 24 fps",
+    "pricing_snapshot": {
+      "value": {
+        "t2v_i2v": {
+          "draft": 0.06,
+          "hd": 0.17,
+          "fhd": 0.29,
+          "qhd": 0.4,
+          "uhd": 0.8
+        },
+        "continuation": {
+          "draft": 0.12,
+          "hd": 0.41,
+          "fhd": 0.53,
+          "qhd": 0.65,
+          "uhd": 0.95
+        }
+      },
+      "unit": "USD per second",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes",
+      "https://bfl.ai/models/flux-3-video"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; Higgsfield (flux_3_video)",
+    "notes": "Endpoint POST /v1/flux-3-video. Open-weight FLUX 3 Dev 'coming soon' (unverified timing)."
+  },
+  {
+    "model_id": "flux-2-pro",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference"
+    ],
+    "known_strengths": [
+      "~2x faster since 2026-03-03 at same price; flux-2-pro-preview endpoint gets latest improvements"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 8,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": {
+        "t2i_from": 0.03,
+        "edit_from": 0.045
+      },
+      "unit": "USD per image, megapixel-scaled ('from' = base resolution)",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes",
+      "https://help.bfl.ai/articles/7655484417-what-flux-models-are-available"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; fal; Higgsfield (Flux 2.0)",
+    "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre."
+  },
+  {
+    "model_id": "flux-2-max",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference"
+    ],
+    "known_strengths": [
+      "Grounding search (web-informed generation); multi-reference editing"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 8,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": {
+        "from": 0.07
+      },
+      "unit": "USD per image, megapixel-scaled ('from' = base resolution)",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes",
+      "https://help.bfl.ai/articles/7655484417-what-flux-models-are-available"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; fal; Higgsfield (Flux 2.0)",
+    "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre."
+  },
+  {
+    "model_id": "flux-2-flex",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference"
+    ],
+    "known_strengths": [
+      "Adjustable steps/guidance ('Adjustable' refs per BFL)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": {
+        "from": 0.05
+      },
+      "unit": "USD per image, megapixel-scaled ('from' = base resolution)",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes",
+      "https://help.bfl.ai/articles/7655484417-what-flux-models-are-available"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; fal; Higgsfield (Flux 2.0)",
+    "notes": null
+  },
+  {
+    "model_id": "flux-2-klein-4b",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference"
+    ],
+    "known_strengths": [
+      "Sub-second inference; open weights Apache-2.0; LoRA inference beta"
+    ],
+    "known_weaknesses": [
+      "Lower ceiling than pro/max (inferred from positioning, unbenchmarked)"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 4,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": {
+        "from": 0.014
+      },
+      "unit": "USD per image, megapixel-scaled ('from' = base resolution)",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": "sub-second (vendor claim)",
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes",
+      "https://help.bfl.ai/articles/7655484417-what-flux-models-are-available"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "direct; fal; Higgsfield (Flux 2.0)",
+    "notes": null
+  },
+  {
+    "model_id": "flux-2-klein-9b",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference"
+    ],
+    "known_strengths": [
+      "Sub-second inference; open weights (non-commercial)"
+    ],
+    "known_weaknesses": [
+      "Non-commercial licence for self-hosting"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 4,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": {
+        "from": 0.015
+      },
+      "unit": "USD per image, megapixel-scaled ('from' = base resolution)",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": "sub-second (vendor claim)",
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/release-notes",
+      "https://help.bfl.ai/articles/7655484417-what-flux-models-are-available"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "direct; fal; Higgsfield (Flux 2.0)",
+    "notes": null
+  },
+  {
+    "model_id": "flux-kontext-pro",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "image-edit",
+      "style-transfer",
+      "text-to-image"
+    ],
+    "known_strengths": [
+      "Context-aware single-image editing; Higgsfield recommends Kontext Max for stylized looks / typography remix"
+    ],
+    "known_weaknesses": [
+      "FLUX.1 generation (older than FLUX.2/3)"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": 0.04,
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/api_integration/integration_guidelines"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; fal; Higgsfield",
+    "notes": null
+  },
+  {
+    "model_id": "flux-kontext-max",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "image-edit",
+      "style-transfer",
+      "text-to-image"
+    ],
+    "known_strengths": [
+      "Context-aware single-image editing; Higgsfield recommends Kontext Max for stylized looks / typography remix"
+    ],
+    "known_weaknesses": [
+      "FLUX.1 generation; kontext-max limited to 6 concurrent requests (vs 24 default)"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": 0.08,
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing",
+      "https://docs.bfl.ai/api_integration/integration_guidelines"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; fal; Higgsfield",
+    "notes": null
+  },
+  {
+    "model_id": "flux-1-fill-pro",
+    "provider": "black-forest-labs",
+    "modality": "image",
+    "capabilities": [
+      "inpainting",
+      "outpainting"
+    ],
+    "known_strengths": [
+      "Mask-based fill"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "image",
+      "mask",
+      "text"
+    ],
+    "max_refs": null,
+    "resolution": "up to 4MP",
+    "pricing_snapshot": {
+      "value": 0.05,
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://docs.bfl.ai/quick_start/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.bfl.ai/quick_start/pricing"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct",
+    "notes": null
+  },
+  {
+    "model_id": "seedream-5.0-pro",
+    "provider": "bytedance",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit",
+      "multi-image-reference",
+      "layered-output",
+      "multilingual-text"
+    ],
+    "known_strengths": [
+      "Faces, character sheets, face-preserving scene edits (Higgsfield)",
+      "High-density infographics, native multilingual text, 10+ editable layers with transparency (fal page, vendor claims)"
+    ],
+    "known_weaknesses": [
+      "Max 2048x2048 on fal / '1k-2k' on Higgsfield"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 10,
+    "resolution": "up to 2048x2048",
+    "pricing_snapshot": {
+      "value": {
+        "from": 0.0675
+      },
+      "unit": "USD per image (fal)",
+      "currency": "USD",
+      "source_url": "https://fal.ai/seedream-5.0"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://fal.ai/seedream-5.0",
+      "https://ai.byteplus.com/en/model",
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:28"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "BytePlus ModelArk; fal; Runway (seedream5_pro 5–9 credits); Higgsfield",
+    "notes": "fal endpoints bytedance/seedream/v5/pro/text-to-image and .../edit. BytePlus lists 'Dola Seedream 5.0 Pro' updated 2026-07-08; BytePlus price not readable (JS)."
+  },
+  {
+    "model_id": "seedance-2.5",
+    "provider": "bytedance",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "omni-reference",
+      "video-edit",
+      "video-extension",
+      "native-audio",
+      "multi-shot"
+    ],
+    "known_strengths": [
+      "#3 on AA text-to-video (Sep 2026)",
+      "4–30 s single generation; up to 50 combined multimodal references (BytePlus claim)",
+      "Higgsfield default video model"
+    ],
+    "known_weaknesses": [
+      "Resolution ceiling conflicting: BytePlus/Runway/fal page say 480p–720p; fal pricing and Higgsfield list 1080p",
+      "Expensive at higher res (~$34/min on AA)"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "max_refs": 50,
+    "resolution": "480p / 720p (1080p per fal pricing + Higgsfield; unconfirmed by BytePlus); 4–30 s",
+    "pricing_snapshot": {
+      "value": {
+        "480p": 0.22,
+        "720p": 0.47,
+        "1080p": 1.16,
+        "prompt_per_1k_tokens": 0.0214
+      },
+      "unit": "USD per second (fal, approx.)",
+      "currency": "USD",
+      "source_url": "https://fal.ai/models/bytedance/seedance-2.5/image-to-video"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://fal.ai/models/bytedance/seedance-2.5/image-to-video",
+      "https://ai.byteplus.com/en/product/seedance",
+      "https://docs.dev.runwayml.com/api-details/api_changelog/"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "BytePlus; fal; Runway (seedance2_5); Higgsfield (seedance_2_5)",
+    "notes": "Released 2026-08-07 (Runway changelog; BytePlus 'updated Aug 7, 2026'). Runway price 20–68 credits/s."
+  },
+  {
+    "model_id": "seedance-2.0",
+    "provider": "bytedance",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "reference-to-video",
+      "native-audio"
+    ],
+    "known_strengths": [
+      "Native 4K option (Higgsfield: use when 4K is required)",
+      "#4 on AA image-to-video (720p)"
+    ],
+    "known_weaknesses": [
+      "4–15 s"
+    ],
+    "input_types": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "max_refs": null,
+    "resolution": "480p/720p/1080p/4K; 4–15 s",
+    "pricing_snapshot": {
+      "value": {
+        "per_1k_tokens": 0.014
+      },
+      "unit": "USD per 1000 tokens (fal)",
+      "currency": "USD",
+      "source_url": "https://fal.ai/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://fal.ai/pricing",
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:49"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "BytePlus; fal; Runway; Higgsfield",
+    "notes": "Variants: 2.0 fast, 2.0 mini (Runway: 16 credits/s, 64 credit minimum)."
+  },
+  {
+    "model_id": "kling-video-v3-pro",
+    "provider": "kling",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "multi-shot",
+      "elements-reference",
+      "native-audio",
+      "voice-control"
+    ],
+    "known_strengths": [
+      "Multi-shot with per-shot prompts; @Element character/object injection",
+      "Lower cost than Seedance 2.5 for simpler scenes (Higgsfield)"
+    ],
+    "known_weaknesses": [
+      "Audio natively Chinese/English only; voice binding video-elements only"
+    ],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "3–15 s; std/pro/4K modes (Higgsfield)",
+    "pricing_snapshot": {
+      "value": {
+        "audio_off": 0.112,
+        "audio_on": 0.168,
+        "voice_control": 0.196
+      },
+      "unit": "USD per second (fal)",
+      "currency": "USD",
+      "source_url": "https://fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video",
+      "https://fal.ai/pricing"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "Kling direct; fal; Higgsfield",
+    "notes": "fal pricing table lists Kling v3 Pro at $0.14/s (summary row) vs model page $0.112–0.196/s by audio option. Kling direct API pricing page not readable (JS). Kling O3 (incl. 4K, video-edit, reference) and v3 Turbo also on fal."
+  },
+  {
+    "model_id": "kling-video-o3",
+    "provider": "kling",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "reference-to-video",
+      "video-edit",
+      "4k"
+    ],
+    "known_strengths": [],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image",
+      "video"
+    ],
+    "max_refs": null,
+    "resolution": "includes 4K endpoints",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "https://fal.ai/explore/kling"
+    ],
+    "benchmark_results": [],
+    "confidence": "low",
+    "access": "fal",
+    "notes": "Endpoint ids seen on fal (fal-ai/kling-video/o3/4k/...). No pricing/capability detail verified."
+  },
+  {
+    "model_id": "gen4.5",
+    "provider": "runway",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video"
+    ],
+    "known_strengths": [],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": 0.12,
+      "unit": "USD per second (12 credits/s, $0.01/credit)",
+      "currency": "USD",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing/"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.dev.runwayml.com/guides/pricing/"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Runway API",
+    "notes": null
+  },
+  {
+    "model_id": "aleph2",
+    "provider": "runway",
+    "modality": "video",
+    "capabilities": [
+      "video-to-video",
+      "video-edit"
+    ],
+    "known_strengths": [],
+    "known_weaknesses": [],
+    "input_types": [
+      "video",
+      "text"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": 0.28,
+      "unit": "USD per second (28 credits/s)",
+      "currency": "USD",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing/"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.dev.runwayml.com/guides/pricing/"
+    ],
+    "benchmark_results": [],
+    "confidence": "low",
+    "access": "Runway API",
+    "notes": "Gen-4 Aleph (v1) and Gen-3 Alpha Turbo sunset 2026-07-30."
+  },
+  {
+    "model_id": "gen4_image / gen4_image_turbo",
+    "provider": "runway",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "reference-image"
+    ],
+    "known_strengths": [],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": {
+        "gen4_image": "0.05–0.08",
+        "gen4_image_turbo": 0.02
+      },
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing/"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.dev.runwayml.com/guides/pricing/"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Runway API",
+    "notes": null
+  },
+  {
+    "model_id": "recraftv4_1_flash",
+    "provider": "recraft",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "palette-control"
+    ],
+    "known_strengths": [
+      "Cheapest/fastest in survey: $0.007, ~1.3 s"
+    ],
+    "known_weaknesses": [
+      "Raster only, 1K, no styles, no image-to-image"
+    ],
+    "input_types": [
+      "text"
+    ],
+    "max_refs": 0,
+    "resolution": "1K",
+    "pricing_snapshot": {
+      "value": 0.007,
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://www.recraft.ai/docs/api-reference/pricing"
+    },
+    "latency_snapshot": "~1.3 s end-to-end (vendor)",
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://www.recraft.ai/docs/api-reference/pricing",
+      "https://www.recraft.ai/docs/api-reference/models/recraft-v4-1-flash"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct",
+    "notes": "Released Sep 2026."
+  },
+  {
+    "model_id": "recraft-v4.1 (vector / pro vector)",
+    "provider": "recraft",
+    "modality": "vector",
+    "capabilities": [
+      "text-to-vector-svg",
+      "text-to-image",
+      "palette-control",
+      "typography",
+      "logo"
+    ],
+    "known_strengths": [
+      "Native SVG output; logos, icons, brand marks, controlled palettes (Higgsfield routes logos here)",
+      "Pro variants 2K raster / print-ready"
+    ],
+    "known_weaknesses": [
+      "Prompt-only in Higgsfield wrapper (no reference media)"
+    ],
+    "input_types": [
+      "text"
+    ],
+    "max_refs": 0,
+    "resolution": "standard / Pro (2K raster); SVG for vector variants",
+    "pricing_snapshot": {
+      "value": {
+        "v4.1_vector": 0.08,
+        "v4.1_pro_vector": 0.3,
+        "v4.1_raster": 0.035,
+        "v4.1_pro_raster": 0.21,
+        "vectorize": 0.01,
+        "remove_background": 0.01,
+        "crisp_upscale": 0.004
+      },
+      "unit": "USD per image/operation",
+      "currency": "USD",
+      "source_url": "https://www.recraft.ai/docs/api-reference/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://www.recraft.ai/docs/api-reference/pricing",
+      "https://www.recraft.ai/docs/recraft-models/recraft-v4-1"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct; Higgsfield",
+    "notes": "V4.1 released 2026-05-14. API id strings for non-Flash variants not confirmed. 1,000 API units = $1."
+  },
+  {
+    "model_id": "ideogram-4.0",
+    "provider": "ideogram",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "text-rendering",
+      "bbox-layout-control",
+      "background-removal"
+    ],
+    "known_strengths": [
+      "Dense multilingual text rendering; bounding-box object/text placement; open weights (GitHub/HF) with commercial licence available"
+    ],
+    "known_weaknesses": [
+      "2K max"
+    ],
+    "input_types": [
+      "text"
+    ],
+    "max_refs": null,
+    "resolution": "up to 2K",
+    "pricing_snapshot": {
+      "value": {
+        "turbo": 0.03,
+        "default": 0.06,
+        "quality": 0.1
+      },
+      "unit": "USD per image",
+      "currency": "USD",
+      "source_url": "https://ideogram.ai/models/4.0"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://ideogram.ai/models/4.0",
+      "https://developer.ideogram.ai/ideogram-api/api-overview"
+    ],
+    "benchmark_results": [],
+    "confidence": "high",
+    "access": "direct",
+    "notes": null
+  },
+  {
+    "model_id": "ideogram-4.5 (generate / precise-edit)",
+    "provider": "ideogram",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "precise-edit",
+      "mask-inpainting",
+      "reference-images"
+    ],
+    "known_strengths": [
+      "Precise edit returns exact input dimensions and copies untouched pixels exactly (vendor)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image",
+      "mask"
+    ],
+    "max_refs": 4,
+    "resolution": "edit output = input size",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://developer.ideogram.ai/api-reference/images/precise-edit/ideogram-4-5"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "direct",
+    "notes": "Up to 4 refs (3 if masked); quality very_low..high; 1–8 images; async/webhook. Price not found."
+  },
+  {
+    "model_id": "grok-imagine-image-2.0",
+    "provider": "xai",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit"
+    ],
+    "known_strengths": [
+      "#4 T2I on AA (Sep 2026); expressive/high-contrast/stylized (Higgsfield)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "1K / 2K",
+    "pricing_snapshot": {
+      "value": {
+        "1k_low": 0.04,
+        "2k_medium": 0.08
+      },
+      "unit": "USD per image (range)",
+      "currency": "USD",
+      "source_url": "https://docs.x.ai/developers/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.x.ai/developers/pricing"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "direct; Runway; Higgsfield",
+    "notes": null
+  },
+  {
+    "model_id": "grok-imagine-video-1.5",
+    "provider": "xai",
+    "modality": "video",
+    "capabilities": [
+      "image-to-video",
+      "text-to-video",
+      "native-audio"
+    ],
+    "known_strengths": [
+      "Bold stylized image-to-video (Higgsfield)"
+    ],
+    "known_weaknesses": [
+      "Requires reference frame in Higgsfield wrapper; 1080p not with reference media"
+    ],
+    "input_types": [
+      "image",
+      "text",
+      "audio"
+    ],
+    "max_refs": null,
+    "resolution": "480p/720p/1080p; 2–15 s (Higgsfield)",
+    "pricing_snapshot": {
+      "value": {
+        "min": 0.1,
+        "max": 0.29
+      },
+      "unit": "USD per second (Runway grok_imagine_1_5, 10–29 credits/s)",
+      "currency": "USD",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing/"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.dev.runwayml.com/guides/pricing/",
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:64"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "xAI; Runway; Higgsfield",
+    "notes": null
+  },
+  {
+    "model_id": "minimax-h3-max",
+    "provider": "minimax",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "image-to-video",
+      "reference-to-video"
+    ],
+    "known_strengths": [
+      "#1 on AA image-to-video (Elo 1195, Sep 2026); cheap"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": {
+        "h3_max": 0.05,
+        "h3_max_turbo": 0.025
+      },
+      "unit": "USD per second (fal)",
+      "currency": "USD",
+      "source_url": "https://fal.ai/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://fal.ai/pricing",
+      "https://artificialanalysis.ai/video/leaderboard/image-to-video"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "fal; Runway (h3_max 5–8 credits/s); Higgsfield (minimax_h3_max)",
+    "notes": "AA lists MiniMax H3 as open weights."
+  },
+  {
+    "model_id": "wan3",
+    "provider": "alibaba",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "native-audio"
+    ],
+    "known_strengths": [
+      "#1 on AA text-to-video (Elo 1157, Sep 2026)",
+      "Up to 30 s with native audio (Runway changelog)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "up to 30 s",
+    "pricing_snapshot": {
+      "value": {
+        "min": 0.05,
+        "max": 0.2
+      },
+      "unit": "USD per second (Runway wan3, 5–20 credits/s)",
+      "currency": "USD",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing/"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.dev.runwayml.com/guides/pricing/",
+      "https://docs.dev.runwayml.com/api-details/api_changelog/",
+      "https://artificialanalysis.ai/video/leaderboard/text-to-video"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Runway; Higgsfield (wan3_0)",
+    "notes": "wan3_prime variant 6.8–28 credits/s."
+  },
+  {
+    "model_id": "muse_image",
+    "provider": "meta",
+    "modality": "image",
+    "capabilities": [
+      "image-edit",
+      "multi-image-reference",
+      "text-to-image"
+    ],
+    "known_strengths": [
+      "Very cheap ($0.01/image on Runway); #6 on AA editing"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": 0.01,
+      "unit": "USD per image (Runway, 1 credit)",
+      "currency": "USD",
+      "source_url": "https://docs.dev.runwayml.com/guides/pricing/"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://docs.dev.runwayml.com/guides/pricing/",
+      "https://artificialanalysis.ai/image/leaderboard/editing"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Runway",
+    "notes": "Meta Muse Image; launched on Runway 2026-08-26."
+  },
+  {
+    "model_id": "mai-image-2.6",
+    "provider": "microsoft",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "image-edit"
+    ],
+    "known_strengths": [
+      "#3 on AA editing, #5 on AA T2I (Sep 2026)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "https://artificialanalysis.ai/image/leaderboard/editing"
+    ],
+    "benchmark_results": [],
+    "confidence": "low",
+    "access": "unverified",
+    "notes": "AA lists ~$38.9/1k images; API availability/provider endpoint not verified from a Microsoft primary source. Flash variant ~$19.5/1k (AA)."
+  },
+  {
+    "model_id": "qwen-image-3.0-pro",
+    "provider": "alibaba",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image"
+    ],
+    "known_strengths": [
+      "#14 on AA T2I (Sep 2026)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "https://artificialanalysis.ai/text-to-image/arena/leaderboard-text"
+    ],
+    "benchmark_results": [],
+    "confidence": "low",
+    "access": "unverified",
+    "notes": "AA lists ~$40/1k. Not verified at provider."
+  },
+  {
+    "model_id": "z-image-turbo",
+    "provider": "tongyi-mai",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "lora"
+    ],
+    "known_strengths": [
+      "Fastest/cheapest drafts (Higgsfield); good for composition probes"
+    ],
+    "known_weaknesses": [
+      "Prompt-only in Higgsfield wrapper"
+    ],
+    "input_types": [
+      "text"
+    ],
+    "max_refs": 0,
+    "resolution": null,
+    "pricing_snapshot": {
+      "value": 0.005,
+      "unit": "USD per megapixel (fal)",
+      "currency": "USD",
+      "source_url": "https://fal.ai/pricing"
+    },
+    "latency_snapshot": null,
+    "last_verified": "2026-10-03",
+    "source": [
+      "https://fal.ai/pricing",
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:31"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "fal; Higgsfield",
+    "notes": null
+  },
+  {
+    "model_id": "text2image_soul_v2",
+    "provider": "higgsfield",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image",
+      "character-reference",
+      "style-presets"
+    ],
+    "known_strengths": [
+      "Aesthetic UGC / fashion editorial / character; accepts Soul Character id"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "1.5k/2k; 1:1,16:9,9:16,4:3,3:4,3:2,2:3",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:23"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Higgsfield CLI/API",
+    "notes": "From Higgsfield's first-party skills repo (release 0.13.0, 2026-09-26). Price via `higgsfield generate cost` (credits); not fetched."
+  },
+  {
+    "model_id": "soul_cinematic",
+    "provider": "higgsfield",
+    "modality": "image",
+    "capabilities": [
+      "text-to-image"
+    ],
+    "known_strengths": [
+      "Cinematic stills, film-grade lighting"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "1.5k/2k incl. 21:9",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:24"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Higgsfield CLI/API",
+    "notes": "From Higgsfield's first-party skills repo (release 0.13.0, 2026-09-26). Price via `higgsfield generate cost` (credits); not fetched."
+  },
+  {
+    "model_id": "marketing_studio_video",
+    "provider": "higgsfield",
+    "modality": "video",
+    "capabilities": [
+      "ad-video",
+      "ugc",
+      "product-showcase",
+      "native-audio"
+    ],
+    "known_strengths": [
+      "Default for all ad/commercial video; RAG over user avatars/products/brand kit"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": null,
+    "resolution": "480p/720p/1080p",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:54"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Higgsfield CLI/API",
+    "notes": "From Higgsfield's first-party skills repo (release 0.13.0, 2026-09-26). Price via `higgsfield generate cost` (credits); not fetched."
+  },
+  {
+    "model_id": "cinematic_studio_video_4_0",
+    "provider": "higgsfield",
+    "modality": "video",
+    "capabilities": [
+      "text-to-video",
+      "omni-reference",
+      "video-edit",
+      "video-extension",
+      "camera-controls"
+    ],
+    "known_strengths": [
+      "Camera/lens/light/genre controls"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "max_refs": 30,
+    "resolution": "480p/720p/1080p",
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:55"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Higgsfield CLI/API",
+    "notes": "From Higgsfield's first-party skills repo (release 0.13.0, 2026-09-26). Price via `higgsfield generate cost` (credits); not fetched."
+  },
+  {
+    "model_id": "brain_activity",
+    "provider": "higgsfield",
+    "modality": "analysis",
+    "capabilities": [
+      "video-attention-scoring"
+    ],
+    "known_strengths": [
+      "'Virality Predictor': attention/hook/retention score for finished video (vendor claim, method undocumented)"
+    ],
+    "known_weaknesses": [],
+    "input_types": [
+      "video"
+    ],
+    "max_refs": null,
+    "resolution": null,
+    "pricing_snapshot": null,
+    "latency_snapshot": null,
+    "last_verified": null,
+    "source": [
+      "research-src/higgsfield-ai_skills/higgsfield-generate/references/model-catalog.md:99"
+    ],
+    "benchmark_results": [],
+    "confidence": "medium",
+    "access": "Higgsfield CLI/API",
+    "notes": "From Higgsfield's first-party skills repo (release 0.13.0, 2026-09-26). Price via `higgsfield generate cost` (credits); not fetched."
+  }
+]

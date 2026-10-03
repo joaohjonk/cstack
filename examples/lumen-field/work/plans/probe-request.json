@@ -1,0 +1,24 @@
+{
+  "provider": "mock",
+  "model": "plate-v0",
+  "operation": "text_to_image",
+  "inputs": {
+    "prompt": "Photograph of a long scrubbed pale-oak trestle table against a lime-washed wall, in a working pottery studio, a few minutes after a meal: a torn heel of bread and a folded linen napkin pushed aside. Empty space lower-left for a plate to be composited later; leave that area as bare scrubbed oak with knife marks. Light: one soft north window from frame-left, late afternoon, no fill, open grey shadows, highlights not clipped. Camera: 4:5 vertical, about 55mm equivalent, seated eye level, 35 degrees down, natural perspective. Colour: pale oak and off-white ground, no saturated props, no ochre accents. Avoid: marble or stone counters, steam, herb sprigs, untouched place settings, black backgrounds, spotlights, gold or metallic rims, any ceramic plate in the empty area, any text or logo.",
+    "images": [],
+    "params": {
+      "aspect_ratio": "4:5",
+      "num_images": 1
+    }
+  },
+  "recipe_hash": "039ff68caf0d83acb6687ad342f49204fc6ff9d746114a735e899bea1fbf9e31",
+  "out_dir": "work/out/autumn-hero",
+  "out_prefix": "plate-probe",
+  "expected_size": {
+    "aspect": "4:5"
+  },
+  "estimated_cost": {
+    "amount": 0,
+    "currency": "USD"
+  },
+  "skill": "generate-media"
+}

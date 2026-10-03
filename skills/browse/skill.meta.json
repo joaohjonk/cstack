@@ -1,0 +1,71 @@
+{
+  "slug": "browse",
+  "type": "capability",
+  "summary": "Headless browser for brand work: responsive screenshots, PDFs, snapshots, computed-style tokens, media provenance and page QA",
+  "tags": [
+    "browser",
+    "screenshots",
+    "QA",
+    "capture",
+    "web"
+  ],
+  "triggers": [
+    "screenshot",
+    "capture the site",
+    "browse",
+    "check the page on mobile",
+    "extract styles",
+    "PDF of the page"
+  ],
+  "not_for": [
+    "creative-review",
+    "brand-verify"
+  ],
+  "required_inputs": [
+    "url"
+  ],
+  "outputs": [
+    "work/browse/*/run.json"
+  ],
+  "writes": [
+    "work/browse/"
+  ],
+  "required_providers": [
+    "playwright-core + chromium"
+  ],
+  "cost_class": "free",
+  "context_class": "s",
+  "mutating": false,
+  "handoff": [
+    "brand-import",
+    "competitor-intel",
+    "taste-search",
+    "brand-verify",
+    "creative-review"
+  ],
+  "evals": [
+    "tests/browser.test.mjs"
+  ],
+  "baseline": "n/a",
+  "fallback": {
+    "when_missing": [
+      "chromium"
+    ],
+    "mode": "degraded"
+  },
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "optional_providers": []
+}

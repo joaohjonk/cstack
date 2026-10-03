@@ -1,0 +1,27 @@
+id: irma-boom
+name: Irma Boom
+kind: person
+domains:
+- book design
+- publishing
+- object
+mental_model: 'the publication is an object: format, edge, paper and weight carry the idea'
+mechanisms:
+- the physical form is part of the content
+- unexpected formats earn attention
+- information revealed through the object's behavior
+representative_works:
+- SHV Think Book 1996-1896 (1996)
+- Chanel No 5 book with embossed, ink-free pages (2013)
+when_useful:
+- packaging, printed matter, decks as objects, collector editions
+when_not_useful:
+- fast, low-cost, high-volume production constraints
+tensions:
+- object craft vs. production cost and recyclability
+sources:
+- kind: external_reference
+  ref: SHV Think Book 1996-1896 (1996)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

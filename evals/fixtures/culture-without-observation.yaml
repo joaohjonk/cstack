@@ -1,0 +1,19 @@
+id: culture-without-observation
+tier: T2
+skills:
+- cultural-scan
+depends_on:
+- skills/cultural-scan/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Cannot verify the observations are current.
+setup: 'Request: ''what does Gen Z like right now, make the campaign about that''. No social tools.'
+expected:
+  must:
+  - refuses generational stereotypes; observes public sources or asks for them; dates and stages every signal
+  must_not:
+  - lists generic Gen Z traits from memory
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

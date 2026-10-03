@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/model-registry.schema.json",
+  "title": "Model registry",
+  "description": "Section 11. Living, snapshot-dated facts about models. Prices and latency are snapshots, never permanent truth.",
+  "type": "object",
+  "required": [
+    "updated",
+    "models"
+  ],
+  "properties": {
+    "updated": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "model_id",
+          "provider",
+          "modality",
+          "capabilities",
+          "last_verified",
+          "source"
+        ],
+        "properties": {
+          "model_id": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "provider_model_id": {
+            "type": "string",
+            "description": "exact endpoint/model name at the provider"
+          },
+          "modality": {
+            "enum": [
+              "image",
+              "video",
+              "vector",
+              "audio",
+              "text",
+              "analysis",
+              "3d"
+            ],
+            "description": "output family; what the model can DO is in capabilities"
+          },
+          "capabilities": {
+            "type": "array",
+            "description": "open kebab-case vocabulary, e.g. text-to-image, image-edit, multi-image-reference, mask-inpainting, image-to-video, text-rendering, text-to-vector-svg; route by these, never by model name",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            }
+          },
+          "known_strengths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "known_weaknesses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "input_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "max_refs": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "resolution": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pricing_snapshot": {
+            "oneOf": [
+              {
+                "$ref": "common.schema.json#/$defs/snapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "latency_snapshot": {
+            "oneOf": [
+              {
+                "$ref": "common.schema.json#/$defs/snapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "licensing": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "api": {
+            "type": "object",
+            "properties": {
+              "async": {
+                "type": "boolean"
+              },
+              "webhooks": {
+                "type": "boolean"
+              },
+              "idempotency": {
+                "type": "string"
+              },
+              "caching": {
+                "type": "string"
+              }
+            }
+          },
+          "last_verified": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "access": {
+            "type": "string",
+            "description": "how it is reachable: direct, fal, Runway, Higgsfield CLI ... (aggregator prices differ: separate rows when they matter)"
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "est_unit_cost": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "router-usable single number derived from pricing_snapshot; null when token-priced or unknown (estimate before spending)",
+            "required": [
+              "amount",
+              "currency",
+              "per"
+            ],
+            "properties": {
+              "amount": {
+                "type": "number"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "per": {
+                "enum": [
+                  "image",
+                  "second",
+                  "megapixel",
+                  "operation"
+                ]
+              },
+              "basis": {
+                "type": "string"
+              }
+            }
+          },
+          "benchmark_results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "task",
+                "date",
+                "result"
+              ],
+              "properties": {
+                "task": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "string"
+                },
+                "experiment_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "confidence": {
+            "$ref": "common.schema.json#/$defs/confidence"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "watch",
+              "deprecated",
+              "shut_down"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

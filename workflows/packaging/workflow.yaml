@@ -1,0 +1,57 @@
+name: packaging
+status: template
+summary: Packaging from category truth to verified renders and a prepress checklist.
+entry_skill: workflow
+triggers:
+- packaging
+- pack design
+- label
+- dieline
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: truth
+  skill: office-hours
+  gate: owner
+- id: market-retail-context
+  skill: competitor-intel
+  gate: auto
+- id: strategy
+  skill: creative-direction
+  gate: owner
+- id: shelf-blocking
+  does: shelf and blocking studies (deterministic layouts at shelf distance)
+  gate: auto
+- id: identity-application
+  skill: identity-system
+  gate: auto
+- id: hierarchy
+  does: information hierarchy on every panel
+  gate: auto
+- id: claims-architecture
+  skill: claims-proof
+  gate: owner
+- id: compliance
+  skill: claims-proof
+  does: BR/US mandatory statements from current primary sources
+  gate: auto
+- id: dieline-production
+  does: dieline, bleed, finishes, barcode, print constraints; checklist
+  gate: auto
+- id: renders
+  skill: generate-media
+  does: renders from the dieline art; label art composited, never generated
+  gate: auto
+- id: mockups
+  skill: image-edit
+  does: physical-context mockups
+  gate: auto
+- id: verification
+  skill: brand-verify
+  gate: auto
+- id: review
+  skill: creative-review
+  gate: owner
+- id: prepress
+  does: prepress checklist signed by a human
+  gate: owner

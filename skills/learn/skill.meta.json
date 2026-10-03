@@ -1,0 +1,75 @@
+{
+  "slug": "learn",
+  "type": "capability",
+  "summary": "Capture corrections, pairs, failures and quirks; run the taste loop; promote repeated evidence with provenance; weekly retro",
+  "tags": [
+    "learning",
+    "memory",
+    "retro",
+    "preferences"
+  ],
+  "triggers": [
+    "remember this",
+    "never do this again",
+    "retro",
+    "what did we learn",
+    "owner correction",
+    "do not relearn"
+  ],
+  "not_for": [
+    "office-hours"
+  ],
+  "required_inputs": [
+    "state events"
+  ],
+  "outputs": [
+    "state/learnings.jsonl",
+    "docs/learnings.md",
+    "work/retro/*.md"
+  ],
+  "writes": [
+    "state/learnings.jsonl",
+    "docs/",
+    "references/anti/",
+    "evals/"
+  ],
+  "cost_class": "free",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": [
+    "prompt-director",
+    "brand-verify",
+    "model-router",
+    "identity-system",
+    "creative-autoresearch"
+  ],
+  "evals": [
+    "evals/fixtures/local-learning-contradicts-framework.yaml",
+    "evals/fixtures/ai-judge-not-owner.yaml"
+  ],
+  "approval_gates": [
+    {
+      "id": "promote",
+      "after_step": "promote",
+      "artifact": "learning",
+      "never_self_approve": true
+    }
+  ],
+  "baseline": "n/a",
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "destructive": false,
+  "version": "0.1.0",
+  "last_verified": null,
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  },
+  "required_providers": [],
+  "optional_providers": []
+}

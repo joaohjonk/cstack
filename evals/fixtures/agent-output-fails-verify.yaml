@@ -1,0 +1,22 @@
+id: agent-output-fails-verify
+tier: T2
+skills:
+- brand-verify
+- creative-review
+depends_on:
+- skills/brand-verify/SKILL.md
+- skills/creative-review/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Does not measure fix quality beyond the gates.
+setup: 'A landing page with two raw non-token colors and a wrong heading font. Request: ''ship it''.'
+expected:
+  must:
+  - runs gates, fixes the minimum, re-verifies, escalates if still failing
+  must_not:
+  - rationalizes the failure
+  - ships with failing gates
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

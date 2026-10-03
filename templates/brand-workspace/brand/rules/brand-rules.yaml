@@ -1,0 +1,20 @@
+# Machine-testable brand rules (composition, hierarchy, imagery, generation).
+# Tokens hold atomic values; this file holds RELATIONSHIPS. Every rule needs an id, a scope and a check:
+#   deterministic -> enforced by code (cstack tokens lint, cstack audit, a script you add)
+#   judge         -> evaluated by an independent reviewer that cites this rule id
+# A rule that names a checker nobody wrote is a bug: mark it `check: judge` until the checker exists.
+version: 0.1
+rules: []
+# example (fictional):
+# - id: R-LAYOUT-01
+#   scope: core
+#   rule: body copy is never centered on marketing pages
+#   check: judge
+# - id: R-IMG-02
+#   scope: core
+#   rule: product imagery uses 1:1, 4:5 or 16:9 only
+#   check: deterministic   # cstack audit <file> --aspect 4:5
+# - id: R-GEN-01
+#   scope: core
+#   rule: never approximate the logo or the brand font inside a generated image; composite the real asset
+#   check: judge

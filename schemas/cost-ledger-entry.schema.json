@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/cost-ledger-entry.schema.json",
+  "title": "Cost / latency ledger entry",
+  "description": "Section 11. One line per provider call in state/cost-ledger.jsonl.",
+  "type": "object",
+  "required": [
+    "run_id",
+    "ts",
+    "provider",
+    "operation",
+    "status"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "ts": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "operation": {
+      "type": "string"
+    },
+    "input_hashes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prompt_recipe_hash": {
+      "type": "string"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "cache_status": {
+      "enum": [
+        "hit",
+        "miss",
+        "n/a"
+      ]
+    },
+    "estimated_cost": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "actual_cost_if_available": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "latency_ms": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "output_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "retry_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "enum": [
+        "dry_run",
+        "queued",
+        "ok",
+        "failed_transient",
+        "failed_policy",
+        "failed_other",
+        "deduplicated",
+        "budget_blocked"
+      ]
+    },
+    "experiment_id": {
+      "type": "string"
+    },
+    "skill": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    }
+  }
+}

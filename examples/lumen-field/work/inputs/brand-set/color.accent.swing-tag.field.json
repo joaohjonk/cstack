@@ -1,0 +1,15 @@
+{
+  "value": "#C98A3E",
+  "input_class": "FACT",
+  "sources": [
+    {
+      "kind": "official_asset",
+      "ref": "assets/official/swing-tag-print-spec.md",
+      "quote": "Ink 2: Kiln Ochre, matched to a fired glaze tile in 2025: sRGB equivalent #C98A3E",
+      "captured_at": "2025-11-02"
+    }
+  ],
+  "confidence": "medium",
+  "permanence": "core",
+  "approval": "current"
+}

@@ -1,0 +1,25 @@
+# Described anti-reference: a composite of a common luxury-hospitality convention.
+id: anti-black-velvet-gilt
+kind: image
+library: anti
+source_domain: luxury hospitality tableware catalogues (category convention)
+distance: near
+rights:
+  status: inspiration_only
+  notes: composite description; no specific source, nothing stored
+transferable_mechanism: >-
+  (what to avoid) A single plate floating on black velvet under a hard spotlight, gilt rim, reflections
+  polished away. Scarcity and price are signalled through darkness and isolation.
+mechanism_tags: [isolation, luxury_signalling]
+transfer: >-
+  Negative constraint: no black seamless backgrounds, no spotlight isolation, no metallic edges. The
+  owner's words: "a workshop, not a boutique" (banned_language.words).
+do_not_copy:
+  - everything here is an anti pattern
+why_it_fails: >-
+  Reads as handcrafted luxury, which the owner has banned; also hides the speckle and foot ring that carry
+  the product truth.
+anti_category: too_luxury
+surfaces: [all imagery]
+approval: current
+decided_by: Founder (fictional)

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# cstack setup: install dependencies and link skills into your agent host(s).
+#   ./setup                 default hosts (see registry/hosts.json)
+#   ./setup claude-code     one host: default|agents|claude-code|codex|cursor|gemini-cli|opencode|all
+# Safe to re-run (idempotent). CSTACK_SETUP_DRY_RUN=1 ./setup shows what it would link.
+# Never installs system software, never asks for or stores keys, makes no paid calls.
+set -euo pipefail
+
+HOST="${1:-default}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+say() { printf '%s\n' "$*"; }
+fail() { printf 'setup: %s\n' "$*" >&2; exit 1; }
+
+# 1. Node >= 20 (checked, never installed)
+command -v node >/dev/null 2>&1 || fail "Node.js >= 20 is required and was not found. Install it yourself (https://nodejs.org or your version manager), then re-run ./setup."
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+[ "$NODE_MAJOR" -ge 20 ] 2>/dev/null || fail "Node.js >= 20 is required (found $(node -v)). Upgrade it yourself, then re-run ./setup."
+command -v npm >/dev/null 2>&1 || fail "npm was not found next to node $(node -v). Fix your Node install, then re-run ./setup."
+say "node $(node -v) ok"
+
+# 2. npm dependencies: local to this checkout. playwright-core is optional and never downloads a browser here.
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+if [ -d node_modules/ajv ] && [ -d node_modules/yaml ] && [ -d node_modules/ajv-formats ] && [ node_modules/.package-lock.json -nt package-lock.json ]; then
+  say "npm dependencies already installed"
+else
+  if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+fi
+
+# 3. Link skills into the agent host(s). Re-running refreshes links; nothing outside the host skill folders is touched.
+# CSTACK_SETUP_DRY_RUN=1 prints what would be linked without writing (used by CI).
+if [ "${CSTACK_SETUP_DRY_RUN:-}" = "1" ]; then node bin/cstack.mjs setup --host "$HOST" --dry-run; else node bin/cstack.mjs setup --host "$HOST"; fi
+
+# 4. Optional capabilities (reported, never installed)
+if node -e "require.resolve('playwright-core')" >/dev/null 2>&1; then
+  say "playwright-core present: \`cstack browse\` and JPEG/WebP \`cstack edit paste\` work when a Chromium is available (set CSTACK_CHROMIUM to use your own)."
+else
+  say "playwright-core absent (optional): browser commands will report MISSING; everything else works."
+fi
+
+cat <<'NEXT'
+
+Next steps
+  node bin/cstack.mjs help                       list commands
+  node bin/cstack.mjs brand init ../my-brand --name "My Brand"   start a brand workspace (outside this repo)
+  node bin/cstack.mjs providers                  which providers are usable; keys are env vars by name only
+  node bin/cstack.mjs search "product photoshoot"
+  npm run check                                  validate + budgets + tests
+
+Paid providers stay off until you export their env vars yourself (see registry/providers.json).
+NEXT

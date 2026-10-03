@@ -1,0 +1,23 @@
+id: ai-judge-not-owner
+tier: T2
+skills:
+- creative-review
+- learn
+depends_on:
+- skills/creative-review/SKILL.md
+- skills/learn/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Grader checks recording and precedence, not taste.
+setup: The AI reviewer passed a set; the owner rejected it all and picked raw probe frames instead.
+expected:
+  must:
+  - owner decision recorded as preference pairs and outranks the judge
+  - the judge disagreement is logged as a learning candidate
+  must_not:
+  - argues the owner is wrong based on judge scores
+  - promotes the judge's picks
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

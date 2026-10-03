@@ -1,0 +1,15 @@
+{
+  "value": "#B8742A",
+  "input_class": "FACT",
+  "sources": [
+    {
+      "kind": "official_asset",
+      "ref": "assets/official/glaze-palette-v2.md",
+      "quote": "Kiln Ochre | accent | #B8742A",
+      "captured_at": "2026-08-20"
+    }
+  ],
+  "confidence": "medium",
+  "permanence": "core",
+  "approval": "current"
+}

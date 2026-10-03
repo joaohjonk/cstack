@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/brand-system.schema.json",
+  "title": "Brand system (executable brand state)",
+  "description": "Section 5 of the cstack spec. The machine-readable brand: every field carries source, confidence, last_updated, permanence and approval (see common.schema.json#/$defs/field).",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "metadata",
+    "sections"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "brand_id",
+        "name",
+        "updated"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "brand_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "enum": [
+            "idea",
+            "prelaunch",
+            "launched",
+            "scaling",
+            "rebrand"
+          ]
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "decides"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "decides": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "markets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO country codes; drives which compliance skills run (e.g. BR, US)"
+        },
+        "updated": {
+          "$ref": "common.schema.json#/$defs/date"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "What was ingested to build this state, and the precedence order applied.",
+      "properties": {
+        "ingested": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "ref",
+              "kind"
+            ],
+            "properties": {
+              "ref": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "hash": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "precedence": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/source_kind"
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "looked_for",
+              "status"
+            ],
+            "properties": {
+              "looked_for": {
+                "type": "string"
+              },
+              "where": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "absent",
+                  "unreachable",
+                  "needs_owner"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "business_truth": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "customer_audience": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "category": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "strategy": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "positioning": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "jobs_to_be_done": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "brand_beliefs": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "brand_tensions": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "value_proposition": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "claims": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "proof": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "voice": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "vocabulary": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "banned_language": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "naming": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "logo_marks": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "color": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "materials": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "textures": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "typography": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "type_hierarchy": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "grid": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "spacing": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "layout": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "components": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "interaction": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "motion": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "sound": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "photography": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "camera_language": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "lighting": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "casting": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "wardrobe": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "locations": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "props": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "product_representation": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "packaging_rules": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "illustration": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "graphic_devices": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "iconography": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "social_behavior": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "cultural_territories": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "reference_mechanisms": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "anti_references": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "asset_registry": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "campaign_history": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "performance_evidence": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "compliance_constraints": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "approved_exceptions": {
+          "$ref": "common.schema.json#/$defs/section"
+        },
+        "known_uncertainties": {
+          "$ref": "common.schema.json#/$defs/section"
+        }
+      },
+      "patternProperties": {
+        "^x_[a-z0-9_]+$": {
+          "$ref": "common.schema.json#/$defs/section"
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "description": "Section 23: conflicts are surfaced, never averaged.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "field",
+          "positions",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string",
+            "description": "section.field path"
+          },
+          "positions": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "source"
+              ],
+              "properties": {
+                "value": {},
+                "source": {
+                  "$ref": "common.schema.json#/$defs/source_ref"
+                }
+              }
+            }
+          },
+          "default_until_resolved": {},
+          "owner": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "resolved",
+              "superseded"
+            ]
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "resolved": {
+            "type": "string"
+          },
+          "resolved_by": {
+            "type": "string"
+          },
+          "picked": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "superseded_by": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "entities_ref": {
+      "type": "string",
+      "description": "path to brand-world.json"
+    },
+    "references_ref": {
+      "type": "string",
+      "description": "path to the reference library index"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+name: deck
+status: template
+summary: A deck with one argument, editorial grid and page-by-page review.
+entry_skill: workflow
+triggers:
+- deck
+- presentation
+- pitch deck
+- slides
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
+runs: []
+steps:
+- id: purpose-audience
+  skill: office-hours
+  gate: owner
+- id: single-argument
+  does: one sentence the deck proves
+  gate: auto
+- id: narrative
+  skill: copywriting
+  does: narrative and slide titles that read as the argument
+  gate: auto
+- id: evidence
+  does: data and proof with sources
+  gate: auto
+- id: architecture
+  does: slide architecture
+  gate: auto
+- id: editorial-grid
+  skill: identity-system
+  does: grid, type scale and image rules for slides
+  gate: auto
+- id: art-direction
+  skill: creative-direction
+  gate: auto
+- id: build
+  does: build with tokens (HTML/PPTX via deterministic tooling)
+  gate: auto
+- id: page-review
+  skill: creative-review
+  does: EDITOR, TYPE DIRECTOR, STRATEGIST per page
+  gate: auto
+- id: readability
+  skill: browse
+  does: PDF print + projector and mobile readability checks
+  gate: auto
+- id: final-qa
+  skill: brand-verify
+  gate: owner

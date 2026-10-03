@@ -1,0 +1,27 @@
+id: bret-victor
+name: Bret Victor / Dynamicland
+kind: person
+domains:
+- interfaces
+- tools for thought
+mental_model: 'interfaces as thinking environments: make the system visible and directly manipulable'
+mechanisms:
+- immediate feedback between a change and its effect
+- show the data and the state, not an abstraction of it
+- tools that let people see consequences before committing
+representative_works:
+- Inventing on Principle (talk, 2012)
+- Dynamicland (communal computing space)
+when_useful:
+- designing cstack's own review surfaces (contact sheets, diffs, approve pages)
+- product UX for complex tools
+when_not_useful:
+- simple conversion pages that need one clear action
+tensions:
+- exploration vs. decisiveness
+sources:
+- kind: external_reference
+  ref: Inventing on Principle (talk, 2012)
+added: '2026-10-03'
+added_by: cstack seed
+status: current

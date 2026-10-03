@@ -1,0 +1,23 @@
+id: repeated-brand-context
+tier: T2
+skills:
+- brand-import
+- prompt-director
+depends_on:
+- skills/brand-import/SKILL.md
+- skills/prompt-director/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: Section 31 behavior case.
+cannot_isolate: Token accounting is approximate (chars/4).
+setup: Twenty small tasks in sequence on one workspace.
+expected:
+  must:
+  - uses cstack brand context (compact, hashed) and reuses it
+  - no full re-ingestion per task
+  must_not:
+  - re-reads every source file each task
+  - pastes the whole brand system into each prompt
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

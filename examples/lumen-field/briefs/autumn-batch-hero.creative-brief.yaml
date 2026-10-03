@@ -1,0 +1,84 @@
+# Creative brief (output of /office-hours), fictional. Downstream skills read this instead of re-asking.
+id: brief-autumn-batch-hero
+brand_id: lumen-field
+date: "2026-09-24"
+requested_artifact: three hero images for the autumn batch launch page
+recommended_artifact: one aftermath table hero (4:5) plus one batch grid (1:1); a third image only if the first two pass review
+reframe: >-
+  The owner asked for "three nice photos of the new plates". The job is to make "sold by the batch, every
+  piece differs" visible. Two images with distinct jobs do that better than three variations of one table.
+job_of_the_piece: show that the autumn plates are real, used, and individually different, so a visitor trusts the batch is worth buying before it sells out
+mode: mixed
+audience:
+  who: visitors to the launch page (audience is inferred, see brand-system customer_audience.primary)
+  think: these are made in small runs and each one is slightly different
+  feel: the table looks lived in, not staged
+  do: open a product page from the batch grid
+product_truth:
+  - "stoneware dinner plate, glaze Ochre Run (brand-world @PRODUCT_DINNER_PLATE_OCHRE_RUN)"
+  - "one kiln load, typically 60-90 pieces (business_truth.batch_model)"
+  - "glaze speckle and pooling differ piece to piece (business_truth.making_method)"
+  - "dishwasher safe (claims.dishwasher_safe) - the only use claim allowed"
+tension: a small studio must look trustworthy and consistent while its product is deliberately inconsistent
+conventions:
+  - convention: untouched, symmetrical place settings
+    move: invert
+    why: owner wants the table after the meal (photography.approach)
+  - convention: one perfect hero product, retouched clean
+    move: invert
+    why: show variation as the subject (ref-natural-history-plate-grid)
+  - convention: square-cropped product cards on a light ground
+    move: use
+    why: it is how the shop grid works and keeps the batch grid scannable
+permission: a working studio can show crumbs, scuffs and raw foot rings; a mass-market brand cannot
+inevitability_test: if the glaze variation in the grid is real, the image could only belong to this batch
+inputs:
+  - item: stoneware tableware only
+    class: FACT
+    source: { kind: user_instruction, ref: "assets/official/owner-interview-2026-09-14.md#1" }
+  - item: glaze must not be recoloured or smoothed
+    class: HARD_CONSTRAINT
+    source: { kind: user_instruction, ref: "assets/official/owner-interview-2026-09-14.md#3" }
+  - item: never claim microwave safe
+    class: HARD_CONSTRAINT
+    source: { kind: user_instruction, ref: "assets/official/owner-interview-2026-09-14.md#8" }
+  - item: north-window late-afternoon light
+    class: SOFT_CONSTRAINT
+    source: { kind: live_brand_behavior, ref: "https://lumen-field.example/shop" }
+  - item: aftermath table, two traces of a meal at most
+    class: REFERENCE_MECHANISM
+    source: { kind: external_reference, ref: "references/gold/ref-breakfast-piece-aftermath.reference.yaml" }
+  - item: Kiln Ochre accent value
+    class: UNKNOWN
+    source: { kind: official_asset, ref: "brand/brand-system.json#conflicts" }
+  - item: what food is on the table
+    class: OPEN_CREATIVE_SPACE
+scope: core
+surfaces: [launch page hero, launch page batch grid]
+deliverables:
+  - "hero 4:5, 2400x3000 (R-IMG-01)"
+  - "batch grid 1:1, 2400x2400 (R-IMG-01)"
+success_criteria:
+  - axis: product_truth
+    criterion: glaze, speckle, rim break and raw foot ring match the master photo (R-IMG-02); judged against the master, not against the prompt
+  - axis: brand_fit
+    criterion: reads as after the meal, passes both anti references (R-IMG-03)
+  - axis: message_clarity
+    criterion: a stranger can say "these are all a bit different" after five seconds on the batch grid
+  - axis: craft
+    criterion: one light source, no doubled shadows, highlights not clipped on glaze
+constraints:
+  budget: { amount: 0, currency: USD, unit: "until the owner sets cstack.config.yaml budget" }
+  deadline: "2026-10-20 (batch goes live)"
+  markets: [GB]
+open_questions:
+  - question: which Kiln Ochre is correct (palette spec #B8742A or swing tag #C98A3E)?
+    default: keep ochre out of graphics; the glaze in photos is whatever the real piece is
+    owner: Founder (fictional)
+  - question: are people (hands) allowed in frame?
+    default: no people; traces of use only
+    owner: Founder (fictional)
+  - question: plate dimensions for scale-accurate composites?
+    default: shoot the real plates; no generated plates until measured
+    owner: Founder (fictional)
+handoff: [product-fidelity, shot-dna, prompt-director, model-router]

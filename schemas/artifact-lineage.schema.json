@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/artifact-lineage.schema.json",
+  "title": "Artifact lineage (creative commit)",
+  "description": "Section 22. Every significant artifact version knows its parent, intent, changed/unchanged dimensions, inputs, recipe, model and decisions. Written as a sidecar next to the output file.",
+  "type": "object",
+  "required": [
+    "artifact_id",
+    "version",
+    "kind",
+    "intent_of_change",
+    "operation",
+    "output_files",
+    "result"
+  ],
+  "properties": {
+    "artifact_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "parent_version": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "image",
+        "video",
+        "copy",
+        "page",
+        "deck",
+        "packaging",
+        "audio",
+        "other"
+      ]
+    },
+    "brief_ref": {
+      "type": "string"
+    },
+    "shot_dna_ref": {
+      "type": "string"
+    },
+    "intent_of_change": {
+      "type": "string"
+    },
+    "changed_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unchanged_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "operation": {
+      "enum": [
+        "generate",
+        "edit",
+        "inpaint",
+        "composite",
+        "upscale",
+        "grade",
+        "crop",
+        "layout",
+        "write",
+        "deterministic_transform",
+        "human_edit"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ref",
+          "role"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "prompt_recipe": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "compiled_prompt": {
+          "type": "string"
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "model_id": {
+          "type": "string"
+        },
+        "settings": {
+          "type": "object"
+        },
+        "seed": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "asset_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "output_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "run_id": {
+      "type": "string",
+      "description": "cost ledger run id"
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "eval_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "human_decision": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "enum": [
+            "gold",
+            "approve",
+            "reject",
+            "anti",
+            "pending"
+          ]
+        },
+        "by": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "result": {
+      "enum": [
+        "promoted",
+        "rejected",
+        "pending",
+        "superseded"
+      ]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "brand_refs": {
+      "type": "object",
+      "description": "brand-system field paths (section.field) -> hash of the value used. `cstack brand stale` lists artifacts whose inputs changed (dependency-revision invalidation).",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "skill": {
+      "type": "string"
+    },
+    "skills_lock": {
+      "type": "string",
+      "description": "hash of SKILLS.lock at generation time"
+    }
+  }
+}

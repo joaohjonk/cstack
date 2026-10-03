@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/prompt-recipe.schema.json",
+  "title": "Prompt recipe",
+  "description": "Section 12. A prompt is a compiled output. Recipe = template with named slots + slot values + reference roles + target compiler. The compiler fails on missing or unused slots.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "task",
+    "template",
+    "slots"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "parent": {
+      "type": "string"
+    },
+    "task": {
+      "enum": [
+        "text_to_image",
+        "image_edit",
+        "image_to_video",
+        "text_to_video",
+        "vector",
+        "typography_image",
+        "product_placement",
+        "copy"
+      ]
+    },
+    "target_model": {
+      "type": "string"
+    },
+    "compiler": {
+      "type": "string"
+    },
+    "template": {
+      "type": "string",
+      "description": "stable instruction text with {slot} placeholders; stable prefix first"
+    },
+    "slots": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "required": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "deterministic pool addressed by index/seed"
+          }
+        }
+      }
+    },
+    "values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "variant_index": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "modules": {
+      "type": "object",
+      "properties": {
+        "objective": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "product_lock": {
+          "type": "string"
+        },
+        "scene": {
+          "type": "string"
+        },
+        "behavior": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "composition": {
+          "type": "string"
+        },
+        "camera": {
+          "type": "string"
+        },
+        "lighting": {
+          "type": "string"
+        },
+        "materials": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string"
+        },
+        "color_logic": {
+          "type": "string"
+        },
+        "imperfection": {
+          "type": "string"
+        },
+        "post_process": {
+          "type": "string"
+        },
+        "brand_constraints": {
+          "type": "string"
+        },
+        "reference_mapping": {
+          "type": "string"
+        },
+        "negative_constraints": {
+          "type": "string"
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ref",
+          "role"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "product_lock",
+              "composition",
+              "lighting",
+              "palette",
+              "cast",
+              "location",
+              "style_mechanism",
+              "mask",
+              "init_image"
+            ]
+          },
+          "weight": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "shot_dna_ref": {
+      "type": "string"
+    },
+    "brief_ref": {
+      "type": "string"
+    },
+    "less_text_more_refs": {
+      "type": "boolean",
+      "description": "compiler hint: references carry the look, text stays short"
+    },
+    "compiled": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "negative": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
+        },
+        "compiled_at": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

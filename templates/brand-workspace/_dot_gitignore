@@ -1,0 +1,12 @@
+# secrets never live in the workspace
+.env
+.env.*
+# large binaries: track with git-lfs or keep in a bucket; lineage sidecars (*.gen.json) stay tracked
+work/**/*.png
+work/**/*.jpg
+work/**/*.jpeg
+work/**/*.webp
+work/**/*.mp4
+work/**/*.mov
+state/pending-jobs/
+state/cache/
