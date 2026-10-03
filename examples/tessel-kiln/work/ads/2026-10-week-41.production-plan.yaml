@@ -1,0 +1,16 @@
+# Fictional example. asset-factory's plan for bet B-2026-10-01 and family F-2026-10-01.
+id: PP-2026-W41
+period: 2026-10-05..2026-10-18
+bets: [B-2026-10-01, F-2026-10-01]
+assets:
+  - { id: M1, bet: B-2026-10-01, experiment_id: EXP-2026-10-visual-world, kind: video, route: shoot, skill: video-direction, cell: { visual_world: "brand codes: north window, warm ground, glaze truth" } }
+  - { id: M2, bet: B-2026-10-01, experiment_id: EXP-2026-10-visual-world, kind: video, route: shoot, skill: video-direction, cell: { visual_world: "platform default: phone, ring light, captions" } }
+  - { id: M1-45, bet: B-2026-10-01, experiment_id: EXP-2026-10-visual-world, kind: cutdown, route: derive, master: M1, skill: video-assembly }
+  - { id: M2-45, bet: B-2026-10-01, experiment_id: EXP-2026-10-visual-world, kind: cutdown, route: derive, master: M2, skill: video-assembly }
+  - { id: S1, bet: F-2026-10-01, experiment_id: EXP-2026-10-family-one-kiln-load, kind: static, route: reuse, sources: [assets/product/plate-ochre-run/], skill: image-edit }
+  - { id: S2, bet: F-2026-10-01, experiment_id: EXP-2026-10-family-one-kiln-load, kind: static, route: generate, sources: [assets/product/plate-ochre-run/], skill: generate-media }
+  - { id: C1, bet: F-2026-10-01, experiment_id: EXP-2026-10-family-one-kiln-load, kind: copy, route: generate, skill: copywriting }
+exports:
+  - { channel: meta, aspects: ["9:16", "4:5"] }
+  - { channel: organic, aspects: ["9:16"], organic_safe: true }
+budget: { generation_usd: 0, shoot_days: 1 }

@@ -339,7 +339,7 @@
       ],
       "last_verified": "2026-10-03",
       "cstack_workflows": [
-        "paid-social"
+        "growth-creative"
       ]
     },
     {
@@ -706,18 +706,20 @@
         "live status and running duration",
         "timestamps",
         "transcripts",
-        "the user's swipe files and boards"
+        "the user's swipe files and boards",
+        "200M+ ads across Facebook, Instagram, TikTok, YouTube and LinkedIn (vendor claim, MCP launched 2026-06-18)"
       ],
       "tos_notes": "Credit-metered; full ToS not reviewed. API docs page rendered empty to the fetcher, so key header is unverified.",
       "fallback": "Meta Ad Library API or public Ad Library pages, TikTok Creative Center (human browsing); or ask the user to export a board.",
       "cstack_skills": [
         "competitor-intel",
         "creative-direction",
-        "copywriting"
+        "copywriting",
+        "creative-strategist"
       ],
       "last_verified": "2026-10-03",
       "cstack_workflows": [
-        "paid-social"
+        "growth-creative"
       ]
     },
     {
@@ -780,7 +782,7 @@
       ],
       "last_verified": "2026-10-03",
       "cstack_workflows": [
-        "paid-social"
+        "growth-creative"
       ]
     },
     {
@@ -1183,7 +1185,7 @@
       ],
       "last_verified": "2026-10-03",
       "cstack_workflows": [
-        "paid-social"
+        "growth-creative"
       ]
     },
     {
@@ -1243,7 +1245,7 @@
       ],
       "last_verified": "2026-10-03",
       "cstack_workflows": [
-        "paid-social"
+        "growth-creative"
       ]
     },
     {
@@ -1889,7 +1891,7 @@
         "mockup"
       ],
       "cstack_workflows": [
-        "paid-social",
+        "growth-creative",
         "deck"
       ],
       "last_verified": "2026-10-03"
@@ -2181,7 +2183,7 @@
         "claims-proof"
       ],
       "cstack_workflows": [
-        "paid-social"
+        "growth-creative"
       ],
       "last_verified": "2026-10-03"
     },
@@ -2713,6 +2715,206 @@
       ],
       "cstack_workflows": [
         "landing-page"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "meta-marketing-api",
+      "name": "Meta Marketing API (Ads Insights)",
+      "layer": "performance_evidence",
+      "roles": [
+        "the brand's own ad results per ad: spend, impressions, clicks, actions"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Graph API /{ad-id}/insights (or an ad account's insights at ad level)",
+          "auth_env": [
+            "META_ACCESS_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "free; access token with the ads_read permission on the brand's own ad account",
+          "source": "https://developers.facebook.com/docs/marketing-api/insights/",
+          "confidence": "high"
+        },
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "Ads Manager report export (CSV) → cstack creative import --preset meta-ads-manager",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "providers/evidence/README.md",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [
+          "META_ACCESS_TOKEN"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "ad-level metrics (spend, impressions, clicks, actions; \"nearly any metric available in Ads Manager\")"
+      ],
+      "tos_notes": "Reads the brand's own account only. Field list beyond spend, impressions and clicks not confirmed this pass. No API adapter ships yet: use the CSV export.",
+      "fallback": "Export a report from Ads Manager and run cstack creative import.",
+      "cstack_skills": [
+        "creative-intelligence"
+      ],
+      "cstack_workflows": [
+        "growth-creative"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "tiktok-ads-api",
+      "name": "TikTok API for Business (reporting)",
+      "layer": "performance_evidence",
+      "roles": [
+        "the brand's own TikTok ad results"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "TikTok API for Business reporting endpoints (unverified: the docs page did not render to the fetcher)",
+          "auth_env": [
+            "TIKTOK_ADS_ACCESS_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "a TikTok for Business developer app authorised on the brand's advertiser account (unverified)",
+          "source": "https://business-api.tiktok.com/portal/docs",
+          "confidence": "low"
+        },
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "Ads Manager report export (CSV) → cstack creative import --preset tiktok-ads",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "providers/evidence/README.md",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [
+          "TIKTOK_ADS_ACCESS_TOKEN"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "ad-level metrics (export columns vary by report)"
+      ],
+      "tos_notes": "Reads the brand's own advertiser account only. Endpoint and auth unverified this pass. No API adapter ships yet.",
+      "fallback": "Export a report from TikTok Ads Manager and run cstack creative import.",
+      "cstack_skills": [
+        "creative-intelligence"
+      ],
+      "cstack_workflows": [
+        "growth-creative"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "getcrux",
+      "name": "Crux (GetCrux)",
+      "layer": "creative_analytics",
+      "roles": [
+        "AI tagging of a brand's ads",
+        "creative fatigue detection",
+        "cross-platform creative reporting"
+      ],
+      "priority": 6,
+      "access": [
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "in-app reports exported to CSV (no public API or MCP found)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "paid account",
+          "source": "https://www.getcrux.ai/",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__crux__*",
+          "mcp__getcrux__*"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "tagged creatives with performance (export columns unverified)"
+      ],
+      "tos_notes": "Homepage claims (AI tagging, fatigue detection, a tight feedback loop) are marketing claims; the specific tag and metric list was not on the page checked. Import its export with --map; map its labels to cstack taxonomy families rather than adopting its vocabulary.",
+      "fallback": "Ads-manager CSV export plus tagging in hook-format-lab.",
+      "cstack_skills": [
+        "creative-intelligence"
+      ],
+      "cstack_workflows": [
+        "growth-creative"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "motion",
+      "name": "Motion (creative analytics)",
+      "layer": "creative_analytics",
+      "roles": [
+        "creative reporting on a brand's ads",
+        "a public creative-strategy library (formats, hook tactics, mechanics)"
+      ],
+      "priority": 6,
+      "access": [
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "in-app reports exported to CSV (no public API or MCP found in its llms.txt)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "paid account",
+          "source": "https://motionapp.com/llms.txt",
+          "confidence": "medium"
+        },
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "public library: motionapp.com/library (formats, hook tactics, creative mechanics)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free to read",
+          "source": "https://motionapp.com/library/formats/",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__motion__*"
+        ],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "creative reports (export)",
+        "a layered reading of ads: messaging angle, creative mechanic, hook, visual format (library, 113 formats on 2026-10-03)"
+      ],
+      "tos_notes": "Library pages are copyright Motion with no licence stated: read for method, never copy its lists or names into cstack or a prompt. cstack keeps its own taxonomy.",
+      "fallback": "Ads-manager CSV export; registry/creative-taxonomy.json for the layered reading.",
+      "cstack_skills": [
+        "creative-intelligence",
+        "hook-format-lab"
+      ],
+      "cstack_workflows": [
+        "growth-creative"
       ],
       "last_verified": "2026-10-03"
     }

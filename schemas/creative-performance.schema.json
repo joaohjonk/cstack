@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/creative-performance.schema.json",
   "title": "Creative performance record",
-  "description": "Creative feature decomposition + metrics. Observational data never implies causation.",
+  "description": "One ad's results for one period, with its decomposition into taxonomy tags. Observational data never implies causation; `cstack creative report` reads these.",
   "type": "object",
   "required": [
     "id",
@@ -87,7 +87,8 @@
           "type": "string"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "legacy free-form features; prefer tags"
     },
     "variable_tested": {
       "type": "string"
@@ -117,6 +118,104 @@
     },
     "brand_building_vs_conversion": {
       "type": "string"
+    },
+    "ad_name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object",
+      "description": "one term per taxonomy family (registry/creative-taxonomy.json); never munge families",
+      "properties": {
+        "angle": {
+          "type": "string"
+        },
+        "hook_tactic": {
+          "type": "string"
+        },
+        "visual_hook": {
+          "type": "string"
+        },
+        "verbal_hook": {
+          "type": "string"
+        },
+        "mechanic": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string"
+        },
+        "payoff": {
+          "type": "string"
+        },
+        "cta": {
+          "type": "string"
+        },
+        "awareness_stage": {
+          "enum": [
+            "unaware",
+            "problem-aware",
+            "solution-aware",
+            "product-aware",
+            "most-aware"
+          ]
+        },
+        "talent": {
+          "type": "string"
+        },
+        "setting": {
+          "type": "string"
+        },
+        "visual_world": {
+          "type": "string"
+        },
+        "offer": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "aspect": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "bet_ref": {
+      "type": "string"
+    },
+    "objective": {
+      "enum": [
+        "paid_performance",
+        "organic_travel",
+        "brand_equity"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "provider"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "file": {
+          "type": "string"
+        },
+        "imported_at": {
+          "type": "string"
+        },
+        "preset": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

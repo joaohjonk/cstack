@@ -1,0 +1,17 @@
+{
+  "slug": "creative-intelligence",
+  "type": "capability",
+  "summary": "Import ad results, tag ads by taxonomy family, report correlations above minimum data with confounds, concentration, fatigue and a brand read",
+  "tags": ["growth", "ads", "creative analytics", "performance", "tagging", "fatigue"],
+  "triggers": ["why is this ad working", "creative performance", "ad results", "which ads work", "creative analysis", "ads review", "import ads data", "creative fatigue"],
+  "required_inputs": ["ads export or state/performance.jsonl"],
+  "outputs": ["state/performance.jsonl", "state/insights.jsonl", "work/ads/*-intelligence.md"],
+  "cost_class": "free",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": ["creative-strategist", "brand-verify", "learn-loop"],
+  "fallback": { "when_missing": ["taxonomy tags"], "mode": "degraded" },
+  "last_verified": null,
+  "status": "beta",
+  "required_providers": []
+}

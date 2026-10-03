@@ -1,0 +1,16 @@
+{
+  "slug": "winner-scaler",
+  "type": "capability",
+  "summary": "Name what is invariant about the brand's own winning ad and plan a family of variants that move other families on purpose",
+  "tags": ["growth", "ads", "iteration", "winners", "fatigue", "variants"],
+  "triggers": ["scale this winner", "iterate on a winning ad", "more like this ad", "ad variations", "creative family", "winner is fatiguing"],
+  "required_inputs": ["a winning ad in state/performance.jsonl"],
+  "outputs": ["work/ads/*.creative-family.yaml"],
+  "cost_class": "free",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": ["asset-factory", "hook-format-lab", "creative-intelligence"],
+  "last_verified": null,
+  "status": "beta",
+  "required_providers": []
+}

@@ -1,6 +1,6 @@
 ---
 name: workflow
-description: "Run a cstack workflow end to end as a resumable plan: create-brand, import-brand, campaign, product-photoshoot, paid-social, landing-page, packaging, deck, product-3d, product-video or logo-system. It loads workflows/<name>/workflow.yaml, writes a plan tracker in the brand workspace, calls the right skills in order, stops at owner gates, uses each step's fallback when a skill or provider is missing, and resumes where it left off. Use when the owner asks for one of those outcomes without naming individual skills. Not for a single bounded task (call the specialist skill) or for reframing the ask (use brief first)."
+description: "Run a cstack workflow end to end as a resumable plan: create-brand, import-brand, campaign, product-photoshoot, growth-creative (alias paid-social), landing-page, packaging, deck, product-3d, product-video or logo-system. It loads workflows/<name>/workflow.yaml, writes a plan tracker in the brand workspace, calls the right skills in order, stops at owner gates, uses each step's fallback when a skill or provider is missing, and resumes where it left off. Use when the owner asks for one of those outcomes without naming individual skills. Not for a single bounded task (call the specialist skill) or for reframing the ask (use brief first)."
 license: MIT
 ---
 

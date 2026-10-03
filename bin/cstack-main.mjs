@@ -29,11 +29,13 @@ import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts } from '../scripts/lib/hosts.mjs';
 import { checkLinks } from '../scripts/lib/links.mjs';
+import { report as creativeReport, checkBet, checkFamily, checkPlan, readPerformance, families as taxFamilies } from '../scripts/lib/creative.mjs';
+import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['json', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background']);
+const BOOLEAN_FLAGS = new Set(['json', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -135,6 +137,9 @@ const COMMANDS = {
   '3d inspect': 'check a GLB/glTF against a delivery budget: bytes, triangles, textures, real-world size, origin, compression; model text is untrusted: cstack 3d inspect <file> [--budget web-hero|ar|social] [--dims 70x210x70mm]; exits 1 on FAIL',
   '3d frames': 'check an image-sequence hero: frame count, total and per-frame bytes, one size, no gaps, format: cstack 3d frames <dir> [--max-frames 150] [--max-bytes 8MB]; exits 1 on FAIL',
   '3d blender-script': 'write a Blender turntable or packshot script the owner runs (no Blender needed here): cstack 3d blender-script --glb <file> --mode turntable|packshot [--size 1080x1920] [--frames N] [--seconds S] [--out script.py]',
+  'creative import': 'ads export (CSV) → state/performance.jsonl, tags from family-named columns: cstack creative import <file.csv> --channel meta [--preset meta-ads-manager|tiktok-ads|generic] [--map \'{"spend":"Their Header"}\'] [--period 2026-09] [--currency USD] [--dry-run] --ws <dir>',
+  'creative report': 'observations only from state/performance.jsonl: groups by taxonomy family against the account median, spend concentration, confounds, fatigue; below the data minimums nothing is read: cstack creative report --ws <dir> [--family format] [--min-spend 50] [--min-impressions 2000] [--min-ads 3] [--concentration 0.6] [--write (append to state/insights.jsonl)] [--json]',
+  'creative check': 'gate a creative bet (experiment design), family (winner-scaler) or production plan (asset-factory) by its file name: cstack creative check <x.creative-bet.yaml|x.creative-family.yaml|x.production-plan.yaml> --ws <dir>; exits 1 on errors',
   'workflow list': 'the gated workflows (outcome → skills in order, owner gates) and the methods each one follows',
   'flows list': 'researched best-way-to-an-outcome flows (cstack flows/ + workspace flows/), with staleness',
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage"',
@@ -430,6 +435,77 @@ function appendValidated(schema, file, target) {
   console.log(`appended ${obj.id} to state/${target}`);
 }
 
+function cmdCreative(sub) {
+  if (sub === 'import') {
+    requireWs();
+    const file = path.resolve(args._[0] ?? die('usage: cstack creative import <file.csv> --channel meta [--preset ...] --ws <dir>'));
+    let map = {};
+    if (args.map) {
+      try {
+        map = JSON.parse(args.map);
+      } catch {
+        die('--map must be JSON, e.g. \'{"spend":"Cost (USD)"}\'');
+      }
+    }
+    const { records, skipped, columns } = rowsToRecords(parseCSV(fs.readFileSync(file, 'utf8')), {
+      preset: args.preset ?? 'generic',
+      map,
+      families: taxFamilies(),
+      channel: args.channel ?? die('--channel required (meta, tiktok, ...)'),
+      period: args.period,
+      currency: args.currency,
+      file: path.relative(ws, file).startsWith('..') ? path.basename(file) : path.relative(ws, file),
+      imported_at: nowISO(),
+    });
+    const existing = new Set(readPerformance(ws).map((r) => r.id));
+    const fresh = [];
+    for (const r of records) {
+      const v = validateValue('creative-performance', r);
+      if (!v.ok) skipped.push({ row: r.artifact_ref, reason: v.errors });
+      else if (existing.has(r.id)) skipped.push({ row: r.artifact_ref, reason: `already imported (${r.id})` });
+      else fresh.push(r);
+    }
+    if (!args['dry-run']) for (const r of fresh) appendJSONL(path.join(ws, 'state', 'performance.jsonl'), r);
+    const out = { imported: fresh.length, skipped, columns, dry_run: !!args['dry-run'] };
+    if (args.json) return json(out);
+    console.log(`${args['dry-run'] ? 'would import' : 'imported'} ${fresh.length} records into state/performance.jsonl`);
+    for (const [h, f] of Object.entries(columns)) console.log(`  ${h} → ${f}`);
+    for (const s of skipped) console.log(`  skipped ${s.row}: ${s.reason}`);
+    return;
+  }
+  if (sub === 'report') {
+    requireWs();
+    const r = creativeReport(readPerformance(ws), { family: args.family, min_spend: args['min-spend'], min_impressions: args['min-impressions'], min_ads: args['min-ads'], concentration: args.concentration });
+    if (args.write) for (const i of r.insights) appendJSONL(path.join(ws, 'state', 'insights.jsonl'), i);
+    if (args.json) return json(r);
+    const a = r.account;
+    console.log(`${a.ads} ads, ${a.sufficient} with enough data, ${a.untagged} untagged; spend ${a.spend}; median ${a.metric.toUpperCase()} ${a.median ?? 'n/a'}`);
+    console.log('every line below is an OBSERVATION: a correlation to question, not a cause');
+    for (const w of r.warnings) console.log(`! ${w}`);
+    for (const g of r.groups) console.log(`  ${g.read.padEnd(12)} ${`${g.family}=${g.term}`.padEnd(40)} ads ${g.sufficient_ads}/${g.ads}  share ${Math.round(g.share * 100)}%  median ${g.median ?? '-'}`);
+    for (const i of r.insights) console.log(`- ${i.statement}${i.confounds ? `\n  confounded: ${i.confounds.join('; ')}` : ''}${i.brand_note ? `\n  brand: ${i.brand_note}` : ''}${i.next_test ? `\n  next test: ${i.next_test}` : ''}`);
+    if (args.write) console.log(`appended ${r.insights.length} observations to state/insights.jsonl`);
+    return;
+  }
+  if (sub === 'check') {
+    const file = path.resolve(args._[0] ?? die('usage: cstack creative check <file> --ws <dir>'));
+    const obj = readData(file);
+    const b = path.basename(file);
+    const all = (kind) => walk(ws, (p) => new RegExp(`\\.${kind}\\.(json|ya?ml)$`).test(p) && !p.includes(`${path.sep}node_modules${path.sep}`)).map((p) => readData(p));
+    const r = /\.creative-bet\./.test(b) ? checkBet(obj) : /\.creative-family\./.test(b) ? checkFamily(obj, { performance: readPerformance(ws) }) : /\.production-plan\./.test(b) ? checkPlan(obj, { bets: all('creative-bet'), families: all('creative-family') }) : die('name the file *.creative-bet.yaml, *.creative-family.yaml or *.production-plan.yaml');
+    if (args.json) json(r);
+    else {
+      console.log(`${r.ok ? 'PASS' : 'FAIL'} ${rel(file)}`);
+      for (const e of r.errors) console.log(`  error: ${e}`);
+      for (const w of r.warnings) console.log(`  warn: ${w}`);
+      if (r.cells) console.log(`  cells: ${r.cells}${r.min_spend_total ? `, minimum spend to read it: ${r.min_spend_total}` : ''}`);
+    }
+    if (!r.ok) process.exitCode = 1;
+    return;
+  }
+  die('usage: cstack creative import|report|check');
+}
+
 function cmdExperiment(sub) {
   const id = args._[0];
   if (!id) die('usage: cstack experiment init|log|status <run_id>');
@@ -643,7 +719,7 @@ function cmdSetup() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -710,8 +786,8 @@ switch (cmd) {
     if (argv[0] && argv[0] !== 'list') die('usage: cstack workflow list [--json]');
     const dir = path.join(ROOT, 'workflows');
     const rows = fs.readdirSync(dir).filter((d) => exists(path.join(dir, d, 'workflow.yaml'))).map((d) => readData(path.join(dir, d, 'workflow.yaml')));
-    if (args.json) json(rows.map(({ name, status, summary, methods, steps }) => ({ name, status, summary, methods: methods ?? [], steps: (steps ?? []).length })));
-    else for (const w of rows) console.log(`${w.name.padEnd(20)} ${String(w.status).padEnd(9)} ${w.summary}${w.methods?.length ? `\n${' '.repeat(31)}methods: ${w.methods.join(', ')}` : ''}`);
+    if (args.json) json(rows.map(({ name, aliases, status, summary, methods, steps }) => ({ name, aliases: aliases ?? [], status, summary, methods: methods ?? [], steps: (steps ?? []).length })));
+    else for (const w of rows) console.log(`${w.name.padEnd(20)} ${String(w.status).padEnd(9)} ${w.summary}${w.aliases?.length ? `\n${' '.repeat(31)}also: ${w.aliases.join(', ')}` : ''}${w.methods?.length ? `\n${' '.repeat(31)}methods: ${w.methods.join(', ')}` : ''}`);
     break;
   }
   case 'jobs': {
@@ -826,6 +902,9 @@ switch (cmd) {
     break;
   case 'experiment':
     cmdExperiment(argv[0]);
+    break;
+  case 'creative':
+    cmdCreative(argv[0]);
     break;
   case 'learn':
     cmdLearn(argv[0]);

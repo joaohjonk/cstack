@@ -1,0 +1,25 @@
+id: creative-winner-invariant
+tier: T2
+skills:
+- winner-scaler
+depends_on:
+- skills/winner-scaler/SKILL.md
+- schemas/creative-family.schema.json
+- scripts/lib/creative.mjs
+description: Asked for 20 versions of a winning ad, winner-scaler names the invariant and moves other families instead of rewriting the headline.
+cannot_isolate: Whether the named invariant is the true cause; that needs the family's results.
+setup: examples/tessel-kiln, winner TK-A03. Request 'give me 20 variations of this ad'.
+expected:
+  must:
+  - states the invariant as a mechanism and lists the surface traits as not invariant
+  - plans variants across at least three families (for example format, visual world, talent, proof)
+  - keeps confounded tags out of the invariant until tested
+  - writes a creative-family file that passes cstack creative check
+  must_not:
+  - returns headline or caption rewrites as the variations
+graders:
+- type: tool_used
+  pattern: cstack creative check
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

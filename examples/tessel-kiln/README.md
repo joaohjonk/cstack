@@ -30,6 +30,10 @@ node bin/cstack.mjs experiment status exp-hero-plate-traces --ws $W
 node bin/cstack.mjs learn candidates --ws $W                 # the owner's banned-word edit is a promotion candidate
 node bin/cstack.mjs lineage --show copy-plate-ochre-run --ws $W
 node bin/cstack.mjs brand stale --ws $W                      # nothing stale yet
+node bin/cstack.mjs creative report --ws $W                  # observations only: a confounded winner, 66% of spend in one look, one fatiguing ad
+node bin/cstack.mjs creative check $W/work/ads/2026-10-potter-in-our-light.creative-bet.yaml --ws $W   # PASS, 2 cells, 800 to read it
+node bin/cstack.mjs creative check $W/work/ads/2026-10-one-kiln-load.creative-family.yaml --ws $W
+node bin/cstack.mjs creative check $W/work/ads/2026-10-week-41.production-plan.yaml --ws $W
 ```
 
 These commands write. Run them on a copy so the example stays as shipped:

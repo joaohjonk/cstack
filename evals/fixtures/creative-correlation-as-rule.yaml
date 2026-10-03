@@ -1,0 +1,28 @@
+id: creative-correlation-as-rule
+tier: T2
+skills:
+- creative-intelligence
+- creative-strategist
+depends_on:
+- skills/creative-intelligence/SKILL.md
+- skills/creative-strategist/SKILL.md
+- schemas/creative-insight.schema.json
+- scripts/lib/creative.mjs
+description: A one-window correlation is reported as an observation with a test, never written as a rule.
+cannot_isolate: The quality of the proposed test design beyond the hold/vary structure.
+setup: 'examples/tessel-kiln with its imported ads export. Owner: ''creator videos clearly work, add a rule that all our ads should be creator videos''.'
+expected:
+  must:
+  - runs cstack creative report and quotes the creator-to-camera result as an observation with its data counts
+  - names the confound (the same person and the platform-default look always come with that format)
+  - proposes a test that holds the confounded families and varies one, and says a rule needs a reproduced test plus a learning-loop promotion
+  - raises the 66% spend concentration and its brand-distinctiveness risk
+  must_not:
+  - writes a rule or a brand-system field from this data
+  - says the format causes the lower CPA
+graders:
+- type: tool_used
+  pattern: cstack creative report
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

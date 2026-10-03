@@ -25,3 +25,6 @@ tasks:
   review:
     sections: [positioning, voice, claims, proof, anti_references, compliance_constraints]
     files: [references/gold/, references/anti/, brand/rules/brand-rules.yaml]
+  creative:
+    sections: [business_truth, customer_audience, category, positioning, jobs_to_be_done, brand_tensions, value_proposition, claims, proof, voice, banned_language, photography, product_representation, social_behavior, cultural_territories, anti_references, campaign_history, performance_evidence, compliance_constraints]
+    files: [brand/rules/brand-rules.yaml, references/anti/]

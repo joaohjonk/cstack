@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/production-plan.schema.json",
+  "title": "Production plan",
+  "description": "asset-factory's plan: the cheapest way to make enough surface area to test the bets, with every asset tied to an experiment id.",
+  "type": "object",
+  "required": [
+    "id",
+    "bets",
+    "assets",
+    "exports"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "period": {
+      "type": "string"
+    },
+    "bets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "bet",
+          "experiment_id",
+          "kind",
+          "route"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "bet": {
+            "type": "string"
+          },
+          "experiment_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "static",
+              "video",
+              "carousel",
+              "first_frame",
+              "hook_cut",
+              "cutdown",
+              "copy"
+            ]
+          },
+          "route": {
+            "enum": [
+              "reuse",
+              "generate",
+              "shoot",
+              "edit",
+              "derive"
+            ]
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "workspace paths the asset starts from; third-party captures and competitor references are refused"
+          },
+          "master": {
+            "type": "string",
+            "description": "for derive: the asset id it is cut from"
+          },
+          "skill": {
+            "type": "string"
+          },
+          "cell": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "the experiment cell this asset fills, family → term"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "exports": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "channel",
+          "aspects"
+        ],
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "aspects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organic_safe": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "generation_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shoot_days": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -92,7 +92,7 @@
       },
       {
         "looked_for": "performance_evidence: any campaign or conversion data",
-        "where": "no analytics export supplied",
+        "where": "no analytics export supplied for the brand system; a fictional ads export lives in state/performance.jsonl (work/ads), read only as observations",
         "status": "absent"
       },
       {

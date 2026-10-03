@@ -1,0 +1,84 @@
+name: growth-creative
+aliases:
+- paid-social
+status: template
+summary: 'Creative strategy loop: what to make next, why it should work, how to make a family of variations without eroding the brand, and what was learned. Performance data tells cstack what deserves another question, not what the brand should become.'
+entry_skill: workflow
+methods:
+- paid-social-cutdowns
+triggers:
+- paid social
+- ads
+- meta ads
+- tiktok ads
+- creative testing
+- creative strategy
+- what should we make next
+- growth creative
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs. Formerly paid-social; `cstack workflow list` shows the old name as an alias.
+runs: []
+steps:
+- id: performance-ingest
+  skill: creative-intelligence
+  does: import every channel's export (cstack creative import), decompose untagged ads into taxonomy families
+  gate: auto
+  fallback: 'no data yet: every bet starts as a hypothesis and the first experiment is designed to create the data'
+- id: outside-scan
+  skill: competitor-intel
+  does: ads lens (direct competitors, adjacent winners, creator and platform formats, saturation, white space) through official APIs or a person's browser; reference only
+  gate: auto
+- id: culture
+  skill: cultural-scan
+  does: what is happening in culture that the brand has permission to join
+  gate: auto
+  fallback: 'skip with reason when the round is pure iteration on a proven bet'
+- id: read
+  skill: creative-intelligence
+  does: cstack creative report; observations, confounds, concentration, fatigue, brand read; observations only
+  gate: auto
+- id: bets
+  skill: creative-strategist
+  does: 2-5 creative bets with tension, objectives, brand constraint and one experiment each; cstack creative check passes
+  gate: owner
+- id: attention
+  skill: hook-format-lab
+  does: nine-part decomposition and hook family per approved bet
+  gate: auto
+- id: families
+  skill: winner-scaler
+  does: 'when a proven winner exists: invariant, free traits, variants across families'
+  gate: owner
+  fallback: 'skip with reason when there is no winner above the data minimums'
+- id: production-plan
+  skill: asset-factory
+  does: reuse / edit / derive / shoot / generate per asset, one experiment id per bet, exports per channel; cstack creative check and cstack spend plan pass
+  gate: owner
+- id: copy
+  skill: copywriting
+  gate: auto
+- id: claims
+  skill: claims-proof
+  gate: auto
+- id: make
+  skill: asset-factory
+  does: run the plan through creative-direction, image-edit, generate-media, video-direction and video-assembly; cut-downs derived from masters, never regenerated
+  gate: auto
+- id: fidelity
+  skill: product-fidelity
+  gate: auto
+- id: brand-verify
+  skill: brand-verify
+  gate: auto
+- id: export
+  does: export with experiment ids in names and sidecars; organic-safe versions where a bet serves organic travel
+  outputs:
+  - work/exports/
+  gate: auto
+- id: results
+  skill: creative-intelligence
+  does: after the window, import results and close each experiment (reproduced or not)
+  gate: auto
+- id: learn
+  skill: learn-loop
+  does: 'repeated, tested findings become candidates; a rule only with the owner (cstack learn promote)'
+  gate: owner

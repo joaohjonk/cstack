@@ -1,0 +1,17 @@
+{
+  "slug": "asset-factory",
+  "type": "playbook",
+  "summary": "Plan the cheapest production for approved bets (reuse, edit, derive, shoot, generate) with experiment ids per asset, then run the existing skills",
+  "tags": ["production", "ads", "creative ops", "assets", "experiments", "exports"],
+  "triggers": ["production plan", "make the ads", "how many assets do we need", "asset production", "creative production", "shoot list for ads"],
+  "required_inputs": ["approved creative bets or families"],
+  "outputs": ["work/ads/*.production-plan.yaml", "work/out/", "work/exports/"],
+  "cost_class": "medium",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": ["copywriting", "creative-direction", "image-edit", "generate-media", "video-direction", "video-assembly", "product-fidelity", "brand-verify"],
+  "approval_gates": [{ "id": "spend", "after_step": "gate", "artifact": "production-plan", "never_self_approve": true }],
+  "last_verified": null,
+  "status": "beta",
+  "required_providers": []
+}

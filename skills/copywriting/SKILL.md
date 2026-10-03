@@ -61,7 +61,7 @@ Text work, no paid media. Deterministic checks: length limits, banned words, req
 
 ## Handoff
 
-`claims-proof`, `creative-review`, `workflow landing-page|paid-social|packaging|deck`.
+`claims-proof`, `creative-review`, `workflow landing-page|growth-creative|packaging|deck`.
 
 ## Failure modes
 

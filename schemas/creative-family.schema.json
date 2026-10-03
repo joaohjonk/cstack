@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/creative-family.schema.json",
+  "title": "Creative family",
+  "description": "winner-scaler's plan: what is invariant about one of the brand's own winning ads, and variants that move along other families on purpose.",
+  "type": "object",
+  "required": [
+    "id",
+    "winner_ref",
+    "invariant",
+    "not_invariant",
+    "variants"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "winner_ref": {
+      "type": "string",
+      "description": "artifact_ref of a record in the workspace state/performance.jsonl"
+    },
+    "winner_tags": {
+      "type": "object",
+      "description": "one term per taxonomy family (registry/creative-taxonomy.json); never munge families",
+      "properties": {
+        "angle": {
+          "type": "string"
+        },
+        "hook_tactic": {
+          "type": "string"
+        },
+        "visual_hook": {
+          "type": "string"
+        },
+        "verbal_hook": {
+          "type": "string"
+        },
+        "mechanic": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string"
+        },
+        "payoff": {
+          "type": "string"
+        },
+        "cta": {
+          "type": "string"
+        },
+        "awareness_stage": {
+          "enum": [
+            "unaware",
+            "problem-aware",
+            "solution-aware",
+            "product-aware",
+            "most-aware"
+          ]
+        },
+        "talent": {
+          "type": "string"
+        },
+        "setting": {
+          "type": "string"
+        },
+        "visual_world": {
+          "type": "string"
+        },
+        "offer": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "aspect": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "invariant": {
+      "type": "object",
+      "required": [
+        "statement",
+        "families"
+      ],
+      "properties": {
+        "statement": {
+          "type": "string"
+        },
+        "families": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "angle",
+              "hook_tactic",
+              "visual_hook",
+              "verbal_hook",
+              "mechanic",
+              "format",
+              "proof",
+              "payoff",
+              "cta",
+              "awareness_stage",
+              "talent",
+              "setting",
+              "visual_world",
+              "offer",
+              "duration",
+              "aspect",
+              "audience"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "not_invariant": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "angle",
+          "hook_tactic",
+          "visual_hook",
+          "verbal_hook",
+          "mechanic",
+          "format",
+          "proof",
+          "payoff",
+          "cta",
+          "awareness_stage",
+          "talent",
+          "setting",
+          "visual_world",
+          "offer",
+          "duration",
+          "aspect",
+          "audience"
+        ]
+      },
+      "description": "surface traits of the winner that are free to change"
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "changes"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "changes": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+              "enum": [
+                "angle",
+                "hook_tactic",
+                "visual_hook",
+                "verbal_hook",
+                "mechanic",
+                "format",
+                "proof",
+                "payoff",
+                "cta",
+                "awareness_stage",
+                "talent",
+                "setting",
+                "visual_world",
+                "offer",
+                "duration",
+                "aspect",
+                "audience"
+              ]
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "why": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

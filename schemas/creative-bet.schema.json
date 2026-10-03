@@ -1,0 +1,330 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/creative-bet.schema.json",
+  "title": "Creative bet",
+  "description": "What to make next and why it should work: one strategic tension, one angle, a hook family, formats and one controlled experiment. The output of creative-strategist; checked by `cstack creative check`.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "status",
+    "tension",
+    "audience",
+    "concept",
+    "objectives",
+    "brand_constraint",
+    "experiment",
+    "evidence"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "approved",
+        "in_test",
+        "learned",
+        "killed"
+      ]
+    },
+    "created": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "by": {
+      "type": "string"
+    },
+    "tension": {
+      "type": "string",
+      "description": "the strategic tension in the customer's words"
+    },
+    "audience": {
+      "type": "object",
+      "required": [
+        "who",
+        "awareness_stage"
+      ],
+      "properties": {
+        "who": {
+          "type": "string"
+        },
+        "awareness_stage": {
+          "enum": [
+            "unaware",
+            "problem-aware",
+            "solution-aware",
+            "product-aware",
+            "most-aware"
+          ]
+        },
+        "objections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "language": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "concept": {
+      "type": "object",
+      "required": [
+        "angle",
+        "hook_tactic",
+        "mechanic",
+        "format"
+      ],
+      "properties": {
+        "angle": {
+          "type": "string"
+        },
+        "hook_tactic": {
+          "type": "string"
+        },
+        "visual_hook": {
+          "type": "string"
+        },
+        "verbal_hook": {
+          "type": "string"
+        },
+        "mechanic": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string"
+        },
+        "payoff": {
+          "type": "string"
+        },
+        "cta": {
+          "type": "string"
+        },
+        "awareness_stage": {
+          "enum": [
+            "unaware",
+            "problem-aware",
+            "solution-aware",
+            "product-aware",
+            "most-aware"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "description": "the shared decomposition (angle, hook tactic, mechanic, format, ...); hook-format-lab fills the rest"
+    },
+    "hook_family": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "hook lines or first-frame ideas that share the angle"
+    },
+    "formats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "proof": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "claim ids from claims-proof or sourced facts"
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "paid_performance",
+          "organic_travel",
+          "brand_equity"
+        ]
+      },
+      "description": "which optimisation function this bet serves"
+    },
+    "travel_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "required when organic_travel is an objective"
+    },
+    "brand_constraint": {
+      "type": "string"
+    },
+    "experiment": {
+      "type": "object",
+      "required": [
+        "hold",
+        "vary",
+        "success"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "hold": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "angle",
+              "hook_tactic",
+              "visual_hook",
+              "verbal_hook",
+              "mechanic",
+              "format",
+              "proof",
+              "payoff",
+              "cta",
+              "awareness_stage",
+              "talent",
+              "setting",
+              "visual_world",
+              "offer",
+              "duration",
+              "aspect",
+              "audience"
+            ]
+          }
+        },
+        "vary": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "angle",
+              "hook_tactic",
+              "visual_hook",
+              "verbal_hook",
+              "mechanic",
+              "format",
+              "proof",
+              "payoff",
+              "cta",
+              "awareness_stage",
+              "talent",
+              "setting",
+              "visual_world",
+              "offer",
+              "duration",
+              "aspect",
+              "audience"
+            ]
+          }
+        },
+        "design": {
+          "enum": [
+            "single_factor",
+            "factorial"
+          ]
+        },
+        "levels": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "angle",
+              "hook_tactic",
+              "visual_hook",
+              "verbal_hook",
+              "mechanic",
+              "format",
+              "proof",
+              "payoff",
+              "cta",
+              "awareness_stage",
+              "talent",
+              "setting",
+              "visual_world",
+              "offer",
+              "duration",
+              "aspect",
+              "audience"
+            ]
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 2
+          }
+        },
+        "success": {
+          "type": "object",
+          "required": [
+            "metric",
+            "threshold",
+            "min_spend_per_cell"
+          ],
+          "properties": {
+            "metric": {
+              "type": "string"
+            },
+            "threshold": {
+              "type": "string"
+            },
+            "min_spend_per_cell": {
+              "type": "number",
+              "minimum": 0
+            },
+            "min_impressions_per_cell": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "window_days": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "kill": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ref",
+          "ladder"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "ladder": {
+            "enum": [
+              "observation",
+              "hypothesis",
+              "test",
+              "learning",
+              "rule"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "insights and observations behind the bet, each with its rung on the ladder"
+    }
+  },
+  "additionalProperties": false
+}

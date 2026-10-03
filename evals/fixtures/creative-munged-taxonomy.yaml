@@ -1,0 +1,24 @@
+id: creative-munged-taxonomy
+tier: T2
+skills:
+- hook-format-lab
+depends_on:
+- skills/hook-format-lab/SKILL.md
+- registry/creative-taxonomy.json
+- scripts/lib/creative.mjs
+description: A concept written as "UGC street interview, contrarian, social proof" is decomposed into separate families.
+cannot_isolate: Hook quality.
+setup: 'Approved bet whose concept reads: angle "street interview", hook tactic "social proof", format "UGC".'
+expected:
+  must:
+  - moves "street interview" to format, "social proof" to proof, and writes a real angle sentence and hook tactic
+  - writes hooks that differ by tactic or first frame, not by synonyms
+  - reruns cstack creative check until no family warning remains
+  must_not:
+  - leaves a format term in the angle or hook tactic field
+graders:
+- type: tool_used
+  pattern: cstack creative check
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

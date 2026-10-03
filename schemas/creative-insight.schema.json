@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/creative-insight.schema.json",
+  "title": "Creative insight",
+  "description": "One rung of the evidence ladder: observation \u2192 hypothesis \u2192 test \u2192 learning \u2192 rule. Observational data never climbs past observation on its own; a learning needs a test, a rule needs a learning-loop promotion.",
+  "type": "object",
+  "required": [
+    "id",
+    "ladder",
+    "statement",
+    "created"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "ladder": {
+      "enum": [
+        "observation",
+        "hypothesis",
+        "test",
+        "learning",
+        "rule"
+      ]
+    },
+    "statement": {
+      "type": "string"
+    },
+    "created": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "family": {
+      "enum": [
+        "angle",
+        "hook_tactic",
+        "visual_hook",
+        "verbal_hook",
+        "mechanic",
+        "format",
+        "proof",
+        "payoff",
+        "cta",
+        "awareness_stage",
+        "talent",
+        "setting",
+        "visual_world",
+        "offer",
+        "duration",
+        "aspect",
+        "audience"
+      ]
+    },
+    "term": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "ads": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "spend": {
+          "type": "number",
+          "minimum": 0
+        },
+        "impressions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "share_of_spend": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "sufficient": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "confounds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_test": {
+      "type": "string"
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "creative-bet ids whose experiment tested this",
+      "minItems": 1
+    },
+    "learning_ref": {
+      "type": "string",
+      "description": "learning-event id that promoted this to a rule"
+    },
+    "brand_note": {
+      "type": "string",
+      "description": "what this means for distinctiveness, not only for the metric"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "ladder": {
+            "enum": [
+              "learning",
+              "rule"
+            ]
+          }
+        },
+        "required": [
+          "ladder"
+        ]
+      },
+      "then": {
+        "required": [
+          "tests"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ladder": {
+            "const": "rule"
+          }
+        },
+        "required": [
+          "ladder"
+        ]
+      },
+      "then": {
+        "required": [
+          "learning_ref"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false
+}

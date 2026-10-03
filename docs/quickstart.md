@@ -174,4 +174,5 @@ cstack feedback --file pick.json       # the owner's pick, e.g. a pairwise A/B w
 
 - Learn from the run: `cstack learn add`, then `cstack learn candidates` ([learnings.md](learnings.md)).
 - Run a whole job: `/workflow product-photoshoot`. `cstack workflow list` shows the others.
+- Decide what to make next from ad results: `cstack creative import`, `cstack creative report`, then `/workflow growth-creative`.
 - Write your own skill: [skill-authoring.md](skill-authoring.md).

@@ -1,8 +1,57 @@
 {
   "generated_by": "cstack index",
   "note": "GENERATED from skills/*/skill.meta.json. Do not edit by hand; run `cstack index`.",
-  "count": 30,
+  "count": 35,
   "skills": [
+    {
+      "slug": "asset-factory",
+      "type": "playbook",
+      "status": "beta",
+      "summary": "Plan the cheapest production for approved bets (reuse, edit, derive, shoot, generate) with experiment ids per asset, then run the existing skills",
+      "tags": [
+        "production",
+        "ads",
+        "creative ops",
+        "assets",
+        "experiments",
+        "exports"
+      ],
+      "triggers": [
+        "production plan",
+        "make the ads",
+        "how many assets do we need",
+        "asset production",
+        "creative production",
+        "shoot list for ads"
+      ],
+      "required_inputs": [
+        "approved creative bets or families"
+      ],
+      "outputs": [
+        "work/ads/*.production-plan.yaml",
+        "work/out/",
+        "work/exports/"
+      ],
+      "handoff": [
+        "copywriting",
+        "creative-direction",
+        "image-edit",
+        "generate-media",
+        "video-direction",
+        "video-assembly",
+        "product-fidelity",
+        "brand-verify"
+      ],
+      "evals": [
+        "evals/fixtures/competitor-ad-as-production-input.yaml"
+      ],
+      "cost_class": "medium",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/asset-factory/SKILL.md",
+      "tokens": 1131
+    },
     {
       "slug": "brand-import",
       "type": "playbook",
@@ -240,7 +289,10 @@
         "what are others doing",
         "white space",
         "ad library",
-        "market research"
+        "market research",
+        "what ads are competitors running",
+        "creative radar",
+        "ad trends"
       ],
       "required_inputs": [
         "competitor list or category"
@@ -253,7 +305,8 @@
         "brief",
         "creative-direction",
         "claims-proof",
-        "copywriting"
+        "copywriting",
+        "creative-strategist"
       ],
       "evals": [
         "evals/fixtures/competitor-observation-vs-inference.yaml"
@@ -263,7 +316,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/competitor-intel/SKILL.md",
-      "tokens": 1169
+      "tokens": 1207
     },
     {
       "slug": "copywriting",
@@ -305,7 +358,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/copywriting/SKILL.md",
-      "tokens": 976
+      "tokens": 977
     },
     {
       "slug": "creative-autoresearch",
@@ -395,6 +448,54 @@
       "tokens": 1168
     },
     {
+      "slug": "creative-intelligence",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Import ad results, tag ads by taxonomy family, report correlations above minimum data with confounds, concentration, fatigue and a brand read",
+      "tags": [
+        "growth",
+        "ads",
+        "creative analytics",
+        "performance",
+        "tagging",
+        "fatigue"
+      ],
+      "triggers": [
+        "why is this ad working",
+        "creative performance",
+        "ad results",
+        "which ads work",
+        "creative analysis",
+        "ads review",
+        "import ads data",
+        "creative fatigue"
+      ],
+      "required_inputs": [
+        "ads export or state/performance.jsonl"
+      ],
+      "outputs": [
+        "state/performance.jsonl",
+        "state/insights.jsonl",
+        "work/ads/*-intelligence.md"
+      ],
+      "handoff": [
+        "creative-strategist",
+        "brand-verify",
+        "learn-loop"
+      ],
+      "evals": [
+        "evals/fixtures/creative-concentration-brand.yaml",
+        "evals/fixtures/creative-confounded-winner.yaml",
+        "evals/fixtures/creative-correlation-as-rule.yaml"
+      ],
+      "cost_class": "free",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/creative-intelligence/SKILL.md",
+      "tokens": 1370
+    },
+    {
       "slug": "creative-review",
       "type": "composite",
       "status": "beta",
@@ -444,6 +545,56 @@
       "tokens": 1273
     },
     {
+      "slug": "creative-strategist",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Decide the next creative bets from brand, customer, market and performance, each with a tension, objective and one controlled experiment",
+      "tags": [
+        "growth",
+        "ads",
+        "creative strategy",
+        "testing",
+        "paid social",
+        "organic"
+      ],
+      "triggers": [
+        "what should we make next",
+        "creative strategy",
+        "ad strategy",
+        "next round of ads",
+        "creative bets",
+        "test plan for ads",
+        "what to test"
+      ],
+      "required_inputs": [
+        "brand workspace",
+        "customer evidence or stated assumptions"
+      ],
+      "outputs": [
+        "work/ads/*.creative-bet.yaml",
+        "work/ads/*-strategy.md"
+      ],
+      "handoff": [
+        "hook-format-lab",
+        "winner-scaler",
+        "asset-factory",
+        "claims-proof",
+        "learn-loop"
+      ],
+      "evals": [
+        "evals/fixtures/creative-bets-not-idea-lists.yaml",
+        "evals/fixtures/creative-concentration-brand.yaml",
+        "evals/fixtures/creative-correlation-as-rule.yaml",
+        "evals/fixtures/creative-organic-vs-paid.yaml"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/creative-strategist/SKILL.md",
+      "tokens": 1541
+    },
+    {
       "slug": "cultural-scan",
       "type": "capability",
       "status": "beta",
@@ -484,7 +635,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/cultural-scan/SKILL.md",
-      "tokens": 1338
+      "tokens": 1354
     },
     {
       "slug": "flow-research",
@@ -584,6 +735,51 @@
       ],
       "path": "skills/generate-media/SKILL.md",
       "tokens": 1282
+    },
+    {
+      "slug": "hook-format-lab",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Decompose a bet's concepts into nine attention parts and write hook and first-frame variants on one angle, keeping taxonomy families apart",
+      "tags": [
+        "hooks",
+        "formats",
+        "first frame",
+        "ads",
+        "attention",
+        "social"
+      ],
+      "triggers": [
+        "write hooks",
+        "hook ideas",
+        "first frame",
+        "why does this ad hold attention",
+        "hook rate is low",
+        "ad concepts",
+        "hook analysis"
+      ],
+      "required_inputs": [
+        "creative bet"
+      ],
+      "outputs": [
+        "work/ads/*-hooks.md",
+        "work/ads/*.creative-bet.yaml"
+      ],
+      "handoff": [
+        "copywriting",
+        "video-direction",
+        "asset-factory",
+        "claims-proof"
+      ],
+      "evals": [
+        "evals/fixtures/creative-munged-taxonomy.yaml"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/hook-format-lab/SKILL.md",
+      "tokens": 1077
     },
     {
       "slug": "identity-system",
@@ -1343,10 +1539,53 @@
       "tokens": 1353
     },
     {
+      "slug": "winner-scaler",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Name what is invariant about the brand's own winning ad and plan a family of variants that move other families on purpose",
+      "tags": [
+        "growth",
+        "ads",
+        "iteration",
+        "winners",
+        "fatigue",
+        "variants"
+      ],
+      "triggers": [
+        "scale this winner",
+        "iterate on a winning ad",
+        "more like this ad",
+        "ad variations",
+        "creative family",
+        "winner is fatiguing"
+      ],
+      "required_inputs": [
+        "a winning ad in state/performance.jsonl"
+      ],
+      "outputs": [
+        "work/ads/*.creative-family.yaml"
+      ],
+      "handoff": [
+        "asset-factory",
+        "hook-format-lab",
+        "creative-intelligence"
+      ],
+      "evals": [
+        "evals/fixtures/competitor-ad-as-production-input.yaml",
+        "evals/fixtures/creative-winner-invariant.yaml"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/winner-scaler/SKILL.md",
+      "tokens": 1066
+    },
+    {
       "slug": "workflow",
       "type": "playbook",
       "status": "beta",
-      "summary": "Run create-brand, import-brand, campaign, product-photoshoot, paid-social, landing-page, packaging or deck as a resumable plan",
+      "summary": "Run create-brand, import-brand, campaign, product-photoshoot, growth-creative (alias paid-social), landing-page, packaging or deck as a resumable plan",
       "tags": [
         "workflow",
         "orchestration",
@@ -1382,7 +1621,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/workflow/SKILL.md",
-      "tokens": 1227
+      "tokens": 1233
     }
   ]
 }
