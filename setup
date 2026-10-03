@@ -2,11 +2,21 @@
 # cstack setup: install dependencies and link skills into your agent host(s).
 #   ./setup                 default hosts (see registry/hosts.json)
 #   ./setup claude-code     one host: default|agents|claude-code|codex|cursor|gemini-cli|opencode|all
+#   ./setup --host claude-code   the same, flag form (also --host=claude-code)
 # Safe to re-run (idempotent). CSTACK_SETUP_DRY_RUN=1 ./setup shows what it would link.
 # Never installs system software, never asks for or stores keys, makes no paid calls.
 set -euo pipefail
 
-HOST="${1:-default}"
+HOST="default"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --host) [ $# -ge 2 ] || { printf 'setup: --host needs a name\n' >&2; exit 1; }; HOST="$2"; shift 2 ;;
+    --host=*) HOST="${1#--host=}"; shift ;;
+    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
+    -*) printf 'setup: unknown option %s (usage: ./setup [host] or ./setup --host <host>)\n' "$1" >&2; exit 1 ;;
+    *) HOST="$1"; shift ;;
+  esac
+done
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
@@ -39,17 +49,21 @@ else
   say "playwright-core absent (optional): browser commands will report MISSING; everything else works."
 fi
 
+# Quote the path so the alias survives spaces, "&" and other shell characters in the folder name:
+# single-quoted alias body, double-quoted path, any single quote in the path written as '\''.
+QCLI="\"$ROOT/bin/cstack.mjs\""
+QCLI="${QCLI//\'/\'\\\'\'}"
 cat <<NEXT
 
-Make \`cstack\` a command (skills and docs call it that); add this to your shell profile:
-  alias cstack="node $(pwd)/bin/cstack.mjs"
+Make \`cstack\` a command (skills and docs call it that); add this line to your shell profile (~/.zshrc or ~/.bashrc):
+  alias cstack='node $QCLI'
 
-Next steps
-  node bin/cstack.mjs help                       list commands
-  node bin/cstack.mjs brand init ../my-brand --name "My Brand"   start a brand workspace (outside this repo)
-  node bin/cstack.mjs providers                  which providers are usable; keys are env vars by name only
-  node bin/cstack.mjs search "product photoshoot"
-  npm run check                                  validate + budgets + tests
+Next steps (from any folder once the alias is set)
+  cstack help                                    list commands
+  cstack brand init ~/brands/my-brand --name "My Brand"   start a brand workspace (outside this repo)
+  cstack providers                               which providers are usable; keys are env vars by name only
+  cstack search "product photoshoot"
+  npm run check                                  validate + budgets + tests (run inside this folder)
 
 Paid providers stay off until you export their env vars yourself (see registry/providers.json).
 NEXT

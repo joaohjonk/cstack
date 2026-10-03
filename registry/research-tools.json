@@ -23,6 +23,16 @@
       "priority": 5,
       "access": [
         {
+          "mode": "mcp",
+          "official": false,
+          "endpoint_or_package": "an MCP server named Cosmos, connected as a connector in the owner's agent (seen in the cstack field test 2026-10-03); publisher and tool list not verified here",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified",
+          "source": "cstack field test 2026-10-03 (F04)",
+          "confidence": "low"
+        },
+        {
           "mode": "browser",
           "official": true,
           "endpoint_or_package": "https://www.cosmos.so (human use in a standard browser)",
@@ -52,7 +62,8 @@
       "detect": {
         "mcp_tool_patterns": [
           "mcp__cosmos_so__*",
-          "mcp__cosmos-so__*"
+          "mcp__cosmos-so__*",
+          "mcp__cosmos__*"
         ],
         "mcp_exclude_packages": [
           "@polarity-lab/cosmos-mcp"

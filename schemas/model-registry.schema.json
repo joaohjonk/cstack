@@ -226,6 +226,99 @@
               "deprecated",
               "shut_down"
             ]
+          },
+          "routes": {
+            "type": "array",
+            "description": "where the model can be called other than at its maker, each with that host's own endpoint id and price; an estimate for a call through a host uses only that host's price",
+            "items": {
+              "type": "object",
+              "required": [
+                "provider",
+                "endpoint_id",
+                "source",
+                "last_verified"
+              ],
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "description": "provider id in registry/providers.json, e.g. fal"
+                },
+                "endpoint_id": {
+                  "type": "string",
+                  "description": "exact id the host's API takes, e.g. the fal model path"
+                },
+                "price": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "required": [
+                    "amount",
+                    "currency",
+                    "per"
+                  ],
+                  "properties": {
+                    "amount": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "per": {
+                      "enum": [
+                        "image",
+                        "second",
+                        "megapixel",
+                        "operation"
+                      ]
+                    },
+                    "basis": {
+                      "type": "string"
+                    },
+                    "first_amount": {
+                      "type": "number",
+                      "description": "per megapixel: price of the first megapixel when it differs from the rest (amount is then each extra megapixel)"
+                    },
+                    "counts": {
+                      "enum": [
+                        "output",
+                        "input_and_output"
+                      ],
+                      "description": "per megapixel: which pixels are billed; default output"
+                    },
+                    "rounding": {
+                      "enum": [
+                        "up",
+                        "not_stated"
+                      ],
+                      "description": "per megapixel: how the host rounds; both are estimated as rounding each image up to the next megapixel"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "source": {
+                  "type": "string"
+                },
+                "last_verified": {
+                  "$ref": "common.schema.json#/$defs/date"
+                },
+                "notes": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "tier": {
+            "enum": [
+              "flagship",
+              "standard",
+              "draft"
+            ],
+            "description": "quality tier from the maker's positioning and public arenas, not a benchmark on your task: flagship for finals, draft for cheap probes; absent = standard. cstack route prefers flagship unless asked for draft"
           }
         },
         "additionalProperties": false

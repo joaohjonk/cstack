@@ -7,6 +7,7 @@ import YAML from 'yaml';
 import { compile, diffRecipes, placeholders } from '../scripts/lib/prompt.mjs';
 import { guardedCall, planBatch, readLedger, idempotencyKey } from '../scripts/lib/ledger.mjs';
 import { route } from '../scripts/lib/router.mjs';
+import { ROOT } from '../scripts/lib/core.mjs';
 import { record, history } from '../scripts/lib/lineage.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { checkBudgets } from '../scripts/lib/budget.mjs';
@@ -98,6 +99,27 @@ test('ledger: dry run never calls the provider', async () => {
   const r = await guardedCall(ws, { ...spec, dry_run: true }, async () => (called++, {}));
   assert.equal(r.dry_run, true);
   assert.equal(called, 0);
+});
+
+test('ledger: a dry run runs the budget gate and reports what a real call would get', async () => {
+  for (const [budget, sp, why] of [
+    [{ currency: 'USD', per_run: 0, per_day: 0 }, spec, /per_run|per_day|budget/],
+    [{ currency: 'USD', per_run: 0, per_day: 0 }, { ...spec, estimated_cost: null }, /no cost estimate/],
+    [undefined, spec, /budget/],
+  ]) {
+    const ws = tmpWs(budget);
+    let called = 0;
+    const r = await guardedCall(ws, { ...sp, dry_run: true }, async () => (called++, {}));
+    assert.equal(r.dry_run, true);
+    assert.equal(r.would_block, true, JSON.stringify(r));
+    assert.match(r.problems.join('; '), why);
+    assert.equal(called, 0);
+    const row = readLedger(ws).at(-1);
+    assert.equal(row.status, 'dry_run');
+    assert.match(row.error, /^a real call would be blocked: /);
+  }
+  const ok = await guardedCall(tmpWs({ currency: 'USD', per_run: 1, per_day: 5 }), { ...spec, dry_run: true }, async () => ({}));
+  assert.ok(ok.dry_run && !ok.would_block);
 });
 
 test('ledger: identical call is deduplicated (no double spend)', async () => {
@@ -275,6 +297,23 @@ test('tools: detects by agent-visible MCP server name and env presence, never by
   assert.equal(by.figma.available, true);
   assert.equal(by.foreplay.available, true);
   assert.equal(by.cosmos.available, false);
-  assert.match(by.cosmos.agent_access, /none/);
+  assert.match(by.baymard.agent_access, /none/);
+  // a connector named after the tool counts, with or without the host's prefix (field test F04)
+  for (const name of ['Cosmos', 'claude_ai_Cosmos', 'cosmos-so']) assert.equal(Object.fromEntries(detectTools(w, { mcpServers: [name], env: {} }).map((t) => [t.id, t])).cosmos.available, true, name);
+  assert.equal(Object.fromEntries(detectTools(w, { mcpServers: ['cosmonaut'], env: {} }).map((t) => [t.id, t])).cosmos.available, false);
   assert.ok(!JSON.stringify(res).includes('"x"'), 'env values are never echoed');
+});
+
+test('router: with no needs, flagship models lead a final and draft models lead a probe; host routes count as reachable', () => {
+  const reg = { models: [
+    { model_id: 'cheap-draft', provider: 'a', modality: 'image', tier: 'draft', est_unit_cost: { amount: 0.005 }, last_verified: '2026-10-03', status: 'active' },
+    { model_id: 'plain', provider: 'b', modality: 'image', est_unit_cost: { amount: 0.02 }, last_verified: '2026-10-03', status: 'active' },
+    { model_id: 'best', provider: 'c', modality: 'image', tier: 'flagship', est_unit_cost: { amount: 0.07 }, last_verified: '2026-10-03', status: 'active', routes: [{ provider: 'fal', endpoint_id: 'fal/best' }] },
+  ] };
+  assert.deepEqual(route(reg, { modality: 'image', today: '2026-10-03' }).chain, ['best', 'plain', 'cheap-draft']);
+  assert.deepEqual(route(reg, { modality: 'image', tier: 'draft', today: '2026-10-03' }).chain, ['cheap-draft', 'plain', 'best']);
+  assert.deepEqual(route(reg, { modality: 'image', providers_available: ['fal'], today: '2026-10-03' }).chain, ['best']);
+  // the registry itself: no draft model leads an unqualified image route
+  const live = route(JSON.parse(fs.readFileSync(path.join(ROOT, 'registry', 'models.json'), 'utf8')), { modality: 'image' });
+  assert.ok(live.candidates.slice(0, 3).every((c) => /flagship/.test(c.why)), live.chain.join(', '));
 });

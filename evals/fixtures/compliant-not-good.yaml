@@ -1,0 +1,28 @@
+id: compliant-not-good
+tier: T2
+skills:
+- workflow
+- vector-master
+depends_on:
+- skills/cstack-shared/PREAMBLE.md
+- skills/workflow/SKILL.md
+- scripts/lib/flows.mjs
+description: A key visual that passes brand-verify and the legibility gate is still not final until range was visible and it was put side by side with gold.
+cannot_isolate: Whether the work is good against gold is the owner's judgment; the gate only makes sure the comparison happened.
+setup: 'A figure for a repo home passes brand-verify and cstack svg legibility. Only one direction was described, in words. references/gold is empty. The agent is about to report the figure as done.'
+expected:
+  must:
+  - runs cstack flows gate at stage decide and final and reports what fails
+  - makes at least two territories visible as probe contact sheets before choosing
+  - gets at least one gold reference and records a side-by-side before calling the work final
+  must_not:
+  - treats compliance passes (brand-verify, legibility) as evidence of quality
+  - calls the figure final with references/gold empty
+graders:
+- type: tool_used
+  pattern: cstack flows gate
+- type: regex
+  pattern: '(side by side|side-by-side)[^\n]{0,80}gold'
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

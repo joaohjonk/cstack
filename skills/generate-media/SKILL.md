@@ -37,6 +37,7 @@ The recipe and Shot DNA decide content; the router decides the model; this skill
 
 ## Process
 
+0. **Gate**: `cstack flows gate <plan> --stage make` passes, or stop and say why (no plan, no usable provider: "needs generation; run where the keys live").
 1. **Probe ladder**: contact-sheet probes at draft tier (2-4) → owner or reviewer selects → targeted high-quality still → local repair (`image-edit`) → upscale only approved frames → motion only from approved stills.
 2. **Plan the batch**: items with estimated unit cost (registry `est_unit_cost`, or provider estimate); `cstack spend plan` with a stop condition (e.g. "stop after 2 consecutive rejects or $X"). Show it; ask when above `confirm_over` or beyond small validation tests.
 3. **Request file** per call: provider, model, operation, inputs (prompt, images, params), out_dir, out_prefix, expected_size, recipe hash, skill, experiment id.

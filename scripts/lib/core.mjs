@@ -9,6 +9,11 @@ import YAML from 'yaml';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 export const rel = (p) => path.relative(ROOT, p) || '.';
+// A path printed for the user to copy: absolute, and shell-quoted when it holds spaces, "&" or other special characters.
+export const shown = (p) => {
+  const a = path.resolve(String(p));
+  return /^[\w@%+=:,./-]+$/.test(a) ? a : `'${a.replace(/'/g, `'\\''`)}'`;
+};
 export const exists = (p) => fs.existsSync(p);
 // Read errors name the file (a raw "Unexpected token" or ENOENT says neither which file nor what to do); e.code is kept.
 const named = (p, what, e) => Object.assign(new Error(e.code === 'ENOENT' ? `cannot read ${p}: not found` : `${p}: ${what} (${e.message.split('\n')[0]})`), { code: e.code, cause: e });

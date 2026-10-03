@@ -39,7 +39,7 @@ Plan every batch before paying for it:
 cstack spend plan batch.json --stop "stop when 2 of the first 4 probes fail product fidelity"
 ```
 
-`batch.json` is a list of `{provider, model, operation, est: {amount, currency}}`. The result:
+`batch.json` is a list of `{provider, model, operation, est: {amount, currency}}`. An item without `est` is priced from `registry/models.json` the way `cstack generate` prices a call (a host such as fal only from its route, with `params` such as `image_size` and `num_images`); an item that still has no price is booked at the budget's ceiling and listed under `unpriced_items` with the reason. The result:
 
 ```json
 { "items": 4, "estimated_total": 0.32, "currency": "USD", "spent_today": 0.12,
@@ -53,7 +53,7 @@ The production ladder in the [shared preamble](../skills/cstack-shared/PREAMBLE.
 
 ## Cost ledger
 
-`state/cost-ledger.jsonl` (schema `cost-ledger-entry`) has one row per attempt:
+`state/cost-ledger.jsonl` (schema `cost-ledger-entry`) has one row per attempt that reached the budget gate: a call, a dry run (which runs the same gate and records the refusal a real call would get in `error`), a budget block, a deduplicated repeat or a failure. A command that stops before any attempt, such as `cstack taste search` without `TASTE_API_KEY` (it exits with a MISSING line), writes no row.
 
 ```text
 run_id, ts, provider, model, operation, input_hashes, prompt_recipe_hash, idempotency_key,
