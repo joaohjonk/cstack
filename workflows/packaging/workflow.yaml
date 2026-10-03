@@ -56,6 +56,10 @@ steps:
   skill: identity-system
   does: artwork on the converter's dieline (cut, crease, bleed, copy limit, no-print zones as named spot colours), spot names from the converter spec, GS1 barcode size, quiet zones and placement from the official number; a second person checks it (flow packaging-system, step artwork)
   gate: auto
+- id: font-parity
+  skill: type-director
+  does: the design file uses the licensed, gated faces, not stand-ins (flow print-proof-loop, step font-parity); a stand-in is reported "not print-ready" before any overflow is judged; print production starts only with the licensed fonts installed
+  gate: auto
 - id: file-parity
   does: export every design-tool panel the printer opens at the gated artwork size; cstack audit for size and cstack mockup verify through a flat template against the approved panel; a human checks line breaks and overflow; any difference fails (flow print-proof-loop, step file-parity)
   gate: owner

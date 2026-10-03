@@ -94,6 +94,11 @@ steps:
   outputs: [work/packaging/<sku>/artwork/]
   gate: {type: independent_review, check: "second person checks dieline version, bleed, no-print zones, barcode size, quiet zones and placement, and spot colour names against converter-spec.yaml"}
   compare_to_target: overlay on the dieline; every element inside its zone
+- id: font-parity
+  does: before any text comparison, list the fonts the design file actually uses and the faces installed on the machine that opens it, and compare them with the families and files the type gate approved (read the installed files with cstack type font; names, version, foundry); a free stand-in or substitute face is reported as "stand-in font, not print-ready" and stops the run before any overflow is judged
+  kind: deterministic
+  gate: {type: deterministic_check, check: "every face in the design file matches a gated family and file (cstack type font names and version); no stand-in or substituted font"}
+  compare_to_target: the same font files the gate measured; licensed faces installed before print production starts
 - id: file-parity
   does: export every panel or frame from the design tool (the file the printer opens) as an image at the gated artwork's size and compare text bounds and line breaks with the approved artwork; check size with cstack audit and diff with cstack mockup verify through a flat template (one quad over the whole canvas, no shading)
   kind: deterministic
@@ -128,6 +133,7 @@ cost_ladder: research and artwork cost no API money; route probes are sketches a
 failure_modes:
 - artwork on a stale dieline
 - design-tool live text overflowing or rewrapping after the type gate passed (wordmark wrap, hero number falling onto the claims row)
+- a free stand-in font in the design file in place of the licensed face, whose wider metrics produce false wraps and collisions
 - a generated render that redraws the label used to choose a route
 - brand colour approved on screen, off on film or kraft
 - barcode truncated, too close to a fold, or on a transparent window without white underlay
