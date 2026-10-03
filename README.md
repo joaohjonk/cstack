@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. A giant white lowercase cstack with a square full stop runs off the bottom edge. Above it: Taste, made repeatable. An open operating system for brand work, run by agents. Before use: step outside, taste is built from distance." width="100%">
+  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. A giant white lowercase cstack with a square full stop sits on the bottom edge. Above it: Taste, made repeatable. An open operating system for brand work, run by agents. Before use: step outside, taste is built from distance." width="100%">
 </p>
 
 # cstack
@@ -11,12 +11,15 @@ The New York subway still reads as one system half a century later. The reason i
 Generative AI made making cheap. It did not make judgment cheap. Ask a model for your brand a hundred times and you get a hundred cousins: the orange slides toward pink, the type drifts, the product grows a cap it never had, the copy reaches for the word the founder banned last spring. No single image is wrong. The set is.
 
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares made from prompts drift in size and angle; on a Klein blue band, ten squares made from a brand kept in files stay identical." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="Prompted ten times: ten squares drift in size and angle. Made ten times from one brand kept in files: ten identical white squares on a Klein blue band." width="100%">
 </p>
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
 
 It is to brand work what [gstack](https://github.com/garrytan/gstack) is to shipping software: thirty specialist skills, a small CLI and plain files in git, so that Claude Code, Codex, Cursor, Gemini CLI or OpenCode works like a disciplined studio instead of a prompt box. Free, MIT, and holding no brand's data: each brand keeps its own workspace in its own repo.
+
+**Read:** [Step outside](#first-step-outside) · [How it thinks](#how-it-thinks) · [See it work](#see-it-work) · [The studio](#the-studio)  
+**Use:** [Quick start](#quick-start) · [Install](#install) · [Workflows](#workflows) · [The CLI](#the-cli) · [Make it yours](#make-it-yours) · [Acknowledgements](#acknowledgements)
 
 ## First, step outside
 
@@ -36,6 +39,23 @@ The machine will repeat your judgment ten thousand times. Make sure it is worth 
 - **Designers, art directors and writers** who want agents to work to their standard, not around it.
 - **Small studios running many brands** without a brand team per client.
 - **Anyone who has tried to make AI work look like one brand** and watched it drift.
+
+## How it thinks
+
+<p align="center">
+  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
+</p>
+
+Six rules hold the whole thing together:
+
+- **A brand is a living entity, not a PDF.** Every fact carries its source, its status (LOCKED, CURRENT, TESTING, PROVISIONAL, UNKNOWN, CONFLICT, KILLED and a few more) and who approved it. A model guess can never overwrite an owner's instruction. Conflicts are surfaced, never averaged.
+- **Collect models, not looks.** A reference is stored as source, mechanism and transfer. If you can remove the image and still explain why it works, it is a mechanism; otherwise it is a costume.
+- **Method before making.** Nothing is one-shot. Before an outcome is attempted, the agent names the target, looks up how it is best made today, compares at least two ways and works step by step against it. `cstack flows check` refuses a plan that skipped any of that.
+- **Deterministic before generative, cheap before premium.** Tokens, lints, crops and measurements before models; probes before finals; a budget and a stop condition before any batch.
+- **The maker never certifies its own work.** Beautiful, on-brand, culturally alive, effective and correct are separate judgments made by separate reviewers.
+- **The owner's taste is sovereign.** Picks, kills and edits are recorded as preference data; repeated evidence becomes a rule. Don't forget this. Judgment and taste are the most important skill in the age of abundance.
+
+The long version is in [docs/philosophy.md](docs/philosophy.md) and [docs/architecture-one-page.md](docs/architecture-one-page.md).
 
 ## Quick start
 
@@ -153,23 +173,6 @@ Each one writes files the next one reads. `/brief` writes the brief that `/creat
 
 Each skill has a fixed contract (inputs, what to do when an input is missing, precedence, process, outputs, evals, handoff, failure modes) and a context budget that CI enforces.
 
-## How it thinks
-
-<p align="center">
-  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
-</p>
-
-Six rules hold the whole thing together:
-
-- **A brand is a living entity, not a PDF.** Every fact carries its source, its status (LOCKED, CURRENT, TESTING, PROVISIONAL, UNKNOWN, CONFLICT, KILLED and a few more) and who approved it. A model guess can never overwrite an owner's instruction. Conflicts are surfaced, never averaged.
-- **Collect models, not looks.** A reference is stored as source, mechanism and transfer. If you can remove the image and still explain why it works, it is a mechanism; otherwise it is a costume.
-- **Method before making.** Nothing is one-shot. Before an outcome is attempted, the agent names the target, looks up how it is best made today, compares at least two ways and works step by step against it. `cstack flows check` refuses a plan that skipped any of that.
-- **Deterministic before generative, cheap before premium.** Tokens, lints, crops and measurements before models; probes before finals; a budget and a stop condition before any batch.
-- **The maker never certifies its own work.** Beautiful, on-brand, culturally alive, effective and correct are separate judgments made by separate reviewers.
-- **The owner's taste is sovereign.** Picks, kills and edits are recorded as preference data; repeated evidence becomes a rule. Don't forget this. Judgement and taste are the most important skill in the age of abundance.
-
-The long version is in [docs/philosophy.md](docs/philosophy.md) and [docs/architecture-one-page.md](docs/architecture-one-page.md).
-
 ## First ten minutes
 
 ```bash
@@ -209,31 +212,17 @@ The agent does the judging. The CLI does everything that should never depend on 
 ```bash
 cstack search "product photoshoot"                         # find the right skill
 cstack flows search "rotating 3d product on the homepage"  # the researched method, before making
-cstack flows check work/flows/*.flow.yaml                  # two options compared, a gate on every step, a stop
-cstack brand context --sections voice,color                # compact, cache-stable facts for a prompt
-cstack taste search "a ritual that feels choreographed"    # Taste Labs, when TASTE_API_KEY is set
-cstack route --modality image --needs image-edit,text-rendering
-cstack prompt compile recipes/hero.recipe.yaml --seed 7
-cstack spend plan batch.json --stop "2 of 4 probes fail fidelity"
-cstack generate --file request.json --dry-run             # then --confirm to approve a call above your confirm_over
-cstack browse qa http://localhost:4173                     # overflow, alt text, contrast at 375/768/1440
-cstack tokens check && cstack tokens build
+cstack brand context --task copy                           # only the brand files this task needs
+cstack brand guide                                         # one page from the brand files, for people and agents
+cstack generate --file request.json --dry-run             # one guarded, budgeted call; --confirm above your limit
 cstack type qa http://localhost:4173                       # measure, leading, caps, contrast, fallbacks
-cstack svg reduce mark.svg                                 # does the mark survive at 16 px?
-cstack mockup verify --template t/can --art label.svg --render can.png
-cstack 3d inspect model.glb --budget web-hero              # bytes, triangles, textures, scale, origin
-cstack video qa master.mp4 --product-ref still.png --roi 380,600,320,420
-cstack learn candidates                                    # what has earned promotion to a rule
-cstack health                                              # skill validity, budgets, staleness
 ```
 
-`cstack help` lists every command. Video checks need `ffmpeg` on your machine; browser checks need a Chromium and the optional `playwright-core`. cstack never installs either.
+`cstack help` lists every command, including the checkers for tokens, SVG marks, mockups, 3D and video. Video checks need `ffmpeg` on your machine; browser checks need a Chromium and the optional `playwright-core`. cstack never installs either.
 
 ## Research tools and providers
 
-cstack knows the tools good studios already pay for and checks which ones you have (`cstack tools`): Taste Labs, Cosmos, Refero, Mobbin, Ecomm.Design, Baymard, Particl, BuiltWith, Store Leads, Helium 10, SmartScout, Nexscope, Foreplay, Shortimize, Really Good Emails, and Figma's and Shopify's MCPs. For making, it knows 3D (Blender, Spline, Needle, Meshy, Tripo, glTF Transform), mockups and vector (Dynamic Mockups, Recraft, Adobe, Canva, Pacdora), video (fal, Higgsfield, HeyGen, Replicate, Runway) and type (Google Fonts, Adobe Fonts, foundry trials, Fonts In Use, fontTools).
-
-None is required; every one has a fallback. Tools whose terms bar automated agents are used only through your own exports or by you. Media generation runs through one guarded call with dedupe, budgets and pending-job recovery: fal and a free mock provider are live, Taste Labs is implemented against its documented API, the rest are stubs. Details: [docs/integrations.md](docs/integrations.md).
+cstack knows the research and making tools good studios already pay for, checks which ones you have (`cstack tools`, `cstack providers`), and never requires any: every one has a fallback, and tools whose terms bar automated agents are used only through your own exports. The full list, and which providers are live, is in [docs/integrations.md](docs/integrations.md).
 
 ## Make it yours
 
