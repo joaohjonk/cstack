@@ -38,7 +38,7 @@ steps:
 - id: brief
   does: name, attributes as mechanisms, applications list, competitors, equity, constraints
   kind: research
-  skill: office-hours
+  skill: brief
   gate: {type: owner, check: owner approves the brief}
   compare_to_target: brief names what the mark must do, where
 - id: research

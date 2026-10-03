@@ -31,7 +31,7 @@ The goal is not to copy competitors; it is to see the category's conventions cle
 
 ## Missing-input behavior
 
-- No paid intelligence tools: public pages via `browse` (PDPs, ad libraries, social profiles, retail listings) with screenshots; mark sales/performance estimates UNKNOWN rather than guessing.
+- No paid intelligence tools: public pages via `site-capture` (PDPs, ad libraries, social profiles, retail listings) with screenshots; mark sales/performance estimates UNKNOWN rather than guessing.
 - Authenticated or private material (paid newsletters, logged-in dashboards, emails) only if the owner provides it or grants permission.
 
 ## Source precedence
@@ -40,7 +40,7 @@ Primary observation (URL + timestamp + screenshot) > tool data (labelled with th
 
 ## Tools / providers
 
-`browse` (screenshots, PDP capture, computed styles), marketplace and store-stack tools when present, ad libraries. Respect site terms and rate limits; never bypass logins or paywalls.
+`site-capture` (screenshots, PDP capture, computed styles), marketplace and store-stack tools when present, ad libraries. Respect site terms and rate limits; never bypass logins or paywalls.
 
 ## Process
 
@@ -68,7 +68,7 @@ Primary observation (URL + timestamp + screenshot) > tool data (labelled with th
 
 ## Handoff
 
-`office-hours` (reframe with the map), `creative-direction` (what to invert), `claims-proof` (crowded or risky claims), `copywriting`.
+`brief` (reframe with the map), `creative-direction` (what to invert), `claims-proof` (crowded or risky claims), `copywriting`.
 
 ## Failure modes
 

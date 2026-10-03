@@ -15,7 +15,7 @@ steps:
   - briefs/import-report-*.md
   gate: auto
 - id: capture-live
-  skill: browse
+  skill: site-capture
   does: screenshots and computed styles of the live site
   outputs:
   - work/browse/
@@ -48,5 +48,5 @@ steps:
   - state/evals.jsonl
   gate: auto
 - id: retro
-  skill: learn
+  skill: learn-loop
   gate: auto

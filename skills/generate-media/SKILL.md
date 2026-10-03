@@ -68,7 +68,7 @@ The recipe and Shot DNA decide content; the router decides the model; this skill
 
 ## Handoff
 
-`creative-review` (independent judgment), `product-fidelity`, `image-edit`, `campaign-sequence`, `learn` (billing or quality surprises).
+`creative-review` (independent judgment), `product-fidelity`, `image-edit`, `campaign-sequence`, `learn-loop` (billing or quality surprises).
 
 ## Failure modes
 

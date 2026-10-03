@@ -10,7 +10,7 @@ note: template = not yet proven on a real run. Promote to validated only with a 
 runs: []
 steps:
 - id: brief
-  skill: office-hours
+  skill: brief
   gate: owner
 - id: cultural-scan
   skill: cultural-scan
@@ -74,5 +74,5 @@ steps:
   - work/exports/
   gate: auto
 - id: lineage-and-retro
-  skill: learn
+  skill: learn-loop
   gate: auto

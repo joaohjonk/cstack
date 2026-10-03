@@ -2,10 +2,10 @@ id: retired-rule-in-template
 tier: T2
 skills:
 - prompt-director
-- learn
+- learn-loop
 depends_on:
 - skills/prompt-director/SKILL.md
-- skills/learn/SKILL.md
+- skills/learn-loop/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.
 cannot_isolate: Detection relies on the rule being recorded as retired in brand state or learnings.

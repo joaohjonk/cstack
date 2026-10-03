@@ -11,7 +11,7 @@ note: template = not yet proven on a real run. Promote to validated only with a 
 runs: []
 steps:
 - id: purpose-audience
-  skill: office-hours
+  skill: brief
   gate: owner
 - id: single-argument
   does: one sentence the deck proves
@@ -41,7 +41,7 @@ steps:
   does: EDITOR, TYPE DIRECTOR, STRATEGIST per page
   gate: auto
 - id: readability
-  skill: browse
+  skill: site-capture
   does: PDF print + projector and mobile readability checks
   gate: auto
 - id: final-qa

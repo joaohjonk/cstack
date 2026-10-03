@@ -54,7 +54,7 @@
     "workflow",
     "brand-verify",
     "creative-review",
-    "learn"
+    "learn-loop"
   ],
   "evals": [
     "evals/fixtures/3d-label-truth.yaml",

@@ -15,7 +15,7 @@
 
 | # | Step | Skill | Gate | State | Outputs / evidence | Decisions, notes |
 |---|---|---|---|---|---|---|
-| 1 | brief | office-hours | owner | done | `briefs/autumn-batch-hero.creative-brief.yaml` | Owner approved with an edit: struck "curated"/"elevate" (`state/feedback.jsonl`, type edit). Reframed 3 photos → 1 hero + 1 batch grid. |
+| 1 | brief | brief | owner | done | `briefs/autumn-batch-hero.creative-brief.yaml` | Owner approved with an edit: struck "curated"/"elevate" (`state/feedback.jsonl`, type edit). Reframed 3 photos → 1 hero + 1 batch grid. |
 | 2 | product-truth-lock | product-fidelity | auto | done, with gap | `brand/brand-world.json` → `PRODUCT_DINNER_PLATE_OCHRE_RUN` | Immutable traits and forbidden drift written. **Gap:** master photos `assets/product/plate-ochre-run/master-*.jpg` do not exist yet; dimensions UNKNOWN. The product is never generated: it is photographed and composited. |
 | 3 | image-roles | campaign-sequence | auto | done | brief `deliverables` | Hero 4:5 (RITUAL role), batch grid 1:1 (PROOF role). R-IMG-01 sizes. |
 | 4 | references | taste-search | auto | done (degraded) | `references/gold/*`, `references/anti/*` | Degraded mode: no Taste Labs key, manual curation. 3 gold (middle, far, middle) + 2 anti (near). Described references only, no images stored. |

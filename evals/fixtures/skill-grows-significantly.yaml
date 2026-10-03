@@ -1,9 +1,9 @@
 id: skill-grows-significantly
 tier: T0
 skills:
-- learn
+- learn-loop
 depends_on:
-- skills/learn/SKILL.md
+- skills/learn-loop/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.
 cannot_isolate: Static check; the T2 part is whether the agent proposes a better home for the content.

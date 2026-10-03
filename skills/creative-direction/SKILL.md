@@ -23,13 +23,13 @@ Turns a brief into a few genuinely different ideas, kills the weak ones, and mak
 
 ## Inputs
 
-- Approved brief (`office-hours`), reference packet (`taste-search`), culture scan (`cultural-scan`), category map (`competitor-intel`) when they exist.
+- Approved brief (`brief`), reference packet (`taste-search`), culture scan (`cultural-scan`), category map (`competitor-intel`) when they exist.
 - `cstack brand context` for the sections the direction touches; locked fields are hard constraints.
 
 ## Missing-input behavior
 
 - No references: run `taste-search` first or state "direction without references" and lower confidence. Never fill ambiguity with adjectives.
-- No brief: run `office-hours` first.
+- No brief: run `brief` first.
 
 ## Source precedence
 

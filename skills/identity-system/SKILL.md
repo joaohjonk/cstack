@@ -51,7 +51,7 @@ Deterministic only: `cstack tokens check|build|lint`, contrast math (WCAG), type
 5. **Logo usage**: clear space, minimum sizes, allowed backgrounds, forbidden treatments; generation rule "never approximate the mark; composite the official file".
 6. **Motion as a token**: durations, easings, entrance/exit choreography, reduced-motion behavior.
 7. **Component contracts** (brand-system `components`): proportions, image ratios, variants, which tokens each consumes.
-8. `cstack tokens build`; render a one-page specimen (HTML using `brand/generated/tokens.css`) and `browse` screenshot it for review.
+8. `cstack tokens build`; render a one-page specimen (HTML using `brand/generated/tokens.css`) and `site-capture` screenshot it for review.
 
 ## Decision rules
 

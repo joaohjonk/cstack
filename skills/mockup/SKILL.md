@@ -41,7 +41,7 @@ Official art and dieline > approved previous mockups > template layers > generat
 
 - `cstack mockup render --template <dir> --art <file> [--placement id] --out <png>`: quad homography, cylinder unwrap (u = R·asin(x/R)), mesh, displacement, multiply and screen layers; sidecar with hashes and licence status.
 - `cstack mockup verify --template <dir> --art <file> --render <png>`: inverse-warp diff (mean difference, edges, SSIM) with a heatmap.
-- `cstack edit paste` (paste-back), `cstack audit` (sizes), `browse` (HTML social chrome and device frames at true size).
+- `cstack edit paste` (paste-back), `cstack audit` (sizes), `site-capture` (HTML social chrome and device frames at true size).
 - Optional, detected with `cstack tools`: Dynamic Mockups MCP (template renders), Canva MCP, Adobe connector, Figma MCP (device and social frames), Blender (3D templates), Pacdora (human). Plates through `cstack generate`, budgeted.
 
 ## Process

@@ -65,7 +65,7 @@ The frozen evaluator decides keep/discard during the run; the owner decides prom
 
 ## Handoff
 
-`prompt-director` (promoted recipe version), `model-router` (benchmark results), `learn`, owner approval.
+`prompt-director` (promoted recipe version), `model-router` (benchmark results), `learn-loop`, owner approval.
 
 ## Failure modes
 

@@ -37,7 +37,7 @@ Access marked * is unofficial: a user export, or a third-party server. Env var n
 
 | Tool | Access (env) | What cstack uses it for | Fallback | Terms caveat |
 |---|---|---|---|---|
-| Taste Labs | MCP, API (`TASTE_API_KEY`) | similar-brand reference search (alpha), brand-system extraction from a site, brand-adherence verdicts (alpha) | local gold/canon + `browse` | credit-based; search and verifier are alpha, so shapes may change |
+| Taste Labs | MCP, API (`TASTE_API_KEY`) | similar-brand reference search (alpha), brand-system extraction from a site, brand-adherence verdicts (alpha) | local gold/canon + `site-capture` | credit-based; search and verifier are alpha, so shapes may change |
 | Cosmos | browser, owner export* | photography, campaign and object references the owner curated | owner pastes public cluster URLs or exports images; open search goes to Are.na or Taste Labs | **human only**: its terms bar agents, crawlers and tools other than a standard browser. Never browse it with an agent. |
 | Are.na | API, MCP (`ARENA_ACCESS_TOKEN`) | channels and blocks for taste and culture | a human views public channels, or the owner gives URLs | rate limits and AI-use terms unverified |
 | Refero | MCP (`REFERO_API_KEY`) | sites, styles, screens and flows (UX/UI patterns) | Mobbin; public pages; owner screenshots | paid plan; monthly call cap per seat |

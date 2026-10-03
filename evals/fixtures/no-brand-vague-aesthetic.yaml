@@ -2,11 +2,11 @@ id: no-brand-vague-aesthetic
 tier: T2
 skills:
 - taste-search
-- office-hours
+- brief
 - creative-direction
 depends_on:
 - skills/taste-search/SKILL.md
-- skills/office-hours/SKILL.md
+- skills/brief/SKILL.md
 - skills/creative-direction/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.

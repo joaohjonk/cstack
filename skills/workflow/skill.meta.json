@@ -19,7 +19,7 @@
     "resume"
   ],
   "not_for": [
-    "office-hours"
+    "brief"
   ],
   "required_inputs": [
     "workflow name",
@@ -35,8 +35,8 @@
   "context_class": "m",
   "mutating": true,
   "handoff": [
-    "office-hours",
-    "learn"
+    "brief",
+    "learn-loop"
   ],
   "evals": ["evals/fixtures/wrong-artifact.yaml"],
   "baseline": "n/a",

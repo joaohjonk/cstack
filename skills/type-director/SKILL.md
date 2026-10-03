@@ -77,7 +77,7 @@ Method first: `cstack flows search "type system"` (preamble 0.5).
 
 ## Handoff
 
-`identity-system` (tokens into components), `brand-verify`, `creative-review` (TYPE DIRECTOR lens with the primer rubric), `copywriting` (lengths per role), `workflow landing-page|deck|packaging`, `learn`.
+`identity-system` (tokens into components), `brand-verify`, `creative-review` (TYPE DIRECTOR lens with the primer rubric), `copywriting` (lengths per role), `workflow landing-page|deck|packaging`, `learn-loop`.
 
 ## Failure modes
 

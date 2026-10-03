@@ -1,5 +1,5 @@
 ---
-name: browse
+name: site-capture
 description: "Drive a headless browser for brand and creative work: responsive screenshots, full-page captures and PDFs, accessibility snapshots with element refs, computed-style extraction (colors, fonts, sizes, spacing, radii) as raw input for brand import, media lists with provenance, and visual QA of built pages, all saved to a run folder with hashes. Use to capture live brand behavior, competitor pages, references, or to QA a landing page at mobile and desktop widths. Not for judging the page (use creative-review or brand-verify) or for logged-in or private sites without the owner's permission."
 license: MIT
 metadata:
@@ -7,7 +7,7 @@ metadata:
   cstack-meta: "skill.meta.json"
 ---
 
-# /browse
+# /site-capture
 
 cstack's eyes on the web. Ported in spirit and partly in code from gstack's browser layer (MIT; see `NOTICE.md`), reduced to one-shot commands for brand work. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
@@ -31,7 +31,7 @@ cstack's eyes on the web. Ported in spirit and partly in code from gstack's brow
 ## Missing-input behavior
 
 - No browser engine: `cstack browse engines` names what is missing (playwright-core or Chromium). Do not install system software without asking; fall back to web fetch for text-only needs and say screenshots were not taken.
-- gstack's own `browse` may be detected and offered as an opt-in second engine; it is never the default.
+- gstack's own `site-capture` may be detected and offered as an opt-in second engine; it is never the default.
 
 ## Source precedence
 

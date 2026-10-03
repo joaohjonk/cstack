@@ -35,7 +35,7 @@
         "ref": "assets/official/owner-interview-2026-09-14.md",
         "kind": "user_instruction",
         "date": "2026-09-14",
-        "notes": "founding interview via /office-hours"
+        "notes": "founding interview via /brief"
       },
       {
         "ref": "assets/official/glaze-palette-v2.md",
@@ -114,7 +114,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#1",
             "quote": "We make stoneware tableware in small batches: plates, bowls, cups. Nothing else.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -131,7 +131,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#2",
             "quote": "A batch is one kiln load. Usually 60 to 90 pieces. When a glaze run is gone, it is gone.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -148,7 +148,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#3",
             "quote": "Glaze pools and speckles differ piece to piece, and that is the point.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -167,7 +167,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#7",
             "quote": "My guess is people furnishing a first proper home, but I have no data.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           },
           {
             "kind": "model_inference",
@@ -225,7 +225,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#8",
             "quote": "Dishwasher safe is fine, it is on the care card.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -242,7 +242,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#8",
             "quote": "Do not claim microwave safe until the supplier sends test results.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -263,7 +263,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#5",
             "quote": "Our voice is plain and specific. Tell people what the clay is and how hot the kiln got.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -307,7 +307,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#4",
             "quote": "Never call it handcrafted luxury. Never say artisanal. We are a workshop, not a boutique.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -470,7 +470,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#6",
             "quote": "Photography should look like the table after people have eaten, not before. Real crumbs are fine; fake steam is not.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",
@@ -520,7 +520,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#3",
             "quote": "Glaze pools and speckles differ piece to piece, and that is the point.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           },
           {
             "kind": "official_asset",
@@ -556,7 +556,7 @@
             "ref": "assets/official/owner-interview-2026-09-14.md#8",
             "quote": "Do not claim microwave safe until the supplier sends test results.",
             "captured_at": "2026-09-14",
-            "by": "office-hours"
+            "by": "brief"
           }
         ],
         "confidence": "high",

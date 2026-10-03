@@ -39,7 +39,7 @@
     "image-edit",
     "brand-verify",
     "creative-review",
-    "learn"
+    "learn-loop"
   ],
   "evals": [
     "evals/fixtures/exact-product-photo.yaml",

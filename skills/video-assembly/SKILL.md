@@ -35,7 +35,7 @@ The approved plan and EDL > owner notes > automatic suggestions (scene cuts). Co
 
 ## Tools / providers
 
-`cstack video probe|normalize|cuts|sheet|assemble|reframe|captions|safezone|audio|qa|deliver` (ffmpeg and ffprobe, deterministic, sidecars with commands and hashes). `cstack edit paste` for frame repairs, `browse` for HTML end cards, HyperFrames or an NLE (owner) when present.
+`cstack video probe|normalize|cuts|sheet|assemble|reframe|captions|safezone|audio|qa|deliver` (ffmpeg and ffprobe, deterministic, sidecars with commands and hashes). `cstack edit paste` for frame repairs, `site-capture` for HTML end cards, HyperFrames or an NLE (owner) when present.
 
 ## Process
 
@@ -67,7 +67,7 @@ The approved plan and EDL > owner notes > automatic suggestions (scene cuts). Co
 
 ## Handoff
 
-`video-direction` (retakes), `creative-review`, `brand-verify`, `learn`.
+`video-direction` (retakes), `creative-review`, `brand-verify`, `learn-loop`.
 
 ## Failure modes
 

@@ -189,7 +189,7 @@ cstack setup --dry-run                        # print what would be installed
 
 - Host paths are data in `registry/hosts.json`. When a host moves its folder, edit one line there.
 - Directories that resolve to the same path are installed once.
-- An existing folder that is not a cstack symlink is skipped unless you pass `--copy`. With `--copy`, it is replaced.
+- A same-named skill that cstack did not install (another toolkit's folder or symlink) is never replaced. Setup skips it and names it in a warning.
 - `skills/cstack-shared/` travels with the skills. It has no SKILL.md, so host scanners ignore it, and skills link to it as `../cstack-shared/`.
 - Cursor and OpenCode also scan `.claude/skills`, so installing into every compatible folder at one scope produces duplicate skills. Stay on the default unless you need a specific host.
 

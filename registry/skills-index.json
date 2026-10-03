@@ -35,14 +35,14 @@
         "brand-verify",
         "taste-search",
         "identity-system",
-        "office-hours"
+        "brief"
       ],
       "cost_class": "low",
       "context_class": "l",
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-import/SKILL.md",
-      "tokens": 1620
+      "tokens": 1621
     },
     {
       "slug": "brand-verify",
@@ -74,56 +74,52 @@
         "identity-system",
         "image-edit",
         "copywriting",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "low",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-verify/SKILL.md",
-      "tokens": 1162
+      "tokens": 1163
     },
     {
-      "slug": "browse",
-      "type": "capability",
+      "slug": "brief",
+      "type": "composite",
       "status": "beta",
-      "summary": "Headless browser for brand work: responsive screenshots, PDFs, snapshots, computed-style tokens, media provenance and page QA",
+      "summary": "Interrogate and reframe a creative request, then write a creative brief downstream skills consume",
       "tags": [
-        "browser",
-        "screenshots",
-        "QA",
-        "capture",
-        "web"
+        "brief",
+        "strategy",
+        "reframe"
       ],
       "triggers": [
-        "screenshot",
-        "capture the site",
-        "browse",
-        "check the page on mobile",
-        "extract styles",
-        "PDF of the page"
+        "new creative request",
+        "brief",
+        "make it cooler",
+        "is this the right artifact",
+        "what should we make"
       ],
       "required_inputs": [
-        "url"
+        "owner request"
       ],
       "outputs": [
-        "work/browse/*/run.json"
+        "briefs/*.creative-brief.yaml"
       ],
       "handoff": [
-        "brand-import",
-        "competitor-intel",
+        "workflow",
         "taste-search",
-        "brand-verify",
-        "creative-review"
+        "cultural-scan",
+        "creative-direction",
+        "copywriting",
+        "claims-proof"
       ],
       "cost_class": "free",
       "context_class": "s",
-      "mutating": false,
-      "required_providers": [
-        "playwright-core + chromium"
-      ],
-      "path": "skills/browse/SKILL.md",
-      "tokens": 1118
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/brief/SKILL.md",
+      "tokens": 1558
     },
     {
       "slug": "campaign-sequence",
@@ -202,7 +198,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/claims-proof/SKILL.md",
-      "tokens": 1214
+      "tokens": 1216
     },
     {
       "slug": "competitor-intel",
@@ -231,7 +227,7 @@
         "work/competitors/*-category-map.md"
       ],
       "handoff": [
-        "office-hours",
+        "brief",
         "creative-direction",
         "claims-proof",
         "copywriting"
@@ -241,7 +237,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/competitor-intel/SKILL.md",
-      "tokens": 1138
+      "tokens": 1140
     },
     {
       "slug": "copywriting",
@@ -314,14 +310,14 @@
       "handoff": [
         "prompt-director",
         "model-router",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "high",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-autoresearch/SKILL.md",
-      "tokens": 1200
+      "tokens": 1202
     },
     {
       "slug": "creative-direction",
@@ -360,7 +356,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-direction/SKILL.md",
-      "tokens": 1189
+      "tokens": 1186
     },
     {
       "slug": "creative-review",
@@ -394,7 +390,7 @@
         "copywriting",
         "identity-system",
         "brand-verify",
-        "learn",
+        "learn-loop",
         "type-director"
       ],
       "cost_class": "low",
@@ -402,7 +398,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-review/SKILL.md",
-      "tokens": 1287
+      "tokens": 1290
     },
     {
       "slug": "cultural-scan",
@@ -435,14 +431,14 @@
         "creative-direction",
         "campaign-sequence",
         "copywriting",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/cultural-scan/SKILL.md",
-      "tokens": 1354
+      "tokens": 1358
     },
     {
       "slug": "flow-research",
@@ -476,14 +472,14 @@
         "workflow",
         "model-router",
         "generate-media",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/flow-research/SKILL.md",
-      "tokens": 1524
+      "tokens": 1523
     },
     {
       "slug": "generate-media",
@@ -518,7 +514,7 @@
         "product-fidelity",
         "image-edit",
         "campaign-sequence",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "high",
       "context_class": "s",
@@ -527,7 +523,7 @@
         "media provider"
       ],
       "path": "skills/generate-media/SKILL.md",
-      "tokens": 1298
+      "tokens": 1299
     },
     {
       "slug": "identity-system",
@@ -571,7 +567,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/identity-system/SKILL.md",
-      "tokens": 1440
+      "tokens": 1441
     },
     {
       "slug": "image-edit",
@@ -613,7 +609,7 @@
       "tokens": 1080
     },
     {
-      "slug": "learn",
+      "slug": "learn-loop",
       "type": "capability",
       "status": "beta",
       "summary": "Capture corrections, pairs, failures and quirks; run the taste loop; promote repeated evidence with provenance; weekly retro",
@@ -650,8 +646,8 @@
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
-      "path": "skills/learn/SKILL.md",
-      "tokens": 1260
+      "path": "skills/learn-loop/SKILL.md",
+      "tokens": 1262
     },
     {
       "slug": "mockup",
@@ -703,7 +699,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/mockup/SKILL.md",
-      "tokens": 1499
+      "tokens": 1500
     },
     {
       "slug": "model-router",
@@ -743,44 +739,6 @@
       "tokens": 1255
     },
     {
-      "slug": "office-hours",
-      "type": "composite",
-      "status": "beta",
-      "summary": "Interrogate and reframe a creative request, then write a creative brief downstream skills consume",
-      "tags": [
-        "brief",
-        "strategy",
-        "reframe"
-      ],
-      "triggers": [
-        "new creative request",
-        "brief",
-        "make it cooler",
-        "is this the right artifact",
-        "what should we make"
-      ],
-      "required_inputs": [
-        "owner request"
-      ],
-      "outputs": [
-        "briefs/*.creative-brief.yaml"
-      ],
-      "handoff": [
-        "workflow",
-        "taste-search",
-        "cultural-scan",
-        "creative-direction",
-        "copywriting",
-        "claims-proof"
-      ],
-      "cost_class": "free",
-      "context_class": "s",
-      "mutating": true,
-      "required_providers": [],
-      "path": "skills/office-hours/SKILL.md",
-      "tokens": 1562
-    },
-    {
       "slug": "product-fidelity",
       "type": "capability",
       "status": "beta",
@@ -809,14 +767,14 @@
         "image-edit",
         "brand-verify",
         "creative-review",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/product-fidelity/SKILL.md",
-      "tokens": 1335
+      "tokens": 1336
     },
     {
       "slug": "prompt-director",
@@ -895,6 +853,48 @@
       "tokens": 1337
     },
     {
+      "slug": "site-capture",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Headless browser for brand work: responsive screenshots, PDFs, snapshots, computed-style tokens, media provenance and page QA",
+      "tags": [
+        "browser",
+        "screenshots",
+        "QA",
+        "capture",
+        "web"
+      ],
+      "triggers": [
+        "screenshot",
+        "capture the site",
+        "site-capture",
+        "check the page on mobile",
+        "extract styles",
+        "PDF of the page"
+      ],
+      "required_inputs": [
+        "url"
+      ],
+      "outputs": [
+        "work/browse/*/run.json"
+      ],
+      "handoff": [
+        "brand-import",
+        "competitor-intel",
+        "taste-search",
+        "brand-verify",
+        "creative-review"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": false,
+      "required_providers": [
+        "playwright-core + chromium"
+      ],
+      "path": "skills/site-capture/SKILL.md",
+      "tokens": 1123
+    },
+    {
       "slug": "symbol-design",
       "type": "capability",
       "status": "beta",
@@ -933,7 +933,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/symbol-design/SKILL.md",
-      "tokens": 1294
+      "tokens": 1293
     },
     {
       "slug": "taste-search",
@@ -972,7 +972,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/taste-search/SKILL.md",
-      "tokens": 1565
+      "tokens": 1573
     },
     {
       "slug": "three-d",
@@ -1013,14 +1013,14 @@
         "workflow",
         "brand-verify",
         "creative-review",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/three-d/SKILL.md",
-      "tokens": 1558
+      "tokens": 1561
     },
     {
       "slug": "type-director",
@@ -1059,14 +1059,14 @@
         "creative-review",
         "copywriting",
         "workflow",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/type-director/SKILL.md",
-      "tokens": 2040
+      "tokens": 2041
     },
     {
       "slug": "vector-master",
@@ -1145,14 +1145,14 @@
         "video-direction",
         "creative-review",
         "brand-verify",
-        "learn"
+        "learn-loop"
       ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/video-assembly/SKILL.md",
-      "tokens": 1280
+      "tokens": 1283
     },
     {
       "slug": "video-direction",
@@ -1234,15 +1234,15 @@
         "work/plans/*.md"
       ],
       "handoff": [
-        "office-hours",
-        "learn"
+        "brief",
+        "learn-loop"
       ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/workflow/SKILL.md",
-      "tokens": 1241
+      "tokens": 1236
     }
   ]
 }

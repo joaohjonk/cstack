@@ -201,7 +201,7 @@ Notation: **D** = deterministic, **G** = generative, ▣ = gate. Costs are snaps
 5. ▣ Silhouette diff, label diff, color delta vs token; two failures → switch to a 3D or photo shoot.
 
 ### D3. Logo / symbol: exploration → refinement → vector master → system
-1. `office-hours` brief: name, attributes as *mechanisms*, applications list (favicon to signage), competitors. ▣ owner.
+1. `brief` skill: name, attributes as *mechanisms*, applications list (favicon to signage), competitors. ▣ owner.
 2. **Research**: `competitor-intel` silhouettes of category marks; canon mechanisms (B3); `flow-research` if no fresh flow exists.
 3. **Explore (cheap, wide)**: hand-sketch prompts → Recraft V4.1 Vector ($0.08) or raster models for form; LLM-SVG only for geometric constructions. 20–40 thumbnails, judged in **monochrome at 32 px first**. ▣ owner picks 2–3 directions.
 4. **Refine (human-led)**: redraw on a construction grid in Illustrator, Figma or Inkscape. The agent can generate the grid, measure, and propose optical corrections as SVG overlays. Generated SVGs are *references*, never masters.

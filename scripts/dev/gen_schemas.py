@@ -11,9 +11,9 @@ def S(id_, title, desc, props, required, extra=None):
     json.dump(s, open(os.path.join(D, f"{id_}.schema.json"), "w"), indent=2); print("wrote", id_)
 STR = {"type": "string"}; ARR_S = {"type": "array", "items": STR}; NUM = {"type": "number"}; BOOL = {"type": "boolean"}
 
-# ---------- creative brief (output of /office-hours) ----------
+# ---------- creative brief (output of /brief) ----------
 S("creative-brief", "Creative brief / creative design doc",
-  "Output of /office-hours (section 26). Downstream skills consume this instead of re-asking. Inputs are classified per section 3.4.",
+  "Output of /brief (section 26). Downstream skills consume this instead of re-asking. Inputs are classified per section 3.4.",
   {"id": ref("id"), "brand_id": STR, "date": ref("date"),
    "requested_artifact": STR, "recommended_artifact": {"type": "string", "description": "may differ from what was asked; say why in reframe"},
    "reframe": STR,

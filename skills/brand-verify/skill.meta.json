@@ -42,7 +42,7 @@
     "identity-system",
     "image-edit",
     "copywriting",
-    "learn"
+    "learn-loop"
   ],
   "evals": [
     "evals/fixtures/agent-output-fails-verify.yaml",

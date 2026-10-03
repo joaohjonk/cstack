@@ -12,7 +12,7 @@ note: 'template = not yet proven on a real run. Promote to validated only with a
 runs: []
 steps:
 - id: objective
-  skill: office-hours
+  skill: brief
   does: outcome (web hero, packshot, turntable, AR), the reference that defines the target, surfaces and budget
   gate: owner
 - id: method
@@ -52,6 +52,6 @@ steps:
   skill: creative-review
   gate: owner
 - id: learn
-  skill: learn
+  skill: learn-loop
   does: provider quirks, budget numbers and the run record linked to the flow
   gate: auto

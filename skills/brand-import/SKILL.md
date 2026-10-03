@@ -26,7 +26,7 @@ Turns a brand that lives in PDFs, folders, sites and heads into machine-readable
 ## Inputs
 
 - Owner-supplied sources: `assets/official/` (logos, packaging masters, guidelines), docs, repo paths, Figma files, URLs.
-- Optional providers: Taste Labs extract (`cstack taste extract <url>`), Figma MCP (variables, styles, components), Shopify MCP (catalog truth), the `browse` skill for live pages.
+- Optional providers: Taste Labs extract (`cstack taste extract <url>`), Figma MCP (variables, styles, components), Shopify MCP (catalog truth), the `site-capture` skill for live pages.
 
 ## Missing-input behavior
 
@@ -43,7 +43,7 @@ Owner instruction > approved state > `assets/official/` > verified live behavior
 - Deterministic first: read files, parse CSS/SVG/JSON, `cstack audit` image sizes, measure colors from vector/CSS sources, hash assets.
 - `cstack taste extract <url>` (paid credits, ledgered): raw design system saved to `references/_taste/`; normalized here, never written straight into brand state.
 - Figma MCP if present: `get_variable_defs`, `search_design_system` for tokens and components.
-- `browse` for computed styles and screenshots of live pages.
+- `site-capture` for computed styles and screenshots of live pages.
 
 ## Process
 
@@ -78,7 +78,7 @@ Owner instruction > approved state > `assets/official/` > verified live behavior
 
 ## Handoff
 
-`brand-verify` (step 8), `taste-search` (extend libraries), `identity-system` (gaps in tokens/type/grid), `office-hours` (first task on the brand).
+`brand-verify` (step 8), `taste-search` (extend libraries), `identity-system` (gaps in tokens/type/grid), `brief` (first task on the brand).
 
 ## Failure modes
 

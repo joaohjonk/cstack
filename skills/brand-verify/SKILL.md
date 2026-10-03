@@ -64,7 +64,7 @@ Approved tokens and rules are the reference. A verifier score is evidence about 
 
 ## Handoff
 
-`creative-review`, `identity-system` (systemic gaps), `image-edit` / `copywriting` (fixes), `learn`.
+`creative-review`, `identity-system` (systemic gaps), `image-edit` / `copywriting` (fixes), `learn-loop`.
 
 ## Failure modes
 

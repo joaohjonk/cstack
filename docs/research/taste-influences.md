@@ -37,7 +37,7 @@ Rights: study a studio's body of work as mechanisms; never train on or imitate a
 - **The reference graph, not a moodboard.** Every reference carries Source / Mechanism / Transfer and is searchable by mechanism (ritual, compression, modularity, reveal, scarcity, wayfinding, restraint ...).
 - **Distance mix.** Near references (the category) improve fluency; middle (adjacent fields: fashion, sport, hospitality, publishing, furniture, beauty) widen it; far (architecture, art, industrial systems, transport, institutional graphics, ritual, interfaces, vernacular culture) create leverage. **Collect models, not looks.**
 - **Give the model a world, not an adjective.** Objective, constraints, evidence, examples, anti-examples and the mechanisms behind references.
-- **Compact prompt pattern** (used by `/office-hours` and `/creative-direction`): objective → gold standard → evidence → reference graph (S/M/T) → divergence (3 distinct hypotheses, never averaged) → critique (name generic moves) → mutation (push the strongest with one far-domain mechanism) → decision-ready output plus what enters the canon.
+- **Compact prompt pattern** (used by `/brief` and `/creative-direction`): objective → gold standard → evidence → reference graph (S/M/T) → divergence (3 distinct hypotheses, never averaged) → critique (name generic moves) → mutation (push the strongest with one far-domain mechanism) → decision-ready output plus what enters the canon.
 
 **Failure modes** (now in the failure taxonomy): moodboard mimicry, reference monoculture, adjective prompting, option addiction, context dumping, taste without reality, canon ossification.
 
@@ -75,7 +75,7 @@ Reference-research method for web/UX work: functional reference → formal refer
 05 SYSTEM       tokens, grids, type, components, motion, photography, voice   brand/tokens, brand/rules, brand-system
 06 GENERATION   people + agents + Figma + code + models   /prompt-director, /model-router, providers/
 07 JUDGMENT     gold, anti, pairwise, critiques, evals    /creative-review, /brand-verify, state/evals.jsonl
-08 MEMORY       every decision feeds back                 state/*.jsonl, /learn, docs/learnings.md
+08 MEMORY       every decision feeds back                 state/*.jsonl, /learn-loop, docs/learnings.md
 09 COMPOUNDING TASTE
 ```
 
@@ -85,4 +85,4 @@ Reference-research method for web/UX work: functional reference → formal refer
 - New `canon-entry` schema and a seed `canon/` of mental-model entries.
 - DTCG tokens in the brand workspace with deterministic check/build/raw-value lint; `brand/rules/brand-rules.yaml` for relationships.
 - Failure taxonomy gained the seven taste failure modes plus `retired_rule_resurfaced` and `self_certified`.
-- Skills: `/taste-search` enforces a distance mix and S/M/T on every reference; `/office-hours` writes the gold-standard counterfactual; `/creative-direction` uses diverge → critique → mutate; `/cultural-scan` scores assets on the five culture mechanisms; `/learn` runs observe → compare → articulate → decide → encode.
+- Skills: `/taste-search` enforces a distance mix and S/M/T on every reference; `/brief` writes the gold-standard counterfactual; `/creative-direction` uses diverge → critique → mutate; `/cultural-scan` scores assets on the five culture mechanisms; `/learn-loop` runs observe → compare → articulate → decide → encode.

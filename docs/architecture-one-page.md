@@ -18,7 +18,7 @@ It is not a prompt library. It is a small studio turned into software: a brief b
 05 SYSTEM       tokens, type, marks, grid, voice, photography      brand/tokens, /identity-system, /type-director, /symbol-design
 06 GENERATION   researched flows first, then models, people, code  /flow-research, /prompt-director, /generate-media, /three-d, /video-direction
 07 JUDGMENT     gates, independent review, your picks             /brand-verify, /creative-review, /claims-proof
-08 MEMORY       every decision and failure is recorded            state/*.jsonl, /learn
+08 MEMORY       every decision and failure is recorded            state/*.jsonl, /learn-loop
 09 COMPOUNDING TASTE   repeated evidence becomes rules, rules become tokens
 ```
 
@@ -35,7 +35,7 @@ Work flows down the layers (truth and culture shape references, references shape
 ## What you actually use
 
 - **30 skills** your agent loads on demand.
-  - Framing and truth: office-hours, brand-import, product-fidelity, claims-proof.
+  - Framing and truth: brief, brand-import, product-fidelity, claims-proof.
   - References and culture: taste-search, cultural-scan, competitor-intel, shot-dna, browse.
   - System: identity-system, type-director, symbol-design, vector-master.
   - Direction and making: flow-research, creative-direction, campaign-sequence, prompt-director, model-router, generate-media, image-edit, mockup, three-d, video-direction, video-assembly, copywriting.
@@ -61,7 +61,7 @@ cstack holds no brand's data. It is installed once and used for every brand, the
 
 > "Product shoot for the new tin, six finals."
 
-`/workflow product-photoshoot` → office-hours writes the brief (you approve) → product-fidelity locks the real product → taste-search and shot-dna plan the shots from references → model-router picks models from a dated registry and proposes cheap probes (you approve the spend) → generate-media renders probes, then finals → image-edit repairs locally → brand-verify and creative-review judge independently → you pick → learn records what worked.
+`/workflow product-photoshoot` → /brief writes the brief (you approve) → product-fidelity locks the real product → taste-search and shot-dna plan the shots from references → model-router picks models from a dated registry and proposes cheap probes (you approve the spend) → generate-media renders probes, then finals → image-edit repairs locally → brand-verify and creative-review judge independently → you pick → learn records what worked.
 
 ## What it is not (yet)
 

@@ -40,7 +40,7 @@
   "handoff": [
     "prompt-director",
     "model-router",
-    "learn"
+    "learn-loop"
   ],
   "evals": [
     "evals/fixtures/expensive-overnight-batch.yaml"

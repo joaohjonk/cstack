@@ -27,7 +27,7 @@ Prioritized by dependency (see the build order in [research/gap-analysis.md](res
 15. **Compliance citation cache** per jurisdiction (ANVISA, FDA, FTC, EU) with retrieval dates, consumed by `claims-proof`.
 16. **More adapters**: OpenAI images, Google (Imagen/Gemini image), Runway, Recraft, Ideogram, a local ComfyUI bridge; each with dry-run and estimate.
 17. **Workspace reference index** for top-k retrieval over large libraries.
-18. **Daemon mode for `browse`** (persistent session for multi-step QA), still with the origin lock; or an opt-in bridge to gstack's own browse.
+18. **Daemon mode for `cstack browse`** (persistent session for multi-step QA), still with the origin lock; or an opt-in bridge to gstack's own browse.
 19. **Figma variables sync** for tokens (read via Figma MCP, write back only with approval).
 
 ## P3

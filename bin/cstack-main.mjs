@@ -261,7 +261,7 @@ function cmdSearch() {
   const idx = readJSON(path.join(ROOT, 'registry', 'skills-index.json'));
   const hits = search(idx, q, Number(args.k ?? 5));
   if (args.json) return json(hits);
-  if (!hits.length) return console.log('no matching skill; try /office-hours to frame the request');
+  if (!hits.length) return console.log('no matching skill; try /brief to frame the request');
   for (const h of hits) console.log(`${String(h.score).padStart(5)}  ${h.slug.padEnd(24)} [${h.type}] ${h.summary}`);
 }
 

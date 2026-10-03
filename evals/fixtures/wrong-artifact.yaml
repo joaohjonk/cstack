@@ -1,9 +1,9 @@
 id: wrong-artifact
 tier: T2
 skills:
-- office-hours
+- brief
 depends_on:
-- skills/office-hours/SKILL.md
+- skills/brief/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.
 cannot_isolate: The 'right' artifact is debatable; grader checks that a reframe was considered.

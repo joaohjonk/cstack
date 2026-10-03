@@ -49,7 +49,7 @@
     "brand-verify",
     "taste-search",
     "identity-system",
-    "office-hours"
+    "brief"
   ],
   "evals": [
     "evals/fixtures/existing-brand-clear-assets.yaml",

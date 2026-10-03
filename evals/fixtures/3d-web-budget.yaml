@@ -2,7 +2,7 @@ id: 3d-web-budget
 tier: T2
 skills:
 - three-d
-- browse
+- site-capture
 depends_on:
 - skills/three-d/SKILL.md
 - skills/three-d/references/web-3d.md

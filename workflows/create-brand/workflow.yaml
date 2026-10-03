@@ -10,8 +10,8 @@ triggers:
 note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
 runs: []
 steps:
-- id: office-hours
-  skill: office-hours
+- id: brief
+  skill: brief
   outputs:
   - briefs/*.creative-brief.yaml
   gate: owner
@@ -22,7 +22,7 @@ steps:
   gate: auto
   fallback: browse public category pages; label as heuristic
 - id: strategy-positioning
-  does: 'strategy, positioning, beliefs, tensions and value proposition written into brand-system with approval: testing (office-hours
+  does: 'strategy, positioning, beliefs, tensions and value proposition written into brand-system with approval: testing (brief
     + creative-direction lenses)'
   outputs:
   - brand/brand-system.json
@@ -90,7 +90,7 @@ steps:
   - work/system/brandbook.html
   gate: auto
 - id: retro
-  skill: learn
+  skill: learn-loop
   outputs:
   - work/retro/*.md
   gate: auto

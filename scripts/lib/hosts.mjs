@@ -17,6 +17,23 @@ export function defaultHosts() {
 // host: 'default' (agents + claude-code), 'all', or one id. Directories that resolve to the same path are installed once.
 const MARK = '.cstack-installed';
 
+// Ours = a copy carrying the marker, or a symlink into this checkout's skills/. Another toolkit's
+// same-named skill (directory or symlink) is never touched.
+function isOurs(dst) {
+  if (exists(path.join(dst, MARK))) return true;
+  if (!fs.lstatSync(dst).isSymbolicLink()) return false;
+  try {
+    return fs.realpathSync(dst).startsWith(fs.realpathSync(path.join(ROOT, 'skills')) + path.sep);
+  } catch {
+    // dangling link, e.g. the checkout moved: ours if it pointed at a cstack-shaped skills/<name>
+    return fs.readlinkSync(dst).endsWith(path.join('skills', path.basename(dst)));
+  }
+}
+
+function isLink(p) {
+  try { return fs.lstatSync(p).isSymbolicLink(); } catch { return false; }
+}
+
 export function installHosts({ host = 'default', target, copy = false, dryRun = false } = {}) {
   const hosts = loadHosts();
   const ids = host === 'default' ? defaultHosts() : host === 'all' ? hosts.map((h) => h.id) : [host];
@@ -32,12 +49,12 @@ export function installHosts({ host = 'default', target, copy = false, dryRun = 
   const log = [];
   for (const h of chosen) {
     const base = target ? path.join(target, h.project_dir) : path.join(os.homedir(), h.user_dir);
+    const skipped = [];
     for (const s of skills) {
       const dst = path.join(base, s.slug);
-      if (exists(dst)) {
-        const ours = fs.lstatSync(dst).isSymbolicLink() || exists(path.join(dst, MARK));
-        if (!ours) {
-          log.push(`skip ${dst} (exists and was not installed by cstack; never overwritten)`);
+      if (exists(dst) || isLink(dst)) {
+        if (!isOurs(dst)) {
+          skipped.push(s.slug);
           continue;
         }
         if (!dryRun) fs.rmSync(dst, { recursive: true, force: true });
@@ -55,17 +72,18 @@ export function installHosts({ host = 'default', target, copy = false, dryRun = 
     const sharedDst = path.join(base, 'cstack-shared');
     // cstack-shared has no SKILL.md, so skill scanners ignore it; skills reference it as ../cstack-shared/
     if (exists(shared) && !dryRun) {
-      if (exists(sharedDst) && !fs.lstatSync(sharedDst).isSymbolicLink() && !exists(path.join(sharedDst, MARK))) {
+      if ((exists(sharedDst) || isLink(sharedDst)) && !isOurs(sharedDst)) {
         log.push(`skip ${sharedDst} (exists and was not installed by cstack)`);
       } else fs.rmSync(sharedDst, { recursive: true, force: true });
-      if (!exists(sharedDst)) {
+      if (!exists(sharedDst) && !isLink(sharedDst)) {
         if (copy) {
           fs.cpSync(shared, sharedDst, { recursive: true });
           fs.writeFileSync(path.join(sharedDst, MARK), 'installed by cstack setup --copy\n');
         } else fs.symlinkSync(shared, sharedDst, 'dir');
       }
     }
-    log.push(`${dryRun ? 'would install' : copy ? 'copied' : 'linked'} ${skills.length} skills → ${base} (${h.name})`);
+    log.push(`${dryRun ? 'would install' : copy ? 'copied' : 'linked'} ${skills.length - skipped.length} skills → ${base} (${h.name})`);
+    if (skipped.length) log.push(`WARN skipped ${skipped.length} (a skill with that name exists and was not installed by cstack; it will answer instead): ${skipped.join(', ')}`);
   }
   return log;
 }

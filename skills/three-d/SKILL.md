@@ -39,7 +39,7 @@ Official label artwork and measured dimensions > CAD and dieline > capture > mul
 
 ## Tools / providers
 
-`cstack 3d inspect|frames|blender-script`, `cstack route --modality 3d`, `cstack generate` (fal 3D models, budgeted), Blender MCP (safe mode), Spline MCP, Needle MCP, `gltf-transform` (external, owner installs), `browse` and `browse qa` for the built hero, capture apps (owner).
+`cstack 3d inspect|frames|blender-script`, `cstack route --modality 3d`, `cstack generate` (fal 3D models, budgeted), Blender MCP (safe mode), Spline MCP, Needle MCP, `gltf-transform` (external, owner installs), `site-capture` and `browse qa` for the built hero, capture apps (owner).
 
 ## Process
 
@@ -71,7 +71,7 @@ Official label artwork and measured dimensions > CAD and dieline > capture > mul
 
 ## Handoff
 
-`product-fidelity` (lock the entity, label audit), `generate-media` (budgeted gens), `workflow landing-page` (hero placement), `brand-verify`, `creative-review`, `learn`.
+`product-fidelity` (lock the entity, label audit), `generate-media` (budgeted gens), `workflow landing-page` (hero placement), `brand-verify`, `creative-review`, `learn-loop`.
 
 ## Failure modes
 

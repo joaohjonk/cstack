@@ -14,7 +14,7 @@ Every cstack skill follows these rules. Skills reference this file instead of co
 
 Every outcome gets a researched flow before anything is made:
 
-1. **Target.** State the desired outcome as concretely as possible: what "as close as possible" means, the reference it is judged against, musts and must-nots. Vague target → `office-hours` first.
+1. **Target.** State the desired outcome as concretely as possible: what "as close as possible" means, the reference it is judged against, musts and must-nots. Vague target → `brief` first.
 2. **Find the flow.** `cstack flows search "<outcome>"`. A matching, non-stale flow is the default plan. Stale, missing or a poor fit → `/flow-research`: compare at least two candidate flows from current evidence (tool and model docs, MCP-first and YC companies, what practitioners actually post and use) before choosing one.
 3. **Plan.** `cstack flows plan <id> --target "..."` writes `work/flows/<date>-<id>.flow.yaml`: steps, tool per step with fallbacks, deterministic vs generative, gates, cost ladder, stop condition. `cstack flows check <plan>` must pass. Show it before spending.
 4. **Step by step.** Run one step, compare its output to the target (`compare_to_target`), pass its gate, then the next. Never jump to the final render. When a step misses, fix that step; do not restart from scratch.

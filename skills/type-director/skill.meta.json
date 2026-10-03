@@ -13,7 +13,7 @@
   "context_class": "m",
   "mutating": true,
   "destructive": false,
-  "handoff": ["identity-system", "brand-verify", "creative-review", "copywriting", "workflow", "learn"],
+  "handoff": ["identity-system", "brand-verify", "creative-review", "copywriting", "workflow", "learn-loop"],
   "evals": ["evals/fixtures/type-pairing-near-miss.yaml", "evals/fixtures/type-system-measurable.yaml", "evals/fixtures/type-review-beyond-font-choice.yaml"],
   "approval_gates": [
     { "id": "pairing", "after_step": "specimens", "artifact": "work/type/*/specimen.html", "never_self_approve": true },

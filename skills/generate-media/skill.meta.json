@@ -52,7 +52,7 @@
     "product-fidelity",
     "image-edit",
     "campaign-sequence",
-    "learn"
+    "learn-loop"
   ],
   "evals": [
     "evals/fixtures/expensive-overnight-batch.yaml"

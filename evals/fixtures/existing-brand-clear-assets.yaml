@@ -2,11 +2,11 @@ id: existing-brand-clear-assets
 tier: T2
 skills:
 - brand-import
-- office-hours
+- brief
 - brand-verify
 depends_on:
 - skills/brand-import/SKILL.md
-- skills/office-hours/SKILL.md
+- skills/brief/SKILL.md
 - skills/brand-verify/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.

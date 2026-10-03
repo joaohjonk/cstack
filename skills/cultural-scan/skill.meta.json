@@ -44,7 +44,7 @@
     "creative-direction",
     "campaign-sequence",
     "copywriting",
-    "learn"
+    "learn-loop"
   ],
   "evals": [
     "evals/fixtures/culture-without-observation.yaml"

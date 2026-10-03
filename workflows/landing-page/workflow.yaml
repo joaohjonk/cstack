@@ -11,7 +11,7 @@ note: template = not yet proven on a real run. Promote to validated only with a 
 runs: []
 steps:
 - id: objective-audience
-  skill: office-hours
+  skill: brief
   gate: owner
 - id: messaging-hierarchy
   skill: copywriting
@@ -47,11 +47,11 @@ steps:
   does: build with tokens only (host coding tools); no raw values
   gate: auto
 - id: responsive-qa
-  skill: browse
+  skill: site-capture
   does: qa + shots at 375/768/1440
   gate: auto
 - id: accessibility
-  skill: browse
+  skill: site-capture
   does: alt, labels, contrast, focus, reduced motion
   gate: auto
 - id: brand-verify

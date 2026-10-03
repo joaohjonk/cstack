@@ -18,7 +18,7 @@ What was built, what is honestly weak, and what was decided along the way. The f
 6. **Specialist outputs are thin.** Video, decks and packaging are workflow templates without their own checkers or renderers. Performance learning is a schema without an ingestion path.
 7. **Compliance is a process, not knowledge.** `claims-proof` requires current primary sources and marks uncertainty, but encodes no ANVISA or FDA rules and caches no citations.
 8. **Copy is still effectively self-judged.** The QA pass is separate in the skill, but nothing deterministic checks copy.
-9. **Skill count is 22, above the 15–20 target.** `browse` and `workflow` are infrastructure other skills call; folding them away would hide real contracts. Kept, with budgets enforced. Revisit after real runs show which skills never fire.
+9. **Skill count is 22, above the 15–20 target.** `site-capture` and `workflow` are infrastructure other skills call; folding them away would hide real contracts. Kept, with budgets enforced. Revisit after real runs show which skills never fire.
 
 ## Decisions made during the build
 

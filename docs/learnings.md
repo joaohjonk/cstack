@@ -45,7 +45,7 @@ Set `repair_worked` once you know whether the repair worked. Retros count failur
 cstack learn add --file event.json
 ```
 
-- `kind`: `observation`, `failure`, `approval`, `model_quirk`, `performance`, `human_edit`, `candidate` (plus `promoted` and `retired`, which the CLI and `/learn` write).
+- `kind`: `observation`, `failure`, `approval`, `model_quirk`, `performance`, `human_edit`, `candidate` (plus `promoted` and `retired`, which the CLI and `/learn-loop` write).
 - `scope`: `durable`, `brand_specific`, `campaign_specific`, `model_specific`, `tool_specific`.
 - `evidence` items are source refs (`{kind, ref, ...}`), the same shape as brand field sources.
 - A `topic:<name>` tag groups related events. Without one, events are grouped by their normalized statement.
@@ -66,7 +66,7 @@ cstack learn promote LE-20261003-b105e6 --to references/anti/ --by owner
 ```
 
 - `model_specific`, `tool_specific` and `campaign_specific` learnings are refused without `expires`. Model and tool facts go stale, and the default review is 60 days.
-- Promotion appends a `promoted` event (`replaces`, `target`, `approved_by`). Writing the rule into the target, citing the `LP-...` id, is the `/learn` skill's job.
+- Promotion appends a `promoted` event (`replaces`, `target`, `approved_by`). Writing the rule into the target, citing the `LP-...` id, is the `/learn-loop` skill's job.
 - Taste rules are never self-promoted. With the owner unavailable, a learning stays a candidate.
 
 ## Promotion targets
@@ -86,7 +86,7 @@ A canon entry (`canon/*.canon-entry.yaml`) is a valid target for a durable menta
 
 ## Do Not Relearn
 
-Each weekly or milestone retro (`/learn retro`, written to `work/retro/<date>.md`) ends by updating a **Do Not Relearn** list: expensive lessons already paid for once. Each one should be enforced in code or written into a skill rule, so nobody has to remember it.
+Each weekly or milestone retro (`/learn-loop retro`, written to `work/retro/<date>.md`) ends by updating a **Do Not Relearn** list: expensive lessons already paid for once. Each one should be enforced in code or written into a skill rule, so nobody has to remember it.
 
 cstack started with this list, distilled from an earlier real brand project (anonymized in [research/local-learning-migration.md](research/local-learning-migration.md)):
 

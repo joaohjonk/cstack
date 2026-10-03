@@ -37,7 +37,7 @@ Owner feedback outranks every lens. Hard gates (brand-verify failures, product f
 
 ## Tools / providers
 
-Run lenses **in a context that did not author the work**: a subagent or a different model given only brief + brand context + artifact + rubric. Optional provider verifier for brand adherence (`brand-verify`). `browse` screenshots for pages.
+Run lenses **in a context that did not author the work**: a subagent or a different model given only brief + brand context + artifact + rubric. Optional provider verifier for brand adherence (`brand-verify`). `site-capture` screenshots for pages.
 
 ## Process
 
@@ -68,7 +68,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Handoff
 
-`image-edit` / `copywriting` / `identity-system` (fixes), `brand-verify` (re-verify), `learn` (owner corrections, repeated failures).
+`image-edit` / `copywriting` / `identity-system` (fixes), `brand-verify` (re-verify), `learn-loop` (owner corrections, repeated failures).
 
 ## Failure modes
 

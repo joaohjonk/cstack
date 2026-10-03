@@ -68,7 +68,7 @@ Deterministic: `cstack audit` (dimensions, unintended reframe), silhouette/outli
 
 ## Handoff
 
-`image-edit` (repairs), `brand-verify`, `creative-review` (PHOTOGRAPHER, PRODUCTION lenses), `learn` (model quirks).
+`image-edit` (repairs), `brand-verify`, `creative-review` (PHOTOGRAPHER, PRODUCTION lenses), `learn-loop` (model quirks).
 
 ## Failure modes
 

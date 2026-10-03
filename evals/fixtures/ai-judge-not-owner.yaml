@@ -2,10 +2,10 @@ id: ai-judge-not-owner
 tier: T2
 skills:
 - creative-review
-- learn
+- learn-loop
 depends_on:
 - skills/creative-review/SKILL.md
-- skills/learn/SKILL.md
+- skills/learn-loop/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.
 cannot_isolate: Grader checks recording and precedence, not taste.

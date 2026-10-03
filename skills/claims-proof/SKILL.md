@@ -38,7 +38,7 @@ Current primary regulatory text (official gazette, agency site, CFR) > agency gu
 
 ## Tools / providers
 
-Web research on primary sources **every time rules may have changed** (re-check anything older than the brand's review window), `browse` for official pages and PDFs, `cstack brand set` for approved claims.
+Web research on primary sources **every time rules may have changed** (re-check anything older than the brand's review window), `site-capture` for official pages and PDFs, `cstack brand set` for approved claims.
 
 ## Process
 

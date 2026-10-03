@@ -1,5 +1,5 @@
 ---
-name: learn
+name: learn-loop
 description: "Make work compound: capture owner corrections, preference pairs, failures, provider quirks and results as learning events; run the observe, compare, articulate, decide, encode loop; promote repeated evidence into scoped rules, anti-examples, evals, canon entries or provider notes with provenance and expiry; and run a periodic retro over spend, failures and skill health. Use at the end of meaningful runs, after an owner correction, weekly for a retro, or before redoing something that may already be known. Not for recording one brand fact (use cstack brand set)."
 license: MIT
 metadata:
@@ -7,7 +7,7 @@ metadata:
   cstack-meta: "skill.meta.json"
 ---
 
-# /learn
+# /learn-loop
 
 Recent work must compound, not disappear into chat history (section 28A). Taste is encoded decisions. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 

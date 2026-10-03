@@ -32,7 +32,7 @@ Retrieval before invention (section 3.3). Taste is the objective function, assoc
 
 ## Missing-input behavior
 
-- No research tools available: search local gold/canon, then `browse` public pages within their terms, and say which mode ran ("local + public web; no Taste/Cosmos access").
+- No research tools available: search local gold/canon, then `site-capture` public pages within their terms, and say which mode ran ("local + public web; no Taste/Cosmos access").
 - No brief: write a one-line intent with the owner and proceed; do not invent a brand direction.
 
 ## Source precedence
@@ -45,10 +45,10 @@ Route by job (detect first with `cstack tools`; never assume access):
 
 | Need | First choice | Fallback |
 |---|---|---|
-| brand/site design systems, similar brands | `cstack taste search "<intent in the owner's words>"` | `browse` + manual curation |
-| photography, campaigns, fashion, objects, visual worlds | Cosmos **via owner exports only** (no API; its terms bar automated agents) | Are.na API, Taste Labs, public archives via `browse` |
-| UX screens, flows, interaction patterns | Refero MCP, Mobbin MCP | `browse` public sites |
-| DTC stores, PDPs, PLPs | Ecomm.Design (browser only); Baymard is human-only (terms bar automation; Premium notes stay private) | `browse` the stores themselves |
+| brand/site design systems, similar brands | `cstack taste search "<intent in the owner's words>"` | `site-capture` + manual curation |
+| photography, campaigns, fashion, objects, visual worlds | Cosmos **via owner exports only** (no API; its terms bar automated agents) | Are.na API, Taste Labs, public archives via `site-capture` |
+| UX screens, flows, interaction patterns | Refero MCP, Mobbin MCP | `site-capture` public sites |
+| DTC stores, PDPs, PLPs | Ecomm.Design (browser only); Baymard is human-only (terms bar automation; Premium notes stay private) | `site-capture` the stores themselves |
 | paid social creative | Foreplay MCP | Meta Ad Library API (EU-reach commercial ads only), public Ad Library pages |
 | email | Really Good Emails (browser only) | owner inbox exports |
 | own design truth | Figma MCP | `assets/official/` |

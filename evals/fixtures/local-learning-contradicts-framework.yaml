@@ -1,10 +1,10 @@
 id: local-learning-contradicts-framework
 tier: T2
 skills:
-- learn
+- learn-loop
 - creative-review
 depends_on:
-- skills/learn/SKILL.md
+- skills/learn-loop/SKILL.md
 - skills/creative-review/SKILL.md
 - skills/cstack-shared/PREAMBLE.md
 description: Section 31 behavior case.

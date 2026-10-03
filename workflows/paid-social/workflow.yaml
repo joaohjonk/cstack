@@ -22,7 +22,7 @@ steps:
   does: decompose past ads into features (hook, first frame, product timing, face, proof, pacing, CTA ...)
   gate: auto
 - id: hypotheses
-  skill: office-hours
+  skill: brief
   does: 2-4 testable hypotheses; each changes one feature
   gate: owner
 - id: variants
@@ -49,6 +49,6 @@ steps:
   - work/exports/
   gate: auto
 - id: learn
-  skill: learn
+  skill: learn-loop
   does: 'after results: what repeated, what is confounded, what deserves another test'
   gate: auto

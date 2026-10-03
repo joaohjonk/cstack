@@ -1,6 +1,6 @@
 # Owner interview, 2026-09-14 (fictional)
 
-Interviewer: /office-hours run. Interviewee: the studio founder (a fictional person; referred to as "Founder").
+Interviewer: /brief run. Interviewee: the studio founder (a fictional person; referred to as "Founder").
 Everything below is invented for the cstack example workspace.
 
 1. "We make stoneware tableware in small batches: plates, bowls, cups. Nothing else. No vases, no decor."

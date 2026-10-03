@@ -1,6 +1,6 @@
 ---
 name: flow-research
-description: "Research the best step-by-step method for a creative outcome before making anything: define the target, search the flow library, benchmark current tools, MCP-first and YC companies and what practitioners use, compare at least two candidate flows, and write one with gates, fallbacks, a cost ladder and a stop condition. Use when an outcome has no fresh flow, the flow is stale, or the ask is new. Not for the brief (use office-hours) or running a known workflow (use workflow)."
+description: "Research the best step-by-step method for a creative outcome before making anything: define the target, search the flow library, benchmark current tools, MCP-first and YC companies and what practitioners use, compare at least two candidate flows, and write one with gates, fallbacks, a cost ladder and a stop condition. Use when an outcome has no fresh flow, the flow is stale, or the ask is new. Not for the brief (use brief) or running a known workflow (use workflow)."
 license: MIT
 metadata:
   cstack-version: "0.1.0"
@@ -19,7 +19,7 @@ Method before making. The quality of the output is mostly decided by the method 
 
 ## When not to use
 
-- The ask itself is unclear: `office-hours` first.
+- The ask itself is unclear: `brief` first.
 - A fresh, validated flow fits: plan from it (`cstack flows plan <id>`) and go.
 - Choosing one model inside a known step: `model-router`.
 
@@ -39,7 +39,7 @@ Run records and owner verdicts on this brand > documented tool/model behavior (d
 
 ## Tools / providers
 
-Web search and fetch, `browse` (inspect a reference page: how it is built, asset types, sizes), research-tool MCPs when present, `cstack flows`, `cstack route`, `cstack spend plan`.
+Web search and fetch, `site-capture` (inspect a reference page: how it is built, asset types, sizes), research-tool MCPs when present, `cstack flows`, `cstack route`, `cstack spend plan`.
 
 ## Process
 
@@ -71,7 +71,7 @@ Web search and fetch, `browse` (inspect a reference page: how it is built, asset
 
 ## Handoff
 
-`workflow` (run it), `model-router` (per-step model choice), `generate-media`, `three-d`, `video-direction`, `mockup`, `vector-mark`, `learn` (close the loop).
+`workflow` (run it), `model-router` (per-step model choice), `generate-media`, `three-d`, `video-direction`, `mockup`, `vector-mark`, `learn-loop` (close the loop).
 
 ## Failure modes
 

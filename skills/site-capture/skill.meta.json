@@ -1,5 +1,5 @@
 {
-  "slug": "browse",
+  "slug": "site-capture",
   "type": "capability",
   "summary": "Headless browser for brand work: responsive screenshots, PDFs, snapshots, computed-style tokens, media provenance and page QA",
   "tags": [
@@ -12,7 +12,7 @@
   "triggers": [
     "screenshot",
     "capture the site",
-    "browse",
+    "site-capture",
     "check the page on mobile",
     "extract styles",
     "PDF of the page"

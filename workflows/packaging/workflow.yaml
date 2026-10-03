@@ -11,7 +11,7 @@ note: template = not yet proven on a real run. Promote to validated only with a 
 runs: []
 steps:
 - id: truth
-  skill: office-hours
+  skill: brief
   gate: owner
 - id: market-retail-context
   skill: competitor-intel

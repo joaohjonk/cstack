@@ -9,7 +9,7 @@ Created by `cstack brand init` on {{DATE}}. This is the brand's own repository. 
 | `brand/brand-world.json` | recurring entities (products, cast, locations, surfaces, light) with immutable traits | `/brand-import`, `/product-fidelity` |
 | `assets/official/` | logos, packaging masters, approved product photos. **Never overwritten.** | the owner |
 | `references/gold`, `anti`, `culture`, `competitors` | references with rights, transferable mechanism and do-not-copy notes | `/taste-search`, `/shot-dna`, `/cultural-scan` |
-| `briefs/`, `campaigns/` | creative briefs and campaign sequences | `/office-hours`, `/campaign-sequence` |
+| `briefs/`, `campaigns/` | creative briefs and campaign sequences | `/brief`, `/campaign-sequence` |
 | `recipes/` | versioned prompt recipes with slots | `/prompt-director` |
 | `work/` | generated outputs, each with a `.gen.json` lineage sidecar | provider runner |
 | `state/*.jsonl` | approvals, feedback, learnings, failures, evals, cost ledger, lineage | cstack CLI and skills |

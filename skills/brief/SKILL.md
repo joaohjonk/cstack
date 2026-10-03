@@ -1,5 +1,5 @@
 ---
-name: office-hours
+name: brief
 description: "Interrogate and reframe a creative or brand request before anything is made, then write a short creative brief downstream skills consume. Use when a request arrives for any artifact (campaign, shoot, page, pack, deck, brand), when the ask is vague (make it cooler, more premium), or when the requested artifact may be the wrong one. Not for executing an already-approved brief (use workflow or the specialist skill) or for reviewing finished work (use creative-review)."
 license: MIT
 metadata:
@@ -7,7 +7,7 @@ metadata:
   cstack-meta: "skill.meta.json"
 ---
 
-# /office-hours
+# /brief
 
 The most important skill in cstack. It decides what is worth making before money and time go into making it. Rules in [the shared preamble](../cstack-shared/PREAMBLE.md) apply.
 

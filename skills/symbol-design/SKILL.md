@@ -37,12 +37,12 @@ Owner direction and existing equity > approved brand state > category research >
 ## Tools / providers
 
 - Exploration: Recraft vector models (MCP or API, budgeted), raster image models for form studies, LLM-written SVG for geometric constructions only (quality degrades with complexity and organic form).
-- `cstack svg reduce` (16/24/32/48 px, one colour, reversed) and `cstack svg lint` on SVG drafts; `browse` for comparison boards.
+- `cstack svg reduce` (16/24/32/48 px, one colour, reversed) and `cstack svg lint` on SVG drafts; `site-capture` for comparison boards.
 - Canon entries in `canon/` (mark-making and systems: `paul-rand`, `otl-aicher`, `isotype`, `vignelli`), `competitor-intel`, `taste-search`.
 
 ## Process
 
-1. **Brief** with an owner gate (`office-hours` when missing).
+1. **Brief** with an owner gate (`brief` when missing).
 2. **Research**: category silhouettes, metaphors everyone uses, three to five canon mechanisms, near, middle and far references (models, not looks).
 3. **Mark type**: wordmark, lettermark or monogram, pictorial, abstract, emblem, combination; choose with the fit table in the research note and say why.
 4. **Explore wide and cheap**: 20–40 thumbnails across three to five ideas; judge them in one colour at 32 px before anything else.
