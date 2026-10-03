@@ -52,6 +52,8 @@ Owner originals and approved masters > derived edits > new shoots > generation. 
 - One bet, one experiment id; every asset names its cell.
 - Cut-downs are derived from a master, never regenerated.
 - Nothing ships that `product-fidelity` or `brand-verify` failed.
+- A creator brief is the concept plus three product truths, not a script; a rigid brief only for paid amplification of a post that already proved itself. Credibility partners get long-term briefs, acquisition creators get per-test briefs.
+- Mailers and packaging inserts are designed to be posted.
 - Organic-safe versions drop paid-only overlays (offer stickers, platform CTAs) and keep the brand codes.
 
 ## Outputs, files written, state updated

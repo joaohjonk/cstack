@@ -47,11 +47,12 @@ Owner decisions and approved brand fields > reproduced learnings and rules > the
 
 1. **Read the four blocks** and write, in one paragraph each, what is true, what is assumed and what is unknown.
 2. **Find tensions**: the customer's conflict in their own words ("I want X, but not Y"). A bet without a tension is a format in search of a reason.
-3. **Choose the objective per bet**: paid performance (stop → understand → click → buy), organic travel (watch → finish → share → remix → remember; name the travel reasons), brand equity (recognise → associate → desire → remember). They are different functions; a bet names the ones it serves.
-4. **Write 2-5 bets** (`*.creative-bet.yaml`, `creative-bet` schema): title, tension, audience with awareness stage, concept (angle, hook tactic, mechanic, format at minimum), hook family, formats, proof (claim ids), brand constraint, objectives, evidence with its ladder rung, experiment.
-5. **Design the experiment**: hold the angle and the offer; vary one family, or two as a factorial with levels; set the success metric, threshold, minimum spend per cell and a kill rule.
-6. **Gate**: `cstack creative check <bet>` must PASS. Read its cell count and minimum spend; if the budget cannot reach it, cut cells, not the minimum.
-7. **Rank** by expected learning per unit of spend and by brand fit, and say which bet you would drop first.
+3. **Keep two lanes**: iteration bets (a better version of what exists) and story bets (a new story for a new audience). Each lane gets its own slot and owner (`lane`, `lane_owner`); a slate of hook tweaks alone fails the plan check. Write for the audience's audience: what the buyer's friends, guests or colleagues will see and repeat.
+4. **Choose the objective per bet**: paid performance (stop → understand → click → buy), organic travel (watch → finish → share → remix → remember; name the travel reasons), brand equity (recognise → associate → desire → remember). They are different functions; a bet names the ones it serves.
+5. **Write 2-5 bets** (`*.creative-bet.yaml`, `creative-bet` schema): title, tension, audience with awareness stage, concept (angle, hook tactic, mechanic, format at minimum), hook family, formats, proof (claim ids), brand constraint, objectives, evidence with its ladder rung, experiment.
+6. **Design the experiment**: hold the angle and the offer; vary one family, or two as a factorial with levels; set the success metric, threshold, minimum spend per cell and a kill rule. To test a claim before paying for video, run the cheap smoke test: the same plain product static, only the claim changes.
+7. **Gate**: `cstack creative check <bet>` must PASS. Read its cell count and minimum spend; if the budget cannot reach it, cut cells, not the minimum.
+8. **Rank** by expected learning per unit of spend and by brand fit, and say which bet you would drop first.
 
 ## Decision rules
 

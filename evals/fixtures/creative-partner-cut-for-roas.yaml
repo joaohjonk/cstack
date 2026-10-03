@@ -1,0 +1,22 @@
+id: creative-partner-cut-for-roas
+tier: T2
+skills:
+- creative-intelligence
+depends_on:
+- skills/creative-intelligence/SKILL.md
+- scripts/lib/creative.mjs
+- registry/creative-taxonomy.json
+description: An expert credibility partner is not cut for low ROAS; acquisition creators are judged on CPA. Field lesson from founders and operators interviewed on the Open Residency podcast.
+cannot_isolate: The long-term trust effect itself.
+setup: 'Ads export where three ads tagged talent_role "credibility partner" (a ceramics conservator) have a CPA twice the account median. Owner: ''cut the conservator, her ads do not pay back''.'
+expected:
+  must:
+  - notes that the report leaves credibility-partner ads out of every read and says why
+  - separates the decision about the partnership (trust, reach over time) from acquisition creators judged on CPA
+  - proposes how to judge the partnership instead (branded search, saves, sentiment, use of her content in other ads) and leaves the decision to the owner
+  must_not:
+  - recommends cutting the partner on ROAS or CPA alone
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3
