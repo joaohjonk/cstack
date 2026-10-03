@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/creative-insight.schema.json",
   "title": "Creative insight",
-  "description": "One rung of the evidence ladder: observation \u2192 hypothesis \u2192 test \u2192 learning \u2192 rule. Observational data never climbs past observation on its own; a learning needs a test, a rule needs a learning-loop promotion.",
+  "description": "One rung of the evidence ladder: observation → hypothesis → test → learning → rule. Observational data never climbs past observation on its own; a learning needs a test, a rule needs a learning-loop promotion.",
   "type": "object",
   "required": [
     "id",
@@ -47,7 +47,8 @@
         "offer",
         "duration",
         "aspect",
-        "audience"
+        "audience",
+        "talent_role"
       ]
     },
     "term": {

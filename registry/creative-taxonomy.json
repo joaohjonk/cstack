@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "updated": "2026-10-03",
-  "note": "cstack's own vocabulary for reading an ad in layers. Each family answers one question and a term lives in one family only: 'street interview' is a format, 'contrarian claim' is a hook tactic, 'social proof' is a proof. Terms are starting points, not a closed list; a brand adds its own in its workspace. Learned as a method from public creative-analytics practice (an ad read in layers, not as one label); the words are cstack's.",
+  "note": "cstack's own vocabulary for reading an ad in layers. Each family answers one question and a term lives in one family only: 'street interview' is a format, 'contrarian claim' is a hook tactic, 'social proof' is a proof. Terms are starting points, not a closed list; a brand adds its own in its workspace. Learned as a method from public creative-analytics practice (an ad read in layers, not as one label); the words are cstack's. Credibility partners (experts and long-term voices) are judged on trust over time, never on ROAS; acquisition creators are judged on CPA and are swappable.",
   "families": {
     "angle": {
       "layer": "concept",
@@ -13,7 +13,20 @@
       "layer": "concept",
       "question": "How do the first seconds create tension?",
       "is_not": "The words themselves (verbal_hook) or the image (visual_hook). A tactic is the move both of them make.",
-      "terms": ["contrarian claim", "open question", "confession", "result first", "demonstration first", "call out the viewer", "myth to correct", "unexpected object", "number or list", "overheard line", "challenge", "price or offer first"]
+      "terms": [
+        "contrarian claim",
+        "open question",
+        "confession",
+        "result first",
+        "demonstration first",
+        "call out the viewer",
+        "myth to correct",
+        "unexpected object",
+        "number or list",
+        "overheard line",
+        "challenge",
+        "price or offer first"
+      ]
     },
     "visual_hook": {
       "layer": "concept",
@@ -31,19 +44,64 @@
       "layer": "concept",
       "question": "Why does someone keep watching or reading after the hook?",
       "is_not": "The topic or the look. A mechanic is the structure that pays off attention.",
-      "terms": ["contrast", "reveal", "transformation", "simplification", "shared frustration", "ritual", "curiosity gap", "witness", "comparison", "list payoff", "story turn", "proof in motion"]
+      "terms": [
+        "contrast",
+        "reveal",
+        "transformation",
+        "simplification",
+        "shared frustration",
+        "ritual",
+        "curiosity gap",
+        "witness",
+        "comparison",
+        "list payoff",
+        "story turn",
+        "proof in motion"
+      ]
     },
     "format": {
       "layer": "concept",
       "question": "Which recognisable content vessel carries it?",
       "is_not": "A tactic or a persuasion move. Formats are what a viewer would call the thing.",
-      "terms": ["creator to camera", "street interview", "product demo", "before and after", "comparison static", "unboxing", "tutorial", "behind the scenes", "founder story", "product still", "carousel", "meme static", "reaction", "skit", "voiceover with b-roll", "review read-out", "text-led static", "split screen", "day in the life", "product animation"]
+      "terms": [
+        "creator to camera",
+        "street interview",
+        "product demo",
+        "before and after",
+        "comparison static",
+        "unboxing",
+        "tutorial",
+        "behind the scenes",
+        "founder story",
+        "product still",
+        "carousel",
+        "meme static",
+        "reaction",
+        "skit",
+        "voiceover with b-roll",
+        "review read-out",
+        "text-led static",
+        "split screen",
+        "day in the life",
+        "product animation"
+      ]
     },
     "proof": {
       "layer": "concept",
       "question": "Why should anyone believe it?",
       "is_not": "The claim. Proof is the evidence offered for it, and it must come from claims-proof.",
-      "terms": ["demonstration", "ingredient or spec", "third-party test", "customer words", "numbers", "expert", "head-to-head test", "guarantee", "social proof", "time or durability"]
+      "terms": [
+        "demonstration",
+        "ingredient or spec",
+        "third-party test",
+        "customer words",
+        "numbers",
+        "expert",
+        "head-to-head test",
+        "guarantee",
+        "social proof",
+        "time or durability"
+      ]
     },
     "payoff": {
       "layer": "concept",
@@ -55,13 +113,28 @@
       "layer": "concept",
       "question": "What happens next?",
       "is_not": "The offer. 'Shop now' is a CTA; '20% off' is an offer.",
-      "terms": ["shop", "learn more", "try", "subscribe", "follow", "save", "comment", "no explicit cta"]
+      "terms": [
+        "shop",
+        "learn more",
+        "try",
+        "subscribe",
+        "follow",
+        "save",
+        "comment",
+        "no explicit cta"
+      ]
     },
     "awareness_stage": {
       "layer": "concept",
       "question": "How much does the viewer already know?",
       "is_not": "The audience. One audience spans stages.",
-      "terms": ["unaware", "problem-aware", "solution-aware", "product-aware", "most-aware"]
+      "terms": [
+        "unaware",
+        "problem-aware",
+        "solution-aware",
+        "product-aware",
+        "most-aware"
+      ]
     },
     "talent": {
       "layer": "production",
@@ -87,9 +160,54 @@
       "is_not": "Part of the creative test. Never vary the offer in the same experiment as creative families.",
       "open": true
     },
-    "duration": { "layer": "production", "question": "How long is it?", "is_not": "Pacing. A short ad can still feel slow.", "open": true },
-    "aspect": { "layer": "production", "question": "Which aspect ratio?", "is_not": "Placement. One aspect runs in several placements.", "terms": ["9:16", "4:5", "1:1", "16:9"] },
-    "audience": { "layer": "production", "question": "Which targeting or segment did it run against?", "is_not": "The persona in the angle.", "open": true }
+    "duration": {
+      "layer": "production",
+      "question": "How long is it?",
+      "is_not": "Pacing. A short ad can still feel slow.",
+      "open": true
+    },
+    "aspect": {
+      "layer": "production",
+      "question": "Which aspect ratio?",
+      "is_not": "Placement. One aspect runs in several placements.",
+      "terms": [
+        "9:16",
+        "4:5",
+        "1:1",
+        "16:9"
+      ]
+    },
+    "audience": {
+      "layer": "production",
+      "question": "Which targeting or segment did it run against?",
+      "is_not": "The persona in the angle.",
+      "open": true
+    },
+    "talent_role": {
+      "layer": "production",
+      "question": "What is the person on screen there to do?",
+      "is_not": "The person. The same creator can be a credibility partner on one brief and an acquisition creator on another.",
+      "terms": [
+        "credibility partner",
+        "acquisition creator",
+        "brand team",
+        "customer",
+        "none"
+      ]
+    }
   },
-  "travel_reasons": ["identity signalling", "usefulness", "surprise", "social tension", "humour", "participation", "remixability", "curiosity gap", "cultural timing", "human interest", "earned controversy", "visual novelty"]
+  "travel_reasons": [
+    "identity signalling",
+    "usefulness",
+    "surprise",
+    "social tension",
+    "humour",
+    "participation",
+    "remixability",
+    "curiosity gap",
+    "cultural timing",
+    "human interest",
+    "earned controversy",
+    "visual novelty"
+  ]
 }

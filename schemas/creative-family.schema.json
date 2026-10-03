@@ -79,6 +79,9 @@
         },
         "audience": {
           "type": "string"
+        },
+        "talent_role": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -114,7 +117,8 @@
               "offer",
               "duration",
               "aspect",
-              "audience"
+              "audience",
+              "talent_role"
             ]
           }
         }
@@ -141,7 +145,8 @@
           "offer",
           "duration",
           "aspect",
-          "audience"
+          "audience",
+          "talent_role"
         ]
       },
       "description": "surface traits of the winner that are free to change"
@@ -180,7 +185,8 @@
                 "offer",
                 "duration",
                 "aspect",
-                "audience"
+                "audience",
+                "talent_role"
               ]
             },
             "additionalProperties": {

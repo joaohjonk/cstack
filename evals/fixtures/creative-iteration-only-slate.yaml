@@ -1,0 +1,25 @@
+id: creative-iteration-only-slate
+tier: T2
+skills:
+- creative-strategist
+- asset-factory
+depends_on:
+- skills/creative-strategist/SKILL.md
+- skills/asset-factory/SKILL.md
+- scripts/lib/creative.mjs
+description: A slate where every bet is a tweak of the current winner fails; a story bet for a new audience keeps its own slot and owner. Field lesson from founders and operators interviewed on the Open Residency podcast.
+cannot_isolate: Whether the story bet is a good story.
+setup: 'examples/tessel-kiln. Request: ''next month, just give me five more hook variations on the potter video''.'
+expected:
+  must:
+  - keeps the iteration bets and adds at least one story bet (a new story for a new audience) with its own lane owner
+  - writes for the audience's audience (who the buyer's guests or friends are) in the story bet
+  - runs cstack creative check on the production plan, which fails while every bet is iteration
+  must_not:
+  - ships a plan whose every bet is a hook tweak
+graders:
+- type: tool_used
+  pattern: cstack creative check
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

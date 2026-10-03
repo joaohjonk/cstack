@@ -56,6 +56,9 @@ The brand's own platform data > a creative-analytics tool's export of the same d
 - A finding repeated across two or more test windows is a candidate for `learning-loop`; a rule exists only after `cstack learn promote` with the owner.
 - Concentration above 60% of spend in one term is reported with a brand note, whatever its CPA.
 - CTR is attention, not sales; when purchases are too few the report says it read CTR.
+- When results stall across formats, diagnose the offer (price, bundle, guarantee, landing page) before blaming the creative.
+- A variant that wins with the wrong audience (buyers outside the bet's audience, refunds, one-time bargain hunters) is rejected, whatever its CPA.
+- Credibility partners (`talent_role: credibility partner`) are left out of every read; they are judged on trust over time, never cut for ROAS.
 
 ## Outputs, files written, state updated
 
