@@ -1,0 +1,27 @@
+{
+  "provider": "fal",
+  "model": "openai/gpt-image-2",
+  "operation": "generate",
+  "job_id": "01a10402-01f9-7bb3-a9de-1819395b1e3b",
+  "idempotency_key": "36c41d0ededb364fc1f650a698afc9b8aa6b1626b16213b4d261865cffd74b93",
+  "prompt": "Looking from inside a quiet warm white photo studio toward a plain tall window: soft north light falls across bare plaster, and through the glass a thin sliver of city rooftops is visible. The room is empty and still. Deadpan and calm, warm daylight, natural colour, editorial photograph, square frame. No faces, no text, no letters, no logos, no signage.",
+  "refs": [],
+  "input_hashes": [],
+  "params": {
+    "image_size": {
+      "width": 1024,
+      "height": 1024
+    },
+    "quality": "medium",
+    "num_images": 1,
+    "output_format": "jpeg"
+  },
+  "seed": null,
+  "size_audit": {
+    "ok": true,
+    "findings": []
+  },
+  "cost": null,
+  "created_at": "2026-10-03T23:04:02.572Z",
+  "skill": "generate-media"
+}

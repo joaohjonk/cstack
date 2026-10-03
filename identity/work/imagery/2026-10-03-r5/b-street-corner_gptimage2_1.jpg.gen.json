@@ -1,0 +1,27 @@
+{
+  "provider": "fal",
+  "model": "openai/gpt-image-2",
+  "operation": "generate",
+  "job_id": "01a10402-01f9-7f42-ad5b-8158903ca52d",
+  "idempotency_key": "d698528e4e6d9b0bceaabb05b2f5ad62eaab583c164bf7e18499a1c55e559281",
+  "prompt": "Looking out through an open doorway from a cool shaded interior onto a quiet street corner at noon: pale stone pavement, one tree, a plain building edge, strong overhead sun and short shadows, nobody around. Deadpan and calm, warm daylight, natural colour, editorial photograph, square frame. No faces, no text, no letters, no logos, no signage.",
+  "refs": [],
+  "input_hashes": [],
+  "params": {
+    "image_size": {
+      "width": 1024,
+      "height": 1024
+    },
+    "quality": "medium",
+    "num_images": 1,
+    "output_format": "jpeg"
+  },
+  "seed": null,
+  "size_audit": {
+    "ok": true,
+    "findings": []
+  },
+  "cost": null,
+  "created_at": "2026-10-03T23:04:02.198Z",
+  "skill": "generate-media"
+}
