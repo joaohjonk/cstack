@@ -52,7 +52,7 @@ Or do it yourself:
 ```bash
 git clone --depth 1 https://github.com/joaohjonk/cstack.git ~/cstack
 cd ~/cstack && ./setup               # installs the npm dependencies, then links the skills into .agents/skills and .claude/skills
-alias cstack="node ~/cstack/bin/cstack.mjs"
+alias cstack="node ~/cstack/bin/cstack.mjs"   # setup prints this line; add it to your shell profile
 cstack help
 ```
 
@@ -192,7 +192,7 @@ A step-by-step walkthrough with no spend is in [docs/quickstart.md](docs/quickst
 
 ## Workflows
 
-`/workflow <name>` runs a whole job as a resumable plan with owner gates and a tracker in `work/plans/`:
+`/workflow <name>` runs a whole job as a resumable plan with owner gates and a tracker in `work/plans/`. `cstack workflow list` shows them all:
 
 `create-brand` · `import-brand` · `campaign` · `product-photoshoot` · `paid-social` · `landing-page` · `packaging` · `deck` · `product-3d` · `product-video` · `logo-system`
 
@@ -211,7 +211,7 @@ cstack taste search "a ritual that feels choreographed"    # Taste Labs, when TA
 cstack route --modality image --needs image-edit,text-rendering
 cstack prompt compile recipes/hero.recipe.yaml --seed 7
 cstack spend plan batch.json --stop "2 of 4 probes fail fidelity"
-cstack generate --file request.json --dry-run
+cstack generate --file request.json --dry-run             # then --confirm to approve a call above your confirm_over
 cstack browse qa http://localhost:4173                     # overflow, alt text, contrast at 375/768/1440
 cstack tokens check && cstack tokens build
 cstack type qa http://localhost:4173                       # measure, leading, caps, contrast, fallbacks
