@@ -17,6 +17,7 @@ target:
   - label re-lettered or back panel invented
   - one long adjective prompt to a premium model
   quality_bar: side by side with the reference film the owner picks ours for craft, and video qa passes on every delivered file
+deliverable: {kind: video, key_visual: true}
 when:
 - launch, product page, paid social, retail screens
 not_when:

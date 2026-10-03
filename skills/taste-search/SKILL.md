@@ -69,7 +69,7 @@ Route by job (detect first with `cstack tools`; never assume access):
 
 ## Outputs, files written, state updated
 
-- `references/{gold,anti,inspiration}/<id>.reference.yaml` (+ local copies with sha256 when rights allow).
+- `references/{gold,anti,inspiration}/<id>.reference.yaml` (+ local copies with sha256 when rights allow; otherwise `storage: link_only` with the `uri` and no copy).
 - `work/references/<date>-<slug>-packet.md` (+ contact sheet image).
 - State: `state/feedback.jsonl` (picks/kills), `state/cost-ledger.jsonl` (each CLI call that reaches the budget gate, failures and blocks included; a MISSING key writes no row, and calls made through the MCP server are not in the ledger).
 

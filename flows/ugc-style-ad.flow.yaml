@@ -18,6 +18,7 @@ target:
   - first-person results claims by a synthetic presenter
   - a presenter styled to resemble a known person
   quality_bar: legal-safe script, owner-approved presenter, adversarial check ("real creator or brand pretending?") answered honestly in the disclosure
+deliverable: {kind: video}
 when:
 - testing hooks and scripts at volume
 not_when:

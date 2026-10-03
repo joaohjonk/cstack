@@ -20,6 +20,7 @@ target:
   - generated lettering, logos or legal copy
   - flat art on a curved surface
   quality_bar: the owner cannot tell composites from photos at delivery size, and verify passes on every render
+deliverable: {kind: image, generated: false}
 when:
 - launch decks, retailer sell-ins, social teasers, pitch boards
 not_when:

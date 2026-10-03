@@ -22,6 +22,7 @@ target:
   - a generated shelf where competitor or candidate packs are drawn by a model
   - treating an AI attention heatmap or a handful of people as a launch decision
   quality_bar: find time and hit rate recorded per variant; the owner sees the shelf images, the numbers and the misses before choosing a route
+deliverable: {kind: other}
 when:
 - choosing between pack routes, before a redesign ships, line extensions that must be told apart
 not_when:
@@ -49,7 +50,7 @@ steps:
   gate: {type: auto, check: "every facing has a source, a date and real dimensions in millimetres"}
   compare_to_target: does the set match what the shopper actually sees in the main channel?
 - id: planogram
-  does: lay out a shelf bay as a local HTML page in the workspace at true scale (facings, shelf edges, price strips), candidate and current pack from approved artwork; render near (bay at full width) and far (bay downscaled to about 1,400 px wide for 3 m) with cstack browse shot
+  does: lay out a shelf bay as a local HTML page in the workspace at true scale (facings, shelf edges, price strips, and the front blocker or lip where the category's shelves have one, drawn at its real height so it hides what it hides in store), candidate and current pack from approved artwork; render near (bay at full width) and far (bay downscaled to about 1,400 px wide for 3 m) with cstack browse shot
   kind: deterministic
   outputs: [work/shelf/planogram.html, work/shelf/shots/]
   gate: {type: deterministic_check, check: "cstack audit confirms the near and far image sizes; a human confirms every facing is at its measured scale"}
@@ -76,6 +77,7 @@ failure_modes:
 - competitor set chosen by the designer's taste, not by the shelf
 - candidate drawn larger or brighter than its neighbours
 - far view never tested; variant cue invisible at distance
+- shelf drawn without its blocker or price strip, so a cue in the lower part of the pack passes the test and disappears in store
 - loyal buyers' navigation cue (colour block, silhouette) removed in the redesign
 evidence:
 - {ref: docs/research/packaging.md, kind: documented, date: 2026-10-03, note: section 5}
@@ -84,6 +86,7 @@ evidence:
 - {ref: "https://www.surveymonkey.com/learn/market-research/packaging-design-testing/", kind: practitioner, date: 2026-10-03, note: "standout vs findability, white background trap, ~200 per monadic cell"}
 - {ref: "https://packagingstrategies.com/articles/92095-assessing-what-consumers-see", kind: practitioner, date: 2026-10-03, note: flash exposure and eye-tracking in a shelf set (2004)}
 - {ref: "acuity proxy: 1 arcminute; 1.2 m bay at 3 m subtends about 23 degrees, about 1,400 resolvable px", kind: inferred, date: 2026-10-03}
+- {ref: "https://www.youtube.com/@openresidency", kind: practitioner, date: 2026-10-03, note: "founders interviewed on the Open Residency podcast: angled shelves with a front blocker hide the lower part of a can, so the cues moved to the top"}
 last_verified: 2026-10-03
 stale_after_days: 180
 related:

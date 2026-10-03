@@ -16,6 +16,7 @@ target:
   - mixed stroke widths or caps
   - an invented set when an open set already fits
   quality_bar: a contact sheet on light and dark shows no outlier, and creative-review finds no unclear metaphor
+deliverable: {kind: vector}
 when:
 - product UI, wayfinding, packaging pictograms, editorial systems
 not_when:

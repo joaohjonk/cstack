@@ -76,7 +76,8 @@ export function schemaFor(file, base = ROOT) {
 }
 
 // Validate every governed data file under `dir`. Returns [{file, schema, ok, errors}]
-export function validateTree(dir, { base = dir, skip = [] } = {}) {
+// display: how a file is named in results (repo-relative for the repo; a workspace passes shown, absolute and quoted)
+export function validateTree(dir, { base = dir, skip = [], display = rel } = {}) {
   const results = [];
   const files = walk(dir, (p) => /\.(json|ya?ml|jsonl)$/.test(p) && !p.includes(`${path.sep}schemas${path.sep}`));
   for (const f of files) {
@@ -88,13 +89,13 @@ export function validateTree(dir, { base = dir, skip = [] } = {}) {
       if (f.endsWith('.jsonl')) {
         readJSONL(f).forEach((row, i) => {
           const res = validateValue(schema, row);
-          results.push({ file: `${rel(f)}#${i + 1}`, schema, ...res });
+          results.push({ file: `${display(f)}#${i + 1}`, schema, ...res });
         });
       } else {
-        results.push({ file: rel(f), schema, ...validateValue(schema, readData(f)) });
+        results.push({ file: display(f), schema, ...validateValue(schema, readData(f)) });
       }
     } catch (e) {
-      results.push({ file: rel(f), schema, ok: false, errors: e.message });
+      results.push({ file: display(f), schema, ok: false, errors: e.message });
     }
   }
   return results;

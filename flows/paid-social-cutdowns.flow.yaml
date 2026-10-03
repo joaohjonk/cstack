@@ -16,6 +16,7 @@ target:
   - captions under platform UI
   - a re-generated cut-down that drifts from the master
   quality_bar: video qa passes on every channel file and the owner approves the hooks
+deliverable: {kind: video, generated: false}
 when:
 - any approved master going to paid placements
 not_when:

@@ -15,6 +15,7 @@ target:
   must_not:
   - a generated or "improved" mark
   quality_bar: last-frame diff passes and the owner approves the motion
+deliverable: {kind: video, generated: false}
 when:
 - intros, end cards, social signatures
 not_when:

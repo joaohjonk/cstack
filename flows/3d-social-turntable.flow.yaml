@@ -14,6 +14,7 @@ target:
   must_not:
   - label drift or geometry melt in any sampled frame
   quality_bar: frame-sampled label check passes; the loop seam is invisible at playback speed
+deliverable: {kind: 3d}
 when:
 - a social post, ad or product page needs a turning product
 not_when:

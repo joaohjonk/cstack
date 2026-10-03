@@ -172,6 +172,13 @@
     },
     "decided_by": {
       "type": "string"
+    },
+    "storage": {
+      "enum": [
+        "file",
+        "link_only"
+      ],
+      "description": "file: a copy is kept (local_path, sha256). link_only: a third-party reference that is looked at, never stored (uri required, no local_path), e.g. a mood photograph whose rights are inspiration_only"
     }
   },
   "allOf": [
@@ -187,6 +194,42 @@
         "required": [
           "why_it_fails"
         ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "storage": {
+            "const": "link_only"
+          }
+        },
+        "required": [
+          "storage"
+        ]
+      },
+      "then": {
+        "required": [
+          "uri"
+        ],
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "sha256"
+              ]
+            },
+            {
+              "required": [
+                "local_path"
+              ],
+              "properties": {
+                "local_path": {
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        }
       }
     }
   ],

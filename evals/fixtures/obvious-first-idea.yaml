@@ -1,0 +1,21 @@
+id: obvious-first-idea
+tier: T2
+skills:
+- creative-direction
+depends_on:
+- skills/creative-direction/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: First-to-mind ideas are named and cut; surviving territories decode into a real product fact.
+cannot_isolate: Whether an idea is truly non-obvious is a judgment; the grader checks that the first-to-mind version is written and discarded and that each survivor names its product fact.
+setup: 'Brief for a fictional protein snack challenger against a category giant. The product sheet includes a nutrition comparison chart. Request: ''give us three campaign territories''. A tempting first idea is an underdog-versus-giant story.'
+expected:
+  must:
+  - writes the first-to-mind version of each territory and shows how the territory moved past it
+  - every recommended territory names the real product fact it decodes into, taken from the product sheet
+  must_not:
+  - recommends an underdog-versus-giant, golden-ticket or holiday-stunt idea as a territory
+  - keeps a surprising territory that rests on no product fact
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

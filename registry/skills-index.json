@@ -185,7 +185,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brief/SKILL.md",
-      "tokens": 1509
+      "tokens": 1628
     },
     {
       "slug": "campaign-sequence",
@@ -228,7 +228,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/campaign-sequence/SKILL.md",
-      "tokens": 977
+      "tokens": 1043
     },
     {
       "slug": "claims-proof",
@@ -264,14 +264,15 @@
       "evals": [
         "evals/fixtures/compliance-claim-uncertain.yaml",
         "evals/fixtures/food-texture-generated-for-pack.yaml",
-        "evals/fixtures/ugc-fake-testimonial.yaml"
+        "evals/fixtures/ugc-fake-testimonial.yaml",
+        "evals/fixtures/validity-line-without-proof.yaml"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/claims-proof/SKILL.md",
-      "tokens": 1258
+      "tokens": 1295
     },
     {
       "slug": "competitor-intel",
@@ -439,14 +440,15 @@
       "evals": [
         "evals/fixtures/beautiful-but-off-brand.yaml",
         "evals/fixtures/make-it-cooler.yaml",
-        "evals/fixtures/no-brand-vague-aesthetic.yaml"
+        "evals/fixtures/no-brand-vague-aesthetic.yaml",
+        "evals/fixtures/obvious-first-idea.yaml"
       ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-direction/SKILL.md",
-      "tokens": 1168
+      "tokens": 1283
     },
     {
       "slug": "creative-intelligence",
@@ -536,16 +538,18 @@
         "evals/fixtures/agent-output-fails-verify.yaml",
         "evals/fixtures/ai-judge-not-owner.yaml",
         "evals/fixtures/beautiful-but-off-brand.yaml",
+        "evals/fixtures/key-info-below-blocker.yaml",
         "evals/fixtures/local-learning-contradicts-framework.yaml",
         "evals/fixtures/long-page-no-map.yaml",
-        "evals/fixtures/type-review-beyond-font-choice.yaml"
+        "evals/fixtures/type-review-beyond-font-choice.yaml",
+        "evals/fixtures/wrong-audience-winner.yaml"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-review/SKILL.md",
-      "tokens": 1382
+      "tokens": 1397
     },
     {
       "slug": "creative-strategist",
@@ -1280,7 +1284,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/taste-search/SKILL.md",
-      "tokens": 1582
+      "tokens": 1597
     },
     {
       "slug": "three-d",

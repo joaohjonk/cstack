@@ -71,7 +71,7 @@ export function searchFlows(ws, query, { k = 5 } = {}) {
 }
 
 // Copy a library flow into the workspace as this run's plan; the agent fills target and adjusts steps.
-export function planFromFlow(ws, id, { target } = {}) {
+export function planFromFlow(ws, id, { target, deliverable, key_visual } = {}) {
   const f = listFlows(ws).find((x) => x.id === id);
   if (!f) throw new Error(`no flow "${id}" (try: cstack flows search "<outcome>")`);
   const { file, scope, age_days, stale, ...flow } = f;
@@ -82,6 +82,10 @@ export function planFromFlow(ws, id, { target } = {}) {
     related: [...new Set([...(flow.related ?? []), `flow:${f.id}`])],
     target: { ...(flow.target ?? {}), ...(target ? { description: target } : {}) },
   };
+  // the deliverable comes from the library flow; --deliverable and --key-visual override it for this run
+  if (deliverable) plan.deliverable = { kind: deliverable };
+  if (key_visual) plan.deliverable = { ...(plan.deliverable ?? {}), key_visual: true };
+  if (plan.deliverable && !plan.deliverable.kind) throw new Error('--key-visual needs a deliverable kind: pass --deliverable <kind>');
   const out = path.join(ws, 'work', 'flows', `${plan.id}.flow.yaml`);
   if (exists(out)) throw new Error(`${out} already exists; edit it or remove it first`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
@@ -100,6 +104,7 @@ export function checkFlow(flow, { skills = null } = {}) {
   const v = validateValue('flow', flow);
   if (!v.ok) errors.push(`schema: ${v.errors}`);
   const cands = Array.isArray(flow.candidates_considered) ? flow.candidates_considered : [];
+  if (!flow.deliverable?.kind) warnings.push('no deliverable.kind: flows gate cannot run on a plan without it (library flows carry one; a plan takes --deliverable <kind>)');
   if (cands.length < 2) errors.push(`compares ${cands.length} candidate way(s) to the outcome; method before making needs at least 2 (candidates_considered)`);
   else if (!cands.some((c) => c?.verdict === 'chosen')) errors.push('no candidate has verdict "chosen"');
   const steps = Array.isArray(flow.steps) ? flow.steps : [];
@@ -158,6 +163,8 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
 export const GATE_STAGES = ['make', 'decide', 'final'];
 const VISUAL = new Set(['image', 'video', '3d', 'vector', 'type', 'diagram', 'page']);
 const GENERATED = new Set(['image', 'video']);
+// skills that call a media model; a generative step in another skill (an agent drafting SVG icons) needs no provider
+const MEDIA_SKILLS = new Set(['generate-media', 'image-edit', 'video-direction']);
 
 export function goldRefs(ws) {
   const dir = path.join(ws, 'references', 'gold');
@@ -189,13 +196,13 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   if (flow.status !== 'plan') errors.push(`flows gate reads a run plan (status: plan); start one with cstack flows plan <id> --target "..."`);
   const d = flow.deliverable;
   if (!d?.kind) {
-    errors.push('state deliverable.kind in the plan (image, video, 3d, vector, type, diagram, page, copy or other) so the gate knows what is being made');
+    errors.push('state deliverable.kind in the plan (image, video, 3d, vector, type, diagram, page, copy or other) so the gate knows what is being made: cstack flows plan <id> --deliverable <kind>, or add it to the plan');
     return { file, stage, errors, warnings };
   }
   const inWs = (p) => exists(path.resolve(ws, p));
   // make: generation is needed and missing here
   // only making needs a provider and a budget; decide and final judge files that already exist
-  const generative = GENERATED.has(d.kind) || (flow.steps ?? []).some((s) => s.kind === 'generative');
+  const generative = (d.generated ?? GENERATED.has(d.kind)) || (flow.steps ?? []).some((s) => s.kind === 'generative' && MEDIA_SKILLS.has(s.skill));
   if (generative && at === 0) {
     const media = providers.filter((p) => p.kind === 'media' && p.id !== 'mock' && p.status !== 'stub');
     const usable = media.filter((p) => p.available);
