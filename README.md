@@ -14,6 +14,18 @@ Generative AI made making cheap. It did not make judgment cheap. Ask a model for
 
 It is to brand work what [gstack](https://github.com/garrytan/gstack) is to shipping software: thirty specialist skills, a small CLI and plain files in git, so that Claude Code, Codex, Cursor, Gemini CLI or OpenCode works like a disciplined studio instead of a prompt box. Free, MIT, and holding no brand's data: each brand keeps its own workspace in its own repo.
 
+## First, step outside
+
+cstack can keep your taste. It cannot give you any.
+
+Taste comes from distance: the further apart the things you have seen, touched and lived, the more surprising the connections you can make between them. A model is trained on the average of everything, so it will always offer you the nearest idea. The far ones only come from you.
+
+So before you install anything, go outside. Take the long way home. Walk a neighbourhood you do not know. Play a sport badly. Cook something from a country you have never visited. Sit in a building that was made with care and notice how the light arrives. Read outside your field. Have dinner with friends, and with people who do not think like you. Look at something different every day. Every one of those is a reference no search can retrieve.
+
+Then bring it back, and have the courage to use it. Courage is the part no tool supplies: to join two things nobody has joined before, to put it into the world under your name, and to stand by it. Do not play AI like a video game. Do not make more things just because making is now free. Make the thing people did not know they wanted until they saw it.
+
+The machine will repeat your judgment ten thousand times. Make sure it is worth repeating.
+
 **Who this is for**
 
 - **Founders who are also their brand's creative director**, and want the hundredth asset to be as considered as the first.
