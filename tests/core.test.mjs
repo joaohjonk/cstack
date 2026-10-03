@@ -7,6 +7,7 @@ import YAML from 'yaml';
 import { compile, diffRecipes, placeholders } from '../scripts/lib/prompt.mjs';
 import { guardedCall, planBatch, readLedger, idempotencyKey } from '../scripts/lib/ledger.mjs';
 import { route } from '../scripts/lib/router.mjs';
+import { ROOT } from '../scripts/lib/core.mjs';
 import { record, history } from '../scripts/lib/lineage.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { checkBudgets } from '../scripts/lib/budget.mjs';
@@ -301,4 +302,18 @@ test('tools: detects by agent-visible MCP server name and env presence, never by
   for (const name of ['Cosmos', 'claude_ai_Cosmos', 'cosmos-so']) assert.equal(Object.fromEntries(detectTools(w, { mcpServers: [name], env: {} }).map((t) => [t.id, t])).cosmos.available, true, name);
   assert.equal(Object.fromEntries(detectTools(w, { mcpServers: ['cosmonaut'], env: {} }).map((t) => [t.id, t])).cosmos.available, false);
   assert.ok(!JSON.stringify(res).includes('"x"'), 'env values are never echoed');
+});
+
+test('router: with no needs, flagship models lead a final and draft models lead a probe; host routes count as reachable', () => {
+  const reg = { models: [
+    { model_id: 'cheap-draft', provider: 'a', modality: 'image', tier: 'draft', est_unit_cost: { amount: 0.005 }, last_verified: '2026-10-03', status: 'active' },
+    { model_id: 'plain', provider: 'b', modality: 'image', est_unit_cost: { amount: 0.02 }, last_verified: '2026-10-03', status: 'active' },
+    { model_id: 'best', provider: 'c', modality: 'image', tier: 'flagship', est_unit_cost: { amount: 0.07 }, last_verified: '2026-10-03', status: 'active', routes: [{ provider: 'fal', endpoint_id: 'fal/best' }] },
+  ] };
+  assert.deepEqual(route(reg, { modality: 'image', today: '2026-10-03' }).chain, ['best', 'plain', 'cheap-draft']);
+  assert.deepEqual(route(reg, { modality: 'image', tier: 'draft', today: '2026-10-03' }).chain, ['cheap-draft', 'plain', 'best']);
+  assert.deepEqual(route(reg, { modality: 'image', providers_available: ['fal'], today: '2026-10-03' }).chain, ['best']);
+  // the registry itself: no draft model leads an unqualified image route
+  const live = route(JSON.parse(fs.readFileSync(path.join(ROOT, 'registry', 'models.json'), 'utf8')), { modality: 'image' });
+  assert.ok(live.candidates.slice(0, 3).every((c) => /flagship/.test(c.why)), live.chain.join(', '));
 });

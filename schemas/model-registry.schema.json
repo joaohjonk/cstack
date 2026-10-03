@@ -311,6 +311,14 @@
               },
               "additionalProperties": false
             }
+          },
+          "tier": {
+            "enum": [
+              "flagship",
+              "standard",
+              "draft"
+            ],
+            "description": "quality tier from the maker's positioning and public arenas, not a benchmark on your task: flagship for finals, draft for cheap probes; absent = standard. cstack route prefers flagship unless asked for draft"
           }
         },
         "additionalProperties": false

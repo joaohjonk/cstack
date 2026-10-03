@@ -37,7 +37,7 @@ export function listPending(ws) {
 export function registryPrice(req, models = loadModels()) {
   for (const m of models) {
     const r = (m.routes ?? []).find((x) => x.provider === req.provider && x.endpoint_id === req.model);
-    if (r) return { model: m, unit: r.price ?? null, route: true, basis: `${r.provider} route ${r.endpoint_id} (verified ${r.last_verified})` };
+    if (r) return { model: m, unit: r.price ?? null, route: true, basis: `${r.provider} route ${r.endpoint_id} (verified ${r.last_verified})${r.price ? '' : ` has no price${r.notes ? `: ${r.notes}` : ''}`}` };
   }
   const m = models.find((x) => x.model_id === req.model || x.provider_model_id === req.model);
   if (!m) return { model: null, unit: null, basis: 'not in registry/models.json' };

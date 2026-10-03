@@ -8,7 +8,8 @@ export const STALE_DAYS = 45;
 const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
 
 /**
- * route(registry, {modality, needs: [capability], avoid: [capability], max_cost, providers_available: [..], top})
+ * route(registry, {modality, needs: [capability], avoid: [capability], max_cost, providers_available: [..], top, tier})
+ * tier: 'draft' ranks cheap probe models first; otherwise flagship models lead (registry `tier`, the maker's positioning).
  * modality is the output family (image|video|vector|...); needs are capability strings (image-edit, multi-image-reference, ...).
  * max_cost compares against est_unit_cost.amount (per image / per second), never a token price.
  * Returns {candidates:[{model_id, provider, score, matched, missing, stale, cost, why}], chain:[model_id], warnings}
@@ -27,7 +28,8 @@ export function route(registry, req) {
     const matched = needs.filter((n) => caps.has(n));
     const missing = needs.filter((n) => !caps.has(n));
     const stale = !m.last_verified || daysBetween(m.last_verified, now) > STALE_DAYS;
-    const unavailable = req.providers_available && !req.providers_available.includes(m.provider);
+    // reachable at its maker or through a host route (fal, ...)
+    const unavailable = req.providers_available && ![m.provider, ...(m.routes ?? []).map((r) => r.provider)].some((p) => req.providers_available.includes(p));
     const cost = m.est_unit_cost?.amount ?? m.pricing_snapshot?.value?.amount ?? null;
     const overBudget = req.max_cost != null && cost != null && cost > req.max_cost;
     const avoidHit = (req.avoid ?? []).filter((a) => caps.has(a));
@@ -37,10 +39,14 @@ export function route(registry, req) {
     if (stale) score -= 3;
     if (m.confidence === 'low') score -= 2;
     if (m.status === 'watch') score -= 1;
+    // quality before price: with nothing else to tell them apart, a final goes to a flagship, a probe to a draft model
+    const tier = m.tier ?? 'standard';
+    if (tier !== 'standard') score += (tier === (req.tier === 'draft' ? 'draft' : 'flagship') ? 4 : -4);
     if ((req.prefer ?? []).includes(m.model_id)) score += 8; // the owner named it: honour it and keep it for follow-ups
     if (unavailable) score -= 100;
     if (overBudget) score -= 50;
     const why = [
+      tier !== 'standard' ? `${tier} tier` : null,
       matched.length ? `has ${matched.join(', ')}` : null,
       missing.length ? `lacks ${missing.join(', ')}` : null,
       bench.length ? `benchmarked on "${req.task}"` : null,

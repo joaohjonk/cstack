@@ -97,7 +97,7 @@ const COMMANDS = {
   'brand resolve': 'owner resolves an open conflict by picking a position: cstack brand resolve <conflict-id> --pick 1|2 [--by name] [--note "..."]',
   'prompt compile': 'compile a prompt recipe: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]... (one --set per slot)',
   'prompt diff': 'component-level diff of two recipes: cstack prompt diff a.yaml b.yaml',
-  route: 'rank models: cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers google,openai] [--avoid id,...]',
+  route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
@@ -377,7 +377,9 @@ function cmdRoute() {
     task: args.task,
     max_cost: args['max-cost'] != null ? Number(args['max-cost']) : undefined,
     providers_available: args.providers ? String(args.providers).split(',') : undefined,
+    tier: args.tier,
   };
+  if (args.tier && !['draft', 'final'].includes(args.tier)) die('--tier must be draft (probes) or final');
   if (!req.modality) die('usage: cstack route --modality <m> [--needs a,b] [--task t] [--max-cost n] [--providers fal,openai]');
   const res = route(reg, req);
   if (args.json) return json(res);
