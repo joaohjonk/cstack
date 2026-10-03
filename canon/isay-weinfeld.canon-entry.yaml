@@ -1,0 +1,55 @@
+id: isay-weinfeld
+name: Isay Weinfeld
+kind: person
+domains:
+- architecture
+- interiors
+- hospitality
+- retail
+mental_model: 'rigour with warmth and wit: a modernist discipline that directs emotion, and places one surprise where it is not expected'
+mechanisms:
+- 'direct the emotion of a space like a film: plan the sequence of dark, reveal, colour and release'
+- 'plant one unexpected element per space (a turning wall of books, an odd scale, a humble material in a grand place) and keep the rest calm so it lands'
+- 'pair a strict geometry with warm, worn or humble materials so the rigour does not read as cold'
+- 'treat architecture, interior and landscape as one design rather than three handovers'
+- 'refuse a house style: answer each brief with what this client wants, seen through the designer''s eye'
+- 'serve the client with pleasure: hospitality is the test, not the photograph'
+representative_works:
+- Hotel Fasano, São Paulo
+- Livraria da Vila bookshop, São Paulo (a pivoting facade of bookshelves as the entrance)
+- Havaianas flagship, São Paulo
+when_useful:
+- hospitality, retail and brand spaces that must feel generous, not austere
+- 'a restrained identity that needs one moment of delight: where does the surprise go?'
+- pacing a film, site or unboxing as an emotional sequence
+- adding warmth and wit to a minimalist brief without breaking its discipline
+when_not_useful:
+- 'as decoration: a surprise in every corner is noise, and the wit must sit on a rigorous base'
+- regulated, safety or utility contexts where the unexpected costs comprehension
+- 'as a Brazilian-modernist styling preset: transfer the emotional direction, not the timber and concrete'
+tensions:
+- 'warmth and wit vs. pure reduction (canon:pawson, canon:rams)'
+- 'surprise vs. consistency: a system that always surprises stops being recognisable (canon:vignelli)'
+- 'emotional sequence shared with canon:tadao-ando, but warmer and more playful'
+distance_from:
+  hospitality: near
+  identity: middle
+  packaging: middle
+  campaign-advertising: middle
+  editorial: middle
+  web-product-ui: far
+  wayfinding: far
+sources:
+- kind: external_reference
+  ref: https://interiordesign.net/designwire/isay-weinfeld-2016-hall-of-fame-inductee-2/
+  quote: 'I like the unexpected. I never give you exactly what you are waiting for.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.dezeen.com/2013/11/18/isay-weinfeld-interview/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.archdaily.com/31172/livraria-da-vila-isay-weinfeld
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current

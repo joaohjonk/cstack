@@ -1,0 +1,54 @@
+id: jonathan-anderson
+name: Jonathan Anderson (creative director)
+kind: person
+domains:
+- fashion
+- creative direction
+- craft
+- brand worldbuilding
+mental_model: 'the brand as a world: objects, craftspeople, artists, books and exhibitions all say the same thing in different materials, with craft as the backbone'
+mechanisms:
+- 'build the world from objects, not slogans: the things a brand makes, collects and shows carry its point of view'
+- 'champion the makers: give craft a platform (a prize, a commission, a show) so the brand is seen to sustain the culture it draws on'
+- 'show influences openly: put the references (a ceramicist, an archive artist) beside the product as a platform, not a mood board'
+- 'collaborate selectively: work with artists whose concerns already align, and sometimes support rather than co-brand'
+- 'blur boundaries on purpose: fashion, art, craft, books and space under one direction, judged as one world'
+- 'use objects, do not vitrine them: the made thing is for use, which keeps a craft world from becoming a museum'
+- 'let the hands lead: prototype physically before deciding'
+representative_works:
+- Creative director of Loewe (2013-2025), including the Loewe Foundation Craft Prize (from 2016)
+- JW Anderson (founded 2008)
+- Disobedient Bodies, exhibition curated at The Hepworth Wakefield (2017)
+when_useful:
+- 'brand worldbuilding: deciding which objects, makers, artists and rituals belong to the world (pairs with canon:cultural-capital-strategy)'
+- craft-led products and packaging where the making is part of the story
+- choosing collaborators and cultural programmes that add depth rather than a famous name on a product
+- art direction of still life, where the supporting objects are as considered as the hero
+when_not_useful:
+- 'as a voice or look to imitate: he is a living designer; transfer the worldbuilding mechanism only'
+- brands with no budget or patience for slow cultural programmes; a half-built world reads as props
+- utility or performance brands where the object's job, not its culture, is the message
+tensions:
+- 'world depth vs. coherence: many voices and materials need one editor (canon:vignelli on discipline)'
+- 'patronage vs. appropriation: credit and pay the makers, or championing becomes extraction'
+- 'abundance of objects vs. subtraction (canon:pawson)'
+- 'object as idea shared with canon:irma-boom and canon:formafantasma'
+distance_from:
+  fashion: near
+  campaign-advertising: near
+  packaging: near
+  editorial: near
+  hospitality: middle
+  identity: middle
+  web-product-ui: far
+sources:
+- kind: external_reference
+  ref: https://www.craftscouncil.org.uk/articles/the-power-of-pots/
+  quote: 'craft, just as much as art, is a way to reflect on where we are today.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://gagosian.com/quarterly/2021/01/26/interview-fashion-and-art-jonathan-anderson/
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current

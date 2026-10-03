@@ -1,0 +1,51 @@
+id: bureau-borsche
+name: Bureau Borsche (Mirko Borsche and studio)
+kind: studio
+domains:
+- identity
+- editorial
+- art direction
+- fashion
+mental_model: 'identity as behaviour that renews itself: a fixed frame and attitude, with the expression remade every season, issue or campaign'
+mechanisms:
+- 'fix the frame, renew the content: keep the structure (formats, type, naming, cadence) and remake the image each season'
+- 'invite a different artist into the system each cycle so the identity stays a live conversation, not a static sheet'
+- 'tell a whole story with very few elements; the poster tradition of one strong move'
+- 'roll the system across every carrier in one release: poster, programme, magazine and space change together'
+- 'move between high culture and street or fashion codes without changing the rigour'
+- 'let type become object: dimensional or animated letterforms carry the season''s idea'
+representative_works:
+- Bavarian State Opera identity, Munich (seasonal campaigns with poster, programme book and Max Joseph magazine)
+- Art direction for ZEITmagazin and Die Zeit
+- Work for Balenciaga
+when_useful:
+- cultural institutions, fashion houses and publications with a seasonal or issue-based rhythm
+- identities that must stay recognisable while each campaign looks new
+- briefs that pair a brand with a rotating roster of artists or photographers
+when_not_useful:
+- 'brands that need constancy at the touchpoint (packaging, wayfinding, product UI); renewal there costs recognition'
+- small teams without the art direction to choose and steer a new collaborator every cycle
+- 'as an edgy-fashion styling preset: transfer the frame-and-renewal logic'
+tensions:
+- 'renewal vs. recognition: what must never change? (canon:vignelli, canon:chermayeff-geismar-haviv)'
+- 'behaviour with range (canon:collins) vs. one strong reduced move (canon:paul-rand)'
+- 'the guest artist''s voice vs. the brand''s'
+distance_from:
+  identity: near
+  editorial: near
+  campaign-advertising: near
+  fashion: near
+  motion: middle
+  packaging: middle
+  wayfinding: far
+sources:
+- kind: external_reference
+  ref: https://www.typeroom.eu/article/bureau-borsche-boldly-takes-bavarian-state-opera-3d-typographic-realm
+  quote: 'He was always able to tell entire stories with only a few elements.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.walkerart.org/reader/watch-mirko-borsche-of-bureau-borsche-at-insights-2019/
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current

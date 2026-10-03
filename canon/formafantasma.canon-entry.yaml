@@ -1,0 +1,53 @@
+id: formafantasma
+name: Formafantasma (Andrea Trimarchi and Simone Farresin)
+kind: studio
+domains:
+- product design
+- material research
+- exhibition
+- ecology
+mental_model: 'research and material intelligence as the design act: know where a material comes from, how it is governed and where it ends, before you shape it'
+mechanisms:
+- 'trace the material: map source, extraction, supply chain, governance and end of life before form'
+- 'bring the experts in: scientists, conservationists, policymakers and craftspeople as collaborators, not footnotes'
+- 'research feeds product: a self-initiated investigation becomes a collection, then a commercial line'
+- 'show the process as the work: samples, maps, films and archives exhibited beside the object'
+- 'name the macro context: design inside the economic and ecological system it touches, not only the object'
+- 'material as narrative: the provenance is the story, so it must be true and checkable'
+representative_works:
+- Cambio, investigation into the governance of the timber industry (Serpentine Galleries, London, 2020)
+- Ore Streams, research into electronic waste (commissioned by NGV and Triennale di Milano)
+- De Natura Fossilium (volcanic materials), which became the ExCinere tiles for Dzek
+when_useful:
+- packaging, product and retail briefs where material choice is the claim (sustainability, origin, craft)
+- 'product fidelity: locking what a product is really made of before any image is generated'
+- art direction that shows provenance (raw material, process, place) honestly
+- turning a brand's sourcing research into content, editions and exhibitions
+when_not_useful:
+- fast campaign work with no time or access to verify sourcing
+- 'as an earthy-sample-board aesthetic without the research behind it; that is greenwashing by styling'
+- brands whose supply chain cannot bear scrutiny; the method will expose it
+tensions:
+- 'research time vs. commercial pace; the studio funds research through commercial work'
+- 'material truth vs. seductive imagery (canon:ogilvy): the claim must stay checkable'
+- 'material honesty shared with canon:rams and canon:tadao-ando, extended upstream to sourcing'
+- 'object as idea shared with canon:irma-boom and canon:jonathan-anderson'
+distance_from:
+  packaging: near
+  editorial: middle
+  hospitality: middle
+  fashion: middle
+  identity: middle
+  campaign-advertising: middle
+  web-product-ui: far
+sources:
+- kind: external_reference
+  ref: https://www.serpentinegalleries.org/whats-on/formafantasma-cambio/
+  quote: 'an ongoing investigation conducted by Formafantasma into the governance of the timber industry'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://disegnojournal.com/newsfeed/formafantasma-findings-research-commercial-design
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current

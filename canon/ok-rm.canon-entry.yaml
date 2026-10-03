@@ -1,0 +1,57 @@
+id: ok-rm
+name: OK-RM (Oliver Knight and Rory McGrath)
+kind: studio
+domains:
+- editorial
+- book design
+- identity
+- publishing
+mental_model: 'editorial structure as identity: the system grows out of the content, and the designer shapes the frame and the sequence, not just the surface'
+mechanisms:
+- 'read the content before designing: ask what the material is for and what it could become, then let form follow'
+- 'question the brief: move closer to where decisions are made instead of passively executing a specification'
+- 'sequence as meaning: pagination, pairing, repetition and recurrence make an argument across a book or a campaign'
+- 'the object and the idea in synthesis: format, paper and binding carry the concept'
+- 'an identity derived from an institution''s or artist''s own material rather than a mark applied on top'
+- 'publish to think: run an imprint so the studio develops ideas outside client briefs'
+representative_works:
+- The Journey of Things, Magdalene Odundo (book; Tokyo TDC award, 2020)
+- InOtherWords (the studio's publishing imprint)
+- Identities and publications for galleries, museums and fashion labels (studio founded 2008)
+when_useful:
+- 'content-rich brands: archives, institutions, publishers, artists, collections'
+- 'editorial systems for decks, books, sites and lookbooks where order carries the story'
+- deriving an identity from the brand's own material instead of inventing a style
+when_not_useful:
+- briefs with thin content; a content-led system has nothing to grow from
+- high-volume performance media where sequence and reading time do not exist
+- 'as a conceptual-art-book look: transfer the reading and sequencing, not the austerity'
+tensions:
+- 'content-led form vs. a fixed grid applied first (canon:swiss-grid-systems, canon:gerstner-designing-programmes)'
+- 'the book as object (canon:irma-boom) vs. reading economy and cost'
+- 'designer as co-author vs. client control of the brief'
+distance_from:
+  editorial: near
+  identity: near
+  fashion: middle
+  campaign-advertising: middle
+  packaging: middle
+  web-product-ui: middle
+  wayfinding: far
+sources:
+- kind: external_reference
+  ref: https://ok-rm.co.uk/
+  quote: 'OK-RM operate at the pivot point where attitude becomes form'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://designersandbooks.com/blog/question-everything-conversation-with-ok-rm-rory-mcgrath
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.grafik.net/fellow-travellers/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://tokyotypedirectorsclub.org/en/award/2020_tdc_02/
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current
