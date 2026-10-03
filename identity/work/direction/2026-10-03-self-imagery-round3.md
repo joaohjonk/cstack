@@ -73,3 +73,7 @@ The owner: "032c style, Vignelli style, and a bit of those elements as inspirati
 | 08 social flag | 01 on a square | |
 
 Gates: legibility 0 fail at 324 and 830; no `<text>`, no `<circle>`, names grep clean; EV-20261003-self-imagery-r4.
+
+## Round 5 (23:01Z to 23:10Z)
+
+Owner: no jumping letters, better copy; the tossed "repeatable" is the one he likes, "a little glitch that only taste can do"; "push further", with a photograph in the flag's square. So: 02 and 07 rebuilt in plain type with the README's own lines (First, step outside; The machine will repeat your judgment ten thousand times); 09 the spec sheet as a hero; 10 the glitch (the word repeated four times, one letter slipped once); 11 the field with one square out of line holding the picture; the flag with a photograph in its square. Four square probes on gpt-image-2 (fal, USD 0.68; USD 7.90 left under the cap) in `identity/work/imagery/2026-10-03-r5/`: a studio window, a street corner, a flat field through a window, a hand holding a Klein blue cube against the sky. Picks: d (the cube) and c (the field). Composites: `01-flag-photo-{c,d}.jpg`, `11-field-glitch-photo-{c,d}.jpg`, via `work/figures/compose-flag.py`.

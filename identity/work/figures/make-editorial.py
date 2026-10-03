@@ -55,21 +55,24 @@ def save(name, s):
 
 # ---------- 01 the flag: a field of blue, one inset square of ground ----------
 W, H = 1200, 640
-s = head(W, H, 'cstack', 'A Klein blue field with fine grain fills the poster. A warm white square, slightly soft at its edges, sits inset on the left half. Bottom left, the wordmark cstack in white with a white square full stop. Bottom right, in white: Before use: step outside.', BLUE)
+s = head(W, H, 'cstack', 'A Klein blue field with fine grain fills the poster. A warm white square, slightly soft at its edges, sits inset on the left half. Bottom left, the wordmark cstack in white. Bottom right, in white: Taste, made repeatable. Your brand as files an agent can read, check and keep.', BLUE)
 s.append(grain(W, H, INK))
 a = 300; s.append(sq(col(W, 2), (H - a) / 2 - 24, a, P, ' filter="url(#edge)"'))
 wm, _ = wordmark(M, H - M - 6, HEAD, WHITE, WHITE); s += wm
-s.append(T('Before use: step outside.', W - M, H - M - 6, TEXT, 'r', WHITE, anchor='end'))
+s.append(T('Taste, made repeatable.', col(W, 6), H - M - 110, TEXT, 'b', WHITE))
+s.append(T('Your brand as files an agent', col(W, 6), H - M - 58, TEXT, 'r', WHITE))
+s.append(T('can read, check and keep.', col(W, 6), H - M - 6, TEXT, 'r', WHITE))
 save('01-flag', s)
 
-# ---------- 02 outside: a display word whose letters jump ----------
-s = head(W, H, 'Step outside', 'Klein blue poster with grain. The word outside fills the width, its letters jumping between sizes and weights on one baseline. Above it, small: Before use. Below, a spec sheet in white caps: Field, where the brand is not; Return with, one thing nobody in the category has seen; Then, write it down.', BLUE)
+# ---------- 02 first, step outside: plain type, the README's own words ----------
+s = head(W, H, 'First, step outside', 'Klein blue poster with grain. Headline in white: First, step outside. Below it: cstack can keep your taste. It cannot give you any. Go see the world. Then come back and make. Bottom left, the wordmark.', BLUE)
 s.append(grain(W, H, INK))
-s.append(T('BEFORE USE', M, 120, TEXT, 'r', WHITE, track=4))
-letters, _ = jumping('outside.', M - 10, 392, [300, 220, 300, 240, 300, 180, 300, 300], ['b', 'r', 'b', 'b', 'r', 'b', 'r', 'b'], WHITE)
-s += letters
-s += specsheet(M, col(W, 4), 480, [('Field:', 'where the brand is not'), ('Return with:', 'one thing the category has not seen'), ('Then:', 'write it down')], WHITE)
-save('02-outside', s)
+s.append(T('First,', M - 4, 190, 150, 'b', WHITE, track=-5))
+s.append(T('step outside.', M - 4, 330, 150, 'b', WHITE, track=-5))
+s.append(T('cstack can keep your taste. It cannot give you any.', M, 440, TEXT, 'r', WHITE))
+s.append(T('Go see the world. Then come back and make.', M, 496, TEXT, 'r', WHITE))
+wm, _ = wordmark(M, H - M - 6, TEXT, WHITE, WHITE); s += wm
+save('02-step-outside', s)
 
 # ---------- 03 nine layers as a specification sheet ----------
 L = [('01 Reality', 'What is true about the product'), ('02 Culture', 'People, scenes, rituals, language'), ('03 Canon', 'Models from people who did it well'), ('04 References', 'Source, mechanism, transfer'), ('05 System', 'Tokens, type, grid, motion, voice'), ('06 Generation', 'People, agents, code, models'), ('07 Judgment', 'Never by the maker'), ('08 Memory', 'Every correction written down'), ('09 Compounding taste', 'The next brief starts smarter')]
@@ -119,19 +122,21 @@ save('05-field-soft', s)
 
 # ---------- 06 drift as texture: prompted is noise, kept is flat ----------
 s = head(W, H, 'Prompted versus kept in files', 'Two blocks side by side on warm white. Left: a block of fine vertical Klein blue lines of uneven weight that reads as a shimmering gradient, labelled Prompted ten times. Right: one flat Klein blue block, labelled Made from one brand, kept in files.')
-bw = (W - 2 * M - 40) / 2; top = 56; bh = 380
+bw = (W - 2 * M - 40) / 2; top = 164; bh = 290
 rnd = random.Random(3); n = 110; step = bw / n
 for i in range(n):
     w = 1.2 + 4.5 * (0.5 + 0.5 * math.sin(i / 7.0)) * (0.6 + 0.8 * rnd.random())
     s.append(f'<rect x="{M + i*step:.1f}" y="{top}" width="{w:.1f}" height="{bh}" fill="{BLUE}"/>')
 s.append(f'<rect x="{M + bw + 40:.1f}" y="{top}" width="{bw:.1f}" height="{bh}" fill="{BLUE}"/>')
+s.append(T('Ask a model for your brand a hundred times:', M, 72, TEXT, 'b', INK))
+s.append(T('a hundred cousins. Keep it in files: one brand.', M, 124, TEXT, 'r', GREY))
 s.append(T('Prompted ten times.', M, top + bh + 64, TEXT, 'b', INK))
 s.append(T('Kept in files.', M + bw + 40, top + bh + 64, TEXT, 'b', INK))
 s.append(T('Made from one brand.', M + bw + 40, top + bh + 116, TEXT, 'r', GREY))
 wm, _ = wordmark(M, top + bh + 116, TEXT, INK, BLUE); s += wm
 save('06-drift-texture', s)
 
-# ---------- 07 tossed: play, once per set ----------
+# ---------- 07 tossed: the owner's pick, the glitch only taste can do ----------
 s = head(W, H, 'Taste, made repeatable', 'Klein blue poster with grain. Top: TASTE, MADE in heavy white caps. Along the bottom the word repeatable is tossed letter by letter, each turned a little, as if dropped on the floor. The square full stop lands upright at the end.', BLUE)
 s.append(grain(W, H, INK))
 s.append(T('TASTE, MADE', M - 6, 212, 150, 'b', WHITE, track=-5))
@@ -145,11 +150,63 @@ for i, ch in enumerate('repeatable'):
 s.append(sq(x + 12, base - 34, 34, WHITE))
 save('07-tossed', s)
 
+
+# ---------- 10 the glitch: the word repeated, one instance out of line ----------
+s = head(W, H, 'Taste, made repeatable', 'Warm white poster. Top left in black: Taste, made. Below it the word repeatable is set four times in Klein blue, one under the other, identical; in the third line one letter has slipped and turned. Bottom left, the wordmark.')
+s.append(T('Taste, made', M - 4, 150, 128, 'b', INK, track=-4))
+rnd = random.Random(5)
+for r in range(4):
+    x = M; base = 262 + r * 100
+    for i, ch in enumerate('repeatable'):
+        p_, adv = text(ch, x, base, 96, 'b', BLUE)
+        if r == 2 and i == 5:   # the glitch: one letter, once
+            cx = x + adv / 2; cy = base - 30
+            p_ = p_.replace('<path ', f'<path transform="rotate(16 {cx:.1f} {cy:.1f}) translate(2 12)" ')
+        s.append(p_); x += adv * 0.98
+s.append(sq(x + 10, 262 + 3 * 100 - 20, 20))
+wm, _ = wordmark(col(W, 9), H - M - 6, TEXT, INK, BLUE); s += wm
+save('10-glitch', s)
+
+# ---------- 07 worth repeating: the README's last line ----------
+s = head(W, H, 'Make sure it is worth repeating', 'Klein blue poster with grain. In white, two large lines: The machine will repeat your judgment ten thousand times. Make sure it is worth repeating. A row of twelve small white squares runs under the text, identical. Bottom left, the wordmark.', BLUE)
+s.append(grain(W, H, INK))
+for i, line in enumerate(['The machine will repeat', 'your judgment', 'ten thousand times.']):
+    s.append(T(line, M - 3, 128 + i * 96, 96, 'b', WHITE, track=-3))
+s.append(T('Make sure it is worth repeating.', M, 452, HEAD, 'r', WHITE, track=-1.5))
+a = 22
+for i in range(12): s.append(sq(col(W, i), 500, a, WHITE))
+wm, _ = wordmark(M, H - M - 6, TEXT, WHITE, WHITE); s += wm
+save('07-worth-repeating', s)
+
+# ---------- 09 what cstack is: the specification sheet as the hero ----------
+s = head(W, H, 'cstack, in five lines', 'Klein blue poster with grain. The wordmark cstack, very large, in white on the upper left. Below it a specification sheet in white: What, a brand operating system, open, in git. Your brand, files an agent can read, check and keep. The making, thirty skills and one small CLI. The judge, never the maker. The memory, every pick and kill, written down.', BLUE)
+s.append(grain(W, H, INK))
+wm, _ = wordmark(M - 10, 250, 240, WHITE, WHITE); s += wm
+s += specsheet(M, col(W, 4), 340, [('What:', 'a brand operating system, open, in git'), ('Your brand:', 'files an agent can read and keep'), ('The making:', 'thirty skills and one small CLI'), ('The judge:', 'never the maker'), ('The memory:', 'every pick and kill, written down')], WHITE, lead=54)
+save('09-spec-sheet', s)
+
+# ---------- 11 the field, one square out of line: the glitch holds the picture ----------
+W, H = 1200, 640
+s = head(W, H, 'Taste, made repeatable', 'Klein blue poster. A grid of soft, blurred warm white squares fills the upper part. One square is sharp and has stepped out of line, up and to the right of its position; it holds a photograph of the outside. Below, in white: Taste, made repeatable. cstack can keep your taste. It cannot give you any.', BLUE)
+a = 92; gx = (W - 2 * M - 12 * a) / 11; gy = 28; top = 56
+for r in range(3):
+    for c in range(12):
+        if (r, c) == (1, 8): continue
+        s.append(sq(M + c * (a + gx), top + r * (a + gy), a, P, ' filter="url(#soft)" opacity="0.8"'))
+GX, GY = M + 8 * (a + gx) + (a + gx) / 2, top + 1 * (a + gy) - (a + gy) / 2   # out of line by half a step, up and right
+s.append(sq(GX, GY, a, P, ' id="glitch"'))
+s.append(grain(W, H, INK))
+s.append(T('Taste, made repeatable.', M, 492, HEAD, 'b', WHITE, track=-1.5))
+s.append(T('cstack can keep your taste. It cannot give you any.', M, 548, TEXT, 'r', WHITE))
+wm, _ = wordmark(W - M - 186, H - M - 6, TEXT, WHITE, WHITE); s += wm
+print('glitch square at', round(GX), round(GY), a)
+save('11-field-glitch', s)
+
 # ---------- 08 social card: the flag, square ----------
 W, H = 1200, 1200
 s = head(W, H, 'cstack', 'A square Klein blue field with fine grain. A warm white square, soft at its edges, sits in the upper centre. Bottom left, the wordmark cstack in white with a white square full stop.', BLUE)
 s.append(grain(W, H, INK))
 a = 480; s.append(sq((W - a) / 2, 200, a, P, ' filter="url(#edge)"'))
 wm, _ = wordmark(M, H - M - 10, 96, WHITE, WHITE); s += wm
-s.append(T('Before use: step outside.', W - M, H - M - 10, TEXT, 'r', WHITE, anchor='end'))
+s.append(T('Taste, made repeatable.', W - M, H - M - 10, TEXT, 'r', WHITE, anchor='end'))
 save('08-social-flag', s)
