@@ -15,6 +15,7 @@ target:
   - an image model repainting the product
   - generated text anywhere on the pack
   quality_bar: label OCR and pixel diff against the official artwork pass; owner picks finals from a low-sample contact sheet
+deliverable: {kind: 3d}
 when:
 - many angles, colourways or seasonal variants are needed from one product
 - a photo shoot is impractical or the product is not yet manufactured

@@ -19,6 +19,7 @@ target:
   - practitioner names, "in the style of", other brands' marks, or reference photos in any prompt or input
   - a substitute (vector drawing, stock photo) without the owner's recorded yes
   quality_bar: ART DIRECTOR and BRAND DIRECTOR lenses pass on the contact sheet, the picks sit side by side with a gold reference, and the owner picks the final
+deliverable: {kind: image, key_visual: true}
 when:
 - a brand needs a hero, poster or key visual and the identity already owns its type and colour
 not_when:

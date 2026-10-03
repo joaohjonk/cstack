@@ -22,6 +22,7 @@ target:
   - a generated shelf where competitor or candidate packs are drawn by a model
   - treating an AI attention heatmap or a handful of people as a launch decision
   quality_bar: find time and hit rate recorded per variant; the owner sees the shelf images, the numbers and the misses before choosing a route
+deliverable: {kind: other}
 when:
 - choosing between pack routes, before a redesign ships, line extensions that must be told apart
 not_when:

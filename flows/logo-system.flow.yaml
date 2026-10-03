@@ -20,6 +20,7 @@ target:
   - category cliché the brief did not ask for
   - trademark clearance asserted by the agent
   quality_bar: an independent review finds it distinctive in the category silhouette board and the reduction sheet passes; the owner approves
+deliverable: {kind: vector, key_visual: true}
 when:
 - new brand, sub-brand, event mark, refresh
 not_when:

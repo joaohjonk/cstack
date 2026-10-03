@@ -25,6 +25,7 @@ target:
   - sending a file that differs from what was approved
   - a model touching any pixel of the print file
   quality_bar: sign-off names the file hash, the proof id, the measured values against targets and the barcode grade; content diff shows no difference
+deliverable: {kind: other}
 when:
 - any pack, label or sticker going to print, including over-stickers for legacy stock
 not_when:

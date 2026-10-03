@@ -15,6 +15,7 @@ target:
   must_not:
   - model-drawn text or charts
   quality_bar: facts check out, the owner approves the narration, and text passes a legibility check on phone size
+deliverable: {kind: video}
 when:
 - onboarding, product education, feature launches
 not_when:

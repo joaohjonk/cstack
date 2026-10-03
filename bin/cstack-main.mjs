@@ -35,7 +35,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write']);
+const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -145,7 +145,7 @@ const COMMANDS = {
   'flows list': 'researched best-way-to-an-outcome flows (cstack flows/ + workspace flows/), with staleness',
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage" [--json [--workflows]]; also lists the workflows that cover the outcome',
   'flows show': 'print one flow: cstack flows show <id>',
-  'flows plan': 'copy a flow into this run\'s plan: cstack flows plan <id> [--target "what as-close-as-possible means"] → work/flows/',
+  'flows plan': 'copy a flow into this run\'s plan, deliverable included: cstack flows plan <id> [--target "what as-close-as-possible means"] [--deliverable image|video|3d|vector|type|diagram|page|copy|other] [--key-visual] → work/flows/',
   'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
   'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
@@ -847,7 +847,7 @@ switch (cmd) {
       if (args.json) json(f);
       else console.log(fs.readFileSync(f.file, 'utf8') + (f.stale ? `\n# STALE: last verified ${f.last_verified} (${f.age_days} days); re-verify tools and models before following it\n` : ''));
     } else if (sub === 'plan') {
-      const r = planFromFlow(ws, args._[0] ?? die('usage: cstack flows plan <id> [--target "..."]'), { target: args.target });
+      const r = planFromFlow(ws, args._[0] ?? die('usage: cstack flows plan <id> [--target "..."] [--deliverable <kind>] [--key-visual]'), { target: args.target, deliverable: args.deliverable, key_visual: !!args['key-visual'] });
       const where = shown(r.file);
       console.log(`plan written: ${where}${r.stale ? `\nwarning: source flow is stale (${r.age_days} days); re-verify tools and models first` : ''}\nnext: adjust steps and target to this run, then cstack flows check ${where}`);
     } else if (sub === 'check') {

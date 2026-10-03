@@ -333,3 +333,13 @@ test('brand check names workspace files by absolute path in every line (field te
   assert.ok(fails.some((l) => l.includes(path.join(ws, 'state', 'cost-ledger.jsonl'))), r.stdout);
   assert.ok(!/\.\.\//.test(r.stdout), r.stdout);
 });
+
+test('reference storage: a linked-only mood reference needs a uri and keeps no file', async () => {
+  const { validateValue } = await import('../scripts/lib/schemas.mjs');
+  const base = { id: 'ref-mood', kind: 'image', library: 'inspiration', rights: { status: 'inspiration_only' }, transferable_mechanism: 'a deadpan subject in a playful setup' };
+  assert.ok(validateValue('reference', { ...base, local_path: '' }).ok, 'the earlier workaround stays valid');
+  assert.ok(validateValue('reference', { ...base, storage: 'link_only', uri: 'https://example.com/photo' }).ok);
+  assert.equal(validateValue('reference', { ...base, storage: 'link_only' }).ok, false, 'link_only needs a uri');
+  assert.equal(validateValue('reference', { ...base, storage: 'link_only', uri: 'https://example.com/photo', local_path: 'references/x.jpg' }).ok, false, 'link_only keeps no file');
+  assert.ok(validateValue('reference', { ...base, storage: 'link_only', uri: 'https://example.com/photo', local_path: '' }).ok);
+});

@@ -17,6 +17,7 @@ target:
   - near-miss pairings
   - type drawn by an image model
   quality_bar: an independent type review finds no fail on the type review axes and the owner picks the pairing from specimens
+deliverable: {kind: type}
 when:
 - new brand, rebrand or a type system that is missing or inconsistent
 not_when:

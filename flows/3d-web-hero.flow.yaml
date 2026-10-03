@@ -21,6 +21,7 @@ target:
   - canvas as the largest-contentful-paint element
   - a hallucinated back view presented as the real product
   quality_bar: side by side with the reference hero at 375, 768 and 1440 the owner cannot tell which is heavier, and the four-angle label overlay shows no drift
+deliverable: {kind: 3d, key_visual: true}
 when:
 - the brief asks for a rotating, drag-to-turn or scroll-linked product on a page
 not_when:

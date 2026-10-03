@@ -1,0 +1,85 @@
+id: mood-probes
+outcome: mood and territory probe images for a brand that has no type or colours yet, so a direction can be chosen from pictures rather than words
+aliases:
+- mood probes
+- territory probes
+- mood board images
+- direction probes
+- early brand imagery
+status: researched
+target:
+  description: two or three territories that differ in idea, each made visible as a small contact sheet, so the owner can choose a direction before identity work starts
+  must:
+  - each territory states its idea, the light, the materials, the palette logic and what it refuses, before any image is made
+  - the same probe count, size and models for every territory, so the sheets compare ideas, not effort
+  - no lettering, logos or brand names in the frame; type and colour are decided later, by identity work
+  - every probe labelled by territory and model on the sheet
+  must_not:
+  - practitioner names, "in the style of", other brands' marks, or reference photos as model input
+  - a finished-looking hero; probes are draft tier and stay in work/
+  - hand-drawn or stock stand-ins when generation is unavailable, unless the owner says yes
+  quality_bar: the owner can say which territory is theirs, and why, from the sheets alone
+deliverable: {kind: image}
+when:
+- a new brand, or a brand without settled type and colour, needs a visual direction
+- creative-direction has written territories that are still only words
+not_when:
+- the identity owns its type and colour and needs a hero (brand-hero-photo)
+- a mark is the question (logo-system)
+candidates_considered:
+- name: draft-tier generation per territory across two models, one contact sheet per territory
+  verdict: chosen
+  why: cheap, fast, and makes ideas comparable; two models keep one model's habits from deciding the direction
+- name: a mood board of found images
+  verdict: fallback
+  why: quick and free, but it shows other people's work, cannot be used as brand imagery, and only for internal reference (rights inspiration_only, link_only)
+- name: one polished image per territory
+  verdict: rejected
+  why: polish decides the vote; the strongest render wins instead of the strongest idea
+steps:
+- id: territories
+  does: two or three territories from the brief, each with its idea, tension, light, materials, palette logic and refusals
+  kind: research
+  skill: creative-direction
+  gate: {type: auto, check: "each territory differs in idea, not styling; cstack prompt compile passes for every probe prompt"}
+  compare_to_target: would the owner describe the territories as different ideas?
+- id: references
+  does: gold and anti references per territory, as mechanisms; third-party mood images are linked, never stored or used as input
+  kind: retrieval
+  skill: taste-search
+  gate: {type: auto, check: references carry transferable_mechanism and rights}
+  compare_to_target: mechanisms, not looks
+- id: probes
+  does: four draft probes per territory on each of two models (cstack route --modality image --tier draft), same size and count for all
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.005, currency: USD, unit: "per 1 MP draft image on fal FLUX.2 klein 4B, checked 2026-10-03"}
+  gate: {type: deterministic_check, check: cstack flows gate <plan> --stage make passes; cstack spend plan ok}
+  compare_to_target: does each probe carry its territory's idea?
+- id: sheets
+  does: one contact sheet per territory, every probe labelled by territory and model; recorded under territories in the plan
+  kind: deterministic
+  gate: {type: deterministic_check, check: cstack flows gate <plan> --stage decide passes}
+  compare_to_target: the sheets side by side
+- id: choose
+  does: creative-review lenses on the sheets, then the owner picks a territory or asks for a merged one, critiqued again
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: the owner picks and the choice is recorded (cstack feedback)}
+  compare_to_target: the pick against the brief's objective
+cost_ladder: about USD 0.10-0.50 for 24 draft probes; stop after two rounds that do not separate the territories, then rewrite the territories rather than render more
+failure_modes:
+- territories that differ only in colour or lighting
+- one model's house style deciding the direction
+- a probe polished enough to win on finish
+- type or logos appearing in the frame
+evidence:
+- {ref: "https://fal.ai/models/fal-ai/flux-2/klein/4b", kind: documented, date: 2026-10-03, note: "0.005 per MP; registry route fal-ai/flux-2/klein/4b"}
+- {ref: "field test finding F18 (brand-hero-photo cut down to do territory probes)", kind: run_record, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 90
+related:
+- skill:creative-direction
+- skill:generate-media
+- flow:brand-hero-photo
+- flow:logo-system

@@ -26,6 +26,7 @@ target:
   - one colour value for a brand colour printed on two different substrates
   - approving colour from a screen or from a photo
   quality_bar: the owner signs a proof on the real substrate that matches the frozen file; find time on the simulated shelf is no worse than the current pack; verify passes on every render shown for a decision
+deliverable: {kind: vector}
 when:
 - new pack, redesign, line extension, new substrate or new converter
 - a label must change for compliance (run the legacy-stock decision as well)

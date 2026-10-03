@@ -289,7 +289,7 @@
             "copy",
             "other"
           ],
-          "description": "image and video need a media provider; every kind but copy and other is visual"
+          "description": "what is made; with generated (default: true for image and video) it decides whether making needs a media provider; every kind but copy and other is visual"
         },
         "key_visual": {
           "type": "boolean",
@@ -314,6 +314,10 @@
               "type": "string"
             }
           }
+        },
+        "generated": {
+          "type": "boolean",
+          "description": "made with a media model, so a usable provider and budget are needed to make it; default true for image and video, false otherwise. A generative step whose skill calls a media model forces it"
         }
       }
     },

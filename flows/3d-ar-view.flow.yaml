@@ -15,6 +15,7 @@ target:
   - guessed dimensions
   - generated label texture
   quality_bar: owner places it next to a known object on a real iOS and a real Android device and the size is right
+deliverable: {kind: 3d}
 when:
 - a product page wants AR
 not_when:

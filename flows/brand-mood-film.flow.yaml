@@ -16,6 +16,7 @@ target:
   - mixed scene concepts that read as a mood board
   - real people's likeness without consent
   quality_bar: the owner and an independent reviewer find the world coherent across shots and on-brand
+deliverable: {kind: video, key_visual: true}
 when:
 - campaign launch, brand platform, manifesto
 not_when:

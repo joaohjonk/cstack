@@ -123,6 +123,7 @@ test('flows gate: imagery without a usable media provider stops instead of degra
   const edit = (patch) => fs.writeFileSync(file, YAML.stringify({ ...YAML.parse(fs.readFileSync(file, 'utf8')), ...patch }));
   const none = [{ id: 'mock', kind: 'media', available: true }, { id: 'fal', kind: 'media', available: false, missing_env: ['FAL_KEY'] }];
   const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  edit({ deliverable: undefined }); // a hand-written plan without one
   assert.match(gateFlow(w, file, { providers: fal }).errors.join('\n'), /deliverable\.kind/);
   edit({ deliverable: { kind: 'image', key_visual: true } });
   const blocked = gateFlow(w, file, { providers: none });
@@ -170,10 +171,28 @@ test('flows gate: a decision needs visible territories, and final needs gold sid
 test('flows gate: cli exits 1 on FAIL and requires a known stage', () => {
   const w = tmpDir('cstack-gate-');
   const { file } = planFromFlow(w, 'logo-system', { target: 'a mark that reads at 16 px' });
+  const { deliverable, ...rest } = YAML.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, YAML.stringify(rest));
   const cli = (...a) => spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), 'flows', 'gate', file, '--ws', w, ...a], { encoding: 'utf8' });
   const r = cli('--stage', 'make');
   assert.equal(r.status, 1, r.stdout + r.stderr);
   assert.match(r.stdout, /FAIL  make/);
   assert.notEqual(cli('--stage', 'ship').status, 0);
   assert.notEqual(cli().status, 0);
+});
+
+test('flows plan carries the library deliverable, so a fresh plan can pass the make gate (F17)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  for (const f of listFlows(null)) assert.ok(f.deliverable?.kind, `${f.id} has no deliverable`);
+  const w = tmpDir('cstack-f17-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const budget = { per_run: 2, per_day: 5 };
+  const hero = planFromFlow(w, 'brand-hero-photo', { target: 'a hero for a ceramics studio home page' });
+  assert.deepEqual(YAML.parse(fs.readFileSync(hero.file, 'utf8')).deliverable, { kind: 'image', key_visual: true });
+  assert.deepEqual(gateFlow(w, hero.file, { providers: fal, budget }).errors, []);
+  // an agent drafting SVG icons is a generative step that needs no media provider
+  const icons = planFromFlow(w, 'icon-set', { target: 'twenty UI icons on a 24 px grid' });
+  assert.deepEqual(gateFlow(w, icons.file, { providers: [], budget: null }).errors, []);
+  const over = planFromFlow(w, 'type-system', { target: 'a type system for a ceramics studio', deliverable: 'page', key_visual: true });
+  assert.deepEqual(YAML.parse(fs.readFileSync(over.file, 'utf8')).deliverable, { kind: 'page', key_visual: true });
 });

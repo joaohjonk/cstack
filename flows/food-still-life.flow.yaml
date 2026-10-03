@@ -24,6 +24,7 @@ target:
   - ingredients that are not in the product, or a flavouring shown as the whole fruit, without the market's rule allowing it
   - a portion, piece count or inclusion density the product does not have
   quality_bar: side by side with the as-is reference, an independent reviewer finds the same colour, crumb, inclusion density and size; claims-proof signs the pictured ingredients
+deliverable: {kind: image}
 when:
 - pack photography, ingredient vignettes, PDP texture shots, launch stills of a food product
 not_when:
