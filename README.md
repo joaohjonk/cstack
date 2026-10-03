@@ -296,7 +296,7 @@ The images in this README are set in Nimbus Sans, URW's free cut of the Helvetic
 
 For the longer notes on what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
 
-Joao  
+JJ  
 [celeste.vc](https://celeste.vc)
 
 ## Docs
