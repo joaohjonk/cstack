@@ -3,17 +3,19 @@
 //   svg.text-size      rendered text height in CSS px against a minimum (default 11 px)
 //   svg.text-contrast  WCAG contrast of the text fill against the ground painted under it (4.5:1, or 3:1 at 24 px and up)
 // Live <text> is measured from its font-size. Outlined type (filled paths with several subpaths, as type set to
-// outlines usually is) is estimated: em ≈ ink height / 0.7. An estimate fails only when clearly too small (under
+// outlines usually is) is estimated from its contours: baseline = the median contour bottom (descenders are few),
+// top = the highest contour top (cap or ascender), em ≈ (baseline − top) / 0.72. Descenders no longer change the answer;
+// a run with no capital or ascender ("was more") still under-reads by about a quarter. An estimate fails only when clearly too small (under
 // 60% of the minimum) and warns otherwise; live text fails outright.
 import fs from 'node:fs';
 import { parseXML } from './xml.mjs';
 import { buildModel, rootViewBox } from './model.mjs';
-import { applyPt, scaleOf } from './path.mjs';
+import { applyPt, scaleOf, toCubics, transformCubics, bboxOf } from './path.mjs';
 import { contrastRatio } from '../browser/qa.mjs';
 
 export const MIN_TEXT_PX = 11; // cstack default: below this a label stops reading on a phone (inferred, not a standard)
 export const LARGE_TEXT_PX = 24; // WCAG 2.x "large text" (18 pt): 3:1 suffices from here
-export const OUTLINE_EM_PER_INK = 1 / 0.7; // ink height of a line of outlined type is about 0.7 em (cap height to x-height mix)
+export const CAP_EM = 0.72; // cap and ascender height of a Helvetica-tradition sans, as a share of the em (Arial 0.716, Helvetica 0.717)
 export const ESTIMATE_FAIL_SHARE = 0.6;
 
 const r1 = (n) => Math.round(n * 10) / 10;
@@ -50,6 +52,22 @@ const visibleCentre = (b, vb) => {
   return { x: (c.x0 + c.x1) / 2, y: (c.y0 + c.y1) / 2 };
 };
 
+// em of a run of outlined glyphs, in user units: from baseline to the top of its tallest contour
+export function outlineEm(shape) {
+  const boxes = [];
+  let cur = [];
+  for (const g of [...shape.segs, { t: 'M' }]) {
+    if (g.t === 'M' && cur.length > 1) boxes.push(bboxOf(transformCubics(toCubics(cur), shape.ctm)));
+    if (g.t === 'M') cur = [];
+    if (g.x !== undefined || g.t !== 'M') cur.push(g);
+  }
+  const ok = boxes.filter((b) => b && Number.isFinite(b.y0) && b.y1 > b.y0);
+  if (ok.length < 3) return (shape.bbox.y1 - shape.bbox.y0) / CAP_EM;
+  const bottoms = ok.map((b) => b.y1).sort((a, b) => a - b);
+  const baseline = bottoms[Math.floor(bottoms.length / 2)];
+  return (baseline - Math.min(...ok.map((b) => b.y0))) / CAP_EM;
+}
+
 export function textRuns(model) {
   const runs = [];
   for (const t of model.textRuns) {
@@ -62,7 +80,7 @@ export function textRuns(model) {
     const subpaths = s.segs.filter((g) => g.t === 'M').length;
     const h = s.bbox.y1 - s.bbox.y0, w = s.bbox.x1 - s.bbox.x0;
     if (subpaths < 3 || h <= 0 || w < h) return; // a run of glyphs is wider than tall and has several contours
-    runs.push({ line: s.line, label: `outlined type at ${Math.round(s.bbox.x0)},${Math.round(s.bbox.y0)}`, kind: 'outline', em: h * OUTLINE_EM_PER_INK, ...visibleCentre(s.bbox, model.viewBox), inkBox: clip(s.bbox, model.viewBox), inkArea: w * h, order: i, fill: s.fill, alpha: s.fill.kind === 'color' ? alphaOf(s.fill, s.style, s.opacity) : 0 });
+    runs.push({ line: s.line, label: `outlined type at ${Math.round(s.bbox.x0)},${Math.round(s.bbox.y0)}`, kind: 'outline', em: outlineEm(s), ...visibleCentre(s.bbox, model.viewBox), inkBox: clip(s.bbox, model.viewBox), inkArea: w * h, order: i, fill: s.fill, alpha: s.fill.kind === 'color' ? alphaOf(s.fill, s.style, s.opacity) : 0 });
   });
   return runs;
 }
@@ -85,7 +103,7 @@ export function legibilitySVG(text, { file = 'input.svg', widths = [324], minPx 
       const px = r.em * k;
       if (px < minPx) {
         const level = r.kind === 'text' || px < minPx * ESTIMATE_FAIL_SHARE ? 'fail' : 'warn';
-        add('svg.text-size', level, r.line, `"${r.label}" renders at ${est(r)}${r1(px)} px at ${width} px wide (minimum ${minPx} px): make it at least ${Math.ceil((minPx / k) / (r.kind === 'outline' ? OUTLINE_EM_PER_INK : 1))} units ${r.kind === 'outline' ? 'of ink height' : 'font-size'}, or let it be texture nobody needs to read`);
+        add('svg.text-size', level, r.line, `"${r.label}" renders at ${est(r)}${r1(px)} px at ${width} px wide (minimum ${minPx} px): needs about ${Math.ceil(minPx / k)}-unit type on this ${r1(unitsWide)}-unit artboard, or an artboard at most ${Math.floor((r.em * width) / minPx)} units wide at this size; otherwise treat it as texture nobody needs to read`);
       }
     }
   }

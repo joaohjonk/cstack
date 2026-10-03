@@ -36,13 +36,22 @@ test('contrast is measured against the ground under the text, opacity included',
 
 test('outlined type: estimated from ink height; fails only when clearly too small', () => {
   const s = svg('<rect width="1200" height="600" fill="#ffffff"/>' + run(10, 10, '#111111', 30) + run(10, 100, '#111111', 12) + '<rect x="600" y="10" width="40" height="40" fill="#111111"/>');
-  const r = legibilitySVG(s, { widths: [324] }); // 30 units of ink ~ 42.9 em -> 11.6 px; 12 units -> 4.6 px
+  const r = legibilitySVG(s, { widths: [324] }); // 30 units of cap height ~ 41.7 em -> 11.25 px; 12 units -> 4.5 px
   const sizes = ids(r, 'svg.text-size');
   assert.equal(sizes.length, 1, 'the 30-unit run passes and a lone square is not text');
   assert.equal(sizes[0].level, 'fail');
-  assert.match(sizes[0].detail, /outlined type at 10,100" renders at ~4\.6 px/);
+  assert.match(sizes[0].detail, /outlined type at 10,100" renders at ~4\.5 px/);
   const near = legibilitySVG(svg('<rect width="1200" height="600" fill="#fff"/>' + run(10, 10, '#111', 24)), { widths: [324] });
-  assert.equal(ids(near, 'svg.text-size')[0].level, 'warn', '~9.3 px is an estimate near the line: warn');
+  assert.equal(ids(near, 'svg.text-size')[0].level, 'warn', '~9 px is an estimate near the line: warn');
+});
+
+test('outlined type: descenders do not change the estimate, and the fix names a size and an artboard', () => {
+  // same 30-unit caps; the second run has two contours dropping 10 units below the baseline
+  const desc = (x, y) => `<path fill="#111" d="${[0, 1, 2, 3, 4].map((i) => `M${x + i * 20} ${y}h14v${i % 2 ? 40 : 30}h-14z`).join('')}"/>`;
+  const s = svg('<rect width="1200" height="600" fill="#fff"/>' + run(10, 10, '#111', 20) + desc(10, 200));
+  const sizes = ids(legibilitySVG(s, { widths: [324] }), 'svg.text-size');
+  assert.equal(sizes.length, 1, 'only the 20-unit run is small; descenders do not shrink or grow the other');
+  assert.match(sizes[0].detail, /needs about 41-unit type on this 1200-unit artboard, or an artboard at most 818 units wide/);
 });
 
 test('a figure with no ground of its own is checked on each page colour', () => {
