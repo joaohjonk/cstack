@@ -40,7 +40,16 @@ export function registryPrice(req, models = loadModels()) {
     if (r) return { model: m, unit: r.price ?? null, route: true, basis: `${r.provider} route ${r.endpoint_id} (verified ${r.last_verified})${r.price ? '' : ` has no price${r.notes ? `: ${r.notes}` : ''}`}` };
   }
   const m = models.find((x) => x.model_id === req.model || x.provider_model_id === req.model);
-  if (!m) return { model: null, unit: null, basis: 'not in registry/models.json' };
+  if (!m) {
+    // a near miss (fal-ai/seedream... for bytedance/seedream/...) names the endpoint ids the registry does carry
+    const words = (x) => new Set(String(x).toLowerCase().split(/[^a-z0-9.]+/).filter((w) => w.length > 1));
+    const ids = models.flatMap((x) => (x.routes ?? []).filter((r) => r.provider === req.provider).map((r) => r.endpoint_id));
+    // the host's own prefix ("fal-ai") says nothing about which model was meant
+    const common = new Set([...words(req.provider), 'ai']);
+    const want = new Set([...words(req.model)].filter((w) => !common.has(w)));
+    const near = ids.map((e) => [e, [...words(e)].filter((w) => want.has(w)).length]).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([e]) => e);
+    return { model: null, unit: null, basis: `not in registry/models.json${near.length ? `; ${req.provider} routes it does carry: ${near.join(', ')}` : ''}` };
+  }
   if (req.provider && m.provider !== req.provider) {
     const r = (m.routes ?? []).find((x) => x.provider === req.provider);
     return r ? { model: m, unit: r.price ?? null, route: true, basis: `${r.provider} route ${r.endpoint_id}`, endpoint_id: r.endpoint_id } : { model: m, unit: null, basis: `${m.model_id} has a ${m.provider} price but no ${req.provider} route; add one to registry/models.json or pass estimated_cost` };
@@ -146,7 +155,7 @@ export function rightsCheck(ws, req, names = canonNames()) {
 
 export async function runMedia(ws, req, opts = {}) {
   rightsCheck(ws, req);
-  const provider = getProvider(req.provider);
+  const provider = opts.provider ?? getProvider(req.provider); // opts.provider: a test double
   if (req.expected_size) parseExpected(req.expected_size); // a typo fails here, not after paying
   const input_hashes = (req.inputs?.images ?? []).map((p) => (exists(p) ? sha256File(p) : p));
   const spec = {
@@ -194,6 +203,10 @@ export async function runMedia(ws, req, opts = {}) {
         submitted = await provider.submit(req);
       } catch (err) {
         fs.rmSync(pendingPath, { force: true }); // nothing was accepted: release the claim so a retry can submit
+        // a 4xx refusal at submit (unknown endpoint, bad input, auth) never ran, so it costs nothing; a timeout or 5xx
+        // might have been accepted upstream and stays booked
+        const code = Number(String(err?.message ?? '').match(/HTTP (\d{3})/)?.[1]);
+        if (code >= 400 && code < 500 && code !== 408 && code !== 429) err.not_submitted = true;
         throw err;
       }
       job = { key, status: 'submitted', provider: req.provider, model: req.model, submitted_at: nowISO(), ...submitted, req: { ...req, inputs: { ...req.inputs, images: req.inputs?.images ?? [] } } };

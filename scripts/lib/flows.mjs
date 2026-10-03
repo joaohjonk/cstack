@@ -194,8 +194,9 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   }
   const inWs = (p) => exists(path.resolve(ws, p));
   // make: generation is needed and missing here
+  // only making needs a provider and a budget; decide and final judge files that already exist
   const generative = GENERATED.has(d.kind) || (flow.steps ?? []).some((s) => s.kind === 'generative');
-  if (generative) {
+  if (generative && at === 0) {
     const media = providers.filter((p) => p.kind === 'media' && p.id !== 'mock' && p.status !== 'stub');
     const usable = media.filter((p) => p.available);
     if (!usable.length && !d.substitute?.owner_approved) {

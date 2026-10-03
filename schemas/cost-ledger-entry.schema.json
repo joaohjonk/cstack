@@ -102,6 +102,10 @@
     },
     "error": {
       "type": "string"
+    },
+    "charged": {
+      "type": "boolean",
+      "description": "false when the provider refused the request at submit (a 4xx such as an unknown endpoint), so it never ran and counts nothing against the budget"
     }
   },
   "additionalProperties": true
