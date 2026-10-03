@@ -31,7 +31,7 @@ computed-style sketch; no gstack code is copied.
   derived from Unicode CLDR main exemplar characters.
 - Copyright © 1991-2026 Unicode, Inc. Unicode License v3: https://www.unicode.org/license.txt
 
-## URW Nimbus Sans (README images)
+## GNU FreeFont FreeSans (README images)
 
-- `docs/images/*.svg` contain glyph outlines drawn from Nimbus Sans Regular and Bold (URW base35 fonts, https://github.com/ArtifexSoftware/urw-base35-fonts).
-- License: AGPL-3.0 with URW's font exception, which allows the fonts to be included in documents without the documents falling under the AGPL. No font file is distributed in this repo.
+- `docs/images/*.svg` contain glyph outlines drawn from FreeSans and FreeSans Bold (GNU FreeFont, https://www.gnu.org/software/freefont/). They contain no font program, and no font file is distributed in this repo.
+- License: GPL-3.0-or-later with the FreeFont font exception: "if you create a document which uses this font, and embed this font or unaltered portions of this font into the document, this font does not by itself cause the resulting document to be covered by the GNU General Public License."
