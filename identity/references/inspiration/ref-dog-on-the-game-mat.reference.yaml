@@ -1,0 +1,34 @@
+# The mood reference that started cstack's self-imagery work. Third-party photograph: linked and credited, never stored or fed to a model.
+id: ref-dog-on-the-game-mat
+kind: image
+library: inspiration
+local_path: ""   # not stored; the owner holds a private copy, the repo has no right to host it
+source_domain: fine-art photography (the photographer's own series of his dogs)
+distance: far
+rights:
+  status: inspiration_only
+  holder: the photographer (credited by name in docs/lineage.md)
+  notes: credit and link only; no reproduction, no crop, no tracing, no use as a model input
+credit: see docs/lineage.md, "William Wegman"
+captured_at: "2026-10-03"
+retrieved_via: owner_upload
+transferable_mechanism: >-
+  One living figure in a calm, empty studio, asked to hold an impossible position on a floor of marked
+  positions, and holding it deadpan. Play as the face of seriousness; the floor of positions as the
+  stand-in for choice.
+mechanism_tags: [deadpan, empty_ground, field_of_positions, play_as_discipline, one_figure]
+transfer: >-
+  cstack keeps the floor of positions (the row of squares) and the deadpan; the figure becomes the blue square
+  itself, which stands out of line, leaves the frame or grows larger than the poster.
+incidental_content: [the animal, the game mat, its coloured dots, its lettering, the camera angle]
+do_not_copy:
+  - the animal or any animal drawn from life
+  - the mat, its dots, its four colours or its name
+  - the photograph as an image, in whole or in part
+why_it_works: the owner's words, "playful, happy, something people with taste find tasteful"
+axes:
+  message_clarity: "high"
+  brand_fit: "idea only; the dress fails R-REF-01"
+surfaces: [none; mood only]
+approval: current
+decided_by: JJ
