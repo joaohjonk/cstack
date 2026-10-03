@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" role="img" aria-labelledby="t d">
+<title id="t">cstack: the same brand, every time</title><desc id="d">Two rows of ten tiles. In the top row, a simple mark asked for by prompt drifts in colour, size, angle and position from tile to tile. In the bottom row, the same mark made from a brand kept in files stays identical across all ten.</desc>
+<rect width="1200" height="600" fill="#F3F0E8"/>
+<text x="82.5" y="104" font-family="Georgia, 'Times New Roman', serif" font-size="64" fill="#1C1B19" letter-spacing="-1">cstack</text>
+<text x="85.5" y="142" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="19" fill="#7D786F">An open operating system for brand work, run by agents.</text>
+<text x="85.5" y="206" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" letter-spacing="2" fill="#7D786F">ASKED FOR TEN TIMES</text>
+<rect x="85.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 127.5 260)"><circle cx="127.5" cy="260" r="17.0" fill="#C8441F"/><rect x="108.5" y="265.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="190.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(3 234.5 258)"><circle cx="234.5" cy="258" r="18.0" fill="#C9502A"/><rect x="214.0" y="264.3" width="41" height="3.5" fill="#1C1B19"/></g>
+<rect x="295.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(-5 334.5 263)"><circle cx="334.5" cy="263" r="15.8" fill="#CF5E2E"/><rect x="317.5" y="268.5" width="34" height="4" fill="#1C1B19"/></g>
+<rect x="400.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(8 446.5 257)"><circle cx="446.5" cy="257" r="19.0" fill="#D46E34"/><rect x="424.5" y="263.7" width="44" height="3" fill="#1C1B19"/></g>
+<rect x="505.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(-10 542.5 265)"><circle cx="542.5" cy="265" r="15.0" fill="#C84A3C"/><rect x="527.0" y="270.2" width="31" height="4.5" fill="#1C1B19"/></g>
+<rect x="610.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(13 658.5 256)"><circle cx="658.5" cy="256" r="20.1" fill="#D9823A"/><rect x="635.0" y="263.0" width="47" height="5" fill="#1C1B19"/></g>
+<rect x="715.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(-15 753.5 266)"><circle cx="753.5" cy="266" r="14.3" fill="#BF3F4A"/><rect x="739.0" y="271.0" width="29" height="3.5" fill="#1C1B19"/></g>
+<rect x="820.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(19 870.5 254)"><circle cx="870.5" cy="254" r="21.3" fill="#DE8F3F"/><rect x="845.5" y="261.4" width="50" height="5.5" fill="#1C1B19"/></g>
+<rect x="925.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(-22 960.5 267)"><circle cx="960.5" cy="267" r="13.6" fill="#B8473E"/><rect x="947.5" y="271.8" width="26" height="4" fill="#1C1B19"/></g>
+<rect x="1030.5" y="222" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(27 1082.5 252)"><circle cx="1082.5" cy="252" r="22.1" fill="#E3A04A"/><rect x="1056.0" y="259.7" width="53" height="6" fill="#1C1B19"/></g>
+<text x="85.5" y="376" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" letter-spacing="2" fill="#7D786F">KEPT IN FILES, MADE TEN TIMES</text>
+<rect x="85.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 127.5 430)"><circle cx="127.5" cy="430" r="17.0" fill="#C8441F"/><rect x="108.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="190.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 232.5 430)"><circle cx="232.5" cy="430" r="17.0" fill="#C8441F"/><rect x="213.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="295.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 337.5 430)"><circle cx="337.5" cy="430" r="17.0" fill="#C8441F"/><rect x="318.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="400.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 442.5 430)"><circle cx="442.5" cy="430" r="17.0" fill="#C8441F"/><rect x="423.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="505.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 547.5 430)"><circle cx="547.5" cy="430" r="17.0" fill="#C8441F"/><rect x="528.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="610.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 652.5 430)"><circle cx="652.5" cy="430" r="17.0" fill="#C8441F"/><rect x="633.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="715.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 757.5 430)"><circle cx="757.5" cy="430" r="17.0" fill="#C8441F"/><rect x="738.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="820.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 862.5 430)"><circle cx="862.5" cy="430" r="17.0" fill="#C8441F"/><rect x="843.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="925.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 967.5 430)"><circle cx="967.5" cy="430" r="17.0" fill="#C8441F"/><rect x="948.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<rect x="1030.5" y="392" width="84" height="84" fill="#FBF9F4" stroke="#D9D3C7"/>
+<g transform="rotate(0 1072.5 430)"><circle cx="1072.5" cy="430" r="17.0" fill="#C8441F"/><rect x="1053.5" y="435.9" width="38" height="3" fill="#1C1B19"/></g>
+<line x1="85.5" y1="530" x2="1114.5" y2="530" stroke="#D9D3C7"/>
+<text x="85.5" y="556" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#7D786F">first</text>
+<text x="1114.5" y="556" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#7D786F">ten thousandth</text>
+</svg>

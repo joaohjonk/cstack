@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 682" width="1200" height="682" role="img" aria-labelledby="t d">
+<title id="t">The nine layers of cstack</title><desc id="d">Nine stacked bands from Reality to Compounding taste, each naming what lives there in cstack, with an arrow from Memory back up to Canon and References: every decision feeds back.</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#C8441F"/></marker></defs>
+<rect width="1200" height="682" fill="#F3F0E8"/>
+<text x="72" y="66" font-family="Georgia, 'Times New Roman', serif" font-size="34" fill="#1C1B19">From the world inward, and back out</text>
+<text x="74" y="96" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">Each layer is a folder, a schema or a skill. Nothing lives only in a prompt.</text>
+<rect x="72" y="120" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="151" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">01</text>
+<text x="132" y="152" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">Reality</text>
+<text x="350" y="151" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">what is true about the product and the company</text>
+<text x="1032" y="151" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">brand-system.json, claims, proof</text>
+<rect x="72" y="178" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="209" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">02</text>
+<text x="132" y="210" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">Culture</text>
+<text x="350" y="209" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">people, scenes, rituals, language</text>
+<text x="1032" y="209" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">/cultural-scan</text>
+<rect x="72" y="236" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="267" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">03</text>
+<text x="132" y="268" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">Canon</text>
+<text x="350" y="267" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">mental models from people who did it well</text>
+<text x="1032" y="267" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">canon/</text>
+<rect x="72" y="294" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="325" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">04</text>
+<text x="132" y="326" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">References</text>
+<text x="350" y="325" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">near, middle and far: source, mechanism, transfer</text>
+<text x="1032" y="325" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">/taste-search, /shot-dna</text>
+<rect x="72" y="352" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="383" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">05</text>
+<text x="132" y="384" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">System</text>
+<text x="350" y="383" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">tokens, type, grids, components, motion, voice</text>
+<text x="1032" y="383" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">brand/tokens, brand/rules</text>
+<rect x="72" y="410" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="441" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">06</text>
+<text x="132" y="442" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">Generation</text>
+<text x="350" y="441" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">people, agents, Figma, code, models</text>
+<text x="1032" y="441" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">/prompt-director, /generate-media</text>
+<rect x="72" y="468" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="499" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">07</text>
+<text x="132" y="500" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">Judgment</text>
+<text x="350" y="499" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">gold, anti, pairwise picks, independent review</text>
+<text x="1032" y="499" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">/creative-review, /brand-verify</text>
+<rect x="72" y="526" width="980" height="50" fill="#FBF9F4" stroke="#D9D3C7"/>
+<text x="92" y="557" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">08</text>
+<text x="132" y="558" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#1C1B19">Memory</text>
+<text x="350" y="557" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#7D786F">every correction is written down</text>
+<text x="1032" y="557" text-anchor="end" font-family="'SFMono-Regular', Menlo, Consolas, monospace" font-size="13" fill="#7D786F">state/*.jsonl, /learn</text>
+<rect x="72" y="584" width="980" height="50" fill="#1C1B19" stroke="#1C1B19"/>
+<text x="92" y="615" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1" fill="#C8441F">09</text>
+<text x="132" y="616" font-family="Georgia, 'Times New Roman', serif" font-size="21" fill="#F3F0E8">Compounding taste</text>
+<text x="350" y="615" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#BDB7AC">the next brief starts smarter than the last</text>
+<path d="M1056 551 C1130 551, 1130 261, 1060 261" fill="none" stroke="#C8441F" stroke-width="2" marker-end="url(#a)"/>
+<text x="1118" y="406" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#C8441F" transform="rotate(90 1118 406)" text-anchor="middle">every decision feeds back</text>
+</svg>
