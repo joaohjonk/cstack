@@ -160,7 +160,31 @@ The maker never certifies its own work. In your agent, run `/creative-review` (i
 cstack lineage --file lineage.json     # creative commit: artifact_id, kind, intent_of_change, operation, output_files
 cstack eval --file eval.json           # one judgment: evaluator, gates, separate axes, decision
 cstack feedback --file pick.json       # the owner's pick, e.g. a pairwise A/B with a reason
+cstack lineage --show cup-hero         # the artifact's history
 ```
+
+`lineage.json`, the creative commit for the two probes (`version` and the output hashes are filled in for you):
+
+```json
+{ "artifact_id": "cup-hero", "kind": "image", "operation": "generate",
+  "intent_of_change": "first probe: cup on oak in morning light, from recipe cup-hero v1",
+  "prompt_recipe": { "id": "cup-hero", "version": 1 },
+  "model": { "provider": "mock", "model_id": "mock-image" },
+  "output_files": ["work/out/quickstart/cup-probe_1.png", "work/out/quickstart/cup-probe_2.png"] }
+```
+
+`eval.json`, one reviewer's judgment, kept apart from the maker and never summed into one score:
+
+```json
+{ "artifact_ref": "cup-hero", "artifact_version": "1", "baseline": "brief",
+  "evaluator": { "kind": "llm_judge", "name": "creative-review (fresh context)", "separate_from_author": true },
+  "gates": [ { "id": "size-audit", "result": "pass" } ],
+  "axes": [ { "axis": "brand_fit", "score": 2, "evidence": "throwing rings and honest glaze visible" },
+            { "axis": "craft", "score": 1, "evidence": "rim highlight blown out on probe 1" } ],
+  "decision": "fix", "recommendations": ["lower the window light by a stop; keep everything else"] }
+```
+
+`pick.json`, the owner's pick:
 
 ```json
 { "by": "owner", "type": "pairwise", "artifact_ref": "cup-hero",

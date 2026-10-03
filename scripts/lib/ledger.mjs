@@ -128,11 +128,6 @@ export async function guardedCall(ws, spec, fn) {
     appendJSONL(ledgerPath(ws), row);
     return { deduplicated: true, row, output_ids: prior.output_ids ?? [] };
   }
-  if (spec.dry_run) {
-    const row = { ...base, ts: nowISO(), status: 'dry_run', output_ids: [], retry_count: 0, cache_status: 'n/a', actual_cost_if_available: null, latency_ms: null };
-    appendJSONL(ledgerPath(ws), row);
-    return { dry_run: true, row };
-  }
   const budget = loadBudget(ws);
   const unpriced = spec.estimated_cost == null;
   const booked = unpriced ? unpricedBooking(budget) : null;
@@ -140,12 +135,19 @@ export async function guardedCall(ws, spec, fn) {
   const plan = planBatch(ws, [{ ...spec, est: spec.estimated_cost }], { stop_condition: spec.stop_condition ?? 'single call' });
   if (unpriced && !spec.confirm_unpriced && !budget?.allow_unpriced) {
     plan.ok = false;
-    plan.problems.push('no cost estimate for this call; add estimated_cost to the request, confirm with --confirm-unpriced after asking the owner, or set budget.allow_unpriced');
+    plan.problems.push(`no cost estimate for this call${spec.unpriced_reason ? ` (${spec.unpriced_reason})` : ''}; add estimated_cost to the request, confirm with --confirm-unpriced after asking the owner, or set budget.allow_unpriced`);
   }
   // the owner's per-call yes to an unpriced call is also their yes to its booked amount
   if (plan.needs_confirmation && !spec.confirmed && !(unpriced && spec.confirm_unpriced)) {
     plan.ok = false;
     plan.problems.push(`estimate ${plan.estimated_total} ${plan.currency} is over confirm_over ${budget.confirm_over}; ask the owner, then confirm (--confirm)`);
+  }
+  // a dry run passes through the same gate, so it reports the refusal a real call would get
+  if (spec.dry_run) {
+    const blocked = !plan.ok && !spec.reattach;
+    const row = { ...base, ts: nowISO(), status: 'dry_run', output_ids: [], retry_count: 0, cache_status: 'n/a', actual_cost_if_available: null, latency_ms: null, ...(blocked ? { error: `a real call would be blocked: ${plan.problems.join('; ')}` } : {}) };
+    appendJSONL(ledgerPath(ws), row);
+    return blocked ? { dry_run: true, would_block: true, problems: plan.problems, row } : { dry_run: true, row };
   }
   // re-attaching to a job that was already submitted (and paid) only collects it: never block that
   if (!plan.ok && !spec.reattach) {

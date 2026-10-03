@@ -93,3 +93,20 @@ test('example: the shipped spend plan costs nothing and the paid what-if is bloc
   assert.equal(paid.status, 1);
   assert.equal(JSON.parse(paid.stdout).ok, false);
 });
+
+test('quickstart: the lineage, eval and pick examples are valid records (field test F09)', () => {
+  const md = fs.readFileSync(path.join(ROOT, 'docs', 'quickstart.md'), 'utf8');
+  const blocks = [...md.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => JSON.parse(m[1]));
+  const lineage = blocks.find((b) => b.artifact_id && b.intent_of_change);
+  const ev = blocks.find((b) => b.evaluator);
+  assert.ok(lineage && ev, 'quickstart shows a lineage and an eval example');
+  const dir = tmpDir('cstack-qs-');
+  const w = path.join(dir, 'ws');
+  assert.equal(cli('brand', 'init', w, '--name', 'Quickstart').status, 0);
+  for (const [cmd, rec] of [['lineage', lineage], ['eval', ev]]) {
+    const f = path.join(dir, `${cmd}.json`);
+    fs.writeFileSync(f, JSON.stringify(rec));
+    const r = cli(cmd, '--file', f, '--ws', w);
+    assert.equal(r.status, 0, `${cmd}: ${r.stdout}${r.stderr}`);
+  }
+});

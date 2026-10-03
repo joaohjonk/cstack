@@ -32,14 +32,29 @@ export function listPending(ws) {
  * opts: {dry_run, poll_timeout_ms, poll_interval_ms}
  */
 // Estimate from the dated registry's est_unit_cost (per image, second, megapixel or operation); null when unpriced.
+// A model's own price is its maker's. A call through a host (fal, Replicate ...) is priced only from that host's route
+// (models[].routes: endpoint id + price); without one the call is unpriced, never billed at the maker's list price.
+export function registryPrice(req, models = loadModels()) {
+  for (const m of models) {
+    const r = (m.routes ?? []).find((x) => x.provider === req.provider && x.endpoint_id === req.model);
+    if (r) return { model: m, unit: r.price ?? null, basis: `${r.provider} route ${r.endpoint_id} (verified ${r.last_verified})` };
+  }
+  const m = models.find((x) => x.model_id === req.model || x.provider_model_id === req.model);
+  if (!m) return { model: null, unit: null, basis: 'not in registry/models.json' };
+  if (req.provider && m.provider !== req.provider) {
+    const r = (m.routes ?? []).find((x) => x.provider === req.provider);
+    return r ? { model: m, unit: r.price ?? null, basis: `${r.provider} route ${r.endpoint_id}`, endpoint_id: r.endpoint_id } : { model: m, unit: null, basis: `${m.model_id} has a ${m.provider} price but no ${req.provider} route; add one to registry/models.json or pass estimated_cost` };
+  }
+  return { model: m, unit: m.est_unit_cost ?? null, basis: 'registry est_unit_cost' };
+}
+
 export function estimateFromRegistry(req, models = loadModels()) {
-  const m = models.find((x) => x.model_id === req.model);
-  const u = m?.est_unit_cost;
+  const u = registryPrice(req, models).unit;
   if (!u?.amount) return null;
   const p = req.inputs?.params ?? {};
   const qty = u.per === 'image' ? p.num_images ?? p.n ?? 1 : u.per === 'second' ? p.duration ?? p.seconds ?? null : u.per === 'operation' ? 1 : null;
   if (qty == null) return null;
-  return { amount: Math.round(u.amount * Number(qty) * 10000) / 10000, currency: u.currency ?? 'USD', basis: `registry est_unit_cost per ${u.per}` };
+  return { amount: Math.round(u.amount * Number(qty) * 10000) / 10000, currency: u.currency ?? 'USD', basis: `${registryPrice(req, models).basis}, per ${u.per}` };
 }
 
 function loadModels() {
@@ -105,6 +120,7 @@ export async function runMedia(ws, req, opts = {}) {
     params: req.inputs?.params ?? {},
     prompt_hash: req.inputs?.prompt ? hashValue(req.inputs.prompt) : '',
     estimated_cost: req.estimated_cost ?? provider.estimate?.(req) ?? estimateFromRegistry(req),
+    unpriced_reason: req.estimated_cost ?? provider.estimate?.(req) ? undefined : registryPrice(req).basis,
     skill: req.skill,
     experiment_id: req.experiment_id,
     dry_run: opts.dry_run ?? req.dry_run,

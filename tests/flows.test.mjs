@@ -5,6 +5,8 @@ import os from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
 import { listFlows, searchFlows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
+import { ROOT } from '../scripts/lib/core.mjs';
+import { tmpDir } from './tmp.mjs';
 import { validateValue } from '../scripts/lib/schemas.mjs';
 
 const flow = (id, outcome, last_verified, extra = {}) => ({
@@ -92,4 +94,23 @@ test('flows check: every library flow passes', () => {
     const { file, scope, age_days, stale, ...data } = f;
     assert.deepEqual(checkFlow(data).errors, [], file);
   }
+});
+
+test('flows search offers the workflows that cover an outcome (field test F10)', async () => {
+  const { searchWorkflows } = await import('../scripts/lib/flows.mjs');
+  assert.equal(searchWorkflows('identity')[0]?.workflow.id, 'create-brand');
+  assert.deepEqual(searchWorkflows('zzzz nothing'), []);
+});
+
+test('flows check: a hand copy of a library flow is not a plan, and an untouched plan warns (field test F11)', () => {
+  const w = tmpDir('cstack-f11-');
+  fs.mkdirSync(path.join(w, 'work', 'flows'), { recursive: true });
+  const copy = path.join(w, 'work', 'flows', 'copy.flow.yaml');
+  fs.copyFileSync(path.join(ROOT, 'flows', 'logo-system.flow.yaml'), copy);
+  const c = checkFlowFile(w, copy);
+  assert.ok(c.errors.some((e) => /must have status: plan.*unchanged copy of the "logo-system" library flow/.test(e)), c.errors.join('\n'));
+  const { file } = planFromFlow(w, 'logo-system', { target: 'a mark for a ceramics studio that reads at 16 px' });
+  const p = checkFlowFile(w, file);
+  assert.equal(p.errors.length, 0, p.errors.join('\n'));
+  assert.ok(p.warnings.some((x) => /unchanged from "logo-system"/.test(x)));
 });

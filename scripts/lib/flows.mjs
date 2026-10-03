@@ -36,6 +36,26 @@ const STOP = new Set(['the', 'and', 'for', 'with', 'our', 'make', 'like', 'that'
 const stem = (w) => w.replace(/(ing|ed|es|s)$/, '').replace(/e$/, '');
 const words = (s) => (String(s ?? '').toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((w) => (w.length > 2 || /\d/.test(w)) && !STOP.has(w)).map(stem);
 
+// Gated workflows (workflows/<id>/workflow.yaml) answer bigger outcomes than one flow ("identity" → create-brand),
+// so `flows search` offers them too. Same scoring: trigger phrases and the summary count double.
+export function searchWorkflows(query, { k = 3 } = {}) {
+  const q = new Set(words(query));
+  const dir = path.join(ROOT, 'workflows');
+  if (!exists(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((d) => exists(path.join(dir, d, 'workflow.yaml')))
+    .map((d) => {
+      const w = readData(path.join(dir, d, 'workflow.yaml'));
+      const hay = words([w.name ?? d, w.summary, ...(w.triggers ?? []), ...(w.methods ?? [])].join(' '));
+      const strong = words([w.summary, ...(w.triggers ?? [])].join(' ')).filter((x) => q.has(x)).length;
+      return { workflow: { id: w.name ?? d, summary: w.summary, status: w.status, methods: w.methods ?? [] }, score: hay.filter((x) => q.has(x)).length + 2 * strong };
+    })
+    .filter((r) => r.score > 0)
+    .sort((a, b) => b.score - a.score || a.workflow.id.localeCompare(b.workflow.id))
+    .slice(0, k);
+}
+
 export function searchFlows(ws, query, { k = 5 } = {}) {
   const q = new Set(words(query));
   return listFlows(ws)
@@ -114,10 +134,18 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
     return { file, errors: [exists(file) ? `cannot parse: ${e.message}` : 'no such file (no plan written yet?)'], warnings: [] };
   }
   const res = checkFlow(flow, { skills });
-  if (flow?.status === 'plan' && flow.target?.description) {
+  const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  const inLibrary = path.resolve(file).startsWith(path.join(ROOT, 'flows') + path.sep);
+  // a library flow copied by hand into a run keeps its library status, so none of the plan checks would run
+  if (!inLibrary && flow?.status !== 'plan' && path.resolve(file).includes(`${path.sep}work${path.sep}flows${path.sep}`)) {
+    const twin = listFlows(ws).find((f) => f.scope === 'cstack' && same(f.steps, flow?.steps));
+    res.errors.push(`a run plan under work/flows/ must have status: plan (found ${flow?.status ?? 'none'})${twin ? `; it is an unchanged copy of the "${twin.id}" library flow: start it with cstack flows plan ${twin.id} --target "..."` : ''}`);
+  }
+  if (flow?.status === 'plan') {
     const src = (flow.related ?? []).find((r) => String(r).startsWith('flow:'));
     const lib = src && listFlows(ws).find((f) => f.id === String(src).slice(5));
-    if (lib && lib.target?.description === flow.target.description) res.errors.push(`target.description is still the "${lib.id}" library wording; state this run's target (--target or edit the plan)`);
+    if (lib && flow.target?.description && lib.target?.description === flow.target.description) res.errors.push(`target.description is still the "${lib.id}" library wording; state this run's target (--target or edit the plan)`);
+    if (lib && same(lib.steps, flow.steps) && same(lib.target?.must, flow.target?.must)) res.warnings.push(`steps and target.must are unchanged from "${lib.id}": confirm they fit this run, or edit them (budget, sizes, owner checkpoints)`);
   }
   return { file, ...res };
 }

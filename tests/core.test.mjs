@@ -100,6 +100,27 @@ test('ledger: dry run never calls the provider', async () => {
   assert.equal(called, 0);
 });
 
+test('ledger: a dry run runs the budget gate and reports what a real call would get', async () => {
+  for (const [budget, sp, why] of [
+    [{ currency: 'USD', per_run: 0, per_day: 0 }, spec, /per_run|per_day|budget/],
+    [{ currency: 'USD', per_run: 0, per_day: 0 }, { ...spec, estimated_cost: null }, /no cost estimate/],
+    [undefined, spec, /budget/],
+  ]) {
+    const ws = tmpWs(budget);
+    let called = 0;
+    const r = await guardedCall(ws, { ...sp, dry_run: true }, async () => (called++, {}));
+    assert.equal(r.dry_run, true);
+    assert.equal(r.would_block, true, JSON.stringify(r));
+    assert.match(r.problems.join('; '), why);
+    assert.equal(called, 0);
+    const row = readLedger(ws).at(-1);
+    assert.equal(row.status, 'dry_run');
+    assert.match(row.error, /^a real call would be blocked: /);
+  }
+  const ok = await guardedCall(tmpWs({ currency: 'USD', per_run: 1, per_day: 5 }), { ...spec, dry_run: true }, async () => ({}));
+  assert.ok(ok.dry_run && !ok.would_block);
+});
+
 test('ledger: identical call is deduplicated (no double spend)', async () => {
   const ws = tmpWs({ currency: 'USD', per_run: 1, per_day: 5 });
   let called = 0;
@@ -275,6 +296,9 @@ test('tools: detects by agent-visible MCP server name and env presence, never by
   assert.equal(by.figma.available, true);
   assert.equal(by.foreplay.available, true);
   assert.equal(by.cosmos.available, false);
-  assert.match(by.cosmos.agent_access, /none/);
+  assert.match(by.baymard.agent_access, /none/);
+  // a connector named after the tool counts, with or without the host's prefix (field test F04)
+  for (const name of ['Cosmos', 'claude_ai_Cosmos', 'cosmos-so']) assert.equal(Object.fromEntries(detectTools(w, { mcpServers: [name], env: {} }).map((t) => [t.id, t])).cosmos.available, true, name);
+  assert.equal(Object.fromEntries(detectTools(w, { mcpServers: ['cosmonaut'], env: {} }).map((t) => [t.id, t])).cosmos.available, false);
   assert.ok(!JSON.stringify(res).includes('"x"'), 'env values are never echoed');
 });

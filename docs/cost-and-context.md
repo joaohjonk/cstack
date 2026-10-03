@@ -53,7 +53,7 @@ The production ladder in the [shared preamble](../skills/cstack-shared/PREAMBLE.
 
 ## Cost ledger
 
-`state/cost-ledger.jsonl` (schema `cost-ledger-entry`) has one row per attempt:
+`state/cost-ledger.jsonl` (schema `cost-ledger-entry`) has one row per attempt that reached the budget gate: a call, a dry run (which runs the same gate and records the refusal a real call would get in `error`), a budget block, a deduplicated repeat or a failure. A command that stops before any attempt, such as `cstack taste search` without `TASTE_API_KEY` (it exits with a MISSING line), writes no row.
 
 ```text
 run_id, ts, provider, model, operation, input_hashes, prompt_recipe_hash, idempotency_key,

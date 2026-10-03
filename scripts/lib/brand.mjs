@@ -2,7 +2,7 @@
 // created from templates/brand-workspace and checked with `cstack brand check`.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT, Report, exists, readData, writeAtomic, isOfficial, rel, walk, readText } from './core.mjs';
+import { ROOT, Report, exists, readData, writeAtomic, isOfficial, rel, shown, walk, readText } from './core.mjs';
 import { validateTree, validateValue } from './schemas.mjs';
 
 const TEMPLATE = path.join(ROOT, 'templates', 'brand-workspace');
@@ -39,11 +39,11 @@ export function initBrand(dir, { name, id } = {}) {
   if (exists(dir) && !fs.statSync(dir).isDirectory()) throw new Error(`${dir} exists and is not a folder`);
   const date = new Date().toISOString().slice(0, 10);
   const { added, kept } = copyDir(TEMPLATE, dir, { BRAND_NAME: name, BRAND_ID: brandId, DATE: date });
-  if (kept) return `already a workspace at ${dir} (${kept} files kept, ${added} added); name and id unchanged`;
+  if (kept) return `already a workspace at ${shown(dir)} (${kept} files kept, ${added} added); name and id unchanged`;
   return [
-    `brand workspace ready at ${dir}`,
-    `next: cd ${dir} && run /brand-import (existing brand) or /workflow create-brand (new brand) in your agent`,
-    `check it any time: cstack brand check --ws ${dir}`,
+    `brand workspace ready at ${shown(dir)}`,
+    `next: cd ${shown(dir)} && run /brand-import (existing brand) or /workflow create-brand (new brand) in your agent`,
+    `check it any time: cstack brand check --ws ${shown(dir)}`,
   ].join('\n');
 }
 

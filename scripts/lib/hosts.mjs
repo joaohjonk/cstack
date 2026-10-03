@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { ROOT, exists, readJSON } from './core.mjs';
+import { ROOT, exists, readJSON, shown } from './core.mjs';
 import { listSkills } from './skills.mjs';
 
 export function loadHosts() {
@@ -30,6 +30,21 @@ function isOurs(dst) {
   }
 }
 
+// A symlink into another cstack checkout's skills/ (an older clone, a moved folder): cstack's own link, but it runs that
+// checkout's skills next to this CLI. Returns that checkout's root, or null.
+function otherCheckout(dst) {
+  if (!isLink(dst)) return null;
+  let real;
+  try {
+    real = fs.realpathSync(dst);
+  } catch {
+    return null; // dangling: isOurs() handles it
+  }
+  const root = path.dirname(path.dirname(real));
+  if (path.basename(path.dirname(real)) !== 'skills' || !exists(path.join(root, 'bin', 'cstack.mjs'))) return null;
+  return fs.realpathSync(root) === fs.realpathSync(ROOT) ? null : root;
+}
+
 function isLink(p) {
   try { return fs.lstatSync(p).isSymbolicLink(); } catch { return false; }
 }
@@ -50,10 +65,14 @@ export function installHosts({ host = 'default', target, copy = false, dryRun = 
   for (const h of chosen) {
     const base = target ? path.join(target, h.project_dir) : path.join(os.homedir(), h.user_dir);
     const skipped = [];
+    const others = new Map(); // other checkout root -> slugs relinked here
+    const note = (root, slug) => others.set(root, [...(others.get(root) ?? []), slug]);
     for (const s of skills) {
       const dst = path.join(base, s.slug);
       if (exists(dst) || isLink(dst)) {
-        if (!isOurs(dst)) {
+        const other = otherCheckout(dst);
+        if (other) note(other, s.slug);
+        else if (!isOurs(dst)) {
           skipped.push(s.slug);
           continue;
         }
@@ -72,7 +91,7 @@ export function installHosts({ host = 'default', target, copy = false, dryRun = 
     const sharedDst = path.join(base, 'cstack-shared');
     // cstack-shared has no SKILL.md, so skill scanners ignore it; skills reference it as ../cstack-shared/
     if (exists(shared) && !dryRun) {
-      if ((exists(sharedDst) || isLink(sharedDst)) && !isOurs(sharedDst)) {
+      if ((exists(sharedDst) || isLink(sharedDst)) && !isOurs(sharedDst) && !otherCheckout(sharedDst)) {
         log.push(`skip ${sharedDst} (exists and was not installed by cstack)`);
       } else fs.rmSync(sharedDst, { recursive: true, force: true });
       if (!exists(sharedDst) && !isLink(sharedDst)) {
@@ -82,7 +101,26 @@ export function installHosts({ host = 'default', target, copy = false, dryRun = 
         } else fs.symlinkSync(shared, sharedDst, 'dir');
       }
     }
-    log.push(`${dryRun ? 'would install' : copy ? 'copied' : 'linked'} ${skills.length - skipped.length} skills → ${base} (${h.name})`);
+    // skills an older checkout linked that this one no longer has (renamed or removed): they would still answer
+    const current = new Set([...skills.map((s) => s.slug), 'cstack-shared']);
+    const gone = [];
+    for (const name of exists(base) ? fs.readdirSync(base) : []) {
+      const dst = path.join(base, name);
+      if (current.has(name) || !isLink(dst)) continue;
+      const other = otherCheckout(dst);
+      let mine = false;
+      try {
+        mine = !other && fs.realpathSync(dst).startsWith(fs.realpathSync(path.join(ROOT, 'skills')) + path.sep);
+      } catch {
+        mine = path.resolve(base, fs.readlinkSync(dst)).startsWith(path.join(ROOT, 'skills') + path.sep); // dangling into this checkout
+      }
+      if (!other && !mine) continue;
+      gone.push(name);
+      if (!dryRun) fs.rmSync(dst, { force: true });
+    }
+    log.push(`${dryRun ? 'would install' : copy ? 'copied' : 'linked'} ${skills.length - skipped.length} skills → ${shown(base)} (${h.name})`);
+    for (const [root, slugs] of others) log.push(`${dryRun ? 'would replace' : 'replaced'} ${slugs.length} link${slugs.length === 1 ? '' : 's'} that ran skills from another cstack checkout (${shown(root)}); they now run this one`);
+    if (gone.length) log.push(`${dryRun ? 'would remove' : 'removed'} ${gone.length} skill link${gone.length === 1 ? '' : 's'} this checkout no longer has: ${gone.join(', ')}`);
     if (skipped.length) log.push(`WARN skipped ${skipped.length} (a skill with that name exists and was not installed by cstack; it will answer instead): ${skipped.join(', ')}`);
   }
   return log;

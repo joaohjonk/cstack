@@ -40,6 +40,7 @@ Prioritized by dependency (see the build order in [research/gap-analysis.md](res
 25. **Composite tokens in CSS.** `tokens build` emits colours, sizes, durations, weights, families and easing; typography, shadow, border, gradient and transition tokens are skipped. Emit them (one custom property per part, plus a class per typography token) so a page can be built from tokens alone.
 26. **HTML and SVG as the default brand output.** The guide is the first generated page. Next: a component sheet (buttons, cards, type scale) built only from tokens and linted with `tokens lint`, so pages, social and decks start from brand-owned code instead of a pixel prompt.
 27. **Skills read the context map.** Skills still name their sections in SKILL.md; once real workspaces carry `brand/context-map.yaml`, have skills call `brand context --task` and keep the SKILL.md list only as the default.
+28. **fal routes for the image and video models.** `registry/models.json` now takes per-host `routes` (endpoint id and that host's price), and a fal call without one is unpriced. Fill them from fal's model pages, dated, before the first paid fal round: FLUX.2 pro, flex, max and klein first.
 
 ## Skill-count rationale
 

@@ -115,3 +115,13 @@ test('dependency invalidation: changing a brand field marks dependent artifacts 
   applyToBrand(w, 'color.primary', f('#998877', 'user_instruction'));
   assert.deepEqual(staleArtifacts(w), [{ artifact_id: 'hero', version: 1, changed: ['color.primary'] }]);
 });
+
+test('registry price: a call through a host uses only that host route price, never the maker list price (field test F12)', async () => {
+  const { estimateFromRegistry, registryPrice } = await import('../providers/runner.mjs');
+  const models = [{ model_id: 'img-x', provider: 'maker', est_unit_cost: { amount: 0.03, currency: 'USD', per: 'image' }, routes: [{ provider: 'host-a', endpoint_id: 'host-a/img-x', price: { amount: 0.05, currency: 'USD', per: 'image' }, source: 's', last_verified: '2026-10-03' }] }];
+  assert.equal(estimateFromRegistry({ provider: 'maker', model: 'img-x' }, models).amount, 0.03);
+  assert.equal(estimateFromRegistry({ provider: 'host-a', model: 'host-a/img-x', inputs: { params: { num_images: 2 } } }, models).amount, 0.1);
+  assert.equal(estimateFromRegistry({ provider: 'host-a', model: 'img-x' }, models).amount, 0.05);
+  assert.equal(estimateFromRegistry({ provider: 'host-b', model: 'img-x' }, models), null);
+  assert.match(registryPrice({ provider: 'host-b', model: 'img-x' }, models).basis, /no host-b route/);
+});
