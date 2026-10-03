@@ -63,26 +63,39 @@ export function unpricedBooking(budget) {
 
 /**
  * Plan a batch before spending: estimated envelope + stop condition.
- * items: [{provider, model, operation, est: {amount, currency}}]. Items without est are unpriced: booked as above.
+ * items: [{provider, model, operation, est: {amount, currency}}]. Items without est are priced by opts.price(item)
+ * when given (the registry's host routes), else unpriced: booked as above, and the plan says which and why.
  */
-export function planBatch(ws, items, { stop_condition } = {}) {
+export function planBatch(ws, items, { stop_condition, price } = {}) {
   if (!Array.isArray(items)) throw new Error('items must be a JSON array of {provider, model, operation, est}');
+  items = items.map((i) => {
+    if (!i || (i.est && Number.isFinite(i.est.amount)) || !price) return i;
+    const p = price(i);
+    return p?.est ? { ...i, est: p.est } : { ...i, unpriced_reason: p?.reason };
+  });
   const budget = loadBudget(ws);
   const currency = budget?.currency ?? items.find((i) => i?.est)?.est?.currency ?? 'USD';
   const problems = [];
   const unpriced = items.filter((i) => !(i?.est && Number.isFinite(i.est.amount)));
   const foreign = items.filter((i) => i?.est && i.est.currency && i.est.currency !== currency);
   const booking = unpricedBooking(budget);
-  const total = items.reduce((s, i) => s + (unpriced.includes(i) ? booking?.amount ?? 0 : foreign.includes(i) ? 0 : i.est.amount), 0);
+  const priced = items.reduce((s, i) => s + (unpriced.includes(i) || foreign.includes(i) ? 0 : i.est.amount), 0);
+  const booked = unpriced.length * (booking?.amount ?? 0);
+  const total = priced + booked;
+  const r4 = (n) => Math.round(n * 10000) / 10000;
+  // an unpriced item's booking is the budget's ceiling for it, not a price; every message built on it says so
+  const why = [...new Set(unpriced.map((i) => i?.unpriced_reason ?? 'no est given'))].join('; ');
+  const of = booked ? ` (${r4(priced)} priced + ${r4(booked)} booked for ${unpriced.length} unpriced item(s) at ${booking.amount} each, ${booking.unit}: ${why})` : '';
   const today = spent(readLedger(ws), { currency, since: dayStart() });
   if (!budget) problems.push('no budget envelope configured (cstack.config.yaml budget:) — paid calls are blocked until one exists');
   if (foreign.length) problems.push(`${foreign.length} item(s) priced in ${[...new Set(foreign.map((i) => i.est.currency))].join(', ')}, not ${currency}; convert before planning`);
-  if (unpriced.length && budget && !booking) problems.push(`${unpriced.length} unpriced item(s) under a zero budget: an unpriced call is still a paid call; raise per_run/per_day first`);
-  if (budget?.per_run != null && total > budget.per_run) problems.push(`batch estimate ${total} ${currency} exceeds per_run ${budget.per_run}`);
-  if (budget?.per_day != null && today + total > budget.per_day) problems.push(`today ${today} + batch ${total} exceeds per_day ${budget.per_day}`);
+  if (unpriced.length && budget && !booking) problems.push(`${unpriced.length} unpriced item(s) under a zero budget (${why}): an unpriced call is still a paid call; raise per_run/per_day first`);
+  if (budget?.per_run != null && total > budget.per_run) problems.push(`batch estimate ${r4(total)} ${currency} exceeds per_run ${budget.per_run}${of}`);
+  if (budget?.per_day != null && today + total > budget.per_day) problems.push(`today ${today} + batch ${r4(total)} exceeds per_day ${budget.per_day}${of}`);
   if (!stop_condition) problems.push('no stop condition given');
   const needs_confirmation = budget?.confirm_over != null && total > budget.confirm_over;
-  return { items: items.length, unpriced: unpriced.length, estimated_total: Math.round(total * 10000) / 10000, currency, spent_today: today, budget, stop_condition, needs_confirmation, ok: problems.length === 0, problems };
+  const unpriced_items = unpriced.map((i) => ({ index: items.indexOf(i), provider: i?.provider, model: i?.model, reason: i?.unpriced_reason ?? 'no est given', booked: booking?.amount ?? null }));
+  return { items: items.length, unpriced: unpriced.length, estimated_total: r4(total), priced_total: r4(priced), unpriced_booked: r4(booked), currency, spent_today: today, budget, stop_condition, needs_confirmation, ok: problems.length === 0, problems, ...(unpriced.length ? { unpriced_items } : {}), priced_items: items.map((i, index) => (i?.est ? { index, provider: i.provider, model: i.model, amount: i.est.amount, basis: i.est.basis ?? 'given' } : null)).filter(Boolean) };
 }
 
 // Transient first is not safe (a policy message may mention a status code); policy is matched narrowly instead,
@@ -140,7 +153,7 @@ export async function guardedCall(ws, spec, fn) {
   // the owner's per-call yes to an unpriced call is also their yes to its booked amount
   if (plan.needs_confirmation && !spec.confirmed && !(unpriced && spec.confirm_unpriced)) {
     plan.ok = false;
-    plan.problems.push(`estimate ${plan.estimated_total} ${plan.currency} is over confirm_over ${budget.confirm_over}; ask the owner, then confirm (--confirm)`);
+    plan.problems.push(`${unpriced ? `the booking for this unpriced call, ${plan.estimated_total} ${plan.currency} (the budget's ceiling, not a price),` : `estimate ${plan.estimated_total} ${plan.currency}`} is over confirm_over ${budget.confirm_over}; ask the owner, then confirm (--confirm)`);
   }
   // a dry run passes through the same gate, so it reports the refusal a real call would get
   if (spec.dry_run) {

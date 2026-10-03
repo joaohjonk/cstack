@@ -274,6 +274,24 @@
                     },
                     "basis": {
                       "type": "string"
+                    },
+                    "first_amount": {
+                      "type": "number",
+                      "description": "per megapixel: price of the first megapixel when it differs from the rest (amount is then each extra megapixel)"
+                    },
+                    "counts": {
+                      "enum": [
+                        "output",
+                        "input_and_output"
+                      ],
+                      "description": "per megapixel: which pixels are billed; default output"
+                    },
+                    "rounding": {
+                      "enum": [
+                        "up",
+                        "not_stated"
+                      ],
+                      "description": "per megapixel: how the host rounds; both are estimated as rounding each image up to the next megapixel"
                     }
                   },
                   "additionalProperties": false

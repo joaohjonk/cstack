@@ -78,7 +78,7 @@ Nothing is required. Every tool has a fallback. See [integrations.md](integratio
 cstack taste search "hand-thrown stoneware, a quiet morning ritual in the workshop" --k 6
 ```
 
-With `TASTE_API_KEY` set, this calls Taste Labs through the spend guard, saves the raw result under `references/_taste/` and prints the ranked list (`rank`, `name`, `url`, `reason`). Rank order is the only signal. Without a key, the call fails with `TASTE_API_KEY is not set (auth)`, the failure is logged in `state/cost-ledger.jsonl`, and `/taste-search` falls back to local gold and canon plus public browsing, and says so.
+With `TASTE_API_KEY` set, this calls Taste Labs through the spend guard, saves the raw result under `references/_taste/` and prints the ranked list (`rank`, `name`, `url`, `reason`). Rank order is the only signal. Without a key, the command stops with `MISSING: TASTE_API_KEY not set` before any call, so nothing is written to `state/cost-ledger.jsonl`, and `/taste-search` falls back to local gold and canon plus public browsing, and says so.
 
 ## 7. Route a model (30 s)
 

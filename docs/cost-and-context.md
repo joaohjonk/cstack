@@ -39,7 +39,7 @@ Plan every batch before paying for it:
 cstack spend plan batch.json --stop "stop when 2 of the first 4 probes fail product fidelity"
 ```
 
-`batch.json` is a list of `{provider, model, operation, est: {amount, currency}}`. The result:
+`batch.json` is a list of `{provider, model, operation, est: {amount, currency}}`. An item without `est` is priced from `registry/models.json` the way `cstack generate` prices a call (a host such as fal only from its route, with `params` such as `image_size` and `num_images`); an item that still has no price is booked at the budget's ceiling and listed under `unpriced_items` with the reason. The result:
 
 ```json
 { "items": 4, "estimated_total": 0.32, "currency": "USD", "spent_today": 0.12,

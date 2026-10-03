@@ -19,7 +19,7 @@ import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
 import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
-import { runMedia, listPending } from '../providers/runner.mjs';
+import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
@@ -389,7 +389,13 @@ function cmdRoute() {
 function cmdSpend(sub) {
   if (sub === 'plan') {
     const items = readData(path.resolve(args._[0] ?? die('usage: cstack spend plan <items.json> --stop "..."')));
-    const res = planBatch(ws, items, { stop_condition: args.stop });
+    // items without est are priced the way `generate` prices a call: from the registry, through the host's route
+    const price = (i) => {
+      const req = { provider: i.provider, model: i.model, inputs: i.inputs ?? { params: i.params ?? {}, images: i.images } };
+      const est = estimateFromRegistry(req);
+      return est ? { est } : { reason: `${i.provider}/${i.model}: ${registryPrice(req).basis}` };
+    };
+    const res = planBatch(ws, items, { stop_condition: args.stop, price });
     json(res);
     process.exit(res.ok ? 0 : 1);
   }
@@ -594,7 +600,10 @@ async function cmdGenerate() {
   const res = await runMedia(ws, req);
   if (args.json) return json(res);
   if (res.would_block) die(`dry run (${req.provider}/${req.model}): a real call would be blocked by budget: ${res.problems.join('; ')}; nothing was paid`);
-  if (res.dry_run) return console.log(`dry run logged (${req.provider}/${req.model}); nothing was paid`);
+  if (res.dry_run) {
+    const b = res.row?.booked_cost;
+    return console.log(`dry run logged (${req.provider}/${req.model}); nothing was paid${b ? `; this call has no price, so a real call is booked at ${b.amount} ${b.currency}, the budget's ceiling, not a price` : ''}`);
+  }
   if (res.blocked) die(`blocked by budget: ${res.problems.join('; ')}`);
   if (res.deduplicated) return console.log(`identical call already done: ${res.output_ids.join(', ')} (not paid again)`);
   if (res.pending) return console.log(`job still running at the provider; run \`cstack generate\` again with the same request to re-attach (never resubmits)`);
