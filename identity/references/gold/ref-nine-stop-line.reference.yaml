@@ -1,0 +1,31 @@
+# cstack's own approved figure, described by mechanism. Owned; no third-party image.
+id: ref-nine-stop-line
+kind: image
+library: gold
+local_path: docs/images/nine-layers.svg
+source_domain: cstack's own README figures (identity/work/figures/make-figures.py)
+distance: near
+rights:
+  status: owned
+  holder: cstack
+  notes: generated from cstack's identity tokens; MIT with the repo
+credit: cstack
+captured_at: "2026-10-03"
+retrieved_via: manual
+transferable_mechanism: >-
+  One Klein blue line on warm white carries nine stops at an even beat; everything else is empty ground.
+  A single colour, a single rhythm and generous space make a strict system read as calm, even friendly.
+mechanism_tags: [one_colour, even_rhythm, empty_ground, square_as_unit, deadpan]
+transfer: >-
+  The key visual keeps one Klein blue subject on warm white, an even grid underneath, and at least half
+  the frame empty for type. Calm comes from restraint, a smile from one small move out of rhythm.
+incidental_content: [station labels, subway-map register]
+do_not_copy:
+  - the line and stations themselves (the hero is a photograph, not a diagram)
+why_it_works: the owner likes it most because it is clear at a glance and quietly confident
+axes:
+  message_clarity: "high"
+  brand_fit: "high: R-COLOR-01 one colour, R-LAYOUT-01 Swiss grid"
+surfaces: [README]
+approval: current
+decided_by: JJ
