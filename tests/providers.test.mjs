@@ -144,3 +144,25 @@ test('registry price: fal FLUX.2 routes reproduce fal\'s own examples and round 
   // the maker's per-megapixel list price is a heuristic, so a direct call stays unpriced
   assert.equal(estimateFromRegistry({ provider: 'black-forest-labs', model: 'flux-2-pro' }), null);
 });
+
+test('spend plan prices items from host routes and says why an item is unpriced (field test F13, F14)', async () => {
+  const { planBatch } = await import('../scripts/lib/ledger.mjs');
+  const { estimateFromRegistry, registryPrice } = await import('../providers/runner.mjs');
+  const ws = tmpDir('cstack-f13-');
+  fs.writeFileSync(path.join(ws, 'cstack.config.yaml'), 'budget:\n  currency: USD\n  per_run: 10\n  per_day: 20\n  confirm_over: 5\n');
+  const price = (i) => {
+    const req = { provider: i.provider, model: i.model, inputs: { params: i.params ?? {} } };
+    const est = estimateFromRegistry(req);
+    return est ? { est } : { reason: `${i.provider}/${i.model}: ${registryPrice(req).basis}` };
+  };
+  const twenty = Array.from({ length: 20 }, () => ({ provider: 'fal', model: 'fal-ai/flux-2-pro', params: { image_size: 'square_hd' } }));
+  const ok = planBatch(ws, twenty, { stop_condition: 'stop after 4 failed probes', price });
+  assert.equal(ok.ok, true, ok.problems.join('; '));
+  assert.equal(ok.estimated_total, 0.6);
+  assert.equal(ok.unpriced, 0);
+  const mixed = planBatch(ws, [...twenty.slice(0, 2), { provider: 'fal', model: 'fal-ai/flux-2-pro/edit' }], { stop_condition: 'x', price });
+  assert.equal(mixed.unpriced, 1);
+  assert.equal(mixed.priced_total, 0.06);
+  assert.equal(mixed.unpriced_booked, 10);
+  assert.match(mixed.problems.join('\n'), /exceeds per_run 10 \(0\.06 priced \+ 10 booked for 1 unpriced item\(s\) at 10 each, unpriced call \(booked at per_run\): fal\/fal-ai\/flux-2-pro\/edit: not in registry/);
+});
