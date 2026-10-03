@@ -68,6 +68,7 @@ The Acknowledgements in the README, in full. Debts of attention, not sources: no
 | **Pentagram: Paula Scher and Michael Bierut** | Two durable modes: type as a loud vernacular voice that becomes the identity, and a simple mark in a flexible system that earns meaning through use. [canon](../canon/pentagram.canon-entry.yaml) |
 | **COLLINS** | A brand is behaviour performed over time: identity with range in type, image and motion, built to flex. [canon](../canon/collins.canon-entry.yaml) |
 | **Bureau Borsche** | Identity as behaviour and motion rather than a static sheet. [canon](../canon/bureau-borsche.canon-entry.yaml) |
+| **032c** | Loud inside a strict frame: one signal colour, one grotesk at violent scale, facts set as a specification sheet. It is why cstack's posters let a headline word's letters jump in size while the wordmark never moves, and why the nine layers can be a table. [canon](../canon/032c.canon-entry.yaml) |
 | **DIA** | Type that moves as a system. Motion is a brand token in cstack (duration, easing, sequence), not decoration. |
 | **OK-RM** | Editorial structure as identity, where the system grows out of the content. [canon](../canon/ok-rm.canon-entry.yaml) |
 | **Irma Boom** | The publication is an object: format, edge, paper and weight carry the idea. [canon](../canon/irma-boom.canon-entry.yaml) |

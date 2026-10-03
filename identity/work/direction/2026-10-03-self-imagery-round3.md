@@ -56,3 +56,20 @@ The photograph that started this (a dog mid-game on a floor mat, by its photogra
 ## Decision
 
 Owner's pick from the contact sheet. Default if none arrives: 01 as the hero, 04 in docs/architecture, 07 as the social preview; 02, 03 and 05 held for the home page; 06 waits for a photograph.
+
+## Round 4 (22:51Z): the editorial register
+
+The owner: "032c style, Vignelli style, and a bit of those elements as inspiration", with a board of thirteen references, and "your first trials were great at communicating; they just need to be more beautiful and inspiring". So round 4 keeps round 1's content (the nine layers, drift, the field, the hero's two lines) and changes how it looks. The board is recorded by mechanism in `identity/references/inspiration/ref-editorial-board.reference.yaml`; the canon gains `032c`.
+
+| | move | keeps from round 1 |
+|---|---|---|
+| 01 flag | a field of blue with one inset square of ground | the hero's lines |
+| 02 outside | a headline word whose letters jump; a spec sheet under it | the "step outside" sign |
+| 03 nine layers sheet | the nine layers as a specification table | nine-layers.svg's content, word for word |
+| 04 digits | 1 to 9 as an overlapping specimen | the count |
+| 05 field, soft | blurred squares are possibilities, sharp ones the positions taken | the-field.svg's logic |
+| 06 drift as texture | fine lines that shimmer against one flat block | cstack-drift.svg's argument |
+| 07 tossed | letters dropped along the floor, once per set | play |
+| 08 social flag | 01 on a square | |
+
+Gates: legibility 0 fail at 324 and 830; no `<text>`, no `<circle>`, names grep clean; EV-20261003-self-imagery-r4.

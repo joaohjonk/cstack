@@ -1,0 +1,38 @@
+# The owner's reference board for round 4 (thirteen images posted in the thread, 2026-10-03 22:51Z). Third-party work:
+# described by mechanism, never stored in the repo, never given to a model. Credits by idea live in docs/lineage.md.
+id: ref-editorial-board
+kind: image
+library: inspiration
+local_path: ""   # not stored; the owner holds the images
+source_domain: editorial and poster design (type specimens, a magazine's data tables, signal flags, gradient and grain posters)
+distance: middle
+rights:
+  status: inspiration_only
+  holder: the respective designers and studios
+  notes: ideas only; no image, letterform, layout or colour pairing is reproduced
+credit: by idea, docs/lineage.md
+captured_at: "2026-10-03"
+retrieved_via: owner_upload
+transferable_mechanism: >-
+  Seven moves. A display word whose letters jump in size and weight on one baseline. A specification sheet
+  (label and value columns in caps) used as the picture, data as content. A signal flag: a field of one colour
+  with a single inset square of ground. Grain and blur as the texture of what is not yet decided, against the
+  flat hard edge of what is. A block of fine vertical lines that reads as a gradient from a distance. Letters
+  tossed along the bottom edge, once, as play. Digits stacked and overlapping as a specimen.
+mechanism_tags: [jumping_letters, spec_sheet, signal_flag, grain_and_blur, line_gradient, tossed_type, digit_specimen, one_colour]
+transfer: >-
+  Carried into identity/work/figures/make-editorial.py as helpers (jumping, specsheet, grain, soft) on cstack's
+  own grid, type and single colour. The wordmark never jumps; only headline words do. Blur marks positions a job
+  did not take; a sharp square marks the ones it did. Tossed type appears once per set.
+incidental_content: [mountain data, a product's name, a magazine's red, silver ink, aura gradients in violet, a crumpled paper texture]
+do_not_copy:
+  - any of the images, their letterforms or their exact layouts
+  - the four-colour digit specimen (cstack has one colour)
+  - circles in rows (cstack's positions are squares, R-FIELD-01)
+why_it_works: the owner's words, "032c style, Vignelli style, and a bit of those elements as inspiration"
+axes:
+  message_clarity: "high"
+  brand_fit: "mechanisms yes, dress no"
+surfaces: [README, docs, social]
+approval: current
+decided_by: JJ
