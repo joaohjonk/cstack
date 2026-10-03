@@ -434,6 +434,7 @@
         "evals/fixtures/ai-judge-not-owner.yaml",
         "evals/fixtures/beautiful-but-off-brand.yaml",
         "evals/fixtures/local-learning-contradicts-framework.yaml",
+        "evals/fixtures/long-page-no-map.yaml",
         "evals/fixtures/type-review-beyond-font-choice.yaml"
       ],
       "cost_class": "low",
@@ -441,7 +442,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-review/SKILL.md",
-      "tokens": 1273
+      "tokens": 1382
     },
     {
       "slug": "cultural-scan",
@@ -630,7 +631,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/identity-system/SKILL.md",
-      "tokens": 1458
+      "tokens": 1498
     },
     {
       "slug": "image-edit",

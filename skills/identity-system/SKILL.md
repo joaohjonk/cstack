@@ -42,7 +42,7 @@ Deterministic only: `cstack tokens check|build|lint`, contrast math (WCAG), type
 ## Process
 
 1. **Atomic layer (tokens)**: primitives (raw palette, font families, spacing scale, radii, durations, easings) then semantic aliases (text, surface, accent, danger, focus, motion.enter ...). Every semantic token references a primitive.
-2. **Contrast and accessibility**: compute contrast for every text/surface pair the system allows; pairs under 4.5:1 (body) or 3:1 (large) are disallowed in rules.
+2. **Contrast and accessibility**: compute contrast for every text/surface pair the system allows; pairs under 4.5:1 (body) or 3:1 (large) are disallowed in rules. Figures are checked too: `cstack svg legibility <svg> --width <display widths>` measures every text fill against the ground under it, and its size at each width.
 3. **Type**: choosing, pairing and the type system come from `type-director` (roles, scale, leading and tracking by size, measure, figures); this skill wires its tokens into components.
 4. **Grid and composition rules** in `brand/rules/brand-rules.yaml`: columns per breakpoint, gutters, legal spans, alignment, hierarchy conditions (e.g. headline dominates image unless the image is the narrative object), density limits, imagery aspect ratios, clear space. Each rule declares `check: deterministic` (with the command) or `check: judge`.
 5. **Logo usage**: clear space, minimum sizes, allowed backgrounds, forbidden treatments; generation rule "never approximate the mark; composite the official file".
