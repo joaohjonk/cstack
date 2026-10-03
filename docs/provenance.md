@@ -86,7 +86,7 @@ cstack brand set color.clay --file clay.json
 
 A new owner instruction on a field that already rests on an owner instruction replaces it: the owner can change their mind. The earlier value moves to the field's `history`. This applies to `locked` fields too, since only the owner can change those.
 
-Official assets in `assets/official/` are never overwritten or edited in place.
+Official assets in `assets/official/` are never overwritten or edited in place, and nothing derived is written beside them: a summary there would rank as an official asset. Every cstack write enforces this (core writes, generation `out_dir`, video, SVG, mockup and paste outputs, lineage sidecars), `--force` included. Derived files go under `work/`.
 
 ## Conflicts: surfaced, never averaged
 

@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
-import { writeJSON, nowISO } from '../core.mjs';
+import { writeJSON, nowISO, assertNotOfficial } from '../core.mjs';
 import { encodePNG } from '../image/png.mjs';
 import { luma, sampleMap, sampleRGBA } from './raster.mjs';
 import { loadTemplate } from './template.mjs';
@@ -212,6 +212,7 @@ export async function verifyMockup({ template, art, render, placement = null, he
   const stem = R.replace(/\.[^./\\]+$/, '');
   const protectedFiles = [R, A, tpl.file, ...Object.values(tpl.abs)].map(realish);
   const guard = (p, explicit) => {
+    assertNotOfficial(p);
     if (protectedFiles.includes(realish(p))) throw new Error(`refusing to overwrite an input with verify output: ${p}`);
     if (explicit && fs.existsSync(p) && !force) throw new Error(`output exists: ${p} (pass --force to replace it)`);
     return p;

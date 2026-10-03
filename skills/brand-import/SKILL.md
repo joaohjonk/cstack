@@ -52,7 +52,8 @@ The preamble ladder (§2); extracted patterns are Taste, CSS and screenshots. An
 6. **Seed libraries**: 6-12 gold references (own best work) and 6-12 anti references (seductive but wrong), each with Source → Mechanism → Transfer or why it fails.
 7. **Confirm the consequential few** with the owner in one message: a table of conflicts and inferred high-impact fields, each with a recommended default.
 8. **Verify on known artifacts**: run `brand-verify` on 2-3 existing approved artifacts; a correct import should pass them. Failures reveal wrong rules.
-9. `cstack tokens check`, `cstack brand check`.
+9. **Map tasks to files**: add this brand's own files to `brand/context-map.yaml` (the dieline under packaging, the photo brief under photography). Originals stay in `assets/official/`; summaries and extractions go under `work/`, never beside them.
+10. `cstack tokens check`, `cstack brand check`, `cstack brand guide` (the generated page the owner reviews).
 
 ## Decision rules
 

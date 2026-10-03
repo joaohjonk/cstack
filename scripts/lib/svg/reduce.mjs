@@ -21,6 +21,7 @@ import { chromiumStatus, withRenderer, coverage, resample, binarize, topology, p
 import { rgbHex } from './style.mjs';
 import { imageSize } from '../image.mjs';
 import { encodePNG } from '../../../providers/local/region_paste.mjs';
+import { assertNotOfficial } from '../core.mjs';
 
 export const REDUCE_SIZES = [16, 24, 32, 48, 64];
 export const THIN_AREA_WARN = 0.02;
@@ -39,12 +40,14 @@ export function parseSizes(v, def = REDUCE_SIZES) {
 
 /** Refuse an existing output path unless force; never a file. */
 export function prepareOut(dir, force) {
+  assertNotOfficial(dir);
   if (!fs.existsSync(dir)) return;
   if (!fs.statSync(dir).isDirectory()) throw new Error(`--out ${dir} is a file`);
   if (!force) throw new Error(`output dir exists: ${dir} (pass --force to write into it; inputs are never overwritten)`);
 }
 
 export function writeFiles(dir, files) {
+  assertNotOfficial(dir);
   fs.mkdirSync(dir, { recursive: true });
   const list = [];
   for (const [name, buf] of files) {

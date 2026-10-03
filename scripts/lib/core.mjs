@@ -31,8 +31,27 @@ export const readJSON = (p) => parsed(p, 'invalid JSON', JSON.parse);
 export const readYAML = (p) => parsed(p, 'invalid YAML', YAML.parse);
 export const readData = (p) => (p.endsWith('.json') ? readJSON(p) : readYAML(p));
 
+// Owner originals live in <ws>/assets/official/ and are never overwritten, edited in place, or joined by a derived
+// file (docs/provenance.md): anything there ranks as an official asset. Every cstack write passes this guard, --force included.
+const realOrNear = (abs) => {
+  let p = abs, tail = '';
+  while (!fs.existsSync(p) && path.dirname(p) !== p) [p, tail] = [path.dirname(p), path.join(path.basename(p), tail)];
+  try {
+    return path.join(fs.realpathSync(p), tail);
+  } catch {
+    return abs;
+  }
+};
+const inOfficial = (abs) => /(^|[\\/])assets[\\/]official([\\/]|$)/.test(abs);
+export const isOfficial = (p) => inOfficial(path.resolve(p)) || inOfficial(realOrNear(path.resolve(p)));
+export function assertNotOfficial(p) {
+  if (isOfficial(p)) throw new Error(`refusing to write ${p}: assets/official/ holds the owner's originals, which cstack never overwrites or writes beside; write derived files under work/ instead`);
+  return p;
+}
+
 // Atomic write: write to a temp file in the same dir, then rename.
 export function writeAtomic(p, content) {
+  assertNotOfficial(p);
   fs.mkdirSync(path.dirname(p), { recursive: true });
   const tmp = `${p}.tmp-${process.pid}-${Date.now()}`;
   fs.writeFileSync(tmp, content);
@@ -41,6 +60,7 @@ export function writeAtomic(p, content) {
 export const writeJSON = (p, obj) => writeAtomic(p, JSON.stringify(obj, null, 2) + '\n');
 
 export function appendJSONL(p, obj) {
+  assertNotOfficial(p);
   fs.mkdirSync(path.dirname(p), { recursive: true });
   fs.appendFileSync(p, JSON.stringify(obj) + '\n');
 }

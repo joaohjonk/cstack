@@ -80,6 +80,7 @@ Never paste the whole brand system into a prompt. Load only the sections the tas
 ```bash
 cstack brand context --sections voice,photography,color
 cstack brand context --sections voice --inferred        # include unconfirmed inferred values
+cstack brand context --task packaging                   # the sections and files brand/context-map.yaml names for packaging
 ```
 
 - **Only approved values become facts**: `locked` (marked `locked: true`), `current` and `testing`. Every other field is listed under `not_facts` with its status. Missing sections appear as `UNKNOWN`.

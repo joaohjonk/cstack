@@ -45,7 +45,9 @@ brand/brand-world.json      entities: @PRODUCT_*, @CAST_*, @LOCATION_*, LIGHT_*,
 brand/tokens/*.tokens.json  DTCG design tokens  →  brand/generated/tokens.css
 brand/rules/brand-rules.yaml  relationships tokens cannot express (pairings, minimum sizes, forbidden combinations)
 references/{gold,anti,culture,competitors}/*.reference.yaml
-assets/official/            never overwritten
+brand/context-map.yaml      per task: the sections and files it needs (cstack brand context --task)
+brand/generated/guide.html  the human-readable guide, generated from the same files (cstack brand guide)
+assets/official/            owner originals; every cstack write refuses this folder
 briefs/ recipes/ campaigns/ work/   work/<area>/<run>/ with .gen.json sidecars
 state/*.jsonl               cost-ledger, feedback, failures, evals, learnings, lineage, culture, competitors, pending jobs
 experiments/results.tsv     autoresearch runs
@@ -57,7 +59,9 @@ experiments/results.tsv     autoresearch runs
 
 **Brand truth write.** `cstack brand set section.field --file f.json` ranks the incoming source against the existing one ([source precedence](provenance.md#source-precedence)). The higher source wins, an equal-rank disagreement becomes a conflict record, and `locked` fields refuse non-owner writes. Artifacts that pinned the field are listed as stale (`cstack brand stale`).
 
-**Brand context for a prompt.** `cstack brand context --sections a,b` returns approved fields only, a `not_facts` list, open conflicts and a hash. Output is byte-stable, so it works as a cached prompt prefix. Skills ask for the sections they need, never the whole system.
+**Brand context for a prompt.** `cstack brand context --sections a,b` returns approved fields only, a `not_facts` list, open conflicts and a hash. Output is byte-stable, so it works as a cached prompt prefix. Skills ask for the sections they need, never the whole system. `--task copy` reads the workspace's `brand/context-map.yaml` instead, which also lists the files that task needs (the dieline for packaging, the gold references for review), so each brand says where its own material lives.
+
+**Two readers, one source.** `cstack brand guide` writes `brand/generated/guide.html` from brand-system.json and the tokens: approved fields with their sources, colour chips, type specimens, and what is not settled yet. The same `brand context` JSON is embedded in the page, so a person and an agent read one file and it cannot drift from the source. Rebuild it after `brand set` or `tokens build`; nobody edits it by hand.
 
 **Generation.** A prompt recipe → `cstack prompt compile` (deterministic, hashed) → `cstack route` picks a model from `registry/models.json` → `cstack spend plan` estimates the batch and requires a stop condition → `cstack generate` calls `guardedCall`:
 

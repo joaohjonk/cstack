@@ -12,7 +12,7 @@
 //     third-party capture (work/browse/, reference_only) as an input image unless req.capture_rights names the rights
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT, exists, readJSON, writeJSON, nowISO, sha256File, hashValue } from '../scripts/lib/core.mjs';
+import { ROOT, exists, readJSON, writeJSON, nowISO, sha256File, hashValue, assertNotOfficial } from '../scripts/lib/core.mjs';
 import { guardedCall, idempotencyKey } from '../scripts/lib/ledger.mjs';
 import { imageSize, sizeAudit, parseExpected } from '../scripts/lib/image.mjs';
 import { getProvider } from './index.mjs';
@@ -55,6 +55,7 @@ export function outputTarget(ws, req, key) {
   const outDir = path.resolve(root, String(req.out_dir ?? 'work/out'));
   const r = path.relative(root, outDir);
   if (r.startsWith('..') || path.isAbsolute(r)) throw new Error(`out_dir must stay inside the workspace: ${req.out_dir}`);
+  assertNotOfficial(outDir);
   const prefix = String(req.out_prefix ?? key.slice(0, 8));
   if (!/^[\w-][\w.-]{0,79}$/.test(prefix)) throw new Error(`out_prefix must be a plain file stem (letters, digits, _ . -): ${req.out_prefix}`);
   return { outDir, prefix };

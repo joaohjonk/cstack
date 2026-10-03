@@ -2,7 +2,7 @@
 // index in <ws>/state/lineage.jsonl. Git diffs lines; this records intent, changed and kept dimensions.
 import fs from 'node:fs';
 import path from 'node:path';
-import { appendJSONL, readJSONL, sha256File, exists, nowISO, writeJSON } from './core.mjs';
+import { appendJSONL, readJSONL, sha256File, exists, nowISO, writeJSON, isOfficial } from './core.mjs';
 import { validateValue } from './schemas.mjs';
 
 export const sidecarPath = (output) => `${output}.lineage.json`;
@@ -31,7 +31,8 @@ export function record(ws, entry) {
   appendJSONL(path.join(ws, 'state', 'lineage.jsonl'), rec);
   for (const f of output_files) {
     const abs = path.isAbsolute(f.path) ? f.path : path.join(ws, f.path);
-    if (exists(path.dirname(abs))) writeJSON(sidecarPath(abs), rec);
+    // an official original gets no sidecar beside it; its record lives in state/lineage.jsonl
+    if (exists(path.dirname(abs)) && !isOfficial(abs)) writeJSON(sidecarPath(abs), rec);
   }
   return rec;
 }

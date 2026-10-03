@@ -1,0 +1,27 @@
+# Which brand sections and files each task needs, so an agent loads those and nothing else:
+#   cstack brand context --task copy
+# sections: brand-system.json sections (approved fields only reach the prompt, as with --sections).
+# files: workspace paths (a folder means every file in it). Add this brand's own files as they arrive,
+# e.g. the dieline under packaging, the photo brief under photography. `cstack brand check` flags paths that do not exist.
+tasks:
+  brief:
+    sections: [strategy, positioning, customer_audience, jobs_to_be_done, claims, proof, voice]
+    files: [briefs/]
+  copy:
+    sections: [voice, vocabulary, banned_language, naming, claims, proof, positioning, compliance_constraints]
+    files: [brand/rules/brand-rules.yaml]
+  identity:
+    sections: [logo_marks, color, typography, type_hierarchy, grid, spacing, layout, motion, components, graphic_devices, iconography]
+    files: [assets/official/, brand/tokens/, brand/rules/brand-rules.yaml]
+  photography:
+    sections: [photography, camera_language, lighting, casting, wardrobe, locations, props, product_representation, banned_language]
+    files: [brand/brand-world.json, references/gold/, references/anti/]
+  packaging:
+    sections: [packaging_rules, product_representation, claims, proof, compliance_constraints, color, typography, logo_marks]
+    files: [assets/official/, assets/product/, brand/tokens/]
+  page:
+    sections: [voice, claims, proof, value_proposition, color, typography, type_hierarchy, grid, spacing, layout, components, interaction, motion]
+    files: [brand/tokens/, brand/rules/brand-rules.yaml]
+  review:
+    sections: [positioning, voice, claims, proof, anti_references, compliance_constraints]
+    files: [references/gold/, references/anti/, brand/rules/brand-rules.yaml]

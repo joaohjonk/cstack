@@ -6,7 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { hashValue, nowISO, writeJSON } from '../core.mjs';
+import { hashValue, nowISO, writeJSON, assertNotOfficial } from '../core.mjs';
 
 export const CSTACK_VERSION = createRequire(import.meta.url)('../../../package.json').version;
 
@@ -158,6 +158,7 @@ export function guardOutputs(outputs, inputs = [], { force = false } = {}) {
   const ins = new Set(inputs.map(realish));
   const seen = new Set();
   for (const o of outputs) {
+    assertNotOfficial(o);
     const r = realish(o);
     if (ins.has(r)) throw new Error(`refusing to overwrite an input (${o}); choose a new --out (originals are never edited in place)`);
     if (seen.has(r)) throw new Error(`two outputs would share one path: ${o}`);

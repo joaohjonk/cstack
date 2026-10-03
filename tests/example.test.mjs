@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
 import { buildCSS } from '../scripts/lib/tokens.mjs';
+import { buildGuide } from '../scripts/lib/guide.mjs';
 import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,6 +29,30 @@ test('example: tokens check passes and the built CSS is up to date', () => {
   const out = path.join(tmpDir('cstack-ex-'), 'tokens.css');
   buildCSS(WS, { out });
   assert.equal(fs.readFileSync(out, 'utf8'), fs.readFileSync(path.join(WS, 'brand', 'generated', 'tokens.css'), 'utf8'), 'run: cstack tokens build --ws examples/tessel-kiln');
+});
+
+test('example: the brand guide is up to date and carries the same context agents read', () => {
+  const out = path.join(tmpDir('cstack-ex-'), 'guide.html');
+  buildGuide(WS, { out });
+  const html = fs.readFileSync(out, 'utf8');
+  assert.equal(html, fs.readFileSync(path.join(WS, 'brand', 'generated', 'guide.html'), 'utf8'), 'run: cstack brand guide --ws examples/tessel-kiln');
+  const embedded = JSON.parse(html.match(/<script type="application\/json" id="brand-context">(.*?)<\/script>/s)[1]);
+  const r = cli('brand', 'context', '--ws', WS);
+  assert.deepEqual(embedded.context, JSON.parse(r.stdout));
+  const [asFact, notSettled] = html.replace(/<script[\s\S]*?<\/script>/, '').split('<h2>Not settled</h2>');
+  assert.doesNotMatch(asFact, /#B8742A/i, 'a value in open conflict never shows as fact');
+  assert.match(notSettled, /color\.accent: conflict/);
+});
+
+test('example: brand context --task returns the task sections and its files', () => {
+  const r = cli('brand', 'context', '--task', 'packaging', '--ws', WS);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const ctx = JSON.parse(r.stdout);
+  assert.equal(ctx.task, 'packaging');
+  assert.ok(ctx.files.includes('assets/official/swing-tag-print-spec.md'));
+  assert.ok(ctx.facts.product_representation && !ctx.facts.voice, 'only the sections the map names');
+  assert.equal(cli('brand', 'context', '--task', 'nope', '--ws', WS).status, 1);
+  assert.equal(cli('brand', 'context', '--task', 'copy', '--sections', 'voice', '--ws', WS).status, 1);
 });
 
 test('example: every prompt recipe compiles', () => {

@@ -2,7 +2,7 @@
 // created from templates/brand-workspace and checked with `cstack brand check`.
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT, Report, exists, readData, writeAtomic, rel, walk, readText } from './core.mjs';
+import { ROOT, Report, exists, readData, writeAtomic, isOfficial, rel, walk, readText } from './core.mjs';
 import { validateTree, validateValue } from './schemas.mjs';
 
 const TEMPLATE = path.join(ROOT, 'templates', 'brand-workspace');
@@ -20,7 +20,9 @@ function copyDir(src, dst, vars, tally = { added: 0, kept: 0 }) {
       }
       let t = fs.readFileSync(s, 'utf8');
       for (const [k, v] of Object.entries(vars)) t = t.replaceAll(`{{${k}}}`, v);
-      writeAtomic(d, t);
+      // the empty .keep that makes git keep assets/official/ is the one file cstack creates there, and only when absent
+      if (e.name === '.keep' && isOfficial(d)) fs.writeFileSync(d, t, { flag: 'wx' });
+      else writeAtomic(d, t);
       tally.added++;
     }
   }
@@ -73,6 +75,18 @@ export function checkBrand(ws) {
     const inferred = by.inferred ?? 0;
     if (fields && inferred / fields > 0.5) r.warn('brand-system', `${Math.round((100 * inferred) / fields)}% of fields are inferred; confirm the consequential ones with the owner`);
   } else r.warn(rel(ws), 'no brand/brand-system.json yet');
+  if (exists(contextMapPath(ws))) {
+    const tasks = readData(contextMapPath(ws))?.tasks ?? {};
+    const known = exists(bsPath) ? new Set(Object.keys(readData(bsPath).sections ?? {})) : null;
+    for (const [task, t] of Object.entries(tasks)) {
+      for (const sec of t?.sections ?? []) if (known && !known.has(sec)) r.warn(`context-map ${task}`, `section "${sec}" is not in brand-system.json`);
+      try {
+        for (const m of mapFiles(ws, t?.files).missing) r.warn(`context-map ${task}`, `${m} does not exist`);
+      } catch (e) {
+        r.error(`context-map ${task}`, e.message);
+      }
+    }
+  }
   // secrets must never sit in brand state
   for (const f of walk(ws, (p) => /\.(json|ya?ml|md|jsonl|txt)$/.test(p) && !p.includes('node_modules'))) {
     const t = readText(f);
@@ -230,6 +244,34 @@ export function staleArtifacts(ws) {
 // Only sections asked for; approved values inline; unknown/conflict/inferred values listed separately
 // so they never ship as fact. Sorted keys + hash: identical inputs produce an identical, cacheable prefix.
 const USABLE = new Set(['locked', 'current', 'testing']);
+// brand/context-map.yaml names the sections and files each task needs, so an agent loads those and nothing else.
+export const contextMapPath = (ws) => path.join(ws, 'brand', 'context-map.yaml');
+
+function mapFiles(ws, entries) {
+  const files = [], missing = [];
+  for (const e of entries ?? []) {
+    const abs = path.resolve(ws, String(e));
+    const r = path.relative(ws, abs);
+    if (r.startsWith('..') || path.isAbsolute(r)) throw new Error(`context-map path leaves the workspace: ${e}`);
+    if (!exists(abs)) missing.push(String(e));
+    else if (fs.statSync(abs).isDirectory()) files.push(...walk(abs, (p) => path.basename(p) !== '.keep').map((p) => path.relative(ws, p).split(path.sep).join('/')).sort());
+    else files.push(r.split(path.sep).join('/'));
+  }
+  return { files: [...new Set(files)], missing };
+}
+
+/** brandContext for one task of brand/context-map.yaml: its sections' facts plus the workspace files it needs. */
+export function taskContext(ws, task, { includeInferred = false } = {}) {
+  if (!exists(contextMapPath(ws))) throw new Error('no brand/context-map.yaml in this workspace; `cstack brand init <ws>` adds it without touching existing files');
+  const tasks = readData(contextMapPath(ws))?.tasks ?? {};
+  const t = tasks[task];
+  if (!t) throw new Error(`task "${task}" is not in brand/context-map.yaml (tasks: ${Object.keys(tasks).join(', ') || 'none'})`);
+  const { hash, ...ctx } = brandContext(ws, { sections: t.sections, includeInferred });
+  const { files, missing } = mapFiles(ws, t.files);
+  const body = { ...ctx, task, files, not_facts: [...ctx.not_facts, ...missing.map((m) => `file ${m}: listed for ${task} but missing`)] };
+  return { ...body, hash: hashValue(body).slice(0, 16) };
+}
+
 export function brandContext(ws, { sections, includeInferred = false } = {}) {
   const bs = readData(path.join(ws, 'brand', 'brand-system.json'));
   const want = sections?.length ? sections : Object.keys(bs.sections ?? {});

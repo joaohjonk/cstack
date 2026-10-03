@@ -18,6 +18,7 @@ Run from the cstack repo root. The first block is read-only.
 W=examples/tessel-kiln
 node bin/cstack.mjs brand check --ws $W                      # PASS; 22 fields by approval state, 1 open conflict
 node bin/cstack.mjs brand context --ws $W --sections color,claims,voice   # facts vs not_facts, hashed
+node bin/cstack.mjs brand context --ws $W --task packaging    # the sections and files brand/context-map.yaml names
 node bin/cstack.mjs tokens check --ws $W                     # 24 DTCG tokens, PASS
 node bin/cstack.mjs tokens lint $W/work/pages/product-card.css --ws $W   # PASS: only token colours used
 node bin/cstack.mjs prompt compile $W/recipes/autumn-hero-plate.prompt-recipe.yaml

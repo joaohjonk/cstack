@@ -13,7 +13,8 @@ import { canonNames } from '../scripts/lib/prompt-names.mjs';
 import { route } from '../scripts/lib/router.mjs';
 import { planBatch, readLedger, spent } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
-import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, resolveConflict } from '../scripts/lib/brand.mjs';
+import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, taskContext, resolveConflict } from '../scripts/lib/brand.mjs';
+import { buildGuide } from '../scripts/lib/guide.mjs';
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
@@ -88,7 +89,8 @@ const COMMANDS = {
   'brand init': 'create a brand workspace: cstack brand init <dir> --name "Brand" [--id brand-id]',
   'brand check': 'validate a brand workspace (schemas, conflicts, unknowns, ledgers): --ws <dir>',
   'brand set': 'write one sourced field through source precedence: cstack brand set <section.field> --file field.json',
-  'brand context': 'compact, cache-stable brand facts for a prompt: cstack brand context [--sections voice,color] [--inferred]',
+  'brand context': 'compact, cache-stable brand facts for a prompt: cstack brand context [--sections voice,color | --task copy] [--inferred] (--task reads brand/context-map.yaml and adds the files that task needs)',
+  'brand guide': 'write brand/generated/guide.html, the human-readable guide built from the same brand files agents read: cstack brand guide [--out file.html]',
   'brand stale': 'artifacts whose brand inputs changed since they were made',
   'brand resolve': 'owner resolves an open conflict by picking a position: cstack brand resolve <conflict-id> --pick 1|2 [--by name] [--note "..."]',
   'prompt compile': 'compile a prompt recipe: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]... (one --set per slot)',
@@ -470,8 +472,22 @@ function cmdBrand(sub) {
     return;
   }
   if (sub === 'context') {
+    if (args.task !== undefined && args.sections !== undefined) die('pass --task or --sections, not both');
+    if (args.task !== undefined) {
+      if (args.task === true) die('--task needs a name from brand/context-map.yaml');
+      try {
+        return json(taskContext(ws, String(args.task), { includeInferred: !!args.inferred }));
+      } catch (e) {
+        die(e.message);
+      }
+    }
     const ctx = brandContext(ws, { sections: args.sections ? String(args.sections).split(',') : undefined, includeInferred: !!args.inferred });
     return json(ctx);
+  }
+  if (sub === 'guide') {
+    const r = buildGuide(ws, { out: args.out ? path.resolve(args.out) : undefined });
+    if (args.json) return json(r);
+    return console.log(`wrote ${path.relative(process.cwd(), r.file)}: ${r.sections} sections of approved fields, ${r.colours} colours (context ${r.hash})`);
   }
   if (sub === 'resolve') {
     const id = args._[0] ?? die('usage: cstack brand resolve <conflict-id> --pick 1|2 [--by name]');
@@ -490,7 +506,7 @@ function cmdBrand(sub) {
     for (const a of st) console.log(`${a.artifact_id} v${a.version}: brand inputs changed (${a.changed.join(', ')})`);
     return;
   }
-  die('usage: cstack brand init|check|set|context|stale|resolve');
+  die('usage: cstack brand init|check|set|context|guide|stale|resolve');
 }
 
 async function cmdGenerate() {

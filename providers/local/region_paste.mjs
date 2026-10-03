@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { decodePNG, encodePNG, UnsupportedImage } from '../../scripts/lib/image/png.mjs';
+import { assertNotOfficial } from '../../scripts/lib/core.mjs';
 
 export { decodePNG, encodePNG, UnsupportedImage };
 
@@ -115,6 +116,7 @@ export async function regionPaste({ base, patch, x, y, feather = 8, out, region 
   if (!Number.isFinite(F) || F < 0) throw new Error('--feather must be >= 0 (px)');
   const [B, P, O] = [base, patch, out].map((p) => path.resolve(p));
   for (const p of [B, P]) if (!fs.existsSync(p)) throw new Error(`input not found: ${p}`);
+  assertNotOfficial(O);
   const real = (p) => (fs.existsSync(p) ? fs.realpathSync(p) : path.join(fs.realpathSync(path.dirname(p)), path.basename(p)));
   fs.mkdirSync(path.dirname(O), { recursive: true });
   if ([real(B), real(P)].includes(real(O))) throw new Error('refusing to overwrite an input; choose a new --out (originals are never edited in place)');
