@@ -40,9 +40,10 @@ No paid calls. `cstack audit` for crop-safe checks per channel; contact sheets a
 
 1. **Pick roles** (not every campaign needs every role): ICON (remembered tomorrow), WORLD (where the brand lives), HUMAN (who belongs), RITUAL (how the product fits behavior), PRODUCT (unmistakable object truth), DETAIL (material, tactility), CULTURE (live connection), WEIRD (permission to surprise), PROOF (evidence, ingredient, feature), CLOSER (punctuation, recall).
 2. **Per role**: job in one line, Shot DNA ref (or to-do), entities, channel formats and crop-safe zones, copy slot, production method (single pass vs. decomposed per `product-fidelity`), estimated cost tier.
-3. **Sequence logic**: order, rhythm (scale changes, light changes, human/no-human alternation), what each frame adds that the previous did not, the line the viewer remembers.
-4. **Production plan**: shared plates, entity reuse, probes first; `cstack spend plan` for the batch.
-5. **Review mode**: score the sequence (coherence, progression, redundancy, missing roles, product truth present, a reason to remember) and name cuts and missing frames.
+3. **Scarcity, when the brief calls for heat**: a small limited or local edition of a proven product, released before or beside the core, can raise demand for the core. Plan it as its own frame or drop with its own job, sized so it sells out; never fake scarcity.
+4. **Sequence logic**: order, rhythm (scale changes, light changes, human/no-human alternation), what each frame adds that the previous did not, the line the viewer remembers.
+5. **Production plan**: shared plates, entity reuse, probes first; `cstack spend plan` for the batch.
+6. **Review mode**: score the sequence (coherence, progression, redundancy, missing roles, product truth present, a reason to remember) and name cuts and missing frames.
 
 ## Decision rules
 

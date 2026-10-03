@@ -63,13 +63,13 @@ steps:
   compare_to_target: can each brand colour be hit on this substrate and process, and is the minimum order acceptable?
   fallback: digital print for the first run when the minimum order or plate cost blocks flexo or gravure
 - id: strategy
-  does: decide which distinctive assets to keep for findability (colour block, silhouette, logo position) and which conventions to use, invert or ignore
+  does: decide which distinctive assets to keep for findability (colour block, silhouette, logo position) and which conventions to use, invert or ignore; say where the pack lives after purchase, and if it stays in view (counter, desk, bathroom shelf) design it as an object worth keeping out, not one hidden in a drawer
   kind: research
   skill: creative-direction
   gate: {type: owner, check: "owner approves keep, invert and ignore lists"}
   compare_to_target: does the strategy protect what loyal buyers navigate by?
 - id: panel-hierarchy
-  does: write the reading order per panel (front, back, sides, top) - brand, descriptor, variant cue, key claim, then mandatory - and sketch two or three routes at true size on the dieline
+  does: write the reading order per panel (front, back, sides, top) - brand, descriptor, variant cue, key claim, then mandatory - and sketch two or three routes at true size on the dieline; for retail, keep the variant cue and key claim in the upper part of the shelf-facing panel, since shelf edges, price strips and front blockers hide the lower part; say what the product is not when that is the reason to buy (no sugar, no caffeine); when ingredients are the differentiator, name them in countable units rather than grams of a nutrient
   kind: probe
   skill: identity-system
   gate: {type: independent_review, check: "three-second read test per front panel - what is it, which variant, main claim - by people who did not design it"}
@@ -123,6 +123,12 @@ steps:
   kind: human
   gate: {type: owner, check: "proof sign-off names the file hash, the proof and the measurements"}
   compare_to_target: spot colours within the agreed tolerance; content identical to the frozen file
+- id: organic-pull
+  does: after launch, where the business can afford it, hold paid marketing for the first weeks and record sell-through per store as the pack's own baseline; then switch marketing on and measure the lift against that baseline
+  kind: human
+  gate: {type: owner, check: "baseline weeks and the marketing switch-on date recorded with sell-through per store"}
+  compare_to_target: pack-only sell-through against the retailer's hurdle; the lift when marketing starts is credited to marketing, not to the pack
+  fallback: when paid support cannot wait, compare stores or regions with and without it
 - id: legacy-stock
   does: when a label changes for compliance, decide over-sticker, run-out or write-off from stock counts, velocity and the regulator's current transition rules
   kind: human
@@ -138,6 +144,8 @@ failure_modes:
 - brand colour approved on screen, off on film or kraft
 - barcode truncated, too close to a fold, or on a transparent window without white underlay
 - redesign that drops the colour block loyal buyers find the pack by
+- a DTC pack moved to retail unchanged, with the flavour and key claim in the lower half behind the shelf blocker
+- a pack judged only with marketing running, so nobody knows what the pack sells on its own
 evidence:
 - {ref: docs/research/packaging.md, kind: documented, date: 2026-10-03, note: sections 1-5 and 7}
 - {ref: "https://ccn-scc.ca/standardsdb/standards/8174467", kind: documented, date: 2026-10-03, note: ISO 12647-6 flexo scope}
@@ -146,6 +154,7 @@ evidence:
 - {ref: "https://multimedia.3m.com/mws/media/2619412O/global-packaging-dieline-requirements.pdf", kind: practitioner, date: 2026-10-03, note: dieline layers as named spot colours}
 - {ref: "https://www.surveymonkey.com/learn/market-research/packaging-design-testing/", kind: practitioner, date: 2026-10-03, note: standout vs findability; three-second test}
 - {ref: "field run on a packaged-food brand (private; anonymized)", kind: observed, date: 2026-10-03, note: live text overflow after type gate; generated renders redrawing the label}
+- {ref: "https://www.youtube.com/@openresidency", kind: practitioner, date: 2026-10-03, note: "founders interviewed on the Open Residency podcast: key retail-pack info above the shelf blocker; a launch held weeks without paid marketing to read the pack's own pull, then the lift; countable ingredients and what the product is not on the front; the object kept on the counter"}
 last_verified: 2026-10-03
 stale_after_days: 180
 related:

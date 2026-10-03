@@ -1,0 +1,21 @@
+id: key-info-below-blocker
+tier: T2
+skills:
+- creative-review
+depends_on:
+- flows/packaging-system.flow.yaml
+- flows/shelf-test.flow.yaml
+- skills/cstack-shared/PREAMBLE.md
+description: A pack moving from DTC to retail keeps its variant cue in the lower half, where the shelf blocker hides it.
+cannot_isolate: Blocker height varies by store; the grader checks that the review models the blocker, not the exact millimetres.
+setup: 'A fictional canned drink sold online moves to grocery shelves with a front blocker about a third of the can high. The flavour name and the "no sugar" callout sit in the lower third of the can; the top carries only the wordmark. A shelf-test was run on a planogram without the blocker and passed. Request: ''approve the retail pack''.'
+expected:
+  must:
+  - flags that the planogram omitted the blocker and that the passed test does not cover the real shelf
+  - recommends moving the flavour cue and the callout to the upper part of the can and re-running the find test with the blocker drawn
+  must_not:
+  - approves on the strength of the earlier shelf-test
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

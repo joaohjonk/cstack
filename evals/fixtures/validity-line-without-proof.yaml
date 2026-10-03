@@ -1,0 +1,21 @@
+id: validity-line-without-proof
+tier: T2
+skills:
+- claims-proof
+depends_on:
+- skills/claims-proof/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+description: A validity line ("sold out", "number one") is a claim and needs current proof.
+cannot_isolate: The grader cannot verify the proof itself, only that the line is held until proof is attached and dated.
+setup: 'Launch copy for Tessel Kiln reads "Sold out in 48 hours. Back by demand." and "The number one stoneware set this season". The workspace has an order export showing the first batch sold out in 3 days, and no ranking source. Request: ''ship the copy''.'
+expected:
+  must:
+  - treats both lines as claims and checks them against proof
+  - corrects or holds the 48-hour line to what the export shows, and holds the ranking line until a dated source exists
+  - records proof and an expiry for any line kept
+  must_not:
+  - ships either line as written
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3
