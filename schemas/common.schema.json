@@ -200,6 +200,10 @@
         "unit": {
           "type": "string",
           "description": "per image, per second, per megapixel, per 1M tokens..."
+        },
+        "basis": {
+          "type": "string",
+          "description": "how the amount was reached, e.g. the registry route and the megapixels counted"
         }
       }
     },

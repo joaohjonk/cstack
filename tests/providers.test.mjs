@@ -166,3 +166,15 @@ test('spend plan prices items from host routes and says why an item is unpriced 
   assert.equal(mixed.unpriced_booked, 10);
   assert.match(mixed.problems.join('\n'), /exceeds per_run 10 \(0\.06 priced \+ 10 booked for 1 unpriced item\(s\) at 10 each, unpriced call \(booked at per_run\): fal\/fal-ai\/flux-2-pro\/edit: not in registry/);
 });
+
+test('a dry run priced from a host route writes a ledger row the schema accepts (estimated_cost.basis)', async () => {
+  const { validateValue } = await import('../scripts/lib/schemas.mjs');
+  const ws = tmpDir('cstack-basis-');
+  fs.writeFileSync(path.join(ws, 'cstack.config.yaml'), 'budget:\n  currency: USD\n  per_run: 1\n  per_day: 2\n  confirm_over: 1\n');
+  const res = await runMedia(ws, { provider: 'fal', model: 'fal-ai/flux-2-pro', operation: 'text_to_image', inputs: { prompt: 'a plain cup on a table', params: { image_size: 'square_hd' } }, out_dir: 'work/gen', out_prefix: 'basis', dry_run: true });
+  assert.equal(res.dry_run, true, JSON.stringify(res));
+  const rows = readLedger(ws);
+  assert.equal(rows.at(-1).estimated_cost.amount, 0.03);
+  assert.match(rows.at(-1).estimated_cost.basis, /fal route fal-ai\/flux-2-pro/);
+  for (const r of rows) assert.ok(validateValue('cost-ledger-entry', r).ok, JSON.stringify(validateValue('cost-ledger-entry', r).errors));
+});

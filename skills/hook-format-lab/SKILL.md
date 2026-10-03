@@ -45,13 +45,14 @@ The bet's angle and brand constraint > approved claims > customer language > pla
    - ANGLE what are we saying · HOOK TACTIC how the first seconds create tension · VISUAL HOOK what happens in frame one · VERBAL HOOK the first line said or written · MECHANIC why someone keeps going · FORMAT the vessel a viewer would name · PROOF why anyone should believe it · PAYOFF what the viewer gets · CTA what happens next.
 2. **Separate the layers**: "street interview" is a format, "contrarian" a hook tactic, "social proof" a proof, "plates you will actually use" an angle, "the potter vs the factory plate" a concept. A concept is the combination, never one of its parts.
 3. **Write the hook family**: 4-8 hooks on the same angle that differ by hook tactic or visual hook, not by synonyms. Frame one must work with the sound off and before any text is read.
-4. **Check the first three seconds** for each video hook: product or tension visible by second two, no logo-only opener, text inside the platform safe zone (`cstack video safezone`).
-5. **Update the bet**: concept fields, hook family; run `cstack creative check` and fix every family warning.
+4. **Check congruence**: in the first second, the image, the on-screen text and the spoken line say the same thing; a title and its thumbnail complement each other and never repeat; the landing page opens on the ad's promise, in the ad's order.
+5. **Check the first three seconds** for each video hook: product or tension visible by second two, no logo-only opener, text inside the platform safe zone (`cstack video safezone`).
+6. **Update the bet**: concept fields, hook family; run `cstack creative check` and fix every family warning.
 
 ## Decision rules
 
 - One angle per family of hooks; a new angle is a new bet.
-- Hooks differ by tactic or image, not wording alone.
+- Hooks differ by tactic or image, not wording alone; variants differ in substance (pain point, person, setting), because platforms merge near-duplicates.
 - No hook may promise what the proof cannot carry.
 - Native to the platform in structure, native to the brand in codes: a hook that only works in the platform's default look fails the brand constraint.
 
