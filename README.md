@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. Taste, made repeatable. Before use: step outside. A row of twelve square positions runs across the grid; a figure made of squares stands on three of them with a fourth limb reaching for the next, its square head turned to the viewer. A giant white lowercase cstack with a square full stop sits on the bottom edge." width="100%">
+  <img src="docs/images/cstack-hero.svg" alt="A Klein blue poster. Taste, made repeatable: the word repeatable set four times in white, identical, except that one letter in the third line has slipped. The wordmark cstack sits bottom right." width="100%">
 </p>
 
 # cstack
@@ -11,7 +11,7 @@ The New York subway still reads as one system half a century later. The reason i
 Generative AI made making cheap. It did not make judgment cheap. Ask a model for your brand a hundred times and you get a hundred cousins: the orange slides toward pink, the type drifts, the product grows a cap it never had, the copy reaches for the word the founder banned last spring. No single image is wrong. The set is.
 
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="Prompted ten times: ten squares drift in size and angle. Made ten times from one brand kept in files: ten identical white squares on a Klein blue band." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="Ask a model for your brand a hundred times: a hundred cousins. Keep it in files: one brand. Two blocks on Klein blue: fine shimmering white lines labelled Prompted ten times, and one flat white block labelled Kept in files." width="100%">
 </p>
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
@@ -22,6 +22,10 @@ It is to brand work what [gstack](https://github.com/garrytan/gstack) is to ship
 **Use:** [Quick start](#quick-start) · [Install](#install) · [Workflows](#workflows) · [The CLI](#the-cli) · [Make it yours](#make-it-yours) · [Acknowledgements](#acknowledgements)
 
 ## First, step outside
+
+<p align="center">
+  <img src="docs/images/step-outside.svg" alt="First, step outside. cstack can keep your taste. It cannot give you any. Go see the world. Then come back and make." width="100%">
+</p>
 
 cstack can keep your taste. It cannot give you any.
 
@@ -43,7 +47,7 @@ The machine will repeat your judgment ten thousand times. Make sure it is worth 
 ## How it thinks
 
 <p align="center">
-  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="560">
+  <img src="docs/images/nine-layers.svg" alt="Nine layers. From the world inward, and back out. One white transit line on Klein blue with nine stops: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, and a branch from Memory back to Canon." width="560">
 </p>
 
 Six rules hold the whole thing together:
