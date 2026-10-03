@@ -71,6 +71,12 @@ Use the cheapest layer that answers correctly:
 - Refinement changes **one meaningful variable at a time** and records a creative commit: `cstack lineage --file entry.json` with intent, changed and unchanged dimensions.
 - Local defects get local fixes (crop-and-paste, mask, composite) before full regeneration.
 - Real brand marks, type and legal text are composited from official assets, never approximated by an image model.
+- **Rights before making** (every image, video, voice and edit):
+  - No real, identifiable person (a face, a voice, a public figure) without their written consent on file; no edits of real photos of people that change what they did or said.
+  - No other company's logo, product, packaging or trade dress, unless it is the owner's licensed asset or a nominative mention approved by counsel.
+  - Label AI-generated or AI-altered media where the law or the platform requires it (EU AI Act Art. 50 for deep fakes and synthetic content, Meta, TikTok and Google ad labels). Keep provenance metadata (C2PA) when the tool writes it.
+  - Follow each provider's usage policy and check a model's licence before client work (some weights are non-commercial; `registry/models.json` notes them).
+  - Never send personal data, unreleased product images or confidential files to a provider unless the owner approved that provider for them.
 
 ## 6. Safety
 

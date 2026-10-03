@@ -8,5 +8,8 @@ work/**/*.jpeg
 work/**/*.webp
 work/**/*.mp4
 work/**/*.mov
+# third-party captures are reference only: never commit or publish them
+work/browse/
+work/competitors/*/
 state/pending-jobs/
 state/cache/

@@ -62,7 +62,7 @@ Run `./setup` (or `npm install`) once before the first `cstack` command; on a ba
 
 ## See it work
 
-An abridged session on **Lumen Field**, a fictional ceramics studio that ships with cstack in [examples/lumen-field](examples/lumen-field). Everything the agent refers to below is a real file in that folder.
+An abridged session on **Tessel Kiln**, a fictional ceramics studio that ships with cstack in [examples/tessel-kiln](examples/tessel-kiln). Everything the agent refers to below is a real file in that folder.
 
 ```text
 You:    We need three autumn photos for the ochre plates.

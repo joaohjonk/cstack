@@ -8,12 +8,15 @@
 //   - transient-only retries; policy/content failures surface immediately
 //   - a generation sidecar `<output>.gen.json` next to every downloaded file
 //   - a size audit when an expected size is given
+//   - two rights gates before anything is paid: no canon name or "style of" phrase in the prompt, and no
+//     third-party capture (work/browse/, reference_only) as an input image unless req.capture_rights names the rights
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, exists, readJSON, writeJSON, nowISO, sha256File, hashValue } from '../scripts/lib/core.mjs';
 import { guardedCall, idempotencyKey } from '../scripts/lib/ledger.mjs';
 import { imageSize, sizeAudit, parseExpected } from '../scripts/lib/image.mjs';
 import { getProvider } from './index.mjs';
+import { canonNames, styleLeaks } from '../scripts/lib/prompt-names.mjs';
 
 const pendingDir = (ws) => path.join(ws, 'state', 'pending-jobs');
 
@@ -73,7 +76,22 @@ function claimOutput(outDir, prefix, key, n, ext) {
   throw new Error(`no free output name for ${prefix}_${n}.${ext} in ${outDir}`);
 }
 
+// Rights gates, checked before any spend. Throws with every problem listed.
+export function rightsCheck(ws, req, names = canonNames()) {
+  const problems = styleLeaks(req.inputs?.prompt, names).map((p) => `prompt ${p}`);
+  const browse = path.join(path.resolve(ws), 'work', 'browse') + path.sep;
+  const captured = (req.inputs?.images ?? []).filter((p) => typeof p === 'string' && path.resolve(ws, p).startsWith(browse));
+  if (captured.length && !(typeof req.capture_rights === 'string' && req.capture_rights.trim()))
+    problems.push(`input images are third-party captures (reference_only): ${captured.join(', ')}. Use them to brief, not to generate; set capture_rights only when the rights are recorded in lineage`);
+  if (problems.length) {
+    const e = new Error(`rights check failed:\n- ${problems.join('\n- ')}`);
+    e.policy = true;
+    throw e;
+  }
+}
+
 export async function runMedia(ws, req, opts = {}) {
+  rightsCheck(ws, req);
   const provider = getProvider(req.provider);
   if (req.expected_size) parseExpected(req.expected_size); // a typo fails here, not after paying
   const input_hashes = (req.inputs?.images ?? []).map((p) => (exists(p) ? sha256File(p) : p));

@@ -7,7 +7,8 @@ import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 import { loadEngine, launch, withPage, gotoGuarded, findGstackBrowse, probeGstack } from './launch.mjs';
 import { validateUrl, checkNavigation } from './url-guard.mjs';
-import { wrapUntrusted, UNTRUSTED_NOTE } from './safety.mjs';
+import { checkRobots } from './robots.mjs';
+import { wrapUntrusted, UNTRUSTED_NOTE, isLocalHost } from './safety.mjs';
 import { takeSnapshot } from './snapshot.mjs';
 import { shoot, printPdf, parseBreakpoints, viewportFor, DEFAULT_BREAKPOINTS } from './capture.mjs';
 import { extractTokens, summarizeTokens } from './tokens.mjs';
@@ -27,6 +28,7 @@ export const BROWSE_HELP = `cstack browse <sub> (one-shot headless Chromium; art
   run <steps.yaml> [--allow-mutation]                goto/click/fill/wait/screenshot/snapshot on one origin
   engines                                            playwright-core + Chromium, optional gstack browse
 Common: --allow-origin <origin,...> widens the origin lock. --json returns the run record.
+  --ignore-robots captures a path robots.txt disallows (only with the site owner's permission, e.g. your own site).
 Rules: ${UNTRUSTED_NOTE} No credentials, no cookies import; logout/delete/remove/cancel/unsubscribe links are never followed.`;
 
 function normArgs(args) {
@@ -47,7 +49,7 @@ function normArgs(args) {
   for (const k of BOOL_FLAGS) if (typeof out[k] === 'string') (out._.push(out[k]), (out[k] = true));
   return out;
 }
-const BOOL_FLAGS = ['full', 'download', 'interactive', 'compact', 'json', 'allow-mutation', 'no-background'];
+const BOOL_FLAGS = ['full', 'download', 'interactive', 'compact', 'json', 'allow-mutation', 'no-background', 'ignore-robots'];
 
 /** Run directory with sha256 provenance. */
 export function createRun(ws, sub, target) {
@@ -92,7 +94,11 @@ async function pageRun(sub, a, ws, fn, { viewport } = {}) {
   if (!target) throw new Error(`usage: cstack browse ${sub} <url>`);
   const v = await validateUrl(target, { ws });
   const allow = origins(a, v.origins);
+  const robots = v.local ? null : await checkRobots(v.href);
+  if (robots && !robots.allowed && !a['ignore-robots'])
+    throw new Error(`robots.txt disallows ${new URL(v.href).pathname} (${robots.rule}). Capture another page, ask the site, or pass --ignore-robots only with the site owner's permission.`);
   const run = createRun(ws, sub, v.href);
+  if (robots) run.record.robots = { ...robots, ignored: !robots.allowed };
   try {
     await withPage({ ws, allowOrigins: allow, viewport, warnings: run.warnings, blocked: run.blocked }, async (ctx) => {
       run.record.engine = ctx.engine;
@@ -208,6 +214,12 @@ export async function runBrowse(sub, args, ws = process.cwd()) {
       const p = path.resolve(fs.existsSync(path.resolve(file)) ? path.resolve(file) : path.join(ws, file));
       const spec = parseSteps(fs.readFileSync(p, 'utf8'));
       const allow = origins(a, [spec.origin]);
+      if (!isLocalHost(new URL(spec.origin).hostname) && !a['ignore-robots'])
+        for (const s of spec.steps.filter((x) => x.goto)) {
+          const href = new URL(String(s.goto), spec.origin).href;
+          const r = await checkRobots(href);
+          if (!r.allowed) throw new Error(`robots.txt disallows ${new URL(href).pathname} (${r.rule}). Pass --ignore-robots only with the site owner's permission.`);
+        }
       const run = createRun(ws, 'run', spec.origin);
       run.record.steps_file = path.basename(p);
       try {

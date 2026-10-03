@@ -362,7 +362,7 @@ const BLOCKS = [
   ['CJK Unified Ideographs', 0x4e00, 0x9fff],
 ];
 
-// Letters each language needs beyond a-z (CLDR main exemplars, lowercase; capitals are derived) plus the quotation
+// Letters each language needs beyond a-z (CLDR main exemplars, Unicode License v3, see licenses/unicode-license-v3.txt; lowercase, capitals are derived) plus the quotation
 // or punctuation marks its text cannot do without. Coverage means precomposed characters in the cmap.
 export const LANGUAGES = {
   pt: { name: 'Portuguese', letters: 'áàâãçéêíóôõú' },

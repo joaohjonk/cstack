@@ -125,7 +125,7 @@ Contested or dated:
 ### 3.1 Ellen Lupton, *Thinking with Type*
 - Three sections: Letter, Text, Grid. Each opens with an essay on cultural and theoretical issues, followed by example pages that show how and why typography is structured. (documented: https://www.bookshare.org/browse/book/246326)
 - The book teaches the rules together with how to break them, and how to be inventive within systems of typographic form. (documented: 2nd-edition publisher page, linked in section 1)
-- Editions: Princeton Architectural Press, 2004. The 2nd edition (2010) added style sheets for print and web, ornaments and captions, lining and non-lining numerals, small caps, mixing typefaces, and font formats and licensing. The 3rd edition (2024) adds variable fonts and optical sizes; readability, legibility and accessibility; writing systems introduced by typographers from around the world; balance, Gestalt grouping and responsive layout; and more libre, Google, Adobe and independent fonts, including fonts by women and BIPOC designers. (documented: publisher pages in section 1; https://bookshop.org/p/books/thinking-with-type-a-critical-guide-for-designers-writers-editors-and-students-3rd-edition-revised-updated-ellen-lupton/20227322)
+- Editions: Princeton Architectural Press, 2004. The 2nd edition (2010) added material on styles, figures, small caps, mixing faces and font licensing. The 3rd edition (2024) adds variable fonts, accessibility, more writing systems and responsive layout (summarised from the publisher pages). (documented: publisher pages in section 1; https://bookshop.org/p/books/thinking-with-type-a-critical-guide-for-designers-writers-editors-and-students-3rd-edition-revised-updated-ellen-lupton/20227322)
 - What agents should do with it: decide at the letter, text and grid scales and check that they agree. Use a family's own figures and small caps before adding a family. Set type through named styles, never by hand. (inferred from the structure and topics)
 - Contested or dated: the companion site could not be read (section 8), so this note attributes no pairing rule to Lupton. Cite the 3rd edition for anything about variable fonts, scripts or accessibility.
 
@@ -133,8 +133,8 @@ Contested or dated:
 - Versions: 1992 (Hartley & Marks), 2.0 (1996), 3.0 (2004), 3.1 (2005), 3.2 (2008), 4.0 (2012). (documented: https://en.wikipedia.org/wiki/The_Elements_of_Typographic_Style)
 - Measure (§2.1.2): 45–75 characters for single-column serifed text, 66 ideal, 40–50 in multiple columns. (documented: https://webtypography.net/2.1.2)
 - Letterspacing (§2.1.6, §2.1.7): letterspace strings of capitals, small caps and long digit strings, normally 5–10 percent of the size. Don't letterspace lowercase without a reason. (documented: https://webtypography.net.clagnut.com/2.1.6 ; https://webtypography.net.clagnut.com/2.1.7)
-- Rhythm (§2.1.3, §2.1.10, §2.2.1, §2.2.2): set ragged if ragged suits the text and page. Don't stretch the word space until it breaks. Choose leading that suits the face, text and measure. Add and remove vertical space in measured intervals. (documented: https://webtypography.net/toc)
-- Scale and details (§3.1.1, §3.2.1, §3.2.2, §2.4.1, §2.4.3): compose with a modest set of distinct, related sizes. Use titling figures with full caps and text figures elsewhere, and spaced small caps for abbreviations in running text. When hyphenating, leave at least two letters behind and take at least three forward, with no more than three hyphenated lines in a row. (documented: https://webtypography.net/3.1.1 ; toc)
+- Rhythm (§2.1.3, §2.1.10, §2.2.1, §2.2.2): set ragged if ragged suits the text and page. Don't stretch the word space until it breaks. Leading follows the face, the text and the measure, and vertical space moves in steps of a fixed unit (paraphrased). (documented: https://webtypography.net/toc)
+- Scale and details (§3.1.1, §3.2.1, §3.2.2, §2.4.1, §2.4.3): compose with a modest set of distinct, related sizes. Use titling figures with full caps and text figures elsewhere, and spaced small caps for abbreviations in running text. Hyphenation minimums: 2 letters before the break, 3 after, at most 3 consecutive hyphenated lines (numbers from §2.4, paraphrased). (documented: https://webtypography.net/3.1.1 ; toc)
 - Contested or dated: the book is grounded in print. Maurice Meilleur's review of 4.0 (Typographica, 8 Feb 2013) counts two pages and five paragraphs on screen typography and finds no index entries for web fonts, CSS or HTML; display type is barely covered. 45–75 is a print comfort default (section 4), and the Goudy line is contested (section 1). Chapter 6 on choosing and combining type was not checked this session. (practitioner: https://typographica.org/typography-books/the-elements-of-typographic-style-4th-edition/)
 
 ### 3.3 Richard Rutter
@@ -170,14 +170,13 @@ Contested or dated:
 ### 3.7 Matthew Butterick, *Practical Typography*
 - Body text first. Point size, line spacing, line length and font are the four decisions: 10–12 pt in print or 15–25 px on the web, line spacing at 120–145 percent, and an average line of 45–90 characters including spaces (two to three alphabets). (documented: https://practicaltypography.com/summary-of-key-rules.html ; https://practicaltypography.com/line-length.html)
 - Mixing fonts is optional. A second font is usually tolerable, a third rarely, four almost never. Mix only fonts that are clearly different, give each a consistent role, and avoid several fonts in one paragraph. Fonts by the same designer combine reliably, and a serif–sans pair is not required. (documented: https://practicaltypography.com/mixing-fonts.html)
-- Details:
+- Details, paraphrased in cstack's words (the numbers are his; read his summary page for his wording):
   - Caps and small caps get 5–12 percent letterspacing (`0.05em`–`0.12em`); lowercase at text sizes gets none.
-  - Use bold or italic sparingly, and never both together.
-  - Set no more than a line in capitals.
-  - Use a first-line indent or space between paragraphs, not both.
-  - Always hyphenate justified text.
+  - Emphasis is rare and one device at a time; all caps only for short runs.
+  - Paragraphs are marked one way, indent or space.
+  - Justification needs hyphenation.
 
-  (documented: https://practicaltypography.com/letterspacing.html ; summary of key rules)
+  (documented: https://practicaltypography.com/letterspacing.html ; https://practicaltypography.com/summary-of-key-rules.html)
 - His 21 Dec 2025 essay argues that US copyright protects digital fonts far less than the industry assumes. (practitioner: https://matthewbutterick.com/chron/the-copyrightability-of-fonts-revisited.html)
 - Contested or dated: his advice to avoid most free fonts and system fonts targets documents that default to Times New Roman or Arial. It is too broad for product UI, where platform fonts are engineered for screens, and for the open-licence fonts most sites use (section 5.2). (inferred)
 

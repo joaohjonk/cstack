@@ -1,8 +1,8 @@
 # Quickstart
 
-Ten minutes, no spend. You will create a brand workspace for a fictional ceramics studio, **Lumen Field**, record one sourced fact, load compact brand context, look for references, rank models, plan a batch, generate with the free mock provider, and record a review.
+Ten minutes, no spend. You will create a brand workspace for a fictional ceramics studio, **Tessel Kiln**, record one sourced fact, load compact brand context, look for references, rank models, plan a batch, generate with the free mock provider, and record a review.
 
-A fuller version of this brand lives in [`examples/lumen-field/`](../examples/lumen-field).
+A fuller version of this brand lives in [`examples/tessel-kiln/`](../examples/tessel-kiln).
 
 ## 1. Install (1 min)
 
@@ -27,8 +27,8 @@ cstack help
 A workspace is the brand's own repo. cstack never holds brand data.
 
 ```bash
-cstack brand init ~/brands/lumen-field --name "Lumen Field"   # brand_id defaults to lumen-field
-cd ~/brands/lumen-field && git init
+cstack brand init ~/brands/tessel-kiln --name "Tessel Kiln"   # brand_id defaults to tessel-kiln
+cd ~/brands/tessel-kiln && git init
 ```
 
 Commands default to the current folder as the workspace. Elsewhere, pass `--ws <dir>` or set `CSTACK_WORKSPACE`.
