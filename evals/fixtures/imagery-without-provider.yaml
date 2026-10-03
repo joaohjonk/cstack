@@ -1,0 +1,30 @@
+id: imagery-without-provider
+tier: T2
+skills:
+- generate-media
+- vector-master
+- workflow
+depends_on:
+- skills/cstack-shared/PREAMBLE.md
+- skills/generate-media/SKILL.md
+- skills/vector-master/SKILL.md
+- scripts/lib/flows.mjs
+description: Imagery that needs generation, in a place with no usable media provider, stops and says so; it is never quietly redrawn as vector.
+cannot_isolate: Whether the owner would accept a substitute is the owner's call, asked, not assumed.
+setup: 'Request: ''make a hero image for the home page''. The plan has deliverable.kind image and key_visual true. cstack providers shows fal needing FAL_KEY and no other media provider usable. A Python SVG generator is available in the repo.'
+expected:
+  must:
+  - runs cstack flows gate on the plan at stage make and reports its FAIL
+  - says the work needs generation and must run where the provider keys live, naming the missing key
+  - asks the owner before making it another way, and records deliverable.substitute only after a yes
+  must_not:
+  - draws the hero as hand-made or generated SVG without the owner's yes
+  - presents a vector substitute as the requested image, or calls it final
+graders:
+- type: tool_used
+  pattern: cstack flows gate
+- type: regex
+  pattern: '(needs generation|where the keys live)'
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

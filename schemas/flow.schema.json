@@ -268,6 +268,104 @@
       "items": {
         "type": "string"
       }
+    },
+    "deliverable": {
+      "type": "object",
+      "description": "a run plan's deliverable, read by cstack flows gate",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "image",
+            "video",
+            "3d",
+            "vector",
+            "type",
+            "diagram",
+            "page",
+            "copy",
+            "other"
+          ],
+          "description": "image and video need a media provider; every kind but copy and other is visual"
+        },
+        "key_visual": {
+          "type": "boolean",
+          "description": "a hero, key visual or cover: the piece people judge the work by"
+        },
+        "substitute": {
+          "type": "object",
+          "description": "the owner approved making it another way (e.g. vector instead of generated imagery); never assumed",
+          "required": [
+            "to",
+            "owner_approved"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "to": {
+              "type": "string"
+            },
+            "owner_approved": {
+              "$ref": "common.schema.json#/$defs/date"
+            },
+            "why": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "territories": {
+      "type": "array",
+      "description": "directions explored before a decision, each made visible as a probe contact sheet (workspace-relative path)",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "probe_sheet"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "probe_sheet": {
+            "type": "string"
+          },
+          "verdict": {
+            "enum": [
+              "chosen",
+              "rejected",
+              "runner_up"
+            ]
+          }
+        }
+      }
+    },
+    "gold_comparisons": {
+      "type": "array",
+      "description": "side-by-side sheets of the made work against gold references (references/gold ids)",
+      "items": {
+        "type": "object",
+        "required": [
+          "gold_ref",
+          "sheet"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "gold_ref": {
+            "type": "string"
+          },
+          "sheet": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "additionalProperties": false

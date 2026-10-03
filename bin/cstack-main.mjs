@@ -11,14 +11,14 @@ import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
 import { compile, diffRecipes } from '../scripts/lib/prompt.mjs';
 import { canonNames } from '../scripts/lib/prompt-names.mjs';
 import { route } from '../scripts/lib/router.mjs';
-import { planBatch, readLedger, spent } from '../scripts/lib/ledger.mjs';
+import { planBatch, readLedger, spent, loadBudget } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
 import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, taskContext, resolveConflict } from '../scripts/lib/brand.mjs';
 import { buildGuide } from '../scripts/lib/guide.mjs';
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
-import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
+import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
 import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
@@ -97,7 +97,7 @@ const COMMANDS = {
   'brand resolve': 'owner resolves an open conflict by picking a position: cstack brand resolve <conflict-id> --pick 1|2 [--by name] [--note "..."]',
   'prompt compile': 'compile a prompt recipe: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]... (one --set per slot)',
   'prompt diff': 'component-level diff of two recipes: cstack prompt diff a.yaml b.yaml',
-  route: 'rank models: cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers google,openai] [--avoid id,...]',
+  route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
@@ -146,6 +146,7 @@ const COMMANDS = {
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage" [--json [--workflows]]; also lists the workflows that cover the outcome',
   'flows show': 'print one flow: cstack flows show <id>',
   'flows plan': 'copy a flow into this run\'s plan: cstack flows plan <id> [--target "what as-close-as-possible means"] → work/flows/',
+  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
   'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
@@ -376,7 +377,9 @@ function cmdRoute() {
     task: args.task,
     max_cost: args['max-cost'] != null ? Number(args['max-cost']) : undefined,
     providers_available: args.providers ? String(args.providers).split(',') : undefined,
+    tier: args.tier,
   };
+  if (args.tier && !['draft', 'final'].includes(args.tier)) die('--tier must be draft (probes) or final');
   if (!req.modality) die('usage: cstack route --modality <m> [--needs a,b] [--task t] [--max-cost n] [--providers fal,openai]');
   const res = route(reg, req);
   if (args.json) return json(res);
@@ -858,7 +861,19 @@ switch (cmd) {
         for (const w of x.warnings) console.log(`  warn:  ${w}`);
       }
       if (res.some((x) => x.errors.length)) process.exitCode = 1;
-    } else die('usage: cstack flows list|search|show|plan|check');
+    } else if (sub === 'gate') {
+      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|decide|final');
+      const stage = args.stage ?? die(`--stage required: ${GATE_STAGES.join('|')}`);
+      if (!GATE_STAGES.includes(stage)) die(`--stage must be one of ${GATE_STAGES.join(', ')}`);
+      const x = gateFlow(ws, path.resolve(f), { stage, providers: availability(), skills: listSkills().map((s) => s.slug), budget: loadBudget(ws) });
+      if (args.json) json(x);
+      else {
+        console.log(`${x.errors.length ? 'FAIL' : 'PASS'}  ${stage}  ${shown(x.file)}`);
+        for (const e of x.errors) console.log(`  error: ${e}`);
+        for (const w of x.warnings) console.log(`  warn:  ${w}`);
+      }
+      if (x.errors.length) process.exitCode = 1;
+    } else die('usage: cstack flows list|search|show|plan|check|gate');
     break;
   }
   case 'browse': {

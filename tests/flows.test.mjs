@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
+import { spawnSync } from 'node:child_process';
 import { listFlows, searchFlows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
 import { ROOT } from '../scripts/lib/core.mjs';
 import { tmpDir } from './tmp.mjs';
@@ -113,4 +114,65 @@ test('flows check: a hand copy of a library flow is not a plan, and an untouched
   const p = checkFlowFile(w, file);
   assert.equal(p.errors.length, 0, p.errors.join('\n'));
   assert.ok(p.warnings.some((x) => /unchanged from "logo-system"/.test(x)));
+});
+
+test('flows gate: imagery without a usable media provider stops instead of degrading (make)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-gate-');
+  const { file } = planFromFlow(w, 'logo-system', { target: 'a hero image for the home page that reads at phone width' });
+  const edit = (patch) => fs.writeFileSync(file, YAML.stringify({ ...YAML.parse(fs.readFileSync(file, 'utf8')), ...patch }));
+  const none = [{ id: 'mock', kind: 'media', available: true }, { id: 'fal', kind: 'media', available: false, missing_env: ['FAL_KEY'] }];
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  assert.match(gateFlow(w, file, { providers: fal }).errors.join('\n'), /deliverable\.kind/);
+  edit({ deliverable: { kind: 'image', key_visual: true } });
+  const blocked = gateFlow(w, file, { providers: none });
+  assert.match(blocked.errors.join('\n'), /needs generation, and no media provider is usable here \(fal: FAL_KEY not set\): run this where the keys live/);
+  assert.deepEqual(gateFlow(w, file, { providers: fal }).errors, []);
+  // a zero or missing budget stops the same way (field test: a zero budget must not fall back to a free method)
+  assert.match(gateFlow(w, file, { providers: fal, budget: { per_run: 0, per_day: 0 } }).errors.join('\n'), /budget here is per_run 0, per_day 0: ask the owner for a budget/);
+  assert.match(gateFlow(w, file, { providers: fal, budget: null }).errors.join('\n'), /budget here is not set/);
+  assert.deepEqual(gateFlow(w, file, { providers: fal, budget: { per_run: 2, per_day: 5 } }).errors, []);
+  edit({ deliverable: { kind: 'image', substitute: { to: 'vector figure', owner_approved: '2026-10-03' } } });
+  const sub = gateFlow(w, file, { providers: none });
+  assert.deepEqual(sub.errors, []);
+  assert.match(sub.warnings.join('\n'), /making it as vector figure instead of generating it/);
+  edit({ deliverable: { kind: 'vector' } });
+  assert.deepEqual(gateFlow(w, file, { providers: none }).errors, [], 'a vector deliverable with no generative step needs no provider');
+});
+
+test('flows gate: a decision needs visible territories, and final needs gold side by side (decide, final)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-gate-');
+  const { file } = planFromFlow(w, 'logo-system', { target: 'a mark for a ceramics studio that reads at 16 px' });
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  const save = (patch) => fs.writeFileSync(file, YAML.stringify({ ...plan, deliverable: { kind: 'vector', key_visual: true }, ...patch }));
+  const gate = (stage) => gateFlow(w, file, { stage, providers: [] });
+  save({});
+  assert.match(gate('decide').errors.join('\n'), /0 territories recorded/);
+  fs.mkdirSync(path.join(w, 'work', 'probes'), { recursive: true });
+  for (const n of ['a', 'b', 'c']) fs.writeFileSync(path.join(w, 'work', 'probes', `${n}.png`), 'x');
+  save({ territories: [{ name: 'A', probe_sheet: 'work/probes/a.png' }, { name: 'B', probe_sheet: 'work/probes/missing.png' }] });
+  assert.match(gate('decide').errors.join('\n'), /territory "B" has no probe sheet/);
+  const terr = ['a', 'b', 'c'].map((n) => ({ name: n, probe_sheet: `work/probes/${n}.png` }));
+  save({ territories: terr });
+  assert.deepEqual(gate('decide').errors, []);
+  assert.match(gate('final').errors.join('\n'), /references\/gold is empty/);
+  fs.mkdirSync(path.join(w, 'references', 'gold'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'references', 'gold', 'ref-plain-poster.reference.yaml'), 'id: ref-plain-poster\n');
+  assert.match(gate('final').errors.join('\n'), /no side-by-side against a gold reference; put the work next to one of ref-plain-poster/);
+  save({ territories: terr, gold_comparisons: [{ gold_ref: 'ref-plain-poster', sheet: 'work/probes/a.png' }] });
+  assert.deepEqual(gate('final').errors, []);
+  save({ territories: terr, gold_comparisons: [{ gold_ref: 'ref-other', sheet: 'work/probes/a.png' }] });
+  assert.match(gate('final').errors.join('\n'), /"ref-other" is not in references\/gold/);
+});
+
+test('flows gate: cli exits 1 on FAIL and requires a known stage', () => {
+  const w = tmpDir('cstack-gate-');
+  const { file } = planFromFlow(w, 'logo-system', { target: 'a mark that reads at 16 px' });
+  const cli = (...a) => spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), 'flows', 'gate', file, '--ws', w, ...a], { encoding: 'utf8' });
+  const r = cli('--stage', 'make');
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout, /FAIL  make/);
+  assert.notEqual(cli('--stage', 'ship').status, 0);
+  assert.notEqual(cli().status, 0);
 });
