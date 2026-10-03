@@ -37,8 +37,12 @@ function mcpConfigText(ws) {
   }).join('\n').toLowerCase();
 }
 
+// Hosts prefix connector servers ('claude_ai_Cosmos', 'plugin_design_figma'); the bare name is what identifies the tool.
+const HOST_PREFIX = /^(claudeai|claude|plugin[a-z0-9]*?)(?=[a-z])/;
+const bare = (s) => norm(s).replace(/^mcp/, '').replace(HOST_PREFIX, '');
+
 export function detectTools(ws, { mcpServers = [], env = process.env } = {}) {
-  const servers = new Set(mcpServers.map(norm));
+  const servers = new Set(mcpServers.flatMap((s) => [norm(s), bare(s)]));
   const cfg = mcpConfigText(ws);
   return loadTools().map((t) => {
     const d = t.detect ?? {};
@@ -51,6 +55,8 @@ export function detectTools(ws, { mcpServers = [], env = process.env } = {}) {
         if ([...servers].some((x) => re.test(x))) signals.push(`mcp server matches ${p}`);
       } else if (servers.has(norm(s))) signals.push(`mcp server "${s}" visible to the agent`);
     }
+    // a connector named after the tool itself ('Cosmos', 'claude_ai_Cosmos') counts, unless it is the unrelated package
+    if (!signals.length && [norm(t.id), norm(t.name)].some((n) => servers.has(n))) signals.push(`mcp server named "${t.name}" visible to the agent`);
     for (const a of t.access ?? []) {
       const host = String(a.endpoint_or_package ?? '').match(/https?:\/\/([^/{}]+)/)?.[1];
       if (a.mode === 'mcp' && host && !host.includes('{') && cfg.includes(host.toLowerCase())) signals.push(`mcp config references ${host}`);
@@ -58,6 +64,7 @@ export function detectTools(ws, { mcpServers = [], env = process.env } = {}) {
     for (const e of d.env ?? []) if (env[e]) signals.push(`env ${e} is set`);
     for (const c of d.cli ?? []) if (onPath(c)) signals.push(`cli ${c} on PATH`);
     for (const f of d.files ?? []) if (!f.includes('*') && exists(path.join(ws, f))) signals.push(`file ${f}`);
+    signals.splice(0, signals.length, ...new Set(signals.map((x) => x.replace(/"([^"]*)"/, (m, n) => `"${n.replace(/_/g, '-')}"`))));
     const machine = (t.access ?? []).some((a) => ['mcp', 'api', 'cli'].includes(a.mode));
     const available = signals.length > 0 && !exclude;
     return {

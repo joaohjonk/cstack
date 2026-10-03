@@ -36,6 +36,26 @@ const STOP = new Set(['the', 'and', 'for', 'with', 'our', 'make', 'like', 'that'
 const stem = (w) => w.replace(/(ing|ed|es|s)$/, '').replace(/e$/, '');
 const words = (s) => (String(s ?? '').toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((w) => (w.length > 2 || /\d/.test(w)) && !STOP.has(w)).map(stem);
 
+// Gated workflows (workflows/<id>/workflow.yaml) answer bigger outcomes than one flow ("identity" → create-brand),
+// so `flows search` offers them too. Same scoring: trigger phrases and the summary count double.
+export function searchWorkflows(query, { k = 3 } = {}) {
+  const q = new Set(words(query));
+  const dir = path.join(ROOT, 'workflows');
+  if (!exists(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((d) => exists(path.join(dir, d, 'workflow.yaml')))
+    .map((d) => {
+      const w = readData(path.join(dir, d, 'workflow.yaml'));
+      const hay = words([w.name ?? d, w.summary, ...(w.triggers ?? []), ...(w.methods ?? [])].join(' '));
+      const strong = words([w.summary, ...(w.triggers ?? [])].join(' ')).filter((x) => q.has(x)).length;
+      return { workflow: { id: w.name ?? d, summary: w.summary, status: w.status, methods: w.methods ?? [] }, score: hay.filter((x) => q.has(x)).length + 2 * strong };
+    })
+    .filter((r) => r.score > 0)
+    .sort((a, b) => b.score - a.score || a.workflow.id.localeCompare(b.workflow.id))
+    .slice(0, k);
+}
+
 export function searchFlows(ws, query, { k = 5 } = {}) {
   const q = new Set(words(query));
   return listFlows(ws)
@@ -114,10 +134,94 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
     return { file, errors: [exists(file) ? `cannot parse: ${e.message}` : 'no such file (no plan written yet?)'], warnings: [] };
   }
   const res = checkFlow(flow, { skills });
-  if (flow?.status === 'plan' && flow.target?.description) {
+  const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  const inLibrary = path.resolve(file).startsWith(path.join(ROOT, 'flows') + path.sep);
+  // a library flow copied by hand into a run keeps its library status, so none of the plan checks would run
+  if (!inLibrary && flow?.status !== 'plan' && path.resolve(file).includes(`${path.sep}work${path.sep}flows${path.sep}`)) {
+    const twin = listFlows(ws).find((f) => f.scope === 'cstack' && same(f.steps, flow?.steps));
+    res.errors.push(`a run plan under work/flows/ must have status: plan (found ${flow?.status ?? 'none'})${twin ? `; it is an unchanged copy of the "${twin.id}" library flow: start it with cstack flows plan ${twin.id} --target "..."` : ''}`);
+  }
+  if (flow?.status === 'plan') {
     const src = (flow.related ?? []).find((r) => String(r).startsWith('flow:'));
     const lib = src && listFlows(ws).find((f) => f.id === String(src).slice(5));
-    if (lib && lib.target?.description === flow.target.description) res.errors.push(`target.description is still the "${lib.id}" library wording; state this run's target (--target or edit the plan)`);
+    if (lib && flow.target?.description && lib.target?.description === flow.target.description) res.errors.push(`target.description is still the "${lib.id}" library wording; state this run's target (--target or edit the plan)`);
+    if (lib && same(lib.steps, flow.steps) && same(lib.target?.must, flow.target?.must)) res.warnings.push(`steps and target.must are unchanged from "${lib.id}": confirm they fit this run, or edit them (budget, sizes, owner checkpoints)`);
   }
   return { file, ...res };
+}
+
+// flows gate: the run's plan read at three moments, so quality is not left to compliance checks alone.
+//   make    the plan passes flows check, states its deliverable, and imagery that needs generation has a usable media
+//           provider here (or the owner's recorded yes to a substitute): missing capability never degrades silently
+//   decide  + at least two territories, each made visible as a probe contact sheet that exists
+//   final   + references/gold is not empty, and the work has been put side by side with at least one gold reference
+export const GATE_STAGES = ['make', 'decide', 'final'];
+const VISUAL = new Set(['image', 'video', '3d', 'vector', 'type', 'diagram', 'page']);
+const GENERATED = new Set(['image', 'video']);
+
+export function goldRefs(ws) {
+  const dir = path.join(ws, 'references', 'gold');
+  if (!exists(dir)) return [];
+  return fs.readdirSync(dir).filter((f) => f.endsWith('.reference.yaml')).map((f) => {
+    try {
+      return readData(path.join(dir, f))?.id ?? f.replace(/\.reference\.yaml$/, '');
+    } catch {
+      return f.replace(/\.reference\.yaml$/, '');
+    }
+  });
+}
+
+/** gateFlow(ws, file, {stage, providers: availability() rows, skills, budget: the workspace budget (undefined = not checked)}) -> {file, stage, errors, warnings} */
+export function gateFlow(ws, file, { stage = 'make', providers = [], skills = null, budget = undefined } = {}) {
+  if (!GATE_STAGES.includes(stage)) throw new Error(`--stage must be one of ${GATE_STAGES.join(', ')}`);
+  const at = GATE_STAGES.indexOf(stage);
+  const res = checkFlowFile(ws, file, { skills });
+  const errors = [...res.errors];
+  const warnings = [...res.warnings];
+  const flow = (() => {
+    try {
+      return readData(file);
+    } catch {
+      return null;
+    }
+  })();
+  if (!flow) return { file, stage, errors, warnings };
+  if (flow.status !== 'plan') errors.push(`flows gate reads a run plan (status: plan); start one with cstack flows plan <id> --target "..."`);
+  const d = flow.deliverable;
+  if (!d?.kind) {
+    errors.push('state deliverable.kind in the plan (image, video, 3d, vector, type, diagram, page, copy or other) so the gate knows what is being made');
+    return { file, stage, errors, warnings };
+  }
+  const inWs = (p) => exists(path.resolve(ws, p));
+  // make: generation is needed and missing here
+  const generative = GENERATED.has(d.kind) || (flow.steps ?? []).some((s) => s.kind === 'generative');
+  if (generative) {
+    const media = providers.filter((p) => p.kind === 'media' && p.id !== 'mock' && p.status !== 'stub');
+    const usable = media.filter((p) => p.available);
+    if (!usable.length && !d.substitute?.owner_approved) {
+      const why = media.map((p) => `${p.id}: ${p.missing_env?.length ? `${p.missing_env.join(', ')} not set` : 'unavailable'}`).join('; ') || 'none registered';
+      errors.push(`needs generation, and no media provider is usable here (${why}): run this where the keys live. Do not make it another way (hand-drawn vector, a placeholder) unless the owner says yes; then record deliverable.substitute {to, owner_approved, why}`);
+    }
+    // a zero budget is the same gap as a missing key: ask for money, never fall back to a free method that cannot meet the brief
+    if (usable.length && budget !== undefined && !(budget?.per_run > 0 && budget?.per_day > 0) && !d.substitute?.owner_approved)
+      errors.push(`needs generation, and the budget here is ${budget ? `per_run ${budget.per_run ?? 0}, per_day ${budget.per_day ?? 0}` : 'not set'}: ask the owner for a budget (cstack.config.yaml budget:) before making it; a free substitute needs their yes, recorded as deliverable.substitute`);
+    if (!usable.length && d.substitute?.owner_approved) warnings.push(`making it as ${d.substitute.to} instead of generating it (owner approved ${d.substitute.owner_approved}); say so wherever the work is shown`);
+  }
+  if (at >= 1 && VISUAL.has(d.kind)) {
+    const t = flow.territories ?? [];
+    if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);
+    for (const x of t) if (!inWs(x.probe_sheet)) errors.push(`decide: territory "${x.name}" has no probe sheet at ${x.probe_sheet}; a direction described only in words is not a visible option`);
+    if (t.length === 2) warnings.push('decide: two territories; creative-direction asks for three that differ in idea, not styling');
+  }
+  if (at >= 2 && VISUAL.has(d.kind)) {
+    const gold = goldRefs(ws);
+    if (!gold.length) errors.push('final: references/gold is empty, so nothing says what good looks like; add at least one gold reference (taste-search) before judging the work');
+    const cmp = flow.gold_comparisons ?? [];
+    if (gold.length && !cmp.length) errors.push(`final: no side-by-side against a gold reference; put the work next to one of ${gold.slice(0, 3).join(', ')}${gold.length > 3 ? ', ...' : ''} and record it (gold_comparisons: [{gold_ref, sheet}])`);
+    for (const c of cmp) {
+      if (gold.length && !gold.includes(c.gold_ref)) errors.push(`final: gold_ref "${c.gold_ref}" is not in references/gold`);
+      if (!inWs(c.sheet)) errors.push(`final: comparison sheet ${c.sheet} does not exist`);
+    }
+  }
+  return { file, stage, errors, warnings };
 }

@@ -730,7 +730,8 @@
       "evals": [
         "evals/fixtures/exact-product-photo.yaml",
         "evals/fixtures/expensive-overnight-batch.yaml",
-        "evals/fixtures/food-texture-generated-for-pack.yaml"
+        "evals/fixtures/food-texture-generated-for-pack.yaml",
+        "evals/fixtures/imagery-without-provider.yaml"
       ],
       "cost_class": "high",
       "context_class": "s",
@@ -739,7 +740,7 @@
         "media provider"
       ],
       "path": "skills/generate-media/SKILL.md",
-      "tokens": 1282
+      "tokens": 1321
     },
     {
       "slug": "hook-format-lab",
@@ -1021,7 +1022,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/model-router/SKILL.md",
-      "tokens": 1234
+      "tokens": 1253
     },
     {
       "slug": "product-fidelity",
@@ -1280,7 +1281,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/taste-search/SKILL.md",
-      "tokens": 1544
+      "tokens": 1582
     },
     {
       "slug": "three-d",
@@ -1424,7 +1425,9 @@
         "brand-verify"
       ],
       "evals": [
+        "evals/fixtures/compliant-not-good.yaml",
         "evals/fixtures/icon-set-mixed-strokes.yaml",
+        "evals/fixtures/imagery-without-provider.yaml",
         "evals/fixtures/logo-generated-raster-as-master.yaml",
         "evals/fixtures/mark-fails-16px.yaml",
         "evals/fixtures/vectorize-when-vector-exists.yaml"
@@ -1434,7 +1437,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/vector-master/SKILL.md",
-      "tokens": 1434
+      "tokens": 1494
     },
     {
       "slug": "video-assembly",
@@ -1619,6 +1622,8 @@
         "learn-loop"
       ],
       "evals": [
+        "evals/fixtures/compliant-not-good.yaml",
+        "evals/fixtures/imagery-without-provider.yaml",
         "evals/fixtures/one-shot-temptation.yaml"
       ],
       "cost_class": "medium",
@@ -1626,7 +1631,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/workflow/SKILL.md",
-      "tokens": 1233
+      "tokens": 1270
     }
   ]
 }

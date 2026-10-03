@@ -4,22 +4,22 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, readJSONL, appendJSONL, newId, today, nowISO, walk } from '../scripts/lib/core.mjs';
+import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, shown, readJSONL, appendJSONL, newId, today, nowISO, walk } from '../scripts/lib/core.mjs';
 import { schemaNames, validator, validateTree, validateValue } from '../scripts/lib/schemas.mjs';
 import { listSkills, checkSkill, buildIndex, search, duplicateLines } from '../scripts/lib/skills.mjs';
 import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
 import { compile, diffRecipes } from '../scripts/lib/prompt.mjs';
 import { canonNames } from '../scripts/lib/prompt-names.mjs';
 import { route } from '../scripts/lib/router.mjs';
-import { planBatch, readLedger, spent } from '../scripts/lib/ledger.mjs';
+import { planBatch, readLedger, spent, loadBudget } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
 import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, taskContext, resolveConflict } from '../scripts/lib/brand.mjs';
 import { buildGuide } from '../scripts/lib/guide.mjs';
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
-import { listFlows, searchFlows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
-import { runMedia, listPending } from '../providers/runner.mjs';
+import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
+import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
@@ -35,7 +35,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['json', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write']);
+const BOOLEAN_FLAGS = new Set(['json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -97,13 +97,13 @@ const COMMANDS = {
   'brand resolve': 'owner resolves an open conflict by picking a position: cstack brand resolve <conflict-id> --pick 1|2 [--by name] [--note "..."]',
   'prompt compile': 'compile a prompt recipe: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]... (one --set per slot)',
   'prompt diff': 'component-level diff of two recipes: cstack prompt diff a.yaml b.yaml',
-  route: 'rank models: cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers google,openai] [--avoid id,...]',
+  route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
-  providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json',
+  providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json. Pass --mcp "Server,…" (or CSTACK_MCP_SERVERS) to add agent_mcp, the same answer `cstack tools` gives',
   'lint shot-dna': 'warn when Shot DNA lighting is adjectives, not a recipe: cstack lint shot-dna <file...> (no file: every *.shot-dna.* in the repo)',
   'edit paste': 'paste a patch onto a base with a feathered edge, writing a new file: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] [--region x,y,w,h] --out c.png',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
@@ -143,9 +143,10 @@ const COMMANDS = {
   'creative check': 'gate a creative bet (experiment design), family (winner-scaler) or production plan (asset-factory) by its file name: cstack creative check <x.creative-bet.yaml|x.creative-family.yaml|x.production-plan.yaml> --ws <dir>; exits 1 on errors',
   'workflow list': 'the gated workflows (outcome → skills in order, owner gates) and the methods each one follows',
   'flows list': 'researched best-way-to-an-outcome flows (cstack flows/ + workspace flows/), with staleness',
-  'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage"',
+  'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage" [--json [--workflows]]; also lists the workflows that cover the outcome',
   'flows show': 'print one flow: cstack flows show <id>',
   'flows plan': 'copy a flow into this run\'s plan: cstack flows plan <id> [--target "what as-close-as-possible means"] → work/flows/',
+  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
   'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
@@ -376,20 +377,28 @@ function cmdRoute() {
     task: args.task,
     max_cost: args['max-cost'] != null ? Number(args['max-cost']) : undefined,
     providers_available: args.providers ? String(args.providers).split(',') : undefined,
+    tier: args.tier,
   };
+  if (args.tier && !['draft', 'final'].includes(args.tier)) die('--tier must be draft (probes) or final');
   if (!req.modality) die('usage: cstack route --modality <m> [--needs a,b] [--task t] [--max-cost n] [--providers fal,openai]');
   const res = route(reg, req);
   if (args.json) return json(res);
   for (const c of res.candidates) console.log(`${String(c.score).padStart(4)}  ${c.model_id.padEnd(34)} ${c.provider.padEnd(12)} ${c.why}`);
   console.log(`\nfallback chain: ${res.chain.join(' → ') || '(none)'}`);
   for (const w of res.warnings) console.log(`WARN ${w}`);
-  console.log(`registry: ${rel(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
+  console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
 }
 
 function cmdSpend(sub) {
   if (sub === 'plan') {
     const items = readData(path.resolve(args._[0] ?? die('usage: cstack spend plan <items.json> --stop "..."')));
-    const res = planBatch(ws, items, { stop_condition: args.stop });
+    // items without est are priced the way `generate` prices a call: from the registry, through the host's route
+    const price = (i) => {
+      const req = { provider: i.provider, model: i.model, inputs: i.inputs ?? { params: i.params ?? {}, images: i.images } };
+      const est = estimateFromRegistry(req);
+      return est ? { est } : { reason: `${i.provider}/${i.model}: ${registryPrice(req).basis}` };
+    };
+    const res = planBatch(ws, items, { stop_condition: args.stop, price });
     json(res);
     process.exit(res.ok ? 0 : 1);
   }
@@ -496,7 +505,7 @@ function cmdCreative(sub) {
     const r = /\.creative-bet\./.test(b) ? checkBet(obj) : /\.creative-family\./.test(b) ? checkFamily(obj, { performance: readPerformance(ws) }) : /\.production-plan\./.test(b) ? checkPlan(obj, { bets: all('creative-bet'), families: all('creative-family') }) : die('name the file *.creative-bet.yaml, *.creative-family.yaml or *.production-plan.yaml');
     if (args.json) json(r);
     else {
-      console.log(`${r.ok ? 'PASS' : 'FAIL'} ${rel(file)}`);
+      console.log(`${r.ok ? 'PASS' : 'FAIL'} ${shown(file)}`);
       for (const e of r.errors) console.log(`  error: ${e}`);
       for (const w of r.warnings) console.log(`  warn: ${w}`);
       if (r.cells) console.log(`  cells: ${r.cells}${r.min_spend_total ? `, minimum spend to read it: ${r.min_spend_total}` : ''}`);
@@ -535,7 +544,7 @@ function cmdBrand(sub) {
   requireWs();
   if (sub === 'check') {
     const r = checkBrand(ws);
-    r.print(`brand check ${rel(ws)}`);
+    r.print(`brand check ${shown(ws)}`);
     process.exit(r.ok ? 0 : 1);
   }
   if (sub === 'set') {
@@ -564,7 +573,7 @@ function cmdBrand(sub) {
   if (sub === 'guide') {
     const r = buildGuide(ws, { out: args.out ? path.resolve(args.out) : undefined });
     if (args.json) return json(r);
-    return console.log(`wrote ${path.relative(process.cwd(), r.file)}: ${r.sections} sections of approved fields, ${r.colours} colours (context ${r.hash})`);
+    return console.log(`wrote ${shown(r.file)}: ${r.sections} sections of approved fields, ${r.colours} colours (context ${r.hash})`);
   }
   if (sub === 'resolve') {
     const id = args._[0] ?? die('usage: cstack brand resolve <conflict-id> --pick 1|2 [--by name]');
@@ -593,7 +602,11 @@ async function cmdGenerate() {
   if (args.confirm) req.confirmed = true;
   const res = await runMedia(ws, req);
   if (args.json) return json(res);
-  if (res.dry_run) return console.log(`dry run logged (${req.provider}/${req.model}); nothing was paid`);
+  if (res.would_block) die(`dry run (${req.provider}/${req.model}): a real call would be blocked by budget: ${res.problems.join('; ')}; nothing was paid`);
+  if (res.dry_run) {
+    const b = res.row?.booked_cost;
+    return console.log(`dry run logged (${req.provider}/${req.model}); nothing was paid${b ? `; this call has no price, so a real call is booked at ${b.amount} ${b.currency}, the budget's ceiling, not a price` : ''}`);
+  }
   if (res.blocked) die(`blocked by budget: ${res.problems.join('; ')}`);
   if (res.deduplicated) return console.log(`identical call already done: ${res.output_ids.join(', ')} (not paid again)`);
   if (res.pending) return console.log(`job still running at the provider; run \`cstack generate\` again with the same request to re-attach (never resubmits)`);
@@ -607,7 +620,7 @@ function cmdAudit() {
   const expected = args.size ? { width: Number(String(args.size).split('x')[0]), height: Number(String(args.size).split('x')[1]) } : args.aspect ? { aspect: String(args.aspect) } : die('--aspect or --size required');
   const res = sizeAudit(actual, expected);
   if (args.json) return json({ actual, ...res });
-  console.log(`${rel(f)} ${actual.width}x${actual.height}: ${res.ok ? 'PASS' : 'FAIL'}`);
+  console.log(`${shown(f)} ${actual.width}x${actual.height}: ${res.ok ? 'PASS' : 'FAIL'}`);
   for (const x of res.findings) console.log(`  ${x.level ?? ''} ${x.detail}`);
   process.exit(res.ok ? 0 : 1);
 }
@@ -618,6 +631,7 @@ async function cmdTaste(sub) {
   const ended = (res) => {
     if (res.blocked) die(`blocked by budget: ${res.problems.join('; ')}`);
     if (res.failed) die(`${res.row.status}: ${res.row.error}`);
+    if (res.would_block) die(`dry run: a real call would be blocked by budget: ${res.problems.join('; ')}; nothing was paid`);
     if (res.dry_run) { console.log('dry run logged; nothing was paid'); process.exit(0); }
     return res;
   };
@@ -626,7 +640,7 @@ async function cmdTaste(sub) {
     const dir = path.join(ws, 'references', '_taste');
     const p = path.join(dir, `${kind}-${today()}-${newId('T').slice(-6)}.json`);
     writeJSON(p, obj);
-    return rel(p);
+    return shown(p);
   };
   if (sub === 'search') {
     const intent = args._[0] ?? die('usage: cstack taste search "intent" [--k 6] [--depth fast|deep]');
@@ -665,7 +679,7 @@ function cmdTokens(sub) {
     if (!files.length) die('usage: cstack tokens lint <files...> [--allow #ffffff,#000000]');
     const r = lintRaw(ws, files, { allow: args.allow ? String(args.allow).split(',') : [] });
     if (args.json) return json(r);
-    for (const x of r.findings) console.log(`${rel(x.file)}:${x.line} ${x.value} ${x.detail}`);
+    for (const x of r.findings) console.log(`${shown(x.file)}:${x.line} ${x.value} ${x.detail}`);
     console.log(r.ok ? 'tokens lint: PASS' : `tokens lint: FAIL (${r.findings.length})`);
     process.exit(r.ok ? 0 : 1);
   }
@@ -685,7 +699,7 @@ function cmdLint(sub) {
   const rows = files.length
     ? files.map((f) => {
         if (!exists(f)) die(`not found: ${f}`);
-        return { file: rel(f), findings: lintShotDNA(readData(f)).findings };
+        return { file: shown(f), findings: lintShotDNA(readData(f)).findings };
       })
     : lintShotDNATree(ROOT);
   if (args.json) return json(rows);
@@ -701,12 +715,23 @@ async function cmdEdit(sub) {
   for (const k of ['base', 'patch', 'x', 'y', 'out']) if (args[k] === undefined || args[k] === true) die(`--${k} required. usage: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] --out c.png`);
   try {
     const res = await regionPaste({ base: args.base, patch: args.patch, x: args.x, y: args.y, feather: args.feather ?? 8, region: args.region, out: args.out, engine: args.engine ?? 'auto', force: !!args.force });
-    const here = (p) => path.relative(process.cwd(), p) || p;
+    const here = (p) => shown(p);
     if (args.json) return json({ ...res, out: here(res.out), base: here(res.base), patch: here(res.patch) });
     console.log(`wrote ${here(res.out)} ${res.width}x${res.height} (engine ${res.engine.name}; changed box ${res.changed_box ? `${res.changed_box.x},${res.changed_box.y} ${res.changed_box.w}x${res.changed_box.h}` : 'none: patch outside base'}; feather ${res.feather}px; inputs untouched)`);
   } catch (e) {
     die(e.message);
   }
+}
+
+// research tools and media providers that share an id (taste-labs) report both routes the same way in `tools` and `providers`
+function routes() {
+  const mcp = String(args.mcp ?? process.env.CSTACK_MCP_SERVERS ?? '').split(',').filter(Boolean);
+  const prov = new Map(availability().map((p) => [p.id, p]));
+  const res = detectTools(ws, { mcpServers: mcp }).map((t) => {
+    const p = prov.get(t.id);
+    return p ? { ...t, cli_adapter: p.available ? 'usable' : `needs ${p.missing_env.join(', ') || 'setup'}` } : t;
+  });
+  return { mcp, res, tools: new Map(res.map((t) => [t.id, t])) };
 }
 
 function cmdSetup() {
@@ -805,30 +830,50 @@ switch (cmd) {
       if (args.json) json(fl);
       else for (const f of fl) console.log(`${(f.stale ? 'STALE' : f.status).padEnd(10)}  ${f.id.padEnd(30)} ${f.outcome}${f.scope === 'workspace' ? '  (workspace)' : ''}`);
     } else if (sub === 'search') {
-      const res = searchFlows(ws, args._.join(' ') || die('usage: cstack flows search "<outcome>"'));
-      if (args.json) json(res);
-      else if (!res.length) console.log('no researched flow matches; run /flow-research to design one before making anything');
-      else for (const r of res) console.log(`${String(r.score).padStart(3)}  ${r.flow.id.padEnd(30)} ${r.flow.outcome}${r.flow.stale ? '  [STALE: re-verify before use]' : ''}`);
+      const query = args._.join(' ') || die('usage: cstack flows search "<outcome>"');
+      const res = searchFlows(ws, query);
+      const wfs = searchWorkflows(query);
+      if (args.json) json(args.workflows ? { flows: res, workflows: wfs } : res);
+      else {
+        if (!res.length) console.log(`no researched flow matches${wfs.length ? '' : '; run /flow-research to design one before making anything'}`);
+        for (const r of res) console.log(`${String(r.score).padStart(3)}  ${r.flow.id.padEnd(30)} ${r.flow.outcome}${r.flow.stale ? '  [STALE: re-verify before use]' : ''}`);
+        if (wfs.length) {
+          console.log(`\nworkflows that cover it (run /workflow <id> in your agent; each names its methods):`);
+          for (const r of wfs) console.log(`${String(r.score).padStart(3)}  ${r.workflow.id.padEnd(30)} ${r.workflow.summary}${r.workflow.methods.length ? ` [methods: ${r.workflow.methods.join(', ')}]` : ''}`);
+        }
+      }
     } else if (sub === 'show') {
       const f = listFlows(ws).find((x) => x.id === args._[0]) ?? die(`no flow "${args._[0]}"`);
       if (args.json) json(f);
       else console.log(fs.readFileSync(f.file, 'utf8') + (f.stale ? `\n# STALE: last verified ${f.last_verified} (${f.age_days} days); re-verify tools and models before following it\n` : ''));
     } else if (sub === 'plan') {
       const r = planFromFlow(ws, args._[0] ?? die('usage: cstack flows plan <id> [--target "..."]'), { target: args.target });
-      const shown = path.relative(process.cwd(), r.file);
-      console.log(`plan written: ${shown}${r.stale ? `\nwarning: source flow is stale (${r.age_days} days); re-verify tools and models first` : ''}\nnext: adjust steps and target to this run, then cstack flows check ${shown}`);
+      const where = shown(r.file);
+      console.log(`plan written: ${where}${r.stale ? `\nwarning: source flow is stale (${r.age_days} days); re-verify tools and models first` : ''}\nnext: adjust steps and target to this run, then cstack flows check ${where}`);
     } else if (sub === 'check') {
       if (!args._.length) die('usage: cstack flows check <plan.flow.yaml...>');
       const slugs = listSkills().map((s) => s.slug);
       const res = args._.map((f) => checkFlowFile(ws, path.resolve(f), { skills: slugs }));
       if (args.json) json(res);
       else for (const x of res) {
-        console.log(`${x.errors.length ? 'FAIL' : 'PASS'}  ${path.relative(process.cwd(), x.file)}`);
+        console.log(`${x.errors.length ? 'FAIL' : 'PASS'}  ${shown(x.file)}`);
         for (const e of x.errors) console.log(`  error: ${e}`);
         for (const w of x.warnings) console.log(`  warn:  ${w}`);
       }
       if (res.some((x) => x.errors.length)) process.exitCode = 1;
-    } else die('usage: cstack flows list|search|show|plan|check');
+    } else if (sub === 'gate') {
+      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|decide|final');
+      const stage = args.stage ?? die(`--stage required: ${GATE_STAGES.join('|')}`);
+      if (!GATE_STAGES.includes(stage)) die(`--stage must be one of ${GATE_STAGES.join(', ')}`);
+      const x = gateFlow(ws, path.resolve(f), { stage, providers: availability(), skills: listSkills().map((s) => s.slug), budget: loadBudget(ws) });
+      if (args.json) json(x);
+      else {
+        console.log(`${x.errors.length ? 'FAIL' : 'PASS'}  ${stage}  ${shown(x.file)}`);
+        for (const e of x.errors) console.log(`  error: ${e}`);
+        for (const w of x.warnings) console.log(`  warn:  ${w}`);
+      }
+      if (x.errors.length) process.exitCode = 1;
+    } else die('usage: cstack flows list|search|show|plan|check|gate');
     break;
   }
   case 'browse': {
@@ -877,18 +922,20 @@ switch (cmd) {
     break;
   }
   case 'tools': {
-    const mcp = String(args.mcp ?? process.env.CSTACK_MCP_SERVERS ?? '').split(',').filter(Boolean);
-    const res = detectTools(ws, { mcpServers: mcp });
+    const { mcp, res } = routes();
     if (args.json) json(res);
     else {
-      for (const t of res) console.log(`${t.available ? 'YES' : ' - '}  ${t.name.padEnd(26)} ${t.available ? t.signals.join('; ') : `fallback: ${t.fallback ?? 'none'}`}`);
+      for (const t of res) console.log(`${t.available ? 'YES' : ' - '}  ${t.name.padEnd(26)} ${t.available ? t.signals.join('; ') : `fallback: ${t.fallback ?? 'none'}`}${t.cli_adapter ? `  [cstack CLI: ${t.cli_adapter}]` : ''}`);
       if (!mcp.length) console.log('\nnote: MCP servers visible to the agent were not passed (--mcp); MCP-only tools may be under-reported.');
     }
     break;
   }
-  case 'providers':
-    json(availability());
+  case 'providers': {
+    // one answer per route, shared with `cstack tools`: the CLI adapter (env keys) and the agent's MCP server
+    const { tools } = routes();
+    json(availability().map((p) => (tools.has(p.id) ? { ...p, agent_mcp: tools.get(p.id).available, agent_signals: tools.get(p.id).signals } : p)));
     break;
+  }
   case 'audit':
     cmdAudit();
     break;

@@ -44,6 +44,7 @@ Official vector > human-refined drawing > professional trace > automatic trace >
 
 ## Process
 
+0. **Gate**: a figure, hero or key visual starts from a flow plan; `cstack flows gate <plan> --stage make` passes. When the deliverable is generated imagery, vector is a substitute only with the owner's recorded yes, never a quiet fallback.
 1. **Retrieve before making**: search official assets and the brand's own files for a vector.
 2. **master mode**: clean (keep the viewBox, outline text, flatten transforms, remove rasters and editor metadata), then `cstack svg lint`, `cstack svg reduce`; fix and re-run; produce full colour, one colour and reversed files and the lockups the direction defines; `cstack svg kit`.
 3. **vectorize mode**: clean the raster, trace (B/W or colour), lint node count and colours against tokens, overlay against the raster at 512 px, hand to a person for curve cleanup; mark `provisional`.
