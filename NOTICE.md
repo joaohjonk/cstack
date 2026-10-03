@@ -30,3 +30,8 @@ computed-style sketch; no gstack code is copied.
 - `scripts/lib/type/font.mjs`: the per-language letter sets used by `cstack type font --languages` are
   derived from Unicode CLDR main exemplar characters.
 - Copyright © 1991-2026 Unicode, Inc. Unicode License v3: https://www.unicode.org/license.txt
+
+## URW Nimbus Sans (README images)
+
+- `docs/images/*.svg` contain glyph outlines drawn from Nimbus Sans Regular and Bold (URW base35 fonts, https://github.com/ArtifexSoftware/urw-base35-fonts).
+- License: AGPL-3.0 with URW's font exception, which allows the fonts to be included in documents without the documents falling under the AGPL. No font file is distributed in this repo.

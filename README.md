@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="cstack. Ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical, in Klein blue." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical." width="100%">
 </p>
 
 # cstack
@@ -275,6 +275,8 @@ Among them:
 **In motion.** And people whose medium is not normally filed under design: Candide Thovex, Craig Anderson, Rob Machado, Mikey February, Tadej Pogačar, Roger Federer, Carlos Alcaraz, Ronaldinho and Mat Fraser. They are reminders that taste can live in a line, a decision, an economy of movement, an unexpected attack, or thousands of repetitions that eventually look effortless.
 
 These people did not build cstack, and their inclusion implies no affiliation or endorsement. Their public work simply helped build the taste, the questions and the ways of working behind it. The goal of cstack is not to imitate any of them. It is to make the things they taught me easier to remember, and harder to reduce to a prompt.
+
+The images in this README are set in Nimbus Sans, URW's free cut of the Helvetica design, turned into outlines so they look the same on every screen. Helvetica itself (Max Miedinger and Eduard Hoffmann, Haas Type Foundry, 1957) is one of the great typefaces of the century; we simply could not ship it.
 
 For the longer notes on what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
 
