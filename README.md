@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical." width="100%">
+  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. A giant white lowercase cstack with a square full stop runs off the bottom edge. Above it: Taste, made repeatable. An open operating system for brand work, run by agents. Before use: step outside, taste is built from distance." width="100%">
 </p>
 
 # cstack
@@ -9,6 +9,10 @@
 The New York subway still reads as one system half a century later. The reason is not a drawing; it is the 1970 standards manual Massimo Vignelli and Bob Noorda wrote at Unimark, so that someone else could make the next sign right. Otl Aicher did the same for Munich in 1972: a grid, a palette and a set of angles that produced every pictogram, poster and ticket. The craft was the system that let the work be repeated.
 
 Generative AI made making cheap. It did not make judgment cheap. Ask a model for your brand a hundred times and you get a hundred cousins: the orange slides toward pink, the type drifts, the product grows a cap it never had, the copy reaches for the word the founder banned last spring. No single image is wrong. The set is.
+
+<p align="center">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical." width="100%">
+</p>
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
 
@@ -165,6 +169,18 @@ Six rules hold the whole thing together:
 - **The owner's taste is sovereign.** Picks, kills and edits are recorded as preference data; repeated evidence becomes a rule. Don't forget this. Judgement and taste are the most important skill in the age of abundance.
 
 The long version is in [docs/philosophy.md](docs/philosophy.md) and [docs/architecture-one-page.md](docs/architecture-one-page.md).
+
+## One brand, three schools
+
+<p align="center">
+  <img src="docs/images/three-schools.svg" alt="One brand, three schools. Inspiration: Vignelli and Müller-Brockmann, Pawson and Ando, digital interface culture. Schools: 01 Swiss poster, locked as the default; 02 Material, range for print, objects and spaces; 03 Liquid glass, range for social and product UI. Constant core: Klein blue, the square, the lowercase wordmark." width="100%">
+</p>
+
+This is cstack run on itself. `/creative-direction` starts from the inspiration, read as mechanisms rather than looks: a grid and one colour doing the work, subtraction until light and proportion remain, depth and light as material on a screen. From those it builds distinct schools instead of one safe average, each a complete answer.
+
+Then a person decides. No tool can say which school is better; that is judgment, and it stays with the owner. For cstack the owner chose the Swiss poster: when in doubt, clarity. That school is LOCKED as the default. The other two are kept as range, for the places where they fit better.
+
+What never changes is the core: Klein blue, the square as the one unit of measure, the lowercase wordmark. Everything else may change by place. That is how a brand can move without drifting, and it is the same structure cstack gives every brand it holds.
 
 ## First ten minutes
 
