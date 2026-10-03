@@ -1,0 +1,94 @@
+id: brand-hero-photo
+outcome: a photographic or sculptural brand hero, poster or key visual with the brand's own type composited on top
+aliases:
+- brand hero image
+- hero image
+- key visual
+- poster image
+- campaign key visual
+status: researched
+target:
+  description: a hero people read in two seconds in the brand's own colour and ground, with the brand's type set by the brand, never by the model
+  must:
+  - photographic or sculptural quality, not clip art or hand-drawn stand-ins
+  - no lettering from the model; wordmark and lines are the brand's outlined type composited after
+  - every text run legible at the smallest width the hero is shown (cstack svg legibility)
+  - a large empty area reserved for type on the brand's grid
+  - the brand colour checked on the output, not assumed from the prompt
+  must_not:
+  - practitioner names, "in the style of", other brands' marks, or reference photos in any prompt or input
+  - a substitute (vector drawing, stock photo) without the owner's recorded yes
+  quality_bar: ART DIRECTOR and BRAND DIRECTOR lenses pass on the contact sheet, the picks sit side by side with a gold reference, and the owner picks the final
+when:
+- a brand needs a hero, poster or key visual and the identity already owns its type and colour
+not_when:
+- a logo or mark (logo-system); a rotating product (3d-web-hero); a moving piece (brand-mood-film)
+candidates_considered:
+- name: photographic generation at draft tier across two or three models, finals for the two strongest picks, the brand's outlined type composited in code
+  verdict: chosen
+  why: photo models are strongest at light, material and empty space; type stays exact and on-brand because it never passes through a model
+- name: sculptural or 3D-look generation (objects, pigment, plinths) plus the brand's type
+  verdict: chosen
+  why: run as a second territory in the same probe round; same pipeline and cost; tests whether matter reads calmer than a scene
+- name: a real 3D scene rendered and lit by hand, plus the brand's type
+  verdict: fallback
+  why: full control of geometry and colour, but hours of human time; use when generation cannot hold the grid or the colour
+- name: the image model sets the wordmark itself
+  verdict: rejected
+  why: lettering drifts, cannot be outlined or checked, and breaks the brand's type rules
+steps:
+- id: territories
+  does: two or three territories from the brief, each a prompt that names the colour, the ground, the empty area and the one idea
+  kind: research
+  skill: creative-direction
+  gate: {type: auto, check: "prompts carry no names, no style-of, no lettering; cstack prompt compile passes"}
+  compare_to_target: each territory differs in idea, not styling
+- id: probe
+  does: draft probes, about four per territory, across two or three models (cstack route --modality image --tier draft for cheap ones, flagship models for the strongest)
+  kind: probe
+  skill: generate-media
+  est_cost: {amount: 0.03, currency: USD, unit: "per 1 MP image on fal FLUX.2 pro, checked 2026-10-03"}
+  gate: {type: deterministic_check, check: cstack flows gate <plan> --stage make passes; cstack spend plan ok; every call in the ledger}
+  compare_to_target: one contact sheet per territory, labelled by model
+- id: judge
+  does: creative-review lenses ART DIRECTOR and BRAND DIRECTOR on the contact sheets; pick two, name the rejects
+  kind: human
+  skill: creative-review
+  gate: {type: independent_review, check: cstack flows gate <plan> --stage decide passes; two picks with reasons}
+  compare_to_target: do the picks hold the brand colour on the brand ground, with room for type?
+- id: finals
+  does: two finals per pick at the delivery size on the strongest model for that territory
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.06, currency: USD, unit: "per 2400x1200 final on fal FLUX.2 pro (3 MP billed), checked 2026-10-03"}
+  gate: {type: deterministic_check, check: cstack audit --aspect matches the slot; spend under the cap}
+  compare_to_target: same as judge, at full size
+- id: composite
+  does: the brand's wordmark and lines as outlined type over each final, on the grid, in the reserved space
+  kind: deterministic
+  skill: vector-master
+  gate: {type: deterministic_check, check: cstack svg legibility at the display widths; file size within the page budget}
+  compare_to_target: type sits on the grid and reads first
+- id: pick
+  does: side by side with a gold reference, then the owner picks one before anything replaces the live hero
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: cstack flows gate <plan> --stage final passes; the owner picks}
+  compare_to_target: the pick against the gold reference
+cost_ladder: probes about USD 1 for twelve 1 MP images on fal; finals about USD 0.05-0.35 each; stop at twelve probes, two rejected rounds, or the cap
+failure_modes:
+- model lettering or fake logos in the frame
+- the brand colour drifts (a saturated blue to cobalt or navy) and nobody measures it
+- the grid bends or objects melt at the edge
+- busy frames with no room for type
+- a missing provider quietly replaced by a hand-drawn figure
+evidence:
+- {ref: "https://fal.ai/models/fal-ai/flux-2-pro", kind: documented, date: 2026-10-03, note: "0.03 for the first MP; registry route fal-ai/flux-2-pro"}
+- {ref: "cstack's own hero, PR #11 (identity/work/imagery/2026-10-03/brand-hero-photo.flow.yaml)", kind: run_record, date: 2026-10-03, note: "12 probes across three territories on fal; two picks; type composited as outlines"}
+last_verified: 2026-10-03
+stale_after_days: 90
+related:
+- skill:generate-media
+- skill:creative-review
+- skill:creative-direction
+- flow:logo-system
