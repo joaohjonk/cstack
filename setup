@@ -46,7 +46,7 @@ if [ "${CSTACK_SETUP_DRY_RUN:-}" = "1" ]; then node bin/cstack.mjs setup --host 
 if node -e "require.resolve('playwright-core')" >/dev/null 2>&1; then
   say "playwright-core present: \`cstack browse\` and JPEG/WebP \`cstack edit paste\` work when a Chromium is available (set CSTACK_CHROMIUM to use your own)."
 else
-  say "playwright-core absent (optional): browser commands will report MISSING; everything else works."
+  say "playwright-core absent (optional): browser commands and JPEG/WebP compositing report MISSING; everything else works. To add it: npm ci --include=optional (npm skips optional packages when your npm config sets omit=optional)."
 fi
 
 # Quote the path so the alias survives spaces, "&" and other shell characters in the folder name:

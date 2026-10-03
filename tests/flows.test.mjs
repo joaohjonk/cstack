@@ -128,6 +128,7 @@ test('flows gate: imagery without a usable media provider stops instead of degra
   const blocked = gateFlow(w, file, { providers: none });
   assert.match(blocked.errors.join('\n'), /needs generation, and no media provider is usable here \(fal: FAL_KEY not set\): run this where the keys live/);
   assert.deepEqual(gateFlow(w, file, { providers: fal }).errors, []);
+  assert.doesNotMatch(gateFlow(w, file, { stage: 'final', providers: none, budget: null }).errors.join('\n'), /needs generation/, 'decide and final judge files already made: no provider needed (finding 12)');
   // a zero or missing budget stops the same way (field test: a zero budget must not fall back to a free method)
   assert.match(gateFlow(w, file, { providers: fal, budget: { per_run: 0, per_day: 0 } }).errors.join('\n'), /budget here is per_run 0, per_day 0: ask the owner for a budget/);
   assert.match(gateFlow(w, file, { providers: fal, budget: null }).errors.join('\n'), /budget here is not set/);

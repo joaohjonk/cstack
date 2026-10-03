@@ -29,7 +29,7 @@ export function spent(rows, { currency = 'USD', since, experiment_id } = {}) {
     if (r.status === 'queued') {
       if (settled.has(r.idempotency_key) || queued.has(r.idempotency_key)) continue;
       queued.add(r.idempotency_key);
-    } else if (!COUNTED.includes(r.status)) continue;
+    } else if (!COUNTED.includes(r.status) || r.charged === false) continue; // refused at submit: it never ran
     const c = costOf(r);
     if (c && c.currency === currency) total += c.amount;
   }
@@ -184,7 +184,7 @@ export async function guardedCall(ws, spec, fn) {
         return { pending: true, row };
       }
       const status = classifyError(err);
-      const row = { ...base, ts: nowISO(), status, output_ids: [], retry_count: attempt, cache_status: 'n/a', actual_cost_if_available: null, latency_ms: Date.now() - t0, error: String(err?.message ?? err).slice(0, 500) };
+      const row = { ...base, ts: nowISO(), status, output_ids: [], retry_count: attempt, cache_status: 'n/a', actual_cost_if_available: null, latency_ms: Date.now() - t0, error: String(err?.message ?? err).slice(0, 500), ...(err?.not_submitted ? { charged: false } : {}) };
       appendJSONL(ledgerPath(ws), row);
       if (status !== 'failed_transient' || attempt >= maxRetries) return { failed: true, row };
       attempt += 1;

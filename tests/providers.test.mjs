@@ -178,3 +178,26 @@ test('a dry run priced from a host route writes a ledger row the schema accepts 
   assert.match(rows.at(-1).estimated_cost.basis, /fal route fal-ai\/flux-2-pro/);
   for (const r of rows) assert.ok(validateValue('cost-ledger-entry', r).ok, JSON.stringify(validateValue('cost-ledger-entry', r).errors));
 });
+
+test('a request refused at submit books nothing; a near-miss endpoint names the ids the registry carries (findings 10, 11)', async () => {
+  const { guardedCall, spent } = await import('../scripts/lib/ledger.mjs');
+  const { registryPrice } = await import('../providers/runner.mjs');
+  assert.match(registryPrice({ provider: 'fal', model: 'fal-ai/seedream-5-pro' }).basis, /fal routes it does carry: bytedance\/seedream\/v5\/pro\/text-to-image/);
+  const ws = tmpDir('cstack-void-');
+  fs.writeFileSync(path.join(ws, 'cstack.config.yaml'), 'budget:\n  currency: USD\n  per_run: 1\n  per_day: 2\n');
+  const spec = (n) => ({ provider: 'fal', model: `m${n}`, operation: 'x', input_hashes: [String(n)], estimated_cost: { amount: 0.08, currency: 'USD' }, stop_condition: 'one', max_retries: 0 });
+  const refused = Object.assign(new Error('fal HTTP 404: not found'), { not_submitted: true });
+  const r1 = await guardedCall(ws, spec(1), async () => { throw refused; });
+  assert.equal(r1.row.charged, false);
+  const r2 = await guardedCall(ws, spec(2), async () => { throw new Error('fal HTTP 500: upstream'); });
+  assert.equal(r2.row.charged, undefined, 'a 5xx may have run upstream: it stays booked');
+  assert.equal(spent(readLedger(ws)), 0.08);
+  // through the runner: a provider that answers 404 at submit leaves a void row
+  const w2 = tmpDir('cstack-void-');
+  fs.writeFileSync(path.join(w2, 'cstack.config.yaml'), 'budget:\n  currency: USD\n  per_run: 1\n  per_day: 2\n');
+  const gone = { id: 'fal', submit: async () => { throw new Error('fal HTTP 404: Application not found'); } };
+  const res = await runMedia(w2, { provider: 'fal', model: 'fal-ai/not-a-model', operation: 'text_to_image', inputs: { prompt: 'a cup' }, out_dir: 'work/gen', out_prefix: 'void', estimated_cost: { amount: 0.08, currency: 'USD' } }, { provider: gone });
+  assert.equal(res.failed, true);
+  assert.equal(res.row.charged, false);
+  assert.equal(spent(readLedger(w2)), 0);
+});
