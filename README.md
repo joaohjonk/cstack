@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="cstack. Ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical, in cstack red." width="100%">
+  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. A giant white lowercase cstack with a square full stop runs off the bottom edge. Above it: Taste, made repeatable. An open operating system for brand work, run by agents. Before use: step outside, taste is built from distance." width="100%">
 </p>
 
 # cstack
@@ -9,6 +9,10 @@
 The New York subway still reads as one system half a century later. The reason is not a drawing; it is the 1970 standards manual Massimo Vignelli and Bob Noorda wrote at Unimark, so that someone else could make the next sign right. Otl Aicher did the same for Munich in 1972: a grid, a palette and a set of angles that produced every pictogram, poster and ticket. The craft was the system that let the work be repeated.
 
 Generative AI made making cheap. It did not make judgment cheap. Ask a model for your brand a hundred times and you get a hundred cousins: the orange slides toward pink, the type drifts, the product grows a cap it never had, the copy reaches for the word the founder banned last spring. No single image is wrong. The set is.
+
+<p align="center">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares made from prompts drift in size and angle; on a Klein blue band, ten squares made from a brand kept in files stay identical." width="100%">
+</p>
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
 
@@ -152,7 +156,7 @@ Each skill has a fixed contract (inputs, what to do when an input is missing, pr
 ## How it thinks
 
 <p align="center">
-  <img src="docs/images/nine-layers.svg" alt="The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
+  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
 </p>
 
 Six rules hold the whole thing together:
@@ -246,15 +250,13 @@ v0.1, beta. The skills, workflows, flows, checkers and schemas exist and pass th
 
 cstack is open source, but its point of view did not appear from nowhere.
 
-It is built from years of looking, making, collecting, arguing, building brands, breaking things, and learning from people whose work changed the way I see. Some are canonical. Some run small studios. Some make buildings, books, clothes, photographs or films. Some happen to ride bikes, surf, ski or play football beautifully.
-
-**Thank you, personally,** to Danil; to Stefano, my partner; to Fred Peclat of Atelier Peclat; to Airon Martin of Misci; and to all the marketers, brand builders and growth people I have worked with over the years. Some of this started in conversations with you.
+It is built from years of looking, making, collecting, arguing, building brands, breaking things, and learning from people whose work changed the way I see. Some are canonical. Some run small studios. Some make buildings, books, clothes, photographs or films. Some happen to ride bikes, surf, ski or play football beautifully. And some are the marketers, brand builders and growth people I have worked with over the years, in conversations that shaped more of this than they know.
 
 A word on the names. I mention them because at some point I consumed, saw, or only briefly saw some of their work, and I think it changed me a little. This is a list of debts of attention, not of sources: nothing here is copied, and most of these people have no idea cstack exists.
 
 Among them:
 
-**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, and Sweety & Co.
+**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, Misci and Airon Martin, and Sweety & Co.
 
 **In graphic design and creative practice.** Massimo Vignelli, Mirko Borsche / Bureau Borsche, OK-RM (Oliver Knight and Rory McGrath), Experimental Jetset, Irma Boom, PLAYLAB, INC. (Archie Lee Coates IV and Jeff Franklin), COLLINS and Koto.
 
@@ -266,9 +268,11 @@ Among them:
 
 **In moving image.** Paul Thomas Anderson, Jonathan Glazer, David Lynch, Andrea Arnold, Roy Andersson, Apichatpong Weerasethakul, Martin Scorsese and Gaspar Noé.
 
-**In culture, products and systems.** Ana Andjelic, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
+**In culture, products and systems.** Ana Andjelic, Little Plains and their writing on brand systems for humans and agents, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
 
-**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. This is an ode to them: unrelated to brand work, and impossible to forget.
+**In business.** On and its founders, Phil Knight's *Shoe Dog*, Chip Wilson of lululemon, Hamilton Helmer's *7 Powers*, Andrew Chen, A.G. Lafley and Roger Martin's *Playing to Win*, and Marcus Aurelius's *Meditations*.
+
+**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. Dan Keeling and Mark Andrew of Noble Rot showed the wine world through a different lens entirely. This is an ode to them: unrelated to brand work, and impossible to forget.
 
 **At home.** Chico da Silva, Bertô, Carlos Motta, Paulo Monteiro da Silva, Rochegaussen and Fred Peclat made a few things I have the privilege to look at every day.
 
@@ -276,7 +280,12 @@ Among them:
 
 These people did not build cstack, and their inclusion implies no affiliation or endorsement. Their public work simply helped build the taste, the questions and the ways of working behind it. The goal of cstack is not to imitate any of them. It is to make the things they taught me easier to remember, and harder to reduce to a prompt.
 
+The images in this README are set in FreeSans from GNU FreeFont, a free sans in the Helvetica tradition, turned into outlines so they look the same on every screen. Helvetica itself (Max Miedinger and Eduard Hoffmann, Haas Type Foundry, 1957) is one of the great typefaces of the century; we simply could not ship it.
+
 For the longer notes on what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
+
+JJ  
+[celeste.vc](https://celeste.vc)
 
 ## Docs
 

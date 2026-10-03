@@ -30,3 +30,8 @@ computed-style sketch; no gstack code is copied.
 - `scripts/lib/type/font.mjs`: the per-language letter sets used by `cstack type font --languages` are
   derived from Unicode CLDR main exemplar characters.
 - Copyright © 1991-2026 Unicode, Inc. Unicode License v3: https://www.unicode.org/license.txt
+
+## GNU FreeFont FreeSans (README images)
+
+- `docs/images/*.svg` contain glyph outlines drawn from FreeSans and FreeSans Bold (GNU FreeFont, https://www.gnu.org/software/freefont/). They contain no font program, and no font file is distributed in this repo.
+- License: GPL-3.0-or-later with the FreeFont font exception: "if you create a document which uses this font, and embed this font or unaltered portions of this font into the document, this font does not by itself cause the resulting document to be covered by the GNU General Public License."
