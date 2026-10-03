@@ -246,15 +246,13 @@ v0.1, beta. The skills, workflows, flows, checkers and schemas exist and pass th
 
 cstack is open source, but its point of view did not appear from nowhere.
 
-It is built from years of looking, making, collecting, arguing, building brands, breaking things, and learning from people whose work changed the way I see. Some are canonical. Some run small studios. Some make buildings, books, clothes, photographs or films. Some happen to ride bikes, surf, ski or play football beautifully.
-
-**Thank you, personally,** to Danil; to Stefano, my partner; to Fred Peclat of Atelier Peclat; to Airon Martin of Misci; and to all the marketers, brand builders and growth people I have worked with over the years. Some of this started in conversations with you.
+It is built from years of looking, making, collecting, arguing, building brands, breaking things, and learning from people whose work changed the way I see. Some are canonical. Some run small studios. Some make buildings, books, clothes, photographs or films. Some happen to ride bikes, surf, ski or play football beautifully. And some are the marketers, brand builders and growth people I have worked with over the years, in conversations that shaped more of this than they know.
 
 A word on the names. I mention them because at some point I consumed, saw, or only briefly saw some of their work, and I think it changed me a little. This is a list of debts of attention, not of sources: nothing here is copied, and most of these people have no idea cstack exists.
 
 Among them:
 
-**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, and Sweety & Co.
+**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, Misci and Airon Martin, and Sweety & Co.
 
 **In graphic design and creative practice.** Massimo Vignelli, Mirko Borsche / Bureau Borsche, OK-RM (Oliver Knight and Rory McGrath), Experimental Jetset, Irma Boom, PLAYLAB, INC. (Archie Lee Coates IV and Jeff Franklin), COLLINS and Koto.
 
@@ -279,6 +277,9 @@ These people did not build cstack, and their inclusion implies no affiliation or
 The images in this README are set in Nimbus Sans, URW's free cut of the Helvetica design, turned into outlines so they look the same on every screen. Helvetica itself (Max Miedinger and Eduard Hoffmann, Haas Type Foundry, 1957) is one of the great typefaces of the century; we simply could not ship it.
 
 For the longer notes on what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
+
+Joao  
+[celeste.vc](https://celeste.vc)
 
 ## Docs
 
