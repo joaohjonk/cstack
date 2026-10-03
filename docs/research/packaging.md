@@ -98,6 +98,7 @@ Research behind `flows/packaging-system`, `flows/shelf-test`, `flows/print-proof
 ## 8. Field observations (anonymized, observed 2026-10-03)
 
 - **Design-tool file drift.** The type gate passed on the approved artwork, but the design-tool file the printer opens had live text that overflowed: the wordmark wrapped and the hero number fell onto the claims row. Rule: export every panel at the gated artwork's size and compare text bounds and line breaks; any difference fails. Size check with `cstack audit`. Diff with `cstack mockup verify` through a flat template (one quad over the whole canvas, no shading), plus a human check of line breaks. There is no dedicated command for this.
+- **Correction: the overflow was a font problem.** The design file used free stand-in fonts in place of the licensed faces; the stand-ins run wider, so dozens of frames showed false wraps and collisions while the same frames set with the licensed faces as outlines were clean. Rule: compare the installed faces with the gated ones first and report "stand-in font, not print-ready" before judging any overflow; print production starts only once the licensed fonts are installed.
 - **Renders that redraw the pack.** Generated renders that repaint the label were used to compare routes. Rule: any generated render that redraws the pack is labelled illustrative and decides nothing until `cstack mockup verify` (or the 3D label pixel diff) passes.
 
 ## Sources not verified

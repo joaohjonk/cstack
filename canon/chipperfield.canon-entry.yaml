@@ -1,0 +1,52 @@
+id: chipperfield
+name: David Chipperfield (David Chipperfield Architects)
+kind: person
+domains:
+- architecture
+- restoration
+- museums
+mental_model: 'continuity over novelty: repair and complete what exists, let the history stay legible, and make the new distinguishable without imitating the lost'
+mechanisms:
+- 'start from what survives: inventory the existing fabric and its damage before proposing anything new'
+- 'repair, do not reconstruct: fill only the gaps needed for the whole to read again, and leave scars that carry meaning'
+- 'the new reflects the lost without imitating it: complete the volume or rhythm in a plainer material so old and new are told apart'
+- 'let the method follow the condition on site: different damage gets a different procedure, under one set of principles'
+- 'avoid unnecessary moves: no gesture that exists only to be seen as new; resist trend and fashion'
+- 'restraint as respect: the quieter intervention lets the existing thing remain the subject'
+representative_works:
+- Neues Museum, Berlin (with Julian Harrap Architects; competition 1997, reopened 2009)
+- James-Simon-Galerie, Museum Island, Berlin (2019)
+- Pritzker Architecture Prize (2023)
+when_useful:
+- 'an inherited brand: keep official assets untouched, repair one region, do not regenerate the whole'
+- refreshes and extensions where recognition is the asset (heritage, institutions, long-lived products)
+- deciding which marks of age or use are part of the brand and should stay visible
+- retouching and compositing where new elements must sit beside originals honestly
+when_not_useful:
+- a true launch with nothing to continue from
+- 'a brand whose existing equity is the problem; continuity then preserves what should be replaced'
+- 'as a muted-palette preset: the lesson is the repair logic, not the grey concrete'
+tensions:
+- 'continuity vs. a clean subtraction (canon:pawson) and vs. behaviour-first range (canon:collins)'
+- 'restraint vs. distinctiveness (canon:rams): quiet repair can disappear in a crowded category'
+- 'honest difference vs. seamless retouching: visible repair can read as unfinished to some audiences'
+distance_from:
+  identity: middle
+  packaging: middle
+  editorial: middle
+  wayfinding: middle
+  hospitality: middle
+  campaign-advertising: far
+  motion: far
+sources:
+- kind: external_reference
+  ref: https://davidchipperfield.com/project/neues_museum
+  quote: 'The new reflects the lost without imitating it.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.e-flux.com/announcements/521512/david-chipperfield-2023-laureate/
+  quote: 'avoiding unnecessary moves and steering clear of trends and fashions'
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current

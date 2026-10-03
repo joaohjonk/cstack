@@ -58,7 +58,7 @@ Method first: `cstack flows search "type system"` (preamble 0.5).
 - Contrast on one or two axes at a time (size, weight, structure, case, colour, space). Hierarchy needs few, clear steps.
 - Defaults (45–75 characters, body leading about 1.4–1.6, WCAG contrast) hold unless a rule records why not.
 - Real copy, real sizes, real languages. Lorem ipsum hides rhythm, coverage and line-break problems.
-- `cstack type qa` gates web pages only. A print or design-tool file passes only when each exported frame's text bounds and line breaks match the gated artwork; live text that reflows in the file the printer opens is a fail.
+- `cstack type qa` gates web pages only. A print or design-tool file is checked font first: if the faces installed are not the gated files (`cstack type font`), report "stand-in font, not print-ready" and stop. Only then must each exported frame's text bounds and line breaks match the gated artwork; live text that reflows in the file the printer opens is a fail.
 - No synthesized bold, italic or small caps; no letter-spaced lowercase body; no long all-caps passages.
 - A licence for each use, checked against the foundry EULA; `fsType` is a technical flag, not a licence. Record the licence state with the choice: model (perpetual, subscription, open), whether the fonts stop working when a subscription ends, what the EULA says about modifying or subsetting, any AI or data-mining clause, and trial status. Trial files never ship.
 - Recommend a bespoke typeface only when equity, scale and budget justify it; otherwise a strong retail family and a rigorous system.

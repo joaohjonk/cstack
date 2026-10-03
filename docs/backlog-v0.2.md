@@ -36,6 +36,7 @@ Prioritized by dependency (see the build order in [research/gap-analysis.md](res
 21. Video beyond the first pass: the product-video workflow, skills and `cstack video` checks exist; still missing are label checks against the master artwork calibrated on real runs and a first paid run.
 22. Deck and packaging checkers (safe zones, bleed, dielines, minimum type sizes).
 23. Tool-call tracing for observability across a workflow run.
+24. Canon entries for the rest of the README acknowledgements (architecture, fashion, art, film and Brazilian studios). Seven exist (pawson, chipperfield, isay-weinfeld, jonathan-anderson, bureau-borsche, ok-rm, formafantasma); each new one needs sourced mechanisms, not a name.
 
 ## Skill-count rationale
 

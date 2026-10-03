@@ -1,0 +1,63 @@
+id: pawson
+name: John Pawson
+kind: person
+domains:
+- architecture
+- interiors
+- product design
+mental_model: 'subtraction as the method: remove until only proportion, light and material remain, and the work still feels good to live with'
+mechanisms:
+- 'edit by removal: a thing is finished when taking anything else away would make it worse, not when nothing more can be added'
+- carry one material (or a very small family) through floor, wall and object so the eye reads one surface, not a collection
+- treat light as the main material; plan where it falls before choosing finishes
+- 'make the detail disappear: junctions, fixings and shadow gaps take the most work precisely so nobody notices them'
+- 'the same method at every scale: a building, a shop, a bowl and a page answer the same questions (mass, surface, proportion, junction, repetition)'
+- 'measure success by how people feel using the space, not by how the photograph looks; the photograph is a momentary ideal'
+- 'whites are many colours: tune near-neutrals deliberately instead of defaulting to one white'
+representative_works:
+- Minimum (book, Phaidon, 1996)
+- Calvin Klein Collection flagship, Madison Avenue, New York (1990s)
+- Abbey of Our Lady of Nový Dvůr, Czech Republic (2004)
+- Design Museum interiors, Kensington, London (2016)
+when_useful:
+- 'editing a cluttered layout, pack or shelf: what here has not earned its place?'
+- retail, hospitality and unboxing spaces where calm is the product
+- choosing one hero material or finish and carrying it through a whole system
+- art direction of still life and interiors where light does the work
+when_not_useful:
+- brands built on abundance, humour, vernacular or noise; subtraction there removes the brand
+- 'as a white-box styling preset: an empty room without proportion and light is just empty'
+- budgets that cannot afford the hidden detail; minimal with visible fixings looks cheap, not calm
+tensions:
+- 'austerity vs. warmth: the same reduction can read as monastic or as cold (canon:isay-weinfeld adds wit and warmth back)'
+- 'restraint as a premium cliche: see canon:rams on restraint vs. distinctiveness'
+- 'continuity with what exists vs. a clean slate (canon:chipperfield keeps the scars)'
+- 'light and procession as the event (canon:tadao-ando) vs. the object as the event (canon:irma-boom)'
+distance_from:
+  hospitality: near
+  packaging: near
+  identity: middle
+  editorial: middle
+  fashion: middle
+  campaign-advertising: far
+  motion: far
+sources:
+- kind: external_reference
+  ref: Minimum (John Pawson, Phaidon, 1996)
+- kind: external_reference
+  ref: https://www.stylepark.com/en/news/people-should-feel-at-home-in-my-buildings
+  quote: 'The photos illustrate a momentary, but essentially fictitious ideal state.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://proof.csmonitor.com/1996/1218/121896.feat.archit.1.html
+  quote: '50 different colors of white'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.phaidon.com/blogs/phaidon-archive/all-you-need-to-know-about-john-pawson-anatomy-of-minimum
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.dezeen.com/2020/04/21/john-pawson-face-to-face-podcast/
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (acknowledgements)
+status: current

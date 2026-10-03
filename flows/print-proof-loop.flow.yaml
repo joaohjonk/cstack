@@ -49,6 +49,11 @@ steps:
   outputs: [work/packaging/converter-spec.yaml]
   gate: {type: owner, check: "owner and converter agree the spec in writing"}
   compare_to_target: every brand colour has a target on this substrate
+- id: font-parity
+  does: before any text comparison, list the fonts the design file actually uses and the faces installed on the machine that opens it, and compare them with the families and files the type gate approved (read the installed files with cstack type font; names, version, foundry); a free stand-in or substitute face is reported as "stand-in font, not print-ready" and stops the run before any overflow is judged
+  kind: deterministic
+  gate: {type: deterministic_check, check: "every face in the design file matches a gated family and file (cstack type font names and version); no stand-in or substituted font"}
+  compare_to_target: the same font files the gate measured; licensed faces installed before print production starts
 - id: file-parity
   does: export every design-tool panel the printer will open at the gated artwork size; check size with cstack audit; diff against the approved panel with cstack mockup verify through a flat template (one quad over the whole canvas, no shading); a human checks text bounds and line breaks
   kind: deterministic
@@ -83,6 +88,7 @@ steps:
 cost_ladder: every proof costs converter money and days; soft proof for early rounds, one substrate proof after file-parity and preflight pass, press check only for a first run or a new substrate; stop after two failed proofs on the same colour and change the ink, the substrate or the target with the converter
 failure_modes:
 - design-tool live text rewrapped or overflowed after the type gate passed
+- a stand-in font installed in place of the licensed face, so every comparison is wrong
 - dieline swapped for an older version between proof rounds
 - colour judged from a phone photo or a screen
 - barcode on a transparent window without white underlay
