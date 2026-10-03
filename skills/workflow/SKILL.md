@@ -43,7 +43,7 @@ The approved brief and brand state govern every step. Owner decisions at gates a
 2. **Plan tracker**: create or resume `work/plans/<workflow>-<YYYY-MM-DD>.md` in the workspace: one line per step with state (`todo | doing | done | gate | blocked | skipped-with-reason`), outputs, decisions, spend. The tracker is the resume point across sessions.
 3. **Prerequisites** of the next step only (not all at once): inputs exist, providers available, budget.
 4. **Run the step** by following its skill; write its outputs to the declared paths; update the tracker.
-5. **Gates**: `owner` gates stop and present the decision (options, recommendation, consequences). Gates can be deferred ("continue with the recommended option, revisit later") but not skipped; a deferred gate stays visible in the tracker.
+5. **Gates**: visual steps pass `cstack flows gate <plan>` at `make` before making, `decide` before a direction is chosen and `final` before work is called done. `owner` gates stop and present the decision (options, recommendation, consequences). Gates can be deferred ("continue with the recommended option, revisit later") but not skipped; a deferred gate stays visible in the tracker.
 6. **Verify loops** inside the workflow follow verify → fix → re-verify → human.
 7. **Close**: lineage for final artifacts, retro notes via `learn-loop`, the run record linked from the workflow (`runs:`) so the workflow can be promoted from `template` to `validated`.
 

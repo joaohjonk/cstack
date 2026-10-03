@@ -11,14 +11,14 @@ import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
 import { compile, diffRecipes } from '../scripts/lib/prompt.mjs';
 import { canonNames } from '../scripts/lib/prompt-names.mjs';
 import { route } from '../scripts/lib/router.mjs';
-import { planBatch, readLedger, spent } from '../scripts/lib/ledger.mjs';
+import { planBatch, readLedger, spent, loadBudget } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
 import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, taskContext, resolveConflict } from '../scripts/lib/brand.mjs';
 import { buildGuide } from '../scripts/lib/guide.mjs';
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
-import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
+import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
 import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
@@ -146,6 +146,7 @@ const COMMANDS = {
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage" [--json [--workflows]]; also lists the workflows that cover the outcome',
   'flows show': 'print one flow: cstack flows show <id>',
   'flows plan': 'copy a flow into this run\'s plan: cstack flows plan <id> [--target "what as-close-as-possible means"] → work/flows/',
+  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
   'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
@@ -858,7 +859,19 @@ switch (cmd) {
         for (const w of x.warnings) console.log(`  warn:  ${w}`);
       }
       if (res.some((x) => x.errors.length)) process.exitCode = 1;
-    } else die('usage: cstack flows list|search|show|plan|check');
+    } else if (sub === 'gate') {
+      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|decide|final');
+      const stage = args.stage ?? die(`--stage required: ${GATE_STAGES.join('|')}`);
+      if (!GATE_STAGES.includes(stage)) die(`--stage must be one of ${GATE_STAGES.join(', ')}`);
+      const x = gateFlow(ws, path.resolve(f), { stage, providers: availability(), skills: listSkills().map((s) => s.slug), budget: loadBudget(ws) });
+      if (args.json) json(x);
+      else {
+        console.log(`${x.errors.length ? 'FAIL' : 'PASS'}  ${stage}  ${shown(x.file)}`);
+        for (const e of x.errors) console.log(`  error: ${e}`);
+        for (const w of x.warnings) console.log(`  warn:  ${w}`);
+      }
+      if (x.errors.length) process.exitCode = 1;
+    } else die('usage: cstack flows list|search|show|plan|check|gate');
     break;
   }
   case 'browse': {

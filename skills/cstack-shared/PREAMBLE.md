@@ -16,8 +16,12 @@ Every outcome gets a researched flow before anything is made:
 
 1. **Target.** State the desired outcome as concretely as possible: what "as close as possible" means, the reference it is judged against, musts and must-nots. Vague target → `brief` first.
 2. **Find the flow.** `cstack flows search "<outcome>"`. A matching, non-stale flow is the default plan. Stale, missing or a poor fit → `/flow-research`: compare at least two candidate flows from current evidence (tool and model docs, MCP-first and YC companies, what practitioners actually post and use) before choosing one.
-3. **Plan.** `cstack flows plan <id> --target "..."` writes `work/flows/<date>-<id>.flow.yaml`: steps, tool per step with fallbacks, deterministic vs generative, gates, cost ladder, stop condition. `cstack flows check <plan>` must pass. Show it before spending.
+3. **Plan.** `cstack flows plan <id> --target "..."` writes `work/flows/<date>-<id>.flow.yaml`: steps, tool per step with fallbacks, deterministic vs generative, gates, cost ladder, stop condition. `cstack flows check <plan>` must pass. Show it before spending. Record `deliverable: {kind, key_visual}` in the plan; nothing is made until `cstack flows gate <plan> --stage make` passes.
 4. **Step by step.** Run one step, compare its output to the target (`compare_to_target`), pass its gate, then the next. Never jump to the final render. When a step misses, fix that step; do not restart from scratch.
+4b. **Gates on quality, not only compliance.** Compliance checks (brand-verify, legibility, lint) passing says nothing about whether the work is good.
+   - **Missing capability stops; it never degrades silently.** Imagery that needs generation, with no usable media provider or a zero budget here, stops with "needs generation; run where the keys live" or asks the owner for a budget. Making it another way (hand-drawn vector, a placeholder) needs the owner's yes, recorded as `deliverable.substitute`.
+   - **Range is visible.** Before a visual decision, each territory is a probe contact sheet (`territories` in the plan; `--stage decide`).
+   - **Judged against gold.** Before visual work is called final, it sits side by side with at least one gold reference (`gold_comparisons`; `--stage final`). Empty `references/gold` means nobody has said what good looks like: get gold first.
 5. **Close the loop.** What worked or failed goes to `cstack learn add` and back into the flow (`runs:`, `evidence`), so the next run starts from a better method.
 
 ## 1. Honesty contract
