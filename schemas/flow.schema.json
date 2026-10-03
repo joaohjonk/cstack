@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/flow.schema.json",
+  "title": "Flow",
+  "description": "Method before making: the researched best way to reach an outcome, step by step. Library entries live in cstack flows/; a run's chosen plan lives in the workspace work/flows/.",
+  "type": "object",
+  "required": [
+    "id",
+    "outcome",
+    "status",
+    "steps",
+    "evidence",
+    "last_verified"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "enum": [
+        "researched",
+        "validated",
+        "stale",
+        "deprecated",
+        "plan"
+      ]
+    },
+    "target": {
+      "type": "object",
+      "description": "what 'as close as possible' means",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "reference_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "must": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "must_not": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "quality_bar": {
+          "type": "string"
+        }
+      }
+    },
+    "when": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "not_when": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidates_considered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "verdict"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "verdict": {
+            "enum": [
+              "chosen",
+              "rejected",
+              "fallback"
+            ]
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "does",
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "does": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "deterministic",
+              "retrieval",
+              "probe",
+              "generative",
+              "human",
+              "research"
+            ]
+          },
+          "skill": {
+            "type": "string"
+          },
+          "tools": {
+            "type": "array",
+            "description": "options in preference order; first available wins",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "why": {
+                  "type": "string"
+                },
+                "access": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gate": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "auto",
+                  "owner",
+                  "deterministic_check",
+                  "independent_review"
+                ]
+              },
+              "check": {
+                "type": "string"
+              },
+              "pass_if": {
+                "type": "string"
+              }
+            }
+          },
+          "est_cost": {
+            "$ref": "common.schema.json#/$defs/money"
+          },
+          "est_minutes": {
+            "type": "number"
+          },
+          "compare_to_target": {
+            "type": "string",
+            "description": "how this step's output is compared against the target before moving on"
+          },
+          "fallback": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cost_ladder": {
+      "type": "string",
+      "description": "probe \u2192 selection \u2192 final, with the stop condition"
+    },
+    "failure_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ref",
+          "kind",
+          "date"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "observed",
+              "documented",
+              "practitioner",
+              "marketing",
+              "inferred",
+              "run_record"
+            ]
+          },
+          "date": {
+            "$ref": "common.schema.json#/$defs/date"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "last_verified": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "stale_after_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

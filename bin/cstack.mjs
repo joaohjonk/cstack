@@ -17,6 +17,7 @@ import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, reso
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
+import { listFlows, searchFlows, planFromFlow } from '../scripts/lib/flows.mjs';
 import { runMedia, listPending } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
@@ -86,6 +87,10 @@ const COMMANDS = {
   'tokens build': 'compile tokens to brand/generated/tokens.css (deterministic)',
   'tokens lint': 'flag raw colors in built files that are not brand tokens: cstack tokens lint <files...> [--allow #fff,#000]',
   browse: 'headless browser for brand work (lazy-loads playwright-core): cstack browse shot|snapshot|tokens|media|qa|pdf <url> [flags] | run <steps.yaml> | engines',
+  'flows list': 'researched best-way-to-an-outcome flows (cstack flows/ + workspace flows/), with staleness',
+  'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage"',
+  'flows show': 'print one flow: cstack flows show <id>',
+  'flows plan': 'copy a flow into this run\'s plan: cstack flows plan <id> [--target "what as-close-as-possible means"] → work/flows/',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
   feedback: 'append a human feedback event: cstack feedback --ws <dir> --file event.json',
@@ -145,6 +150,11 @@ function cmdValidate() {
       for (const st of wf.steps ?? []) if (st.skill && !slugs.includes(st.skill)) r.error(rel(p), `step "${st.id}" uses unknown skill "${st.skill}"`);
       if (!slugs.includes(d) && !wf.entry_skill) r.warn(rel(p), 'workflow has no matching playbook skill (entry_skill)');
     }
+  // flows: steps name real skills; stale flows are flagged
+  for (const f of listFlows(ROOT)) {
+    for (const st of f.steps ?? []) if (st.skill && !slugs.includes(st.skill)) r.error(rel(f.file), `step "${st.id}" uses unknown skill "${st.skill}"`);
+    if (f.stale) r.warn(rel(f.file), `flow last verified ${f.last_verified} (${f.age_days} days); re-research it`);
+  }
   // research tools name real skills and workflows
   const rt = readJSON(path.join(ROOT, 'registry', 'research-tools.json'));
   const wfNames = exists(path.join(ROOT, 'workflows')) ? fs.readdirSync(path.join(ROOT, 'workflows')) : [];
@@ -583,6 +593,27 @@ switch (cmd) {
     const p = listPending(ws);
     if (args.json) json(p);
     else console.log(p.length ? p.map((j) => `${j.provider}/${j.model} ${j.request_id ?? ''} since ${j.submitted_at ?? '?'}`).join('\n') : 'no pending jobs');
+    break;
+  }
+  case 'flows': {
+    const sub = argv[0];
+    if (sub === 'list' || !sub) {
+      const fl = listFlows(ws);
+      if (args.json) json(fl);
+      else for (const f of fl) console.log(`${f.stale ? 'STALE' : f.status.padEnd(5).slice(0, 5)}  ${f.id.padEnd(30)} ${f.outcome}${f.scope === 'workspace' ? '  (workspace)' : ''}`);
+    } else if (sub === 'search') {
+      const res = searchFlows(ws, args._.join(' ') || die('usage: cstack flows search "<outcome>"'));
+      if (args.json) json(res);
+      else if (!res.length) console.log('no researched flow matches; run /flow-research to design one before making anything');
+      else for (const r of res) console.log(`${String(r.score).padStart(3)}  ${r.flow.id.padEnd(30)} ${r.flow.outcome}${r.flow.stale ? '  [STALE: re-verify before use]' : ''}`);
+    } else if (sub === 'show') {
+      const f = listFlows(ws).find((x) => x.id === args._[0]) ?? die(`no flow "${args._[0]}"`);
+      if (args.json) json(f);
+      else console.log(fs.readFileSync(f.file, 'utf8') + (f.stale ? `\n# STALE: last verified ${f.last_verified} (${f.age_days} days); re-verify tools and models before following it\n` : ''));
+    } else if (sub === 'plan') {
+      const r = planFromFlow(ws, args._[0] ?? die('usage: cstack flows plan <id> [--target "..."]'), { target: args.target });
+      console.log(`plan written: ${rel(r.file)}${r.stale ? `\nwarning: source flow is stale (${r.age_days} days); re-verify tools and models first` : ''}`);
+    } else die('usage: cstack flows list|search|show|plan');
     break;
   }
   case 'browse': {

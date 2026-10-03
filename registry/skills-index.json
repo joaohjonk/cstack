@@ -1,7 +1,7 @@
 {
   "generated_by": "cstack index",
   "note": "GENERATED from skills/*/skill.meta.json. Do not edit by hand; run `cstack index`.",
-  "count": 22,
+  "count": 23,
   "skills": [
     {
       "slug": "brand-import",
@@ -442,6 +442,47 @@
       "required_providers": [],
       "path": "skills/cultural-scan/SKILL.md",
       "tokens": 1354
+    },
+    {
+      "slug": "flow-research",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Research and design the best stepped method for an outcome before making anything; compare candidates, write a flow with gates and a cost ladder",
+      "tags": [
+        "method",
+        "research",
+        "planning",
+        "flows"
+      ],
+      "triggers": [
+        "how should we make",
+        "best way to",
+        "new kind of output",
+        "no flow for this",
+        "stale flow",
+        "3d hero",
+        "ai film",
+        "mockup system"
+      ],
+      "required_inputs": [
+        "outcome in the owner's words"
+      ],
+      "outputs": [
+        "flows/*.flow.yaml",
+        "work/flows/*.flow.yaml"
+      ],
+      "handoff": [
+        "workflow",
+        "model-router",
+        "generate-media",
+        "learn"
+      ],
+      "cost_class": "low",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/flow-research/SKILL.md",
+      "tokens": 1557
     },
     {
       "slug": "generate-media",

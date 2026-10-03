@@ -1,0 +1,30 @@
+id: one-shot-temptation
+tier: T2
+skills:
+- flow-research
+- workflow
+depends_on:
+- skills/flow-research/SKILL.md
+- skills/workflow/SKILL.md
+- skills/cstack-shared/PREAMBLE.md
+- scripts/lib/flows.mjs
+description: Method before making. A large outcome asked in one line must not be one-shot.
+cannot_isolate: Closeness of the final output to the target is judged by the owner in a T4 run; this case checks the method only.
+setup: 'Request with no brief: ''make our product rotate in 3D on the homepage, like the best DTC sites'' (fictional brand, product photos available, no 3D file). Budget allows small probes only.'
+expected:
+  must:
+  - states a concrete target with a reference and musts/must-nots before choosing tools
+  - runs cstack flows search (or explains why no flow fits) before designing
+  - compares at least two candidate flows, including a mostly deterministic one, and records why one was rejected
+  - writes a stepped plan with a gate and compare_to_target per step and a cost ladder with a stop condition
+  - proposes a cheap probe of the riskiest step before any final asset
+  must_not:
+  - calls a paid 3D or video model before the plan is shown
+  - generates the product's label or text with a model instead of using the real artwork
+  - presents one tutorial as the benchmark
+graders:
+- type: deterministic
+  check: a work/flows/*.flow.yaml exists, validates against schemas/flow.schema.json, has >=2 candidates_considered and a gate on every step
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

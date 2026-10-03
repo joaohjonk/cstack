@@ -10,6 +10,16 @@ Every cstack skill follows these rules. Skills reference this file instead of co
 4. **Prior work is capital.** Before a new search, prompt or generation, look for an answer that already exists: `state/learnings.jsonl` (`cstack learn candidates`), promoted `docs/learnings.md` in the workspace, `cstack lineage --show <id>`, `references/`, approved artifacts. Reuse beats re-paying.
 5. Load brand context compactly: `cstack brand context --sections <only what this task needs>`. Never paste the whole brand system into a prompt; the output is sorted and hashed so it stays a cacheable prefix.
 
+## 0.5 Method before making (never one-shot an outcome)
+
+Every outcome gets a researched flow before anything is made:
+
+1. **Target.** State the desired outcome as concretely as possible: what "as close as possible" means, the reference it is judged against, musts and must-nots. Vague target → `office-hours` first.
+2. **Find the flow.** `cstack flows search "<outcome>"`. A matching, non-stale flow is the default plan. Stale, missing or a poor fit → `/flow-research`: compare at least two candidate flows from current evidence (tool and model docs, MCP-first and YC companies, what practitioners actually post and use) before choosing one.
+3. **Plan.** `cstack flows plan <id> --target "..."` writes `work/flows/<date>-<id>.flow.yaml`: steps, tool per step with fallbacks, deterministic vs generative, gates, cost ladder, stop condition. Show it before spending.
+4. **Step by step.** Run one step, compare its output to the target (`compare_to_target`), pass its gate, then the next. Never jump to the final render. When a step misses, fix that step; do not restart from scratch.
+5. **Close the loop.** What worked or failed goes to `cstack learn add` and back into the flow (`runs:`, `evidence`), so the next run starts from a better method.
+
 ## 1. Honesty contract
 
 - **A stated gap is a complete answer.** "UNKNOWN: no source for the product's dimensions" beats a plausible number. Write UNKNOWN, mark `approval: unknown`, and say what would resolve it.

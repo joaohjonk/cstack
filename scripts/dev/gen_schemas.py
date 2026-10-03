@@ -284,3 +284,28 @@ S("skill-meta", "Skill metadata", "Section 9 / 24A. Machine-readable twin of SKI
    "allowed_tools": ARR_S, "host_overrides": {"type": "object"}, "trigger_eval": STR},
   ["slug", "type", "summary", "triggers", "required_inputs", "outputs", "compatible_hosts", "cost_class", "context_class", "mutating", "destructive", "version", "status"],
   {"additionalProperties": False})
+
+# ---------- flow (researched best way to reach an outcome; library entry or a run's plan) ----------
+step = {"type": "object", "required": ["id", "does", "kind"], "additionalProperties": False, "properties": {
+    "id": STR, "does": STR,
+    "kind": {"enum": ["deterministic", "retrieval", "probe", "generative", "human", "research"]},
+    "skill": STR,
+    "tools": {"type": "array", "description": "options in preference order; first available wins", "items": {"type": "object", "required": ["id"], "properties": {"id": STR, "why": STR, "access": STR}}},
+    "inputs": ARR_S, "outputs": ARR_S,
+    "gate": {"type": "object", "properties": {"type": {"enum": ["auto", "owner", "deterministic_check", "independent_review"]}, "check": STR, "pass_if": STR}},
+    "est_cost": ref("money"), "est_minutes": NUM,
+    "compare_to_target": {"type": "string", "description": "how this step's output is compared against the target before moving on"},
+    "fallback": STR}}
+S("flow", "Flow", "Method before making: the researched best way to reach an outcome, step by step. Library entries live in cstack flows/; a run's chosen plan lives in the workspace work/flows/.",
+  {"id": ref("id"), "outcome": STR, "aliases": ARR_S, "status": {"enum": ["researched", "validated", "stale", "deprecated", "plan"]},
+   "target": {"type": "object", "description": "what 'as close as possible' means", "properties": {"description": STR, "reference_refs": ARR_S, "must": ARR_S, "must_not": ARR_S, "quality_bar": STR}},
+   "when": ARR_S, "not_when": ARR_S,
+   "candidates_considered": {"type": "array", "items": {"type": "object", "required": ["name", "verdict"], "properties": {"name": STR, "summary": STR, "verdict": {"enum": ["chosen", "rejected", "fallback"]}, "why": STR}}},
+   "steps": {"type": "array", "minItems": 1, "items": step},
+   "cost_ladder": {"type": "string", "description": "probe → selection → final, with the stop condition"},
+   "failure_modes": ARR_S,
+   "evidence": {"type": "array", "items": {"type": "object", "required": ["ref", "kind", "date"], "properties": {"ref": STR, "kind": {"enum": ["observed", "documented", "practitioner", "marketing", "inferred", "run_record"]}, "date": ref("date"), "note": STR}}},
+   "last_verified": ref("date"), "stale_after_days": {"type": "integer", "minimum": 1},
+   "runs": ARR_S, "related": ARR_S},
+  ["id", "outcome", "status", "steps", "evidence", "last_verified"],
+  {"additionalProperties": False})

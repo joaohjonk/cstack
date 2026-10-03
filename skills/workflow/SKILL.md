@@ -41,6 +41,7 @@ The approved brief and brand state govern every step. Owner decisions at gates a
 
 ## Process
 
+0. **Method first** (preamble 0.5): `cstack flows search` for the outcome; an outcome no workflow covers, or a stale flow, goes to `flow-research` before step 1.
 1. **Load** the workflow file and check `status` (`template` = not yet proven on a real run; say so; `validated` = has a linked run record).
 2. **Plan tracker**: create or resume `work/plans/<workflow>-<YYYY-MM-DD>.md` in the workspace: one line per step with state (`todo | doing | done | gate | blocked | skipped-with-reason`), outputs, decisions, spend. The tracker is the resume point across sessions.
 3. **Prerequisites** of the next step only (not all at once): inputs exist, providers available, budget.

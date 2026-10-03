@@ -1,6 +1,6 @@
 {
   "tolerance": 0.1,
-  "catalog_ceiling": 2935,
+  "catalog_ceiling": 3102,
   "skills": {
     "brand-import": {
       "ceiling": 1620,
@@ -88,6 +88,10 @@
     },
     "workflow": {
       "ceiling": 1190,
+      "set": "2026-10-03"
+    },
+    "flow-research": {
+      "ceiling": 1557,
       "set": "2026-10-03"
     }
   },
