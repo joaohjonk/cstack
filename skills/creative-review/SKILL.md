@@ -38,6 +38,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Process
 
+0. **Gate**: `cstack flows gate <plan> --stage final` before visual work is called final.
 1. **Gates first** (cheap → expensive): schema/size audits, `brand-verify`, `product-fidelity`, compliance flags, `cstack svg legibility` on figures at the widths they are shown. Any hard fail → decision `fix` with the failing gate; skip aesthetics.
 2. **Pick lenses** relevant to the artifact (not all eleven every time): STRATEGIST (right problem?), BRAND DIRECTOR (is this ours?), ART DIRECTOR (coherent, specific visual idea?), PHOTOGRAPHER (intentional photograph? lens, light, contact, materials), TYPE DIRECTOR (type doing real work? the review axes in the type-director primer, with `cstack type qa` evidence), EDITOR (what to remove?), CULTURE (belongs in the world now?), COPY (sharp, ownable?), COMMERCE (helps someone understand and buy?), PRODUCTION (can it ship?), COMPLIANCE (anything risky or false?).
 3. **Each lens independently**: verdict, 1-3 evidence points tied to the artifact, the one change it would make.
@@ -62,7 +63,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Evals required
 
-- Fixtures: `wrong-audience-winner.yaml`, `beautiful-but-off-brand.yaml`, `agent-output-fails-verify.yaml` (fix → re-verify, no rationalizing), `ai-judge-not-owner.yaml` (owner preference overrides the judge), `long-page-no-map.yaml` (page mode).
+- Fixtures: `wrong-audience-winner.yaml`, `beautiful-but-off-brand.yaml`, `agent-output-fails-verify.yaml`, `ai-judge-not-owner.yaml`, `long-page-no-map.yaml`.
 
 ## Handoff
 

@@ -63,6 +63,7 @@ None paid. Read-only CLI: `cstack brand context`, `cstack search`, `cstack linea
 - "Make it cooler" style asks are diagnosed into named defects (hierarchy, light, casting, copy, novelty, cultural register) before any change is proposed.
 - Success criteria must be observable (a reviewer can say pass/fail) and include at least one product-truth criterion and one brand-fit criterion.
 - Name the ring served: core (practitioners others copy), participants or fans. Brand-building goes to the core; outer rings get conversion work. Collaborations need shared values, then a complementary audience.
+- Visual deliverables then go through a flow plan; nothing is made until `cstack flows gate <plan> --stage make` passes.
 - Do not produce creative executions here. A headline or image idea may appear only as an illustration of the framing.
 
 ## Outputs, files written, state updated
