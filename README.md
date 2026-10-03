@@ -242,15 +242,43 @@ None is required; every one has a fallback. Tools whose terms bar automated agen
 
 v0.1, beta. The skills, workflows, flows, checkers and schemas exist and pass their static checks and tests. What has not happened yet is said plainly in [docs/retro.md](docs/retro.md): no model-backed eval runner, no real brand run (that happens in each brand's private repo), checker thresholds not yet calibrated against an owner's verdicts. Workflows stay `template` and flows stay `researched` until a real run proves them. The next steps are in [docs/backlog-v0.2.md](docs/backlog-v0.2.md).
 
-## Thank you
+## Acknowledgements
 
-cstack is a machine for remembering what other people figured out. None of it is ours alone. These are the people and studios whose methods we tried to understand, and what we took from each. We took mechanisms, never voices: no name ever goes into a generation prompt, and no one listed here endorses this project.
+cstack is open source, but its point of view did not appear from nowhere.
 
-Where a person has a [canon](canon/) entry, the full reasoning lives there, with when the lesson helps, when it misleads, and its counterweight. The rest are lenses the method draws on that do not yet have an entry of their own.
+It is built from years of looking, making, collecting, arguing, building brands, breaking things, and learning from people whose work changed the way I see. Some are canonical. Some run small studios. Some make buildings, books, clothes, photographs or films. Some happen to ride bikes, surf, ski or play football beautifully.
+
+**Thank you, personally,** to Danil; to Stefano, my partner; to Fred Peclat of Atelier Peclat; to Airon Martin of Misci; and to all the marketers, brand builders and growth people I have worked with over the years. Some of this started in conversations with you.
+
+Among the people whose public work shaped it:
+
+**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, and Sweety & Co.
+
+**In graphic design and creative practice.** Massimo Vignelli, Mirko Borsche / Bureau Borsche, OK-RM (Oliver Knight and Rory McGrath), Experimental Jetset, Irma Boom, PLAYLAB, INC. (Archie Lee Coates IV and Jeff Franklin), COLLINS and Koto.
+
+**In architecture, objects and space.** Peter Zumthor, Pierre Yovanovitch, Carlo Scarpa, David Chipperfield, John Pawson, Tadao Ando, Isay Weinfeld, Álvaro Siza, Eduardo Souto de Moura, Aires Mateus, Bijoy Jain / Studio Mumbai, Anne Holtrop, Formafantasma, Faye Toogood, Michael Anastassiades, Charlotte Perriand and Isamu Noguchi.
+
+**In fashion and worldbuilding.** Jonathan Anderson, Miuccia Prada, AMO and Rem Koolhaas, Rei Kawakubo, Martin Margiela, Virgil Abloh, Grace Wales Bonner, Simon Porte Jacquemus and George Heaton.
+
+**In art and image-making.** Josef Albers, Mark Rothko, Constantin Brancusi, Donald Judd, Wolfgang Tillmans, Olafur Eliasson, James Turrell, David Hockney, Pierre Huyghe, Coco Capitán, Klaus Kremmerz, María Jesús Contreras and Annie Choi.
+
+**In moving image.** Paul Thomas Anderson, Jonathan Glazer, David Lynch, Andrea Arnold, Roy Andersson, Apichatpong Weerasethakul, Martin Scorsese and Gaspar Noé.
+
+**In culture, products and systems.** Ana Andjelic, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
+
+**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. This is an ode to them: unrelated to brand work, and impossible to forget.
+
+**In motion.** And people whose medium is not normally filed under design: Candide Thovex, Craig Anderson, Rob Machado, Mikey February, Tadej Pogačar, Roger Federer, Carlos Alcaraz, Ronaldinho and Mat Fraser. They are reminders that taste can live in a line, a decision, an economy of movement, an unexpected attack, or thousands of repetitions that eventually look effortless.
+
+These people did not build cstack, and their inclusion implies no affiliation or endorsement. Their public work simply helped build the taste, the questions and the ways of working behind it. The goal of cstack is not to imitate any of them. It is to make the things they taught me easier to remember, and harder to reduce to a prompt.
+
+### What we learned from their work
+
+Some of these lessons are written into cstack as principles. These are our own readings of public work, in our own words; cstack contains none of their work, never imitates anyone's voice or style, and never puts a person's name into a generation prompt. Where a person has a [canon](canon/) entry, the full reasoning lives there, with when the lesson helps, when it misleads, and its counterweight.
 
 ### Architects and spatial thinkers
 
-| | What cstack took |
+| | What we learned |
 |---|---|
 | **John Pawson** | Subtraction as the method. Keep removing until only proportion, light and material are left; the detail that disappears is the hardest one. It is the question `/creative-review` asks of every layout: what here has not earned its place? |
 | **Tadao Ando** | Light as the event in a still space, one material carried with total consistency, and procession: the route to a thing is part of the thing. A brand is experienced in sequence, so cstack plans campaigns and pages as sequences. [canon](canon/tadao-ando.canon-entry.yaml) |
@@ -260,7 +288,7 @@ Where a person has a [canon](canon/) entry, the full reasoning lives there, with
 
 ### Brand builders, creative directors and culture
 
-| | What cstack took |
+| | What we learned |
 |---|---|
 | **Ana Andjelic** | Brands as cultural actors. A brand world is made of beliefs, symbols, rituals, objects and places, and a cultural asset works only if people can decode it, repeat it, carry it, add to it and organize around it. Build a few strong primitives that generate hundreds of expressions. `/cultural-scan` scores exactly that. [canon](canon/cultural-capital-strategy.canon-entry.yaml) |
 | **Jonathan Anderson** | Worldbuilding through objects and collaboration. A brand becomes a world when the things it makes, the craftspeople it champions and the artists it works with all say the same thing in different materials. It is why cstack keeps a brand world of entities, not just a palette. |
@@ -270,7 +298,7 @@ Where a person has a [canon](canon/) entry, the full reasoning lives there, with
 
 ### Identity, type and the systems that made them repeatable
 
-| | What cstack took |
+| | What we learned |
 |---|---|
 | **Massimo Vignelli** | Reduction and systems: few typefaces, few sizes, one grid, applied with discipline and judged by meaning, structure and use. And the idea at the heart of cstack: don't only design the artifacts, design the machine that makes them. [canon](canon/vignelli.canon-entry.yaml) |
 | **Otl Aicher** | An identity as a rule set (grid, angles, palette) that generates every sign consistently. [canon](canon/otl-aicher.canon-entry.yaml) |
@@ -295,7 +323,7 @@ Where a person has a [canon](canon/) entry, the full reasoning lives there, with
 
 ### Perception, research and making
 
-| | What cstack took |
+| | What we learned |
 |---|---|
 | **Josef Albers** | Perception is relational: a colour means something only next to its neighbours. So cstack judges in context and by comparison, never in isolation. [canon](canon/albers.canon-entry.yaml) |
 | **Formafantasma** | Research and material intelligence as the design act. Know where the material comes from before you shape it; it is why `/product-fidelity` locks what the product is really made of. |
@@ -307,7 +335,9 @@ Where a person has a [canon](canon/) entry, the full reasoning lives there, with
 
 ### The builders cstack stands on
 
-| | What cstack took |
+These are direct debts. gstack's browser code is reused under its MIT licence; the rest are ideas from public repos, docs and notes.
+
+| | What we learned |
 |---|---|
 | **Garry Tan and gstack** | The shape of the whole thing: specialists as slash commands, `/office-hours` before anything, plain Markdown, one-line install, a README that tells you what each skill does. cstack's browser is ported from gstack's under MIT ([NOTICE.md](NOTICE.md)). |
 | **Andrej Karpathy** | autoresearch: a frozen test, one variable, keep or discard, a budget and a log of every attempt, failures included. That is `/creative-autoresearch`. ([notes](docs/research/karpathy-patterns.md)) |
@@ -315,7 +345,7 @@ Where a person has a [canon](canon/) entry, the full reasoning lives there, with
 | **The teams whose public repos and products we studied** | Higgsfield, Gooseworks, Bloom, Ad Army, Superside, Rampstack, Wondel and the Lenny skills among them. What we learned and where we disagreed is in [docs/research](docs/research/). |
 | **Two working notes on taste** | *Encoding Design Taste for AI-Driven Design Systems* and *Taste / Associative Distance / AI*, the maintainer's own notes and the intellectual floor of this repo: encode taste at the lowest reliable level, treat taste as the objective function and distance as the search radius, and run observe, compare, articulate, decide, encode until it compounds. ([summary](docs/research/taste-influences.md)) |
 
-If we have your method wrong, or you would rather not be here, open an issue and we will fix it.
+If we have described your work wrongly, or you would rather not be named here, open an issue and we will change it.
 
 ## Docs
 
