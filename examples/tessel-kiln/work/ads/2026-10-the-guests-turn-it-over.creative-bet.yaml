@@ -1,0 +1,58 @@
+# Fictional example. The story lane: a new story for a new audience, in its own slot with its own owner.
+# Written for the audience's audience: the guests at a first dinner, who pick up a plate and turn it over.
+id: B-2026-10-02
+title: The guests turn it over
+status: proposed
+lane: story
+lane_owner: founder (fictional)
+created: 2026-10-03
+by: creative-strategist
+tension: "I want my first real home to say something about me without me having to say it."
+audience:
+  who: friends buying a housewarming gift for someone's first permanent home
+  awareness_stage: unaware
+  objections:
+    - a gift should be safe, not something they might not like
+  language:
+    - "something they'll actually use"
+concept:
+  angle: the plate guests pick up and turn over to read the stamp on the foot ring
+  hook_tactic: overheard line
+  visual_hook: a hand at a dinner table turning a plate over, crumbs still on it
+  verbal_hook: "Where did you get these?"
+  mechanic: story turn
+  format: day in the life
+  proof: customer words
+  payoff: the batch stamp under the plate, and how to find the same glaze
+  cta: shop
+  awareness_stage: unaware
+hook_family:
+  - "Where did you get these?"
+  - a plate turned over mid-dinner to read the batch stamp
+formats:
+  - day in the life
+  - text-led static
+objectives:
+  - brand_equity
+  - organic_travel
+travel_reasons:
+  - human interest
+  - identity signalling
+brand_constraint: >-
+  The table after a meal, not before; north-window or evening light; real crumbs, no staged steam. The
+  plate is used, never displayed.
+experiment:
+  id: EXP-2026-10-guests
+  hold: [angle, format, offer]
+  vary: [hook_tactic]
+  design: single_factor
+  levels: { hook_tactic: 2 }
+  success:
+    metric: saves and shares per 1,000 views, and branded search in the window
+    threshold: ">= account median saves per 1,000 views"
+    min_spend_per_cell: 300
+    window_days: 21
+  kill: below half the account's median saves after the minimum spend
+evidence:
+  - ref: "Gift buyers are a different audience from the first-home buyers the account reaches today; no data on them yet."
+    ladder: hypothesis

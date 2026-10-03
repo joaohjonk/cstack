@@ -43,14 +43,15 @@
         "brand-verify"
       ],
       "evals": [
-        "evals/fixtures/competitor-ad-as-production-input.yaml"
+        "evals/fixtures/competitor-ad-as-production-input.yaml",
+        "evals/fixtures/creative-iteration-only-slate.yaml"
       ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/asset-factory/SKILL.md",
-      "tokens": 1131
+      "tokens": 1206
     },
     {
       "slug": "brand-import",
@@ -486,14 +487,15 @@
       "evals": [
         "evals/fixtures/creative-concentration-brand.yaml",
         "evals/fixtures/creative-confounded-winner.yaml",
-        "evals/fixtures/creative-correlation-as-rule.yaml"
+        "evals/fixtures/creative-correlation-as-rule.yaml",
+        "evals/fixtures/creative-partner-cut-for-roas.yaml"
       ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-intelligence/SKILL.md",
-      "tokens": 1370
+      "tokens": 1475
     },
     {
       "slug": "creative-review",
@@ -586,6 +588,7 @@
         "evals/fixtures/creative-bets-not-idea-lists.yaml",
         "evals/fixtures/creative-concentration-brand.yaml",
         "evals/fixtures/creative-correlation-as-rule.yaml",
+        "evals/fixtures/creative-iteration-only-slate.yaml",
         "evals/fixtures/creative-organic-vs-paid.yaml"
       ],
       "cost_class": "low",
@@ -593,7 +596,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-strategist/SKILL.md",
-      "tokens": 1541
+      "tokens": 1656
     },
     {
       "slug": "cultural-scan",
@@ -781,7 +784,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/hook-format-lab/SKILL.md",
-      "tokens": 1077
+      "tokens": 1164
     },
     {
       "slug": "identity-system",

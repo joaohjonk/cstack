@@ -14,7 +14,8 @@
     "objectives",
     "brand_constraint",
     "experiment",
-    "evidence"
+    "evidence",
+    "lane"
   ],
   "properties": {
     "id": {
@@ -198,7 +199,8 @@
               "offer",
               "duration",
               "aspect",
-              "audience"
+              "audience",
+              "talent_role"
             ]
           }
         },
@@ -223,7 +225,8 @@
               "offer",
               "duration",
               "aspect",
-              "audience"
+              "audience",
+              "talent_role"
             ]
           }
         },
@@ -253,7 +256,8 @@
               "offer",
               "duration",
               "aspect",
-              "audience"
+              "audience",
+              "talent_role"
             ]
           },
           "additionalProperties": {
@@ -324,6 +328,16 @@
         "additionalProperties": false
       },
       "description": "insights and observations behind the bet, each with its rung on the ladder"
+    },
+    "lane": {
+      "enum": [
+        "iteration",
+        "story"
+      ],
+      "description": "iteration = a better version of what exists; story = a new story for a new audience. Keep both lanes in a slate, never in the same slot, each with its own owner."
+    },
+    "lane_owner": {
+      "type": "string"
     }
   },
   "additionalProperties": false

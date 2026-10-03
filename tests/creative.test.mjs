@@ -176,3 +176,39 @@ test('example: imported records match the CSV and every growth-creative step nam
   assert.deepEqual(wf.aliases, ['paid-social']);
   for (const s of ['creative-intelligence', 'creative-strategist', 'hook-format-lab', 'winner-scaler', 'asset-factory', 'learn-loop']) assert.ok(wf.steps.some((st) => st.skill === s), s);
 });
+
+test('lanes: a slate of iteration bets fails the plan check; a story bet clears it', () => {
+  const plan = readData(path.join(ADS, '2026-10-week-41.production-plan.yaml'));
+  const bets = ['2026-10-potter-in-our-light', '2026-10-the-guests-turn-it-over'].map((f) => readData(path.join(ADS, `${f}.creative-bet.yaml`)));
+  const fams = [readData(path.join(ADS, '2026-10-one-kiln-load.creative-family.yaml'))];
+  assert.ok(checkPlan(plan, { bets, families: fams }).ok);
+  const only = structuredClone(plan);
+  only.bets = ['B-2026-10-01', 'F-2026-10-01'];
+  only.assets = only.assets.filter((a) => a.bet !== 'B-2026-10-02');
+  assert.match(checkPlan(only, { bets, families: fams }).errors.join(), /every bet in this plan iterates/);
+  const noLane = structuredClone(bets[0]);
+  delete noLane.lane;
+  assert.equal(checkBet(noLane).ok, false);
+  const tweak = structuredClone(bets[0]);
+  tweak.experiment.vary = ['verbal_hook'];
+  tweak.experiment.hold = ['angle', 'offer'];
+  assert.match(checkBet(tweak).warnings.join(), /only tweaks hooks/);
+});
+
+test('report: credibility partners are left out of every read, never judged on CPA', () => {
+  const rec = (ref, spend, purchases, role, format) => ({ id: `p-${ref}`, artifact_ref: ref, channel: 'meta', metrics: { spend, impressions: 20000, clicks: 300, purchases }, tags: { talent_role: role, format } });
+  const recs = [
+    rec('A1', 200, 10, 'acquisition creator', 'creator to camera'),
+    rec('A2', 200, 10, 'acquisition creator', 'creator to camera'),
+    rec('A3', 200, 9, 'acquisition creator', 'creator to camera'),
+    rec('P1', 200, 2, 'credibility partner', 'review read-out'),
+    rec('P2', 200, 2, 'credibility partner', 'review read-out'),
+    rec('P3', 200, 2, 'credibility partner', 'review read-out'),
+  ];
+  const r = report(recs);
+  assert.equal(r.account.ads, 3);
+  assert.equal(r.account.partners_not_judged, 3);
+  assert.ok(!r.groups.some((g) => g.term === 'credibility partner' || g.term === 'review read-out'));
+  assert.ok(!r.insights.some((i) => /credibility partner|review read-out/.test(i.statement)));
+  assert.match(r.warnings.join(), /never cut one for a performance number/);
+});

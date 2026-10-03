@@ -68,14 +68,18 @@ export function report(records, opts = {}) {
   const tax = opts.taxonomy ?? loadTaxonomy();
   const fams = opts.family ? [opts.family] : families(tax);
   const date = opts.date ?? today();
-  const ads = aggregateByAd(records);
+  const all = aggregateByAd(records);
+  // credibility partners (experts, long-term voices) are judged on trust over time, never on CPA or ROAS
+  const isPartner = (a) => n(a.tags.talent_role) === 'credibility partner';
+  const partners = all.filter(isPartner);
+  const ads = all.filter((a) => !isPartner(a));
   const ok = (a) => a.spend >= t.min_spend && a.impressions >= t.min_impressions;
   const suff = ads.filter(ok);
   const useCpa = suff.filter((a) => a.cpa != null).length >= t.min_ads;
   const metric = useCpa ? 'cpa' : 'ctr';
   const better = (x, base) => (metric === 'cpa' ? base / x : x / base); // > 1 is better
   const total = ads.reduce((s, a) => s + a.spend, 0);
-  const account = { ads: ads.length, sufficient: suff.length, untagged: ads.filter((a) => !Object.keys(a.tags).length).length, spend: round(total), metric, median: round(median(suff.map((a) => a[metric])), metric === 'ctr' ? 4 : 2) };
+  const account = { ads: ads.length, partners_not_judged: partners.length, sufficient: suff.length, untagged: ads.filter((a) => !Object.keys(a.tags).length).length, spend: round(total), metric, median: round(median(suff.map((a) => a[metric])), metric === 'ctr' ? 4 : 2) };
   const insights = [];
   const groups = [];
   const concentration = [];
@@ -162,6 +166,7 @@ export function report(records, opts = {}) {
     }
   }
   const warnings = [];
+  if (partners.length) warnings.push(`${partners.length} credibility-partner ads (${partners.map((a) => a.ref).join(', ')}) are left out of every read: partners are judged on trust over time, not on CPA or ROAS; never cut one for a performance number`);
   if (account.untagged) warnings.push(`${account.untagged} of ${ads.length} ads have no tags; decompose them (hook-format-lab) before reading groups`);
   if (suff.length < t.min_ads) warnings.push(`only ${suff.length} ads meet the minimum data (spend ≥ ${t.min_spend}, impressions ≥ ${t.min_impressions}); no group is read`);
   if (!useCpa && suff.length) warnings.push('too few ads with purchases; groups are read on CTR, which is attention, not sales');
@@ -195,6 +200,7 @@ export function checkBet(bet, { taxonomy = loadTaxonomy() } = {}) {
   if (vary.length === 2 && design !== 'factorial') errors.push(`two families vary (${vary.join(' × ')}); set design: factorial and levels for both so every combination is a cell, or vary one`);
   for (const f of vary) if (design === 'factorial' && !levels[f]) errors.push(`factorial design needs levels.${f}`);
   if (vary.includes('angle')) warnings.push('the angle varies: this is a new bet, not a test inside one; split it unless the bet is "which angle"');
+  if (bet.lane === 'iteration' && vary.every((f) => ['verbal_hook', 'visual_hook', 'hook_tactic', 'cta'].includes(f))) warnings.push('an iteration bet that only tweaks hooks; fine in its own slot, but the slate also needs a story bet (a new story for a new audience)');
   if (!(success.min_spend_per_cell > 0)) warnings.push('no minimum spend per cell; any result will be noise');
   const cells = vary.reduce((p, f) => p * (levels[f] ?? 2), 1);
   if (bet.objectives.includes('organic_travel')) {
@@ -258,6 +264,8 @@ export function checkPlan(plan, { bets = [], families: fams = [] } = {}) {
   for (const b of plan.bets) if (!plan.assets.some((a) => a.bet === b)) warnings.push(`bet ${b} has no assets`);
   const known = new Set([...bets, ...fams].map((b) => b.id));
   if (known.size) for (const b of plan.bets) if (!known.has(b)) warnings.push(`${b} has no *.creative-bet or *.creative-family file in the workspace`);
+  const lanes = plan.bets.map((b) => (fams.some((f) => f.id === b) ? 'iteration' : bets.find((x) => x.id === b)?.lane)).filter(Boolean);
+  if (lanes.length >= 2 && lanes.length === plan.bets.length && !lanes.includes('story')) errors.push(`every bet in this plan iterates on what exists (${plan.bets.join(', ')}); keep a story bet (a new story for a new audience) in its own slot, with its own owner`);
   const byBet = {};
   for (const a of plan.assets) (byBet[a.bet] ??= new Set()).add(a.experiment_id);
   for (const [b, s] of Object.entries(byBet)) if (s.size > 1) warnings.push(`bet ${b} spreads over ${s.size} experiment ids; one bet, one experiment`);

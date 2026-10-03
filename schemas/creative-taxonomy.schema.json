@@ -38,7 +38,8 @@
           "offer",
           "duration",
           "aspect",
-          "audience"
+          "audience",
+          "talent_role"
         ]
       },
       "additionalProperties": {
