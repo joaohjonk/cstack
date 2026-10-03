@@ -243,35 +243,13 @@ It is built from years of looking, making, collecting, arguing, building brands,
 
 A word on the names. I mention them because at some point I consumed, saw, or only briefly saw some of their work, and I think it changed me a little. This is a list of debts of attention, not of sources: nothing here is copied, and most of these people have no idea cstack exists.
 
-Among them:
-
-**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, Misci and Airon Martin, and Sweety & Co.
-
-**In graphic design and creative practice.** Massimo Vignelli, Mirko Borsche / Bureau Borsche, OK-RM (Oliver Knight and Rory McGrath), Experimental Jetset, Irma Boom, PLAYLAB, INC. (Archie Lee Coates IV and Jeff Franklin), COLLINS and Koto.
-
-**In architecture, objects and space.** Peter Zumthor, Pierre Yovanovitch, Carlo Scarpa, David Chipperfield, John Pawson, Tadao Ando, Isay Weinfeld, Álvaro Siza, Eduardo Souto de Moura, Aires Mateus, Bijoy Jain / Studio Mumbai, Anne Holtrop, Formafantasma, Faye Toogood, Michael Anastassiades, Charlotte Perriand and Isamu Noguchi.
-
-**In fashion and worldbuilding.** Jonathan Anderson, Miuccia Prada, AMO and Rem Koolhaas, Rei Kawakubo, Martin Margiela, Virgil Abloh, Grace Wales Bonner, Simon Porte Jacquemus and George Heaton.
-
-**In art and image-making.** Josef Albers, Mark Rothko, Constantin Brancusi, Donald Judd, Wolfgang Tillmans, Olafur Eliasson, James Turrell, David Hockney, Pierre Huyghe, Coco Capitán, Klaus Kremmerz, María Jesús Contreras and Annie Choi.
-
-**In moving image.** Paul Thomas Anderson, Jonathan Glazer, David Lynch, Andrea Arnold, Roy Andersson, Apichatpong Weerasethakul, Martin Scorsese and Gaspar Noé.
-
-**In culture, products and systems.** Ana Andjelic, Little Plains and their writing on brand systems for humans and agents, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
-
-**In business.** On and its founders, Phil Knight's *Shoe Dog*, Chip Wilson of lululemon, Hamilton Helmer's *7 Powers*, Andrew Chen, A.G. Lafley and Roger Martin's *Playing to Win*, and Marcus Aurelius's *Meditations*.
-
-**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. Dan Keeling and Mark Andrew of Noble Rot showed the wine world through a different lens entirely. This is an ode to them: unrelated to brand work, and impossible to forget.
-
-**At home.** Chico da Silva, Bertô, Carlos Motta, Paulo Monteiro da Silva, Rochegaussen and Fred Peclat made a few things I have the privilege to look at every day.
-
-**In motion.** And people whose medium is not normally filed under design: Candide Thovex, Craig Anderson, Rob Machado, Mikey February, Tadej Pogačar, Roger Federer, Carlos Alcaraz, Ronaldinho and Mat Fraser. They are reminders that taste can live in a line, a decision, an economy of movement, an unexpected attack, or thousands of repetitions that eventually look effortless.
+They range from studios in Brazil to architects, fashion houses, artists, filmmakers, founders, winemakers and athletes. Every one of them is named in [docs/lineage.md](docs/lineage.md#everyone-named).
 
 These people did not build cstack, and their inclusion implies no affiliation or endorsement. Their public work simply helped build the taste, the questions and the ways of working behind it. The goal of cstack is not to imitate any of them. It is to make the things they taught me easier to remember, and harder to reduce to a prompt.
 
 The images in this README are set in FreeSans from GNU FreeFont, a free sans in the Helvetica tradition, turned into outlines so they look the same on every screen. Helvetica itself (Max Miedinger and Eduard Hoffmann, Haas Type Foundry, 1957) is one of the great typefaces of the century; we simply could not ship it.
 
-For the longer notes on what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
+For what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
 
 JJ  
 [celeste.vc](https://celeste.vc)

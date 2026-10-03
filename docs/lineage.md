@@ -4,6 +4,32 @@ This is the long companion to the Acknowledgements in the [README](../README.md)
 
 Some of these lessons are written into cstack as principles. These are our own readings of public work, in our own words; cstack contains none of their work, never imitates anyone's voice or style, and never puts a person's name into a generation prompt. Where a person has a [canon](../canon/) entry, the full reasoning lives there, with when the lesson helps, when it misleads, and its counterweight.
 
+## Everyone named
+
+The Acknowledgements in the README, in full. Debts of attention, not sources: nothing here is copied, and their inclusion implies no affiliation or endorsement.
+
+**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, Misci and Airon Martin, and Sweety & Co.
+
+**In graphic design and creative practice.** Massimo Vignelli, Mirko Borsche / Bureau Borsche, OK-RM (Oliver Knight and Rory McGrath), Experimental Jetset, Irma Boom, PLAYLAB, INC. (Archie Lee Coates IV and Jeff Franklin), COLLINS and Koto.
+
+**In architecture, objects and space.** Peter Zumthor, Pierre Yovanovitch, Carlo Scarpa, David Chipperfield, John Pawson, Tadao Ando, Isay Weinfeld, Álvaro Siza, Eduardo Souto de Moura, Aires Mateus, Bijoy Jain / Studio Mumbai, Anne Holtrop, Formafantasma, Faye Toogood, Michael Anastassiades, Charlotte Perriand and Isamu Noguchi.
+
+**In fashion and worldbuilding.** Jonathan Anderson, Miuccia Prada, AMO and Rem Koolhaas, Rei Kawakubo, Martin Margiela, Virgil Abloh, Grace Wales Bonner, Simon Porte Jacquemus and George Heaton.
+
+**In art and image-making.** Josef Albers, Mark Rothko, Constantin Brancusi, Donald Judd, Wolfgang Tillmans, Olafur Eliasson, James Turrell, David Hockney, Pierre Huyghe, Coco Capitán, Klaus Kremmerz, María Jesús Contreras and Annie Choi.
+
+**In moving image.** Paul Thomas Anderson, Jonathan Glazer, David Lynch, Andrea Arnold, Roy Andersson, Apichatpong Weerasethakul, Martin Scorsese and Gaspar Noé.
+
+**In culture, products and systems.** Ana Andjelic, Little Plains and their writing on brand systems for humans and agents, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
+
+**In business.** On and its founders, Phil Knight's *Shoe Dog*, Chip Wilson of lululemon, Hamilton Helmer's *7 Powers*, Andrew Chen, A.G. Lafley and Roger Martin's *Playing to Win*, and Marcus Aurelius's *Meditations*.
+
+**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. Dan Keeling and Mark Andrew of Noble Rot showed the wine world through a different lens entirely. This is an ode to them: unrelated to brand work, and impossible to forget.
+
+**At home.** Chico da Silva, Bertô, Carlos Motta, Paulo Monteiro da Silva, Rochegaussen and Fred Peclat made a few things I have the privilege to look at every day.
+
+**In motion.** And people whose medium is not normally filed under design: Candide Thovex, Craig Anderson, Rob Machado, Mikey February, Tadej Pogačar, Roger Federer, Carlos Alcaraz, Ronaldinho and Mat Fraser. They are reminders that taste can live in a line, a decision, an economy of movement, an unexpected attack, or thousands of repetitions that eventually look effortless.
+
 ## Architects and spatial thinkers
 
 | | What we learned |
@@ -22,6 +48,7 @@ Some of these lessons are written into cstack as principles. These are our own r
 | **Jonathan Anderson** | Worldbuilding through objects and collaboration. A brand becomes a world when the things it makes, the craftspeople it champions and the artists it works with all say the same thing in different materials. It is why cstack keeps a brand world of entities, not just a palette. [canon](../canon/jonathan-anderson.canon-entry.yaml) |
 | **David Ogilvy** | Research before persuasion. The consumer is not a moron, specific facts sell, and the headline does most of the work. `/copywriting` and `/claims-proof` start from evidence. [canon](../canon/ogilvy.canon-entry.yaml) |
 | **Little Plains** | Brand systems written for people and agents at once, and the shift of value upstream: when output is cheap, the inputs (research, positioning, rules and the reasons behind them) decide the work, and a brand kit becomes something maintained rather than delivered. It is why cstack keeps the brand as files in git and treats every output as made from them. |
+| **Motion (creative library)** | An ad read in layers (messaging angle, creative mechanic, hook, visual format) rather than as one label; cstack writes its own vocabulary. |
 | **The D&AD tradition** | Work judged by peers who make work, for craft and for the idea at once. `/creative-review` is a crit, not a score: separate lenses, separate people, disagreement left on the table. |
 | **LoveFrom** | Care in the parts nobody will see. cstack checks favicons, fallbacks, safe zones and loudness for the same reason. |
 
