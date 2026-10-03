@@ -1,0 +1,76 @@
+{
+  "$description": "cstack's own colour tokens. Source: identity/brand/brand-system.json color.",
+  "color": {
+    "$type": "color",
+    "klein-blue": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0.184,
+          0.655
+        ],
+        "hex": "#002FA7"
+      },
+      "$description": "International Klein Blue, the one colour"
+    },
+    "ground": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.965,
+          0.957,
+          0.937
+        ],
+        "hex": "#F6F4EF"
+      },
+      "$description": "warm white ground"
+    },
+    "ink": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.082,
+          0.082,
+          0.082
+        ],
+        "hex": "#151515"
+      }
+    },
+    "grey": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.369,
+          0.361,
+          0.341
+        ],
+        "hex": "#5E5C57"
+      },
+      "$description": "secondary text, 6.1:1 on ground"
+    },
+    "white": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "hex": "#FFFFFF"
+      }
+    },
+    "accent": {
+      "$value": "{color.klein-blue}"
+    },
+    "surface": {
+      "$value": "{color.ground}"
+    },
+    "text": {
+      "$value": "{color.ink}"
+    },
+    "text-secondary": {
+      "$value": "{color.grey}"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+# cstack's own brand rules. Tokens hold atomic values; this file holds RELATIONSHIPS.
+# check: deterministic -> a command that exists today; check: judge -> an independent reviewer cites the rule id.
+version: 0.1
+rules:
+  - id: R-COLOR-01
+    scope: core
+    rule: Klein blue #002FA7 is the only accent; figures use only the colour tokens (klein-blue, ground, ink, grey, white)
+    check: judge
+    source: brand/brand-system.json#color.accent
+  - id: R-TYPE-01
+    scope: core
+    rule: README figures carry no live text; every word is a FreeSans outline, so no <text> element and no font file ships
+    check: deterministic   # ! grep -l '<text' docs/images/*.svg
+    source: brand/brand-system.json#typography.face
+  - id: R-TYPE-02
+    scope: core
+    rule: every text run in a figure renders at 11 px or more at 324 px wide (a phone's README column) and meets 4.5:1 on its ground, light and dark page
+    check: deterministic   # node bin/cstack.mjs svg legibility docs/images --width 324,830 --page "#ffffff,#0d1117"
+    source: brand/brand-system.json#type_hierarchy.min_size
+  - id: R-MARK-01
+    scope: core
+    rule: the wordmark is lowercase bold cstack with a solid square full stop that is never cropped
+    check: judge
+    source: brand/brand-system.json#logo_marks.wordmark
+  - id: R-LAYOUT-01
+    scope: core
+    rule: the default school is a Swiss poster, flush-left on a twelve-column grid; one idea per figure
+    check: judge
+    source: brand/brand-system.json#layout.default_school
+  - id: R-NAMES-01
+    scope: core
+    rule: no practitioner or studio is named inside a visual; credits live in README and docs/lineage.md text only
+    check: deterministic   # ! grep -il -E 'vignelli|pawson|ando|aicher|brockmann' docs/images/*.svg
+    source: brand/brand-system.json#anti_references.named_practitioners

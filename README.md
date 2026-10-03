@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. A giant white lowercase cstack with a square full stop sits on the bottom edge. Above it: Taste, made repeatable. An open operating system for brand work, run by agents. Before use: step outside, taste is built from distance." width="100%">
+  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. Taste, made repeatable. Before use: step outside. A row of white squares, one outlined and turned. A giant white lowercase cstack with a square full stop sits on the bottom edge." width="100%">
 </p>
 
 # cstack
@@ -43,7 +43,7 @@ The machine will repeat your judgment ten thousand times. Make sure it is worth 
 ## How it thinks
 
 <p align="center">
-  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
+  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="560">
 </p>
 
 Six rules hold the whole thing together:
@@ -256,7 +256,7 @@ JJ
 
 ## Docs
 
-[Architecture on one page](docs/architecture-one-page.md) · [Architecture](docs/architecture.md) · [Philosophy](docs/philosophy.md) · [Quickstart](docs/quickstart.md) · [Provenance](docs/provenance.md) · [Cost and context](docs/cost-and-context.md) · [Evals](docs/evals.md) · [Learnings](docs/learnings.md) · [Skill authoring](docs/skill-authoring.md) · [Research notes](docs/research/) · [Retro](docs/retro.md) · [v0.2 backlog](docs/backlog-v0.2.md)
+[Architecture on one page](docs/architecture-one-page.md) · [Architecture](docs/architecture.md) · [Philosophy](docs/philosophy.md) · [Quickstart](docs/quickstart.md) · [Provenance](docs/provenance.md) · [Cost and context](docs/cost-and-context.md) · [Evals](docs/evals.md) · [Learnings](docs/learnings.md) · [Skill authoring](docs/skill-authoring.md) · [Research notes](docs/research/) · [Retro](docs/retro.md) · [v0.2 backlog](docs/backlog-v0.2.md) · [cstack's own brand](identity/)
 
 ## License
 

@@ -1,0 +1,433 @@
+{
+  "schema_version": "0.1",
+  "metadata": {
+    "brand_id": "cstack",
+    "name": "cstack",
+    "updated": "2026-10-03",
+    "owner": "JJ",
+    "status": "partial",
+    "owners": [
+      {
+        "name": "JJ",
+        "decides": [
+          "color",
+          "typography",
+          "logo_marks",
+          "layout",
+          "final_assets"
+        ]
+      }
+    ],
+    "languages": [
+      "en"
+    ],
+    "version": "0.1",
+    "notes": "cstack's own identity, kept as a cstack workspace so changes to the repo home and its images run through /brand-verify. Real, not fictional. Holds no other brand's material."
+  },
+  "provenance": {
+    "ingested": [],
+    "precedence": [
+      "user_instruction",
+      "approved_brand_state",
+      "official_asset",
+      "live_brand_behavior",
+      "campaign_exception",
+      "extracted_pattern",
+      "external_reference",
+      "model_inference"
+    ],
+    "gaps": [
+      {
+        "looked_for": "voice rules, motion, sound, photography",
+        "where": "not decided yet; the home has no photography or motion",
+        "status": "needs_owner"
+      }
+    ]
+  },
+  "sections": {
+    "business_truth": {},
+    "customer_audience": {},
+    "category": {},
+    "strategy": {},
+    "positioning": {
+      "line": {
+        "last_updated": "2026-10-03",
+        "value": "Taste, made repeatable.",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "README.md",
+            "quote": "Taste, made repeatable.",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      },
+      "caution": {
+        "last_updated": "2026-10-03",
+        "value": "Before use: step outside. Taste is built from distance.",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "could be liek a caution sign for before use",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "jobs_to_be_done": {},
+    "brand_beliefs": {},
+    "brand_tensions": {},
+    "value_proposition": {},
+    "claims": {},
+    "proof": {},
+    "voice": {},
+    "vocabulary": {},
+    "banned_language": {},
+    "naming": {},
+    "logo_marks": {
+      "wordmark": {
+        "last_updated": "2026-10-03",
+        "value": "lowercase bold cstack followed by a solid square as its full stop; the square is never cropped",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "docs/images/cstack-hero.svg",
+            "quote": "cstack.",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "color": {
+      "accent": {
+        "last_updated": "2026-10-03",
+        "value": "#002FA7",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "deep/klein blue is my favorite color since im a child so use that pls",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked",
+        "notes": "International Klein Blue; the one colour. token: color.klein-blue"
+      },
+      "ground": {
+        "last_updated": "2026-10-03",
+        "value": "#F6F4EF",
+        "input_class": "SOFT_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "docs/images/*.svg",
+            "quote": "warm white ground behind every figure on the README",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "medium",
+        "permanence": "core",
+        "approval": "current",
+        "notes": "kept by the owner after gstack's review called it an AI look (2026-10-03). token: color.ground"
+      },
+      "ink": {
+        "last_updated": "2026-10-03",
+        "value": "#151515",
+        "input_class": "SOFT_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "docs/images/*.svg",
+            "quote": "near-black text and line",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "current"
+      },
+      "secondary_text": {
+        "last_updated": "2026-10-03",
+        "value": "#5E5C57",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "/mnt/project-files/cstack/notes/design-review/cstack-self-review.md",
+            "quote": "grey raised to 6.1:1 on the ground",
+            "captured_at": "2026-10-03",
+            "by": "creative-review"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "current",
+        "notes": "replaced #8C8A85 (3.1:1). token: color.grey"
+      },
+      "accent_count": {
+        "last_updated": "2026-10-03",
+        "value": "one accent; white and ink are not accents",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "deep/klein blue is my favorite color since im a child so use that pls",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "materials": {},
+    "textures": {},
+    "typography": {
+      "face": {
+        "last_updated": "2026-10-03",
+        "value": "a Helvetica-design grotesque; in shipped files, GNU FreeSans and FreeSans Bold converted to outlines",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "can we use helvetica or a close match (but do acknowledge helvetica is amazing) for this?",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          },
+          {
+            "kind": "approved_brand_state",
+            "ref": "NOTICE.md#gnu-freefont-freesans-readme-images",
+            "quote": "glyph outlines drawn from FreeSans and FreeSans Bold",
+            "captured_at": "2026-10-03",
+            "by": "legal check"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked",
+        "notes": "Helvetica itself cannot ship; URW Nimbus Sans was replaced because its exception covers only PostScript/PDF. No font file ships; text is outlines."
+      },
+      "case": {
+        "last_updated": "2026-10-03",
+        "value": "the wordmark is lowercase bold, tight tracking",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "docs/images/cstack-hero.svg",
+            "quote": "giant white lowercase cstack.",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "type_hierarchy": {
+      "min_size": {
+        "last_updated": "2026-10-03",
+        "value": "every text run at 11 px or more when the figure renders 324 px wide; on a 1200 px artboard that is about 41 px type, so figures carry few, large words",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "/mnt/project-files/cstack/notes/design-review/gstack-design-review.md",
+            "quote": "At 324 px the figures shrink to 0.27x and their small text is 3-5 CSS px",
+            "captured_at": "2026-10-03",
+            "by": "gstack design-review"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "current",
+        "notes": "checked by cstack svg legibility (QA thread, 2026-10-03)"
+      }
+    },
+    "grid": {},
+    "spacing": {},
+    "layout": {
+      "default_school": {
+        "last_updated": "2026-10-03",
+        "value": "Swiss poster: flush-left, a twelve-column grid, one colour doing the work",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "if i need clarity, i'll always choose vignelli style swiss posters.",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      },
+      "simplicity": {
+        "last_updated": "2026-10-03",
+        "value": "few figures, each with one idea; nothing decorative",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "lets go back to simplicity i guess...",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "components": {},
+    "interaction": {},
+    "motion": {},
+    "sound": {},
+    "photography": {},
+    "camera_language": {},
+    "lighting": {},
+    "casting": {},
+    "wardrobe": {},
+    "locations": {},
+    "props": {},
+    "product_representation": {},
+    "packaging_rules": {},
+    "illustration": {},
+    "graphic_devices": {
+      "square": {
+        "last_updated": "2026-10-03",
+        "value": "the square is the one unit of measure; drawn upright and solid when it stands for the brand, outlined and rotated only when it shows drift",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "docs/images/cstack-drift.svg",
+            "quote": "Prompted ten times / Made ten times from one brand, kept in files",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      },
+      "transit_line": {
+        "last_updated": "2026-10-03",
+        "value": "structures are drawn as one transit line with stations, in the register of a subway map",
+        "input_class": "SOFT_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "sure but the subway stop was much cooler",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "current"
+      }
+    },
+    "iconography": {},
+    "social_behavior": {},
+    "cultural_territories": {},
+    "reference_mechanisms": {},
+    "anti_references": {
+      "named_practitioners": {
+        "last_updated": "2026-10-03",
+        "value": "no practitioner or studio is named inside a visual; credit lives in text (README acknowledgements, docs/lineage.md)",
+        "input_class": "HARD_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "i also think citing the references in plain field is kinda ripping them off like ando, vignelli, etc.",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      },
+      "rejected_directions": {
+        "last_updated": "2026-10-03",
+        "value": "three-schools panel; brand-map and workspace mockups after Little Plains; liquid glass as the default",
+        "input_class": "SOFT_CONSTRAINT",
+        "sources": [
+          {
+            "kind": "user_instruction",
+            "ref": "project thread \"cstack README and home\"",
+            "quote": "forget the three schools ... lets go back to simplicity",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "asset_registry": {
+      "figures": {
+        "last_updated": "2026-10-03",
+        "value": [
+          "docs/images/cstack-hero.svg",
+          "docs/images/cstack-drift.svg",
+          "docs/images/nine-layers.svg"
+        ],
+        "input_class": "FACT",
+        "sources": [
+          {
+            "kind": "approved_brand_state",
+            "ref": "docs/images/",
+            "quote": "three README figures, regenerated by identity/work/figures/make-figures.py",
+            "captured_at": "2026-10-03",
+            "by": "README thread"
+          }
+        ],
+        "confidence": "high",
+        "permanence": "core",
+        "approval": "locked"
+      }
+    },
+    "campaign_history": {},
+    "performance_evidence": {},
+    "compliance_constraints": {},
+    "approved_exceptions": {},
+    "known_uncertainties": {}
+  },
+  "conflicts": [],
+  "entities_ref": "brand/brand-world.json",
+  "references_ref": "references/"
+}

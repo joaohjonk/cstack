@@ -1,0 +1,28 @@
+# cstack workspace for cstack. This folder is the brand's private repo: keep it out of cstack itself.
+brand_id: cstack
+created: 2026-10-03
+
+# Spend envelope. Paid provider calls are BLOCKED until these are set.
+# Keep them small while you learn what a run costs; raise them on purpose.
+budget:
+  currency: USD
+  per_run: 0        # max estimated spend for one batch
+  per_day: 0        # max spend per calendar day across all runs
+  confirm_over: 0   # calls estimated above this need the owner's --confirm
+  allow_unpriced: false  # true lets calls with no cost estimate through; otherwise each needs --confirm-unpriced
+  # unpriced_call_cost: 0.10  # what an allowed unpriced call books against per_day (default: per_run)
+
+# Providers: keys come from environment variables only (FAL_KEY, TASTE_API_KEY, ...). Never write keys here.
+# Read by skills (model-router, taste-search, brand-verify) as the owner's defaults; the CLI does not enforce them.
+providers:
+  preferred_media: fal          # mock | fal | higgsfield (stub) | openai-image (stub) | google (stub)
+  reference_search: taste-labs  # falls back to manual reference curation when TASTE_API_KEY is absent
+  verifier: local               # local | taste-labs (needs a public candidate URL)
+
+# Owner decisions the agent must not make alone
+approvals:
+  final_assets_need_human: true
+  never_self_approve: [logo_marks, claims, packaging_rules]
+
+# Publishing and outbound messages are never automatic.
+publish: { allowed: false }
