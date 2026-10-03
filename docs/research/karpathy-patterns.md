@@ -1,11 +1,11 @@
 # Karpathy research-engineering patterns → cstack `/experiment` + `/creative-autoresearch`
 
-Scope: master prompt §1.4B (meta-pattern) and §12A (creative autoresearch). Sources studied:
+Scope: the research-loop meta-pattern and creative autoresearch. Sources studied:
 
 | Repo | Path | State | Notes |
 |---|---|---|---|
-| `karpathy/autoresearch` | `/home/claude/research-src/karpathy_autoresearch` | 36 commits, last ≈ Mar 2026 (`228791f`). Small, stable, not stale for our purpose. | 3 files that matter: `program.md` (114 lines), `prepare.py` (frozen), `train.py` (mutable). |
-| `karpathy/nanochat` | `/home/claude/research-src/karpathy_nanochat` | 313 commits, last 2026-07-03 (`92d63d4`). Active. | Leaderboard (`dev/LEADERBOARD.md`), negative-results log (`dev/LOG.md`), contribution rules (`README.md:199-203`). |
+| `karpathy/autoresearch` | `research-src/karpathy_autoresearch` | 36 commits, last ≈ Mar 2026 (`228791f`). Small, stable, not stale for our purpose. | 3 files that matter: `program.md` (114 lines), `prepare.py` (frozen), `train.py` (mutable). |
+| `karpathy/nanochat` | `research-src/karpathy_nanochat` | 313 commits, last 2026-07-03 (`92d63d4`). Active. | Leaderboard (`dev/LEADERBOARD.md`), negative-results log (`dev/LOG.md`), contribution rules (`README.md:199-203`). |
 
 Everything below is architecture seen in files or git history. The tweets linked from the READMEs (`autoresearch/README.md:7`, `nanochat/dev/LEADERBOARD.md:198`) were not fetched; claims that come only from those tweets are left out.
 
@@ -57,7 +57,7 @@ human edits program.md  ──►  agent reads README + prepare.py + train.py   
 
 ---
 
-## 3. The 9 process principles (§1.4B) with file evidence
+## 3. The 9 process principles with file evidence
 
 | # | Principle | Evidence | Mechanism to copy |
 |---|---|---|---|
@@ -85,7 +85,7 @@ Patterns we also saw beyond the nine:
 Two skills share one engine:
 
 - **`/experiment`** is interactive and small, roughly 1–10 candidates. It answers one question ("does recipe change X beat the incumbent on fixture F?"), and a human may judge.
-- **`/creative-autoresearch`** is unattended and overnight. It is the same loop run for N experiments under hard budget and stop conditions, with results ready for morning review. It never promotes to the brand's canonical recipe on its own (§3.10, human taste is sovereign).
+- **`/creative-autoresearch`** is unattended and overnight. It is the same loop run for N experiments under hard budget and stop conditions, with results ready for morning review. It never promotes to the brand's canonical recipe on its own (human taste is sovereign).
 
 ### 4.1 Mapping table (ML → creative)
 
@@ -98,7 +98,7 @@ Two skills share one engine:
 | VRAM soft limit | Guardrails: product fidelity ≥ threshold, typography OCR exact match, logo/colour delta-E, safety/compliance, cost/asset ceiling, latency ceiling |
 | 5-minute wall clock | Spend budget per experiment ($) + max assets per experiment + wall clock per experiment, all frozen in the run spec |
 | git commit / reset | Recipe versions are content-hashed. Keep = incumbent pointer advances. Discard = pointer unchanged. Outputs are always kept in the asset store with lineage. |
-| `results.tsv` | `experiments/results.tsv` (append-only, §12A columns) + `experiments/<run_id>/` artefacts |
+| `results.tsv` | `experiments/results.tsv` (append-only, required columns) + `experiments/<run_id>/` artefacts |
 | `analysis.ipynb` | `/experiment report`: frontier chart, keep rate, cost per keep, contact sheet of incumbent vs every candidate |
 | d12 → d24 transfer | Promote only after the change also wins on **regression fixtures** (other products, shots, aspect ratios) |
 
@@ -181,37 +181,37 @@ LOOP until any stop_condition:
  11. crash (provider error, moderation, timeout) → retry once with same idempotency key; else log crash, move on
 
 FINALISE
-  render proposed_incumbent at final quality on fixture + regressions (premium spend only here — §11 ladder)
+  render proposed_incumbent at final quality on fixture + regressions (premium spend only here)
   produce morning report: frontier, keep rate, $ per keep, contact sheet, top discards, program.md suggestions
-  human: approve / reject / pick → only then recipe promoted + preference data recorded (§21)
+  human: approve / reject / pick → only then recipe promoted + preference data recorded
 ```
 
 ### 4.4 Ledger: `experiments/results.tsv`
 
-TSV, append-only, one row per attempt (including baseline, crashes, harness rejections). The §12A columns come first, in order. The extra columns after them are what the Karpathy repos showed we need.
+TSV, append-only, one row per attempt (including baseline, crashes, harness rejections). The required columns come first, in order. The extra columns after them are what the Karpathy repos showed we need.
 
 | column | source | notes |
 |---|---|---|
-| `run_id` | §12A | |
-| `timestamp` | §12A | ISO-8601 UTC |
-| `hypothesis` | §12A | one sentence: "warmer key light increases perceived premium without hurting label legibility" |
-| `changed_variable` | §12A | dotted key from `mutable_surface`, or `seed` for explore rows, or `none` for baseline |
-| `baseline` | §12A | incumbent recipe hash at time of attempt |
-| `candidate` | §12A | candidate recipe hash |
-| `provider` | §12A | |
-| `model` | §12A | exact model id + snapshot (e.g. `gpt-image-2.5-sunburst-2026-09-08`) |
-| `seed/index` | §12A | seed list or variant-pool index |
-| `cost` | §12A | USD, actual if provider reports it (e.g. fal `X-Fal-Billable-Units`), else estimate + flag |
-| `latency` | §12A | ms, wall clock submit→result |
-| `primary_score` | §12A | e.g. pairwise win rate 0.83 (5/6) |
-| `guardrails` | §12A | compact `name=pass/fail(value)` list |
-| `human_pref` | §12A | empty overnight; filled at morning review |
-| `decision` | §12A | `baseline` / `keep` / `discard` / `crash` / `rejected_harness` / `explore` |
-| `notes` | §12A | short free text (no tabs) |
+| `run_id` | required | |
+| `timestamp` | required | ISO-8601 UTC |
+| `hypothesis` | required | one sentence: "warmer key light increases perceived premium without hurting label legibility" |
+| `changed_variable` | required | dotted key from `mutable_surface`, or `seed` for explore rows, or `none` for baseline |
+| `baseline` | required | incumbent recipe hash at time of attempt |
+| `candidate` | required | candidate recipe hash |
+| `provider` | required | |
+| `model` | required | exact model id + snapshot (e.g. `gpt-image-2.5-sunburst-2026-09-08`) |
+| `seed/index` | required | seed list or variant-pool index |
+| `cost` | required | USD, actual if provider reports it (e.g. fal `X-Fal-Billable-Units`), else estimate + flag |
+| `latency` | required | ms, wall clock submit→result |
+| `primary_score` | required | e.g. pairwise win rate 0.83 (5/6) |
+| `guardrails` | required | compact `name=pass/fail(value)` list |
+| `human_pref` | required | empty overnight; filled at morning review |
+| `decision` | required | `baseline` / `keep` / `discard` / `crash` / `rejected_harness` / `explore` |
+| `notes` | required | short free text (no tabs) |
 | `uncertainty` | added | judge disagreement or bootstrap CI half-width (needed for stop rule) |
 | `complexity_delta` | added | recipe token/module delta (principle 8) |
 | `regression_result` | added | `n/a` / `pass` / `regressed:<fixture>` |
-| `output_ids` | added | asset ids → lineage (§3.6) |
+| `output_ids` | added | asset ids → lineage |
 | `run_spec_hash` | added | proves fixture/evaluator were frozen |
 
 Ledger rules (all copied from autoresearch):
@@ -222,15 +222,15 @@ Ledger rules (all copied from autoresearch):
 
 ### 4.5 Pairwise-vs-incumbent judging
 
-Why pairwise: absolute aesthetic scores drift and saturate. autoresearch can use an absolute scalar only because `val_bpb` is deterministic given the model. Creative scoring isn't, so §12A asks for pairwise "whenever aesthetic scoring is unstable".
+Why pairwise: absolute aesthetic scores drift and saturate. autoresearch can use an absolute scalar only because `val_bpb` is deterministic given the model. Creative scoring isn't, so use pairwise "whenever aesthetic scoring is unstable".
 
 Protocol:
 1. Pair each candidate output with the incumbent output for the **same seed** and the same fixture.
 2. Ask the judge both orders (A/B and B/A). If the two verdicts disagree, the pair counts as a tie. This controls position bias.
-3. Use a rubric-anchored judge prompt that names the separate judgments (§3.8): beautiful, on-brand, product-correct and effective are scored separately. Only the run's primary dimension decides keep. The others are logged.
-4. The judge model must differ from the generator's family where possible (§24A eval integrity). Pin the judge model id and rubric hash in the run spec.
+3. Use a rubric-anchored judge prompt that names the separate judgments: beautiful, on-brand, product-correct and effective are scored separately. Only the run's primary dimension decides keep. The others are logged.
+4. The judge model must differ from the generator's family where possible. Pin the judge model id and rubric hash in the run spec.
 5. Win rate = wins / (pairs). Ties go to the incumbent. Keep requires win rate ≥ threshold **and** gain > uncertainty.
-6. Human calibration: the morning report shows a blind sample of judge decisions for human A/B. Where human and judge disagree, the case is stored as an evaluator-quality fixture. A separate run can then target the evaluator itself (§12A allows this only explicitly).
+6. Human calibration: the morning report shows a blind sample of judge decisions for human A/B. Where human and judge disagree, the case is stored as an evaluator-quality fixture. A separate run can then target the evaluator itself (only when the run says so explicitly).
 
 ### 4.6 Stop conditions (precise)
 
@@ -244,12 +244,12 @@ Protocol:
 | Guardrail collapse | more than 50% of the last 10 candidates fail guardrails, so the mutable surface is poorly chosen; stop and report |
 | Human interrupt | always honoured; partial ledger is valid |
 
-If no candidate beats the incumbent, the incumbent stands (§12A). That counts as a successful run with a negative result, and it goes in a `LOG.md`-style entry.
+If no candidate beats the incumbent, the incumbent stands. That counts as a successful run with a negative result, and it goes in a `LOG.md`-style entry.
 
 ### 4.7 Regression fixtures
 
 - Each recipe family has 3–6 frozen regression fixtures: different products, aspect ratios, one "hard" case (reflective or transparent material, small label text), and one **other-brand control** so the method does not overfit one brand.
-- They run only on candidate keeps, at cheap tier, so they stay cheaper than the thing they protect (§3.17).
+- They run only on candidate keeps, at cheap tier, so they stay cheaper than the thing they protect.
 - They mirror nanochat's d12→d24 transfer requirement (`LEADERBOARD.md:198`) and the "must work for all depths" rule (`README.md:108`).
 - Fixture folders are versioned. Changing one creates a new fixture id, and old ledger rows remain comparable only to their own id (cf. "NOT comparable", `LEADERBOARD.md:192`).
 
@@ -257,8 +257,8 @@ If no candidate beats the incumbent, the incumbent stands (§12A). That counts a
 
 - **Pre-flight:** estimate the run cost as (baseline + max_experiments × seeds × est_cost) + judge cost + regression cost, using `pricing_snapshot` from `models.seed.json`. Refuse to start if it exceeds `run_total_usd`, or if the price snapshot is older than N days (re-verify first).
 - **Per experiment:** reserve the estimated cost before submitting and reconcile with the actual cost after. On fal, read `X-Fal-Billable-Units`. On Higgsfield, use `higgsfield generate cost …` before submitting. On BFL and Runway, use the documented per-unit credits.
-- **Idempotency:** every provider call carries a key derived from `hash(run_id, candidate_hash, seed, fixture_hash)`. Retries reuse it, and webhook handlers dedupe on the provider request id (fal `request_id`, Higgsfield `request_id`, Ideogram `generation_id`, OpenAI `webhook-id`). This stops retries from double-spending (§11).
-- **Tiering:** autoresearch experiments run at draft or low tier: FLUX 3 Video "draft" mode, low `quality` on GPT Image, 1K Nano Banana, Veo 3.1 Lite. Only the finalised proposed incumbent gets a premium render (§11 ladder).
+- **Idempotency:** every provider call carries a key derived from `hash(run_id, candidate_hash, seed, fixture_hash)`. Retries reuse it, and webhook handlers dedupe on the provider request id (fal `request_id`, Higgsfield `request_id`, Ideogram `generation_id`, OpenAI `webhook-id`). This stops retries from double-spending.
+- **Tiering:** autoresearch experiments run at draft or low tier: FLUX 3 Video "draft" mode, low `quality` on GPT Image, 1K Nano Banana, Veo 3.1 Lite. Only the finalised proposed incumbent gets a premium render.
 - **Kill:** an over-budget call is cancelled where the provider supports it (fal `PUT …/cancel`), and the row is logged as `crash: budget_kill`.
 - **Low priority:** overnight runs use the `X-Fal-Queue-Priority: low` header on fal and batch APIs where they exist (OpenAI image Batch at 50% of output price, Gemini Batch at 50%). See `model-landscape.md`.
 
@@ -274,15 +274,15 @@ If no candidate beats the incumbent, the incumbent stands (§12A). That counts a
 
 | ML assumption in autoresearch | Why it breaks for creative work | cstack adjustment |
 |---|---|---|
-| A deterministic, cheap, objective metric (`val_bpb`) | Taste is contested and judges are noisy and biased. "Beautiful", "on brand" and "effective" are different (§3.8). | Pairwise with position swap, separate dimensions, human calibration, an explicit uncertainty column. |
-| More compute → monotone better, and the budget is just a clock | Generative APIs are stochastic per seed. One lucky seed is not a method improvement. | Fixed seed sets shared by incumbent and candidate. Seed-only rows are tagged `explore`. Promote only after repeated evidence (§12A). |
+| A deterministic, cheap, objective metric (`val_bpb`) | Taste is contested and judges are noisy and biased. "Beautiful", "on brand" and "effective" are different. | Pairwise with position swap, separate dimensions, human calibration, an explicit uncertainty column. |
+| More compute → monotone better, and the budget is just a clock | Generative APIs are stochastic per seed. One lucky seed is not a method improvement. | Fixed seed sets shared by incumbent and candidate. Seed-only rows are tagged `explore`. Promote only after repeated evidence. |
 | Ledger + `git reset` discards the artefact | Discarded creative outputs are still valuable (anti-library, preference data, surprises). | Never delete outputs. Discard only means the incumbent pointer doesn't move. |
 | "NEVER STOP… indefinitely" (`program.md:112`) | Real money per call and moderation strikes (Runway warns that "too many moderated requests will lead to account suspension"). | Hard spend, time and experiment caps plus stop rules. Autonomy covers search only; the human approves promotion. |
-| Agent may change "everything" in `train.py` (`program.md:26`) | Changing prompt, model, refs, crop and evaluator together makes the cause unattributable. §12A forbids it. | One key per experiment from an explicit allow-list. A model swap is a separate run, which `/model-router` micro-benchmarks own. |
+| Agent may change "everything" in `train.py` (`program.md:26`) | Changing prompt, model, refs, crop and evaluator together makes the cause unattributable. So it is forbidden. | One key per experiment from an explicit allow-list. A model swap is a separate run, which `/model-router` micro-benchmarks own. |
 | Metric is non-gameable because the eval code is frozen | An LLM judge can be gamed by the generator, e.g. text in the image that flatters the judge, or a prompt that steers toward the judge's taste. | Deterministic guardrails (OCR, palette, product-mask IoU), a different judge family, and periodic human audit of judge decisions. |
 | Results are platform-specific but stable (`README.md:64`) | Provider models change silently behind the same id, and prices change (BFL raised prices in May 2026 per third-party tracker, unverified). | Pin snapshot ids where offered (OpenAI `…-2026-09-08`). Store `model` + snapshot + price snapshot date per row. Re-measure the baseline at every run start. |
 | A single scalar suffices | Brand work has hard constraints (exact label text, logo geometry, legal copy) that are pass/fail, not tradeable. | Guardrails are vetoes, never weighted into the primary metric. |
-| Simplicity = fewer lines of code | For prompts, shorter is not always better (§12 "less text + stronger references"). | Complexity is measured as recipe modules, slot count and tokens, and refs count too. It's a tie-breaker, not a target. |
+| Simplicity = fewer lines of code | For prompts, shorter is not always better ("less text + stronger references"). | Complexity is measured as recipe modules, slot count and tokens, and refs count too. It's a tie-breaker, not a target. |
 | Transfer test d12→d24 is cheap | Regression fixtures cost real money per render. | Run them only on candidate keeps, at cheap tier. |
 
 ## 7. cstack implications
@@ -291,12 +291,12 @@ If no candidate beats the incumbent, the incumbent stands (§12A). That counts a
 |---|---|---|
 | Frozen harness file vs single mutable file (`program.md:25-31`) | Run spec `frozen` + `mutable_surface` allow-list, enforced by hash and diff. | Letting the agent edit "everything" in the mutable file. Limit it to one key per experiment. |
 | Fixed budget inside the frozen file (`prepare.py:31`) | Spend, time and asset budgets in `run.yaml`, hashed. Hard kill. | Wall clock as the only budget. Money is the binding constraint. |
-| keep/discard/crash TSV, untracked (`program.md:64-88`) | `experiments/results.tsv` with the §12A columns + `uncertainty`, `complexity_delta`, `regression_result`, `output_ids`, `run_spec_hash`. | Deleting discarded artefacts. |
+| keep/discard/crash TSV, untracked (`program.md:64-88`) | `experiments/results.tsv` with the required columns + `uncertainty`, `complexity_delta`, `regression_result`, `output_ids`, `run_spec_hash`. | Deleting discarded artefacts. |
 | Baseline is always re-measured (`f16ece4`) | The baseline row is rendered fresh at every run start, using the same seeds. | Copying the baseline from a previous run or doc. |
 | Simplicity criterion (`program.md:37`) | Simplicity wins on ties, and the complexity delta is logged. | Treating "fewer tokens" as always better for prompts. |
-| `program.md` as the human-programmed org (`README.md:7`) | A per-run `program.md` + skill edits when the same bad move repeats (§12A "research the research loop"). | — |
+| `program.md` as the human-programmed org (`README.md:7`) | A per-run `program.md` + skill edits when the same bad move repeats ("research the research loop"). | — |
 | Repeat runs to measure noise (`LEADERBOARD.md:178-190`) | Fixed seed sets, pairwise with position swap, uncertainty-aware stop. | Single-sample decisions. |
-| Negative-results log (`dev/LOG.md`) | `experiments/LOG.md` with hypothesis, what was tried, verdict, and why it isn't merged. Read it before proposing a run (prior work is capital, §3.13). | — |
+| Negative-results log (`dev/LOG.md`) | `experiments/LOG.md` with hypothesis, what was tried, verdict, and why it isn't merged. Read it before proposing a run (prior work is capital). | — |
 | Transfer test before promotion (`LEADERBOARD.md:198`) | Regression fixtures + an other-brand control. | — |
 | Taste gate on merge (`LEADERBOARD.md:51`) | Human approval is required to promote a recipe. | Autonomous promotion. |
 | "NEVER STOP" (`program.md:112`) | Don't ask "should I continue?" *within* budget, so the run stays unattended. | Unbounded runs. |

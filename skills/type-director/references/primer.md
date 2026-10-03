@@ -147,7 +147,7 @@ Contents: 1 Choosing · 2 Pairing · 3 The system · 4 Measure, grid, rhythm · 
 | Custom type is vanity | It buys distinctiveness, range and licence stability | It costs governance; justify it by scale and equity |
 | Widows can't be controlled on the web | `text-wrap: balance` and `pretty` are Baseline since October 2024 | Limits on line counts and engines; check in `type qa` |
 
-## 9. Review rubric (spec section 18 typography axes)
+## 9. Review rubric
 
 Run deterministic checks first, then judge what tools cannot measure. Report each axis with evidence; never judge typography by font choice alone.
 

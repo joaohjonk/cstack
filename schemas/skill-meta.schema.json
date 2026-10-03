@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/skill-meta.schema.json",
   "title": "Skill metadata",
-  "description": "Section 9 / 24A. Machine-readable twin of SKILL.md so the runtime can search the catalog without loading every skill.",
+  "description": "Machine-readable twin of SKILL.md: what the index, search, health and validate read. Prose (process, tools, failure modes) lives only in SKILL.md; evals are derived from evals/fixtures/*.yaml `skills:`.",
   "type": "object",
   "required": [
     "slug",
@@ -11,12 +11,9 @@
     "triggers",
     "required_inputs",
     "outputs",
-    "compatible_hosts",
     "cost_class",
     "context_class",
     "mutating",
-    "destructive",
-    "version",
     "status"
   ],
   "properties": {
@@ -47,12 +44,6 @@
         "type": "string"
       }
     },
-    "not_for": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "required_inputs": {
       "type": "array",
       "items": {
@@ -65,38 +56,7 @@
         "type": "string"
       }
     },
-    "reads": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "writes": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "compatible_hosts": {
-      "type": "array",
-      "items": {
-        "enum": [
-          "claude-code",
-          "codex",
-          "cursor",
-          "gemini-cli",
-          "opencode",
-          "any"
-        ]
-      }
-    },
     "required_providers": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "optional_providers": {
       "type": "array",
       "items": {
         "type": "string"
@@ -120,30 +80,11 @@
     "mutating": {
       "type": "boolean"
     },
-    "destructive": {
-      "type": "boolean"
-    },
     "handoff": {
       "type": "array",
       "items": {
         "type": "string"
       }
-    },
-    "evals": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "examples": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "version": {
-      "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
     "last_verified": {
       "type": [
@@ -159,9 +100,6 @@
         "deprecated"
       ],
       "description": "promotion past stub needs a linked run record or eval result"
-    },
-    "phase": {
-      "type": "string"
     },
     "approval_gates": {
       "type": "array",
@@ -184,24 +122,13 @@
           "never_self_approve": {
             "type": "boolean"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "depends_on_fields": {
       "type": "array",
       "description": "brand-system field paths outputs pin (written to lineage brand_refs)",
-      "items": {
-        "type": "string"
-      }
-    },
-    "deterministic_steps": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "generative_steps": {
-      "type": "array",
       "items": {
         "type": "string"
       }
@@ -223,58 +150,8 @@
             "local"
           ]
         }
-      }
-    },
-    "output_contract": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string"
-        },
-        "schema": {
-          "type": "string"
-        },
-        "headings": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "baseline": {
-      "enum": [
-        "brief",
-        "reference",
-        "last_approved",
-        "incumbent",
-        "absolute",
-        "n/a"
-      ],
-      "description": "what this skill's judgments are relative to"
-    },
-    "budget": {
-      "type": "object",
-      "properties": {
-        "skill_md_tokens_max": {
-          "type": "integer"
-        },
-        "refs_tokens_max": {
-          "type": "integer"
-        }
-      }
-    },
-    "allowed_tools": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "host_overrides": {
-      "type": "object"
-    },
-    "trigger_eval": {
-      "type": "string"
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

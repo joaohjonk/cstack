@@ -2,9 +2,6 @@
 name: mockup
 description: "Put approved art into realistic placements (packs, cans, apparel, print, signage, screens, ad placements) without regenerating the mark or label: composite it mathematically onto a template or generated plate, harmonize light only outside the protected region, paste the truth back and verify by inverse warp. Use for mockups of a pack, label, logo, merch or screen. Not for product photos (use product-fidelity) or 3D renders (use three-d)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /mockup

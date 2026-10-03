@@ -2,14 +2,11 @@
 name: competitor-intel
 description: "Build a living, dated competitor and category corpus from public sources (sites, PDPs, ad libraries, social, packaging, retail listings, store stacks, marketplaces) and map conventions, white space, saturated claims, rising patterns and creative fatigue, separating observation from inference. Use when entering a category, before positioning or campaign work, or to refresh what competitors are doing. Not for cultural signals (use cultural-scan) or reference curation for taste (use taste-search)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /competitor-intel
 
-The goal is not to copy competitors; it is to see the category's conventions clearly enough to choose which to use, invert or ignore (section 16). [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+The goal is not to copy competitors; it is to see the category's conventions clearly enough to choose which to use, invert or ignore. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

@@ -1,6 +1,6 @@
 # Philosophy
 
-cstack encodes a point of view about creative work with AI. These are the beliefs behind the design, each with the rule it turns into. A belief without an operational rule does not belong here.
+cstack encodes a point of view about creative work with AI. These are the beliefs behind the design, each with the rule it turns into. A belief without an operational rule does not belong here. The thinkers and practitioners these beliefs come from, and what each one contributed, are in [research/taste-influences.md](research/taste-influences.md).
 
 ## Taste is the objective function
 
@@ -16,7 +16,7 @@ A reference is useful for its mechanism, not its surface. **Rule:** every kept r
 
 ## Observe, compare, articulate, decide, encode
 
-Taste compounds only when it is written down at the right level. **Rule:** a learning moves down the stack as evidence accumulates: from a preference, to an exemplar, to an agent rule, to a brand rule, to a component, to a token. Encode at the lowest level that holds reliably.
+Taste compounds only when it is written down at the right level. **Rule:** as evidence repeats, a learning is encoded at the lowest level that holds it reliably, following the promotion ladder in [learnings.md](learnings.md#promotion-targets).
 
 ## Knowledge has a status
 

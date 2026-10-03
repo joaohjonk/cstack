@@ -2,9 +2,6 @@
 name: brief
 description: "Interrogate and reframe a creative or brand request before anything is made, then write a short creative brief downstream skills consume. Use when a request arrives for any artifact (campaign, shoot, page, pack, deck, brand), when the ask is vague (make it cooler, more premium), or when the requested artifact may be the wrong one. Not for executing an already-approved brief (use workflow or the specialist skill) or for reviewing finished work (use creative-review)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /brief
@@ -37,7 +34,7 @@ The most important skill in cstack. It decides what is worth making before money
 
 ## Source precedence
 
-Owner instruction > approved brand state > official assets > live behavior > campaign exceptions > extracted patterns > external references > inference. A request that contradicts locked brand state is surfaced as a conflict, not silently obeyed or silently refused.
+The preamble ladder (§2). A request that contradicts locked brand state is surfaced as a conflict, not silently obeyed or silently refused.
 
 ## Tools / providers
 

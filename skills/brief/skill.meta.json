@@ -14,23 +14,11 @@
     "is this the right artifact",
     "what should we make"
   ],
-  "not_for": [
-    "creative-review",
-    "workflow"
-  ],
   "required_inputs": [
     "owner request"
   ],
   "outputs": [
     "briefs/*.creative-brief.yaml"
-  ],
-  "reads": [
-    "brand/brand-system.json",
-    "briefs/",
-    "state/lineage.jsonl"
-  ],
-  "writes": [
-    "briefs/"
   ],
   "cost_class": "free",
   "context_class": "s",
@@ -43,11 +31,6 @@
     "copywriting",
     "claims-proof"
   ],
-  "evals": [
-    "evals/fixtures/make-it-cooler.yaml",
-    "evals/fixtures/existing-brand-clear-assets.yaml",
-    "evals/fixtures/wrong-artifact.yaml"
-  ],
   "approval_gates": [
     {
       "id": "brief",
@@ -56,27 +39,13 @@
       "never_self_approve": false
     }
   ],
-  "baseline": "n/a",
   "fallback": {
     "when_missing": [
       "brand workspace"
     ],
     "mode": "degraded"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

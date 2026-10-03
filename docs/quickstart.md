@@ -11,7 +11,7 @@ Requires Node 20+.
 ```bash
 git clone https://github.com/joaohjonk/cstack ~/cstack
 cd ~/cstack
-./setup                                   # if present: npm install + skills into your agent hosts
+./setup                                   # npm install + skills into your agent hosts
 # or, equivalently:
 npm install && node bin/cstack.mjs setup  # links skills into ~/.agents/skills and ~/.claude/skills
 alias cstack="node ~/cstack/bin/cstack.mjs"
@@ -86,7 +86,7 @@ With `TASTE_API_KEY` set, this calls Taste Labs through the spend guard, saves t
 cstack route --modality image --needs image-edit,multi-image-reference --max-cost 0.2
 ```
 
-This ranks entries in `registry/models.json` and prints a fallback chain and warnings (stale entries, close scores, no unit price). Use the registry's own vocabulary: modalities are `image | video | vector | analysis`, and capabilities look like `text-to-image`, `image-edit`, `multi-image-reference`, `mask-inpainting`, `text-rendering`. The registry is a dated snapshot. See [cost-and-context.md](cost-and-context.md#model-router-and-registry-staleness).
+This ranks entries in `registry/models.json` and prints a fallback chain and warnings (stale entries, close scores, no unit price). Use the registry's own vocabulary: modalities are `image | video | vector | 3d | audio | analysis`, and capabilities look like `text-to-image`, `image-edit`, `multi-image-reference`, `mask-inpainting`, `text-rendering`. The registry is a dated snapshot. See [cost-and-context.md](cost-and-context.md#model-router-and-registry-staleness).
 
 ## 8. Plan the spend first (1 min)
 
@@ -104,7 +104,7 @@ The JSON shows `estimated_total`, `spent_today`, `needs_confirmation`, `ok` and 
 
 ## 9. Generate with the mock provider (2 min)
 
-Compile a recipe so the prompt has a hash. In v0.1 the prompt text reaches the dedupe key only through `recipe_hash`; see [the known issue](cost-and-context.md#known-issues-v01).
+Compile a recipe so the prompt has a hash. The hash links each output back to the recipe that made it.
 
 ```bash
 mkdir -p recipes && cat > recipes/cup-hero.prompt-recipe.yaml <<'EOF'
@@ -152,7 +152,6 @@ cstack jobs                                 # pending provider jobs (none for th
 
 Each output has a `.gen.json` sidecar with the provider, model, job id, idempotency key, prompt, recipe hash, input hashes, params, seed, size audit and cost.
 
-
 ## 10. Review and record (2 min)
 
 The maker never certifies its own work. In your agent, run `/creative-review` (independent lenses) and `/brand-verify` (deterministic gates, then a verifier). Then record the results:
@@ -174,5 +173,5 @@ cstack feedback --file pick.json       # the owner's pick, e.g. a pairwise A/B w
 ## Next
 
 - Learn from the run: `cstack learn add`, then `cstack learn candidates` ([learnings.md](learnings.md)).
-- Run a whole job: `/workflow product-photoshoot` (also `campaign`, `landing-page`, `paid-social`, `packaging`, `deck`, `create-brand`, `import-brand`).
+- Run a whole job: `/workflow product-photoshoot`. `cstack workflow list` shows the others.
 - Write your own skill: [skill-authoring.md](skill-authoring.md).

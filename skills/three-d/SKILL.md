@@ -2,9 +2,6 @@
 name: three-d
 description: "Make product and brand 3D that keeps product truth: rotating or scroll-linked web heroes, 3D packshots, social turntables, AR views. Chooses real versus fake 3D, builds from a truth source, applies official label artwork as the texture and checks web and AR budgets. Use when something should rotate, render in 3D or open in AR. Not for flat product photos (use product-fidelity) or films (use video-direction)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /three-d

@@ -3,7 +3,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +12,7 @@ import { quadMapper, cylinderMapper, meshMapper, fitRect } from '../scripts/lib/
 import { renderMockup } from '../scripts/lib/mockup/render.mjs';
 import { verifyMockup, compareGrids, judge, THRESHOLDS } from '../scripts/lib/mockup/verify.mjs';
 import { runMockup } from '../scripts/lib/mockup/cli.mjs';
+import { tmpDir } from './tmp.mjs';
 
 // Probe Chromium once, before any test is registered (a test that points CSTACK_CHROMIUM at a missing path must not
 // run first); while it is open, make a JPEG fixture with canvas (cstack has no JPEG encoder).
@@ -39,7 +39,7 @@ try {
 }
 
 const FIX = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'mockup', 'poster-wall');
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-mockup-'));
+const tmp = () => tmpDir('cstack-mockup-');
 const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 const read = (f) => decodePNG(fs.readFileSync(f));
 const write = (f, im) => fs.writeFileSync(f, encodePNG(im));

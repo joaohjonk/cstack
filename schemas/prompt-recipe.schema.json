@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/prompt-recipe.schema.json",
   "title": "Prompt recipe",
-  "description": "Section 12. A prompt is a compiled output. Recipe = template with named slots + slot values + reference roles + target compiler. The compiler fails on missing or unused slots.",
+  "description": "A prompt is a compiled output. Recipe = template with named slots + slot values + reference roles + target compiler. The compiler fails on missing or unused slots.",
   "type": "object",
   "required": [
     "id",
@@ -62,7 +62,8 @@
             },
             "description": "deterministic pool addressed by index/seed"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "values": {
@@ -131,7 +132,8 @@
         "negative_constraints": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "references": {
       "type": "array",
@@ -161,11 +163,13 @@
           "weight": {
             "type": "number"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "parameters": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": true
     },
     "shot_dna_ref": {
       "type": "string"
@@ -192,7 +196,9 @@
         "compiled_at": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     }
-  }
+  },
+  "additionalProperties": false
 }

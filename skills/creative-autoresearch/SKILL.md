@@ -2,14 +2,11 @@
 name: creative-autoresearch
 description: "Run a bounded, Karpathy-style keep/discard experiment on one mutable surface (a prompt recipe component, a model, a reference set, a crop rule) against a frozen fixture and evaluator, with a spend and time budget, regression fixtures and explicit stop conditions, logging every result to results.tsv. Use when a recipe or method will repeat at scale and needs improving, or for overnight exploration the owner approved. Not for one-off generation (use generate-media) or picking a model once (use model-router)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /creative-autoresearch
 
-Bounded optimization, not autonomous aesthetic drift (section 12A). [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Bounded optimization, not autonomous aesthetic drift. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

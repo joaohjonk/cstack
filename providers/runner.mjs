@@ -1,8 +1,9 @@
 // Media runner: the ONE choke point between skills and paid providers (public-repo-patterns #39).
 // Skills never call provider HTTP directly. This runner owns:
 //   - idempotency: hash(provider, model, operation, inputs, recipe, params) → dedupe completed jobs
-//   - pending jobs persisted at submit (state/pending-jobs/<key>.json); a poll timeout never resubmits,
-//     the next run re-attaches to the same job instead of paying twice
+//   - pending jobs claimed (wx) BEFORE submit (state/pending-jobs/<key>.json); a second identical run sees the
+//     claim and waits instead of paying twice; a poll timeout never resubmits, the next run re-attaches
+//   - outputs stay inside the workspace and never overwrite an earlier file (wx; a taken name gets a key suffix)
 //   - the spend guard (budget envelope, dry run) via ledger.guardedCall
 //   - transient-only retries; policy/content failures surface immediately
 //   - a generation sidecar `<output>.gen.json` next to every downloaded file
@@ -11,7 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, exists, readJSON, writeJSON, nowISO, sha256File, hashValue } from '../scripts/lib/core.mjs';
 import { guardedCall, idempotencyKey } from '../scripts/lib/ledger.mjs';
-import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
+import { imageSize, sizeAudit, parseExpected } from '../scripts/lib/image.mjs';
 import { getProvider } from './index.mjs';
 
 const pendingDir = (ws) => path.join(ws, 'state', 'pending-jobs');
@@ -45,8 +46,36 @@ function loadModels() {
   return d.models ?? d;
 }
 
+// Where outputs go: inside the workspace, under a plain file stem. Checked before anything is paid.
+export function outputTarget(ws, req, key) {
+  const root = path.resolve(ws);
+  const outDir = path.resolve(root, String(req.out_dir ?? 'work/out'));
+  const r = path.relative(root, outDir);
+  if (r.startsWith('..') || path.isAbsolute(r)) throw new Error(`out_dir must stay inside the workspace: ${req.out_dir}`);
+  const prefix = String(req.out_prefix ?? key.slice(0, 8));
+  if (!/^[\w-][\w.-]{0,79}$/.test(prefix)) throw new Error(`out_prefix must be a plain file stem (letters, digits, _ . -): ${req.out_prefix}`);
+  return { outDir, prefix };
+}
+
+// Claim a fresh output name with wx: `<prefix>_<n>.<ext>`, else `<prefix>-<key8>_<n>.<ext>`, else a counter. Never overwrites.
+function claimOutput(outDir, prefix, key, n, ext) {
+  const stems = [prefix, `${prefix}-${key.slice(0, 8)}`, ...Array.from({ length: 50 }, (_, i) => `${prefix}-${key.slice(0, 8)}-${i + 2}`)];
+  for (const stem of stems) {
+    const file = path.join(outDir, `${stem}_${n}.${ext}`);
+    if (exists(`${file}.gen.json`)) continue;
+    try {
+      fs.closeSync(fs.openSync(file, 'wx'));
+      return file;
+    } catch (e) {
+      if (e.code !== 'EEXIST') throw e;
+    }
+  }
+  throw new Error(`no free output name for ${prefix}_${n}.${ext} in ${outDir}`);
+}
+
 export async function runMedia(ws, req, opts = {}) {
   const provider = getProvider(req.provider);
+  if (req.expected_size) parseExpected(req.expected_size); // a typo fails here, not after paying
   const input_hashes = (req.inputs?.images ?? []).map((p) => (exists(p) ? sha256File(p) : p));
   const spec = {
     provider: req.provider,
@@ -61,15 +90,40 @@ export async function runMedia(ws, req, opts = {}) {
     experiment_id: req.experiment_id,
     dry_run: opts.dry_run ?? req.dry_run,
     confirm_unpriced: opts.confirm_unpriced ?? req.confirm_unpriced,
+    confirmed: opts.confirmed ?? req.confirmed,
   };
   const key = idempotencyKey(spec);
+  const { outDir, prefix } = outputTarget(ws, req, key);
   const pendingPath = path.join(pendingDir(ws), `${key.slice(0, 24)}.json`);
+  const prior = exists(pendingPath) ? readJSON(pendingPath) : null;
+  if (prior?.job_id) spec.reattach = true; // already submitted and paid: collecting it is never budget-blocked
 
   return guardedCall(ws, spec, async () => {
     let job = exists(pendingPath) ? readJSON(pendingPath) : null;
+    if (job?.status === 'submitting') {
+      const e = new Error(`the same request is being submitted by another run (since ${job.claimed_at}); re-run later to re-attach. If that run crashed, check the provider dashboard, then delete ${path.relative(ws, pendingPath)}`);
+      e.pending = true;
+      throw e;
+    }
     if (!job) {
-      const submitted = await provider.submit(req);
-      job = { key, provider: req.provider, model: req.model, submitted_at: nowISO(), ...submitted, req: { ...req, inputs: { ...req.inputs, images: req.inputs?.images ?? [] } } };
+      // claim first (wx): of two identical runs only one submits; the other sees "submitting" and waits
+      fs.mkdirSync(pendingDir(ws), { recursive: true });
+      try {
+        fs.writeFileSync(pendingPath, JSON.stringify({ key, status: 'submitting', provider: req.provider, model: req.model, claimed_at: nowISO(), pid: process.pid }) + '\n', { flag: 'wx' });
+      } catch (err) {
+        if (err.code !== 'EEXIST') throw err;
+        const e = new Error('the same request was just claimed by another run; re-run later to re-attach');
+        e.pending = true;
+        throw e;
+      }
+      let submitted;
+      try {
+        submitted = await provider.submit(req);
+      } catch (err) {
+        fs.rmSync(pendingPath, { force: true }); // nothing was accepted: release the claim so a retry can submit
+        throw err;
+      }
+      job = { key, status: 'submitted', provider: req.provider, model: req.model, submitted_at: nowISO(), ...submitted, req: { ...req, inputs: { ...req.inputs, images: req.inputs?.images ?? [] } } };
       writeJSON(pendingPath, job); // persisted BEFORE polling: a crash or timeout re-attaches later
     }
     const deadline = Date.now() + (opts.poll_timeout_ms ?? 10 * 60 * 1000);
@@ -88,11 +142,11 @@ export async function runMedia(ws, req, opts = {}) {
       await new Promise((r) => setTimeout(r, opts.poll_interval_ms ?? 3000));
     }
     const result = await provider.result(job);
-    const outDir = path.join(ws, req.out_dir ?? 'work/out');
     fs.mkdirSync(outDir, { recursive: true });
     const outputs = [];
     for (const [i, o] of (result.outputs ?? []).entries()) {
-      const file = path.join(outDir, `${req.out_prefix ?? key.slice(0, 8)}_${i + 1}.${o.ext ?? 'png'}`);
+      const ext = /^[a-z0-9]{1,5}$/i.test(o.ext ?? '') ? o.ext : 'png';
+      const file = claimOutput(outDir, prefix, key, i + 1, ext);
       if (o.bytes) fs.writeFileSync(file, o.bytes);
       else if (o.url) await provider.download(o.url, file);
       let audit = null;
@@ -100,10 +154,10 @@ export async function runMedia(ws, req, opts = {}) {
         try {
           audit = sizeAudit(imageSize(file), req.expected_size);
         } catch (e) {
-          audit = { ok: false, findings: [{ level: 'warn', check: 'read', detail: e.message }] };
+          audit = { ok: false, findings: [{ level: 'fail', check: 'read', detail: e.message }] };
         }
       }
-      writeJSON(`${file}.gen.json`, {
+      const sidecar = {
         provider: req.provider,
         model: req.model,
         operation: req.operation,
@@ -119,7 +173,8 @@ export async function runMedia(ws, req, opts = {}) {
         cost: result.cost ?? null,
         created_at: nowISO(),
         skill: req.skill,
-      });
+      };
+      fs.writeFileSync(`${file}.gen.json`, JSON.stringify(sidecar, null, 2) + '\n', { flag: 'wx' });
       outputs.push(path.relative(ws, file));
     }
     fs.rmSync(pendingPath, { force: true });

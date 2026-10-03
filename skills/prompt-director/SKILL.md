@@ -2,14 +2,11 @@
 name: prompt-director
 description: "Compile generation prompts from structured decisions (brief, Shot DNA, entities, reference roles, brand constraints) into versioned prompt recipes with named slots, deterministic variants, model-specific syntax and a stable cacheable prefix; diff recipes by component. Use before any image, edit, video or vector generation, when prompts have grown into long unmaintainable text, or when outputs drift between runs. Not for choosing the model (use model-router) or judging outputs (use creative-review)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /prompt-director
 
-A prompt is the compiled result of decisions, not a magic spell (section 12). [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+A prompt is the compiled result of decisions, not a magic spell. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 
@@ -63,7 +60,7 @@ Locked entities and hard constraints are non-negotiable modules; Shot DNA decisi
 
 ## Evals required
 
-- T0: `cstack prompt compile` on every recipe in `recipes/` (missing/unused slots fail).
+- T1: every `*.prompt-recipe.yaml` in the repo compiles (tests/recipes.test.mjs); in a workspace, run `cstack prompt compile` on each recipe in `recipes/` (missing/unused slots fail).
 - T1: fixtures for variant determinism and diff (tests/core.test.mjs), `retired-rule-in-template.yaml`.
 
 ## Handoff

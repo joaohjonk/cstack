@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
 import { runMedia, listPending } from '../providers/runner.mjs';
@@ -11,9 +10,10 @@ import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { mergeField, applyToBrand, staleArtifacts, fieldHash } from '../scripts/lib/brand.mjs';
 import { record } from '../scripts/lib/lineage.mjs';
 import { getProvider } from '../providers/index.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ws = () => {
-  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-prov-'));
+  const d = tmpDir('cstack-prov-');
   fs.writeFileSync(path.join(d, 'cstack.config.yaml'), YAML.stringify({ budget: { currency: 'USD', per_run: 5, per_day: 10 } }));
   return d;
 };
@@ -60,6 +60,24 @@ test('runner: policy failure surfaces once, no retry', async () => {
 });
 
 test('image: header parsing and aspect tolerance', () => {
+  const d = tmpDir('cstack-img-');
+  const put = (name, bytes) => (fs.writeFileSync(path.join(d, name), bytes), path.join(d, name));
+  const png = Buffer.alloc(33);
+  Buffer.from('89504e470d0a1a0a0000000d49484452', 'hex').copy(png);
+  png.writeUInt32BE(1080, 16);
+  png.writeUInt32BE(1350, 20);
+  const gif = Buffer.from('GIF89a\x40\x01\xf0\x00', 'latin1');
+  const webp = Buffer.alloc(30);
+  webp.write('RIFF', 0);
+  webp.write('WEBPVP8X', 8);
+  webp.writeUIntLE(799, 24, 3);
+  webp.writeUIntLE(599, 27, 3);
+  const jpeg = Buffer.from('ffd8ffe000044a46ffc0000b08012c0190030100', 'hex');
+  assert.deepEqual(imageSize(put('a.png', png)), { width: 1080, height: 1350, format: 'png' });
+  assert.deepEqual(imageSize(put('a.gif', gif)), { width: 320, height: 240, format: 'gif' });
+  assert.deepEqual(imageSize(put('a.webp', webp)), { width: 800, height: 600, format: 'webp' });
+  assert.deepEqual(imageSize(put('a.jpg', jpeg)), { width: 400, height: 300, format: 'jpeg' });
+  assert.throws(() => imageSize(put('a.txt', Buffer.from('not an image'))), /unsupported/);
   assert.deepEqual(sizeAudit({ width: 1000, height: 1250 }, { aspect: '4:5' }).ok, true);
   assert.equal(sizeAudit({ width: 1000, height: 1000 }, { aspect: '4:5' }).ok, false);
 });

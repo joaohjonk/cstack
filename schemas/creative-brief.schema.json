@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/creative-brief.schema.json",
   "title": "Creative brief / creative design doc",
-  "description": "Output of /office-hours (section 26). Downstream skills consume this instead of re-asking. Inputs are classified per section 3.4.",
+  "description": "Output of /brief. Downstream skills consume this instead of re-asking. Inputs are classified (see common.schema.json input_class).",
   "type": "object",
   "required": [
     "id",
@@ -57,7 +57,8 @@
         "do": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "product_truth": {
       "type": "array",
@@ -91,7 +92,8 @@
           "why": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "permission": {
@@ -120,7 +122,8 @@
           "source": {
             "$ref": "common.schema.json#/$defs/source_ref"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "scope": {
@@ -150,7 +153,8 @@
           "criterion": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "constraints": {
@@ -168,7 +172,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "open_questions": {
       "type": "array",
@@ -188,7 +193,8 @@
           "owner": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "handoff": {
@@ -197,5 +203,6 @@
         "type": "string"
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

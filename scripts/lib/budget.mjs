@@ -1,4 +1,4 @@
-// Context-budget ratchet (section 24A).
+// Context-budget ratchet.
 // Ceilings live in evals/static/context-budgets.json. A skill may shrink freely; growth beyond
 // ceiling * (1 + tolerance) fails until someone runs `cstack budget --accept <slug> --reason "..."`,
 // which records why the extra context is necessary.

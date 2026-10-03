@@ -1,0 +1,101 @@
+id: print-proof-loop
+outcome: get printed packaging that matches the approved file - converter spec agreed, design-tool file checked against the gated artwork, proof on the real substrate measured and photographed under known light, compared with the file and signed off
+aliases:
+- print proof
+- proof loop
+- press proof
+- prepress
+- prepress checklist
+- converter spec
+- colour targets per substrate
+- dieline production
+- press check
+- printed proof compared to the approved file
+status: researched
+target:
+  description: the printed pack matches the frozen, approved file in content exactly and in colour within the tolerance written in the converter spec, on the real substrate
+  must:
+  - one converter spec per substrate and process with spot colour targets and the proof tolerance
+  - the file sent is frozen with a hash and matches the gated artwork panel by panel, line breaks included
+  - colour judged by the converter's measurement report and by eye under ISO 3664 D50 light, never from a screen or a photo
+  - a photo of the proof under fixed light with a colour chart, kept as the record and used for the content check
+  - barcode graded on the printed proof
+  must_not:
+  - approving a proof without a control strip or measurement report
+  - sending a file that differs from what was approved
+  - a model touching any pixel of the print file
+  quality_bar: sign-off names the file hash, the proof id, the measured values against targets and the barcode grade; content diff shows no difference
+when:
+- any pack, label or sticker going to print, including over-stickers for legacy stock
+not_when:
+- digital-only assets
+candidates_considered:
+- name: converter proof on the real substrate, measured, photographed for the record, owner sign-off
+  verdict: chosen
+  why: the only route where substrate, white underlay, inks and press condition are all in the proof
+- name: soft proof on a calibrated monitor
+  verdict: fallback
+  why: fine for early rounds; cannot show substrate, white underlay on film, metallics or varnish
+- name: in-person press check on the first run
+  verdict: fallback
+  why: best for a first run or a new substrate; adds travel and press time
+- name: approve from the PDF and a photo the converter sends
+  verdict: rejected
+  why: a photo is not a measurement and phone colour varies with light and processing
+steps:
+- id: spec
+  does: confirm the converter spec - process, press condition or reference (e.g. a FOGRA dataset or G7 level), substrate, white underlay, ink count, spot targets per substrate, varnish, proof type, tolerance (e.g. delta E00 for spots), minimum order and lead time
+  kind: human
+  outputs: [work/packaging/converter-spec.yaml]
+  gate: {type: owner, check: "owner and converter agree the spec in writing"}
+  compare_to_target: every brand colour has a target on this substrate
+- id: file-parity
+  does: export every design-tool panel the printer will open at the gated artwork size; check size with cstack audit; diff against the approved panel with cstack mockup verify through a flat template (one quad over the whole canvas, no shading); a human checks text bounds and line breaks
+  kind: deterministic
+  gate: {type: deterministic_check, check: "cstack mockup verify passes on every panel and a human confirms no wrap, overflow or moved line"}
+  compare_to_target: same words on the same lines in the same boxes; any difference fails
+- id: preflight
+  does: preflight checklist - dieline version and layers as named spot colours, bleed, no-print zones, spot names match the spec, overprint and white underlay, minimum type and line widths from the converter, barcode size, quiet zones and placement; freeze the file with a sha256
+  kind: human
+  gate: {type: independent_review, check: "a second person signs the checklist; file hash recorded"}
+  compare_to_target: checklist against converter-spec.yaml
+- id: proof
+  does: converter supplies a proof on the real substrate with a control strip and a measurement report
+  kind: human
+  gate: {type: owner, check: "measurement report present; spot colours within the spec tolerance"}
+  compare_to_target: measured values vs the targets in converter-spec.yaml
+- id: photograph
+  does: photograph the proof flat under fixed D50-like light with a colour chart and a ruler in frame, straight on, plus close-ups of barcode, small type and folds; store with date and proof id
+  kind: deterministic
+  outputs: [work/packaging/proofs/<proof-id>/]
+  gate: {type: auto, check: "chart, ruler and the whole panel are in every frame"}
+  compare_to_target: a record good enough to compare content panel by panel
+- id: compare
+  does: compare the photographed proof with the frozen file panel by panel - every word, number, line break, barcode digits, element position and dieline fit; view the physical proof next to the contract proof under ISO 3664 light; read the barcode verifier grade
+  kind: human
+  gate: {type: independent_review, check: "two people check content; differences listed; barcode grade recorded"}
+  compare_to_target: no content difference; colour judged by the report and the booth, not the photo
+- id: sign-off
+  does: owner signs the proof with file hash, proof id, measurements and barcode grade; anything off goes back to the converter or the file
+  kind: human
+  gate: {type: owner, check: "signed record exists; otherwise loop to proof"}
+  compare_to_target: the target in full
+cost_ladder: every proof costs converter money and days; soft proof for early rounds, one substrate proof after file-parity and preflight pass, press check only for a first run or a new substrate; stop after two failed proofs on the same colour and change the ink, the substrate or the target with the converter
+failure_modes:
+- design-tool live text rewrapped or overflowed after the type gate passed
+- dieline swapped for an older version between proof rounds
+- colour judged from a phone photo or a screen
+- barcode on a transparent window without white underlay
+- proof approved on paper stock while production runs on film
+evidence:
+- {ref: docs/research/packaging.md, kind: documented, date: 2026-10-03, note: sections 1-4}
+- {ref: "https://fogra.org/en/certification/prepress-technology/contract-proof-creation", kind: documented, date: 2026-10-03, note: contract proof and media wedge}
+- {ref: "https://printtechnologies.org/standards/files/aptech-brand-owner-council-schema-v2020.pdf", kind: practitioner, date: 2026-10-03, note: "ISO 3664 viewing, ISO 13655 measurement, spot colours delta E00 < 2"}
+- {ref: "https://www.printing.org/detail/resource/G7-Methodology", kind: documented, date: 2026-10-03}
+- {ref: "https://www.gs1uk.org/sites/default/files/how_to_improve_barcode_image_quality.pdf", kind: documented, date: 2026-10-03, note: "print direction; bar width reduction; white underlay"}
+- {ref: "field run on a packaged-food brand (private; anonymized)", kind: observed, date: 2026-10-03, note: design-tool file diverged from the gated type}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- flow:packaging-system
+- workflow:packaging

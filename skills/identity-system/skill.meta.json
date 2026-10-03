@@ -17,10 +17,6 @@
     "brand system",
     "logo usage rules"
   ],
-  "not_for": [
-    "creative-direction",
-    "brand-import"
-  ],
   "required_inputs": [
     "selected direction",
     "owner decision"
@@ -30,26 +26,15 @@
     "brand/rules/brand-rules.yaml",
     "work/system/specimen.html"
   ],
-  "writes": [
-    "brand/"
-  ],
-  "optional_providers": [
-    "figma-mcp"
-  ],
   "cost_class": "free",
   "context_class": "m",
   "mutating": true,
   "handoff": [
     "type-director",
-    "brand-verify",
-    "copywriting",
-    "workflow",
     "symbol-design",
-    "vector-master"
-  ],
-  "evals": [
-    "evals/fixtures/existing-brand-clear-assets.yaml",
-    "evals/fixtures/type-system-measurable.yaml"
+    "vector-master",
+    "brand-verify",
+    "copywriting"
   ],
   "approval_gates": [
     {
@@ -59,25 +44,7 @@
       "never_self_approve": true
     }
   ],
-  "baseline": "brief",
-  "deterministic_steps": [
-    "token build",
-    "contrast math",
-    "raw-value lint"
-  ],
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
   "required_providers": []
 }

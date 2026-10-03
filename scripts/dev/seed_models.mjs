@@ -1,11 +1,11 @@
-// Convert the dated research seed (docs/research/models.seed.json) into registry/models.json.
+// Convert the dated model seed (registry/models.seed.json) into registry/models.json.
 // Re-run after a re-verification pass. It derives est_unit_cost heuristically and says so in `basis`;
 // token-priced models get null and must be estimated before a batch.
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, writeAtomic, today } from '../lib/core.mjs';
 
-const seed = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs/research/models.seed.json'), 'utf8'));
+const seed = JSON.parse(fs.readFileSync(path.join(ROOT, 'registry/models.seed.json'), 'utf8'));
 const PREFER = /^(1k|per_image_1k|per_image_1k_2k|from|t2i_from|default|standard|720p|audio_off|min|h3_max)$/i;
 
 function unitCost(p) {

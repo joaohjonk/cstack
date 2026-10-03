@@ -14,9 +14,10 @@ import { checkFrames, analyseNames } from '../scripts/lib/three/frames.mjs';
 import { blenderParams, blenderScript, frameRate } from '../scripts/lib/three/blender.mjs';
 import { parseBytes } from '../scripts/lib/three/budgets.mjs';
 import { runThree } from '../scripts/lib/three/cli.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const STUB = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'three', 'bpy-stub');
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-3d-'));
+const tmp = () => tmpDir('cstack-3d-');
 const write = (dir, name, data) => {
   const p = path.join(dir, name);
   fs.mkdirSync(path.dirname(p), { recursive: true });

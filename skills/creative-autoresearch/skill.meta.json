@@ -15,10 +15,6 @@
     "improve at scale",
     "A/B the method"
   ],
-  "not_for": [
-    "generate-media",
-    "model-router"
-  ],
   "required_inputs": [
     "fixture",
     "mutable surface",
@@ -29,11 +25,6 @@
     "experiments/results.tsv",
     "experiments/runs/*/report.md"
   ],
-  "writes": [
-    "experiments/",
-    "state/cost-ledger.jsonl",
-    "state/learnings.jsonl"
-  ],
   "cost_class": "high",
   "context_class": "m",
   "mutating": true,
@@ -41,9 +32,6 @@
     "prompt-director",
     "model-router",
     "learn-loop"
-  ],
-  "evals": [
-    "evals/fixtures/expensive-overnight-batch.yaml"
   ],
   "approval_gates": [
     {
@@ -59,27 +47,13 @@
       "never_self_approve": true
     }
   ],
-  "baseline": "incumbent",
   "fallback": {
     "when_missing": [
       "budget"
     ],
     "mode": "blocked"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

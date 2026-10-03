@@ -2,9 +2,6 @@
 name: site-capture
 description: "Drive a headless browser for brand and creative work: responsive screenshots, full-page captures and PDFs, accessibility snapshots with element refs, computed-style extraction (colors, fonts, sizes, spacing, radii) as raw input for brand import, media lists with provenance, and visual QA of built pages, all saved to a run folder with hashes. Use to capture live brand behavior, competitor pages, references, or to QA a landing page at mobile and desktop widths. Not for judging the page (use creative-review or brand-verify) or for logged-in or private sites without the owner's permission."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /site-capture

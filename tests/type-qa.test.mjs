@@ -3,7 +3,6 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
@@ -12,12 +11,13 @@ import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { runType } from '../scripts/lib/type/cli.mjs';
 import { loadEngine, launch } from '../scripts/lib/browser/launch.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = path.join(ROOT, 'tests', 'fixtures', 'type');
 const SCALE = path.join(FIX, 'scale.css');
 const WEB_FONT = ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'].find((f) => fs.existsSync(f));
-const tmpWs = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-typeqa-'));
+const tmpWs = () => tmpDir('cstack-typeqa-');
 const runDir = (ws, out) => path.join(ws, out.match(/^run: (.+)$/m)[1]);
 const run = promisify(execFile);
 

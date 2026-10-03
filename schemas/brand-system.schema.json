@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/brand-system.schema.json",
   "title": "Brand system (executable brand state)",
-  "description": "Section 5 of the cstack spec. The machine-readable brand: every field carries source, confidence, last_updated, permanence and approval (see common.schema.json#/$defs/field).",
+  "description": "The machine-readable brand: every field carries source, confidence, last_updated, permanence and approval (see common.schema.json#/$defs/field).",
   "type": "object",
   "required": [
     "schema_version",
@@ -56,7 +56,8 @@
                   "type": "string"
                 }
               }
-            }
+            },
+            "additionalProperties": false
           }
         },
         "languages": {
@@ -108,7 +109,8 @@
               "notes": {
                 "type": "string"
               }
-            }
+            },
+            "additionalProperties": false
           }
         },
         "precedence": {
@@ -139,10 +141,12 @@
                   "needs_owner"
                 ]
               }
-            }
+            },
+            "additionalProperties": false
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "sections": {
       "type": "object",
@@ -307,7 +311,7 @@
     },
     "conflicts": {
       "type": "array",
-      "description": "Section 23: conflicts are surfaced, never averaged.",
+      "description": "conflicts are surfaced, never averaged.",
       "items": {
         "type": "object",
         "required": [
@@ -338,7 +342,8 @@
                 "source": {
                   "$ref": "common.schema.json#/$defs/source_ref"
                 }
-              }
+              },
+              "additionalProperties": false
             }
           },
           "default_until_resolved": {},
@@ -371,7 +376,8 @@
           "note": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": true
       }
     },
     "entities_ref": {

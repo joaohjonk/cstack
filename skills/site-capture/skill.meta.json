@@ -17,18 +17,11 @@
     "extract styles",
     "PDF of the page"
   ],
-  "not_for": [
-    "creative-review",
-    "brand-verify"
-  ],
   "required_inputs": [
     "url"
   ],
   "outputs": [
     "work/browse/*/run.json"
-  ],
-  "writes": [
-    "work/browse/"
   ],
   "required_providers": [
     "playwright-core + chromium"
@@ -43,29 +36,12 @@
     "brand-verify",
     "creative-review"
   ],
-  "evals": [
-    "tests/browser.test.mjs"
-  ],
-  "baseline": "n/a",
   "fallback": {
     "when_missing": [
       "chromium"
     ],
     "mode": "degraded"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
-  "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "optional_providers": []
+  "status": "beta"
 }

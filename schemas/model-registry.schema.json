@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/model-registry.schema.json",
   "title": "Model registry",
-  "description": "Section 11. Living, snapshot-dated facts about models. Prices and latency are snapshots, never permanent truth.",
+  "description": "Living, snapshot-dated facts about models. Prices and latency are snapshots, never permanent truth.",
   "type": "object",
   "required": [
     "updated",
@@ -126,7 +126,8 @@
               "caching": {
                 "type": "string"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "last_verified": {
             "type": [
@@ -186,7 +187,8 @@
               "basis": {
                 "type": "string"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "benchmark_results": {
             "type": "array",
@@ -210,7 +212,8 @@
                 "experiment_id": {
                   "type": "string"
                 }
-              }
+              },
+              "additionalProperties": false
             }
           },
           "confidence": {
@@ -224,8 +227,10 @@
               "shut_down"
             ]
           }
-        }
+        },
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": true
 }

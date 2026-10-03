@@ -2,7 +2,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
 import { runMedia } from '../providers/runner.mjs';
@@ -11,9 +10,10 @@ import { readLedger } from '../scripts/lib/ledger.mjs';
 import { initBrand, applyToBrand, resolveConflict, brandContext } from '../scripts/lib/brand.mjs';
 import { schemaFor } from '../scripts/lib/schemas.mjs';
 import { ROOT } from '../scripts/lib/core.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ws = (budget = { currency: 'USD', per_run: 1, per_day: 1, confirm_over: 1 }) => {
-  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-reg-'));
+  const d = tmpDir('cstack-reg-');
   fs.writeFileSync(path.join(d, 'cstack.config.yaml'), YAML.stringify({ brand_id: 'reg', budget }));
   return d;
 };
@@ -52,7 +52,7 @@ test('an unpriced call is blocked unless confirmed or allowed', async () => {
 });
 
 const brandWs = () => {
-  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-brand-'));
+  const d = tmpDir('cstack-brand-');
   initBrand(path.join(d, 'b'), { name: 'Reg', id: 'reg' });
   return path.join(d, 'b');
 };

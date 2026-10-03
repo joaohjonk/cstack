@@ -2,14 +2,11 @@
 name: workflow
 description: "Run a cstack workflow end to end as a resumable plan: create-brand, import-brand, campaign, product-photoshoot, paid-social, landing-page, packaging, deck, product-3d, product-video or logo-system. It loads workflows/<name>/workflow.yaml, writes a plan tracker in the brand workspace, calls the right skills in order, stops at owner gates, uses each step's fallback when a skill or provider is missing, and resumes where it left off. Use when the owner asks for one of those outcomes without naming individual skills. Not for a single bounded task (call the specialist skill) or for reframing the ask (use brief first)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /workflow
 
-The operating-system layer: the owner asks for an outcome, cstack runs the skills (section 10). [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+The operating-system layer: the owner asks for an outcome, cstack runs the skills. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 
@@ -68,7 +65,7 @@ The approved brief and brand state govern every step. Owner decisions at gates a
 
 ## Handoff
 
-The workflow's last step names it (usually `learn-loop` for the retro, and channel delivery by the owner).
+Unframed or vague asks go to `brief` first. The workflow's last step names it (usually `learn-loop` for the retro, and channel delivery by the owner).
 
 ## Failure modes
 

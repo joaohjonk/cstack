@@ -2,34 +2,81 @@
   "slug": "video-direction",
   "type": "composite",
   "summary": "Direct AI and hybrid video: outcome branch, beat sheet, one world, production path per beat, ethics and disclosure gates, stills then probes then finals with a stop condition",
-  "tags": ["video", "film", "ad", "reel", "beat sheet", "image-to-video", "ugc"],
-  "triggers": ["product video", "brand film", "video ad", "reel", "tiktok", "animate the logo", "explainer video", "ugc ad", "presenter video"],
-  "not_for": ["generate-media", "video-assembly", "three-d"],
-  "required_inputs": ["brief", "channels", "references"],
-  "outputs": ["work/*/beats.yaml", "work/*/direction.md"],
-  "reads": ["brand/brand-world.json", "assets/official/", "registry/models.json", "flows/"],
-  "writes": ["work/", "state/cost-ledger.jsonl", "state/lineage.jsonl", "state/learnings.jsonl"],
+  "tags": [
+    "video",
+    "film",
+    "ad",
+    "reel",
+    "beat sheet",
+    "image-to-video",
+    "ugc"
+  ],
+  "triggers": [
+    "product video",
+    "brand film",
+    "video ad",
+    "reel",
+    "tiktok",
+    "animate the logo",
+    "explainer video",
+    "ugc ad",
+    "presenter video"
+  ],
+  "required_inputs": [
+    "brief",
+    "channels",
+    "references"
+  ],
+  "outputs": [
+    "work/*/beats.yaml",
+    "work/*/direction.md"
+  ],
   "cost_class": "high",
   "context_class": "m",
   "mutating": true,
-  "destructive": false,
-  "handoff": ["prompt-director", "model-router", "generate-media", "product-fidelity", "three-d", "video-assembly", "claims-proof", "creative-review"],
-  "evals": ["evals/fixtures/video-one-shot-temptation.yaml", "evals/fixtures/video-text-from-model.yaml", "evals/fixtures/ugc-fake-testimonial.yaml", "evals/fixtures/stale-video-model.yaml"],
-  "approval_gates": [
-    { "id": "beat-sheet", "after_step": "beat sheet", "artifact": "work/*/beats.yaml", "never_self_approve": false },
-    { "id": "spend-finals", "after_step": "probes", "artifact": "work/flows/*.flow.yaml", "never_self_approve": false },
-    { "id": "presenter-ethics", "after_step": "gates", "artifact": "work/*/direction.md", "never_self_approve": true }
+  "handoff": [
+    "prompt-director",
+    "model-router",
+    "generate-media",
+    "product-fidelity",
+    "three-d",
+    "video-assembly",
+    "claims-proof",
+    "creative-review"
   ],
-  "depends_on_fields": ["motion", "product_representation", "voice"],
-  "deterministic_steps": ["beat sheet validation", "cstack spend plan", "label check on stills"],
-  "generative_steps": ["stills", "draft probes", "finals"],
+  "approval_gates": [
+    {
+      "id": "beat-sheet",
+      "after_step": "beat sheet",
+      "artifact": "work/*/beats.yaml",
+      "never_self_approve": false
+    },
+    {
+      "id": "spend-finals",
+      "after_step": "probes",
+      "artifact": "work/flows/*.flow.yaml",
+      "never_self_approve": false
+    },
+    {
+      "id": "presenter-ethics",
+      "after_step": "gates",
+      "artifact": "work/*/direction.md",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "motion",
+    "product_representation",
+    "voice"
+  ],
   "required_providers": [],
-  "optional_providers": ["fal", "higgsfield", "replicate"],
-  "baseline": "reference",
-  "fallback": { "when_missing": ["FAL_KEY", "video model"], "mode": "degraded" },
-  "compatible_hosts": ["claude-code", "codex", "cursor", "gemini-cli", "opencode"],
-  "version": "0.1.0",
+  "fallback": {
+    "when_missing": [
+      "FAL_KEY",
+      "video model"
+    ],
+    "mode": "degraded"
+  },
   "last_verified": "2026-10-03",
-  "status": "beta",
-  "budget": { "skill_md_tokens_max": 3300 }
+  "status": "beta"
 }

@@ -22,10 +22,6 @@
     "website hero",
     "spinning product"
   ],
-  "not_for": [
-    "product-fidelity",
-    "video-direction"
-  ],
   "required_inputs": [
     "outcome",
     "truth source or concept",
@@ -34,35 +30,15 @@
   "outputs": [
     "work/3d/"
   ],
-  "reads": [
-    "brand/brand-world.json",
-    "assets/official/",
-    "registry/models.json"
-  ],
-  "writes": [
-    "work/3d/",
-    "state/cost-ledger.jsonl",
-    "state/lineage.jsonl"
-  ],
   "cost_class": "medium",
   "context_class": "m",
   "mutating": true,
-  "destructive": false,
   "handoff": [
     "product-fidelity",
     "generate-media",
-    "workflow",
     "brand-verify",
     "creative-review",
     "learn-loop"
-  ],
-  "evals": [
-    "evals/fixtures/3d-label-truth.yaml",
-    "evals/fixtures/3d-web-budget.yaml",
-    "evals/fixtures/3d-fake-vs-real.yaml",
-    "evals/fixtures/3d-ar-scale.yaml",
-    "evals/fixtures/3d-provider-missing.yaml",
-    "evals/fixtures/3d-tool-injection.yaml"
   ],
   "approval_gates": [
     {
@@ -83,22 +59,7 @@
     "packaging_rules",
     "motion"
   ],
-  "deterministic_steps": [
-    "cstack 3d inspect",
-    "cstack 3d frames",
-    "cstack 3d blender-script",
-    "label overlay check",
-    "browse qa"
-  ],
-  "generative_steps": [
-    "generated shape drafts",
-    "optional background finish"
-  ],
   "required_providers": [],
-  "optional_providers": [
-    "fal"
-  ],
-  "baseline": "reference",
   "fallback": {
     "when_missing": [
       "truth source",
@@ -107,17 +68,6 @@
     ],
     "mode": "degraded"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "version": "0.1.0",
   "last_verified": "2026-10-03",
-  "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  }
+  "status": "beta"
 }

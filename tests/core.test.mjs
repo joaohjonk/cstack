@@ -2,22 +2,21 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
 import { compile, diffRecipes, placeholders } from '../scripts/lib/prompt.mjs';
-import { guardedCall, planBatch, readLedger, classifyError, idempotencyKey } from '../scripts/lib/ledger.mjs';
+import { guardedCall, planBatch, readLedger, idempotencyKey } from '../scripts/lib/ledger.mjs';
 import { route } from '../scripts/lib/router.mjs';
 import { record, history } from '../scripts/lib/lineage.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { checkBudgets } from '../scripts/lib/budget.mjs';
-import { validateValue, schemaNames, validator } from '../scripts/lib/schemas.mjs';
+import { validateValue } from '../scripts/lib/schemas.mjs';
 import { evalPlan } from '../scripts/lib/evalplan.mjs';
 import { learningCandidates, promoteLearning } from '../scripts/lib/learn.mjs';
 import { appendJSONL } from '../scripts/lib/core.mjs';
 
 const tmpWs = (budget) => {
-  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-ws-'));
+  const d = tmpDir('cstack-ws-');
   if (budget !== undefined) fs.writeFileSync(path.join(d, 'cstack.config.yaml'), YAML.stringify({ brand_id: 'test', budget }));
   return d;
 };
@@ -111,7 +110,8 @@ test('ledger: identical call is deduplicated (no double spend)', async () => {
   assert.deepEqual(again.output_ids, ['o1']);
 });
 
-test('ledger: policy failures are never retried; transient ones are bounded', async () => {
+// bounded transient retries: tests/safety.test.mjs
+test('ledger: policy failures are never retried', async () => {
   const ws = tmpWs({ currency: 'USD', per_run: 1, per_day: 5 });
   let calls = 0;
   const r = await guardedCall(ws, { ...spec, input_hashes: ['p'] }, async () => {
@@ -120,7 +120,7 @@ test('ledger: policy failures are never retried; transient ones are bounded', as
   });
   assert.equal(r.failed, true);
   assert.equal(calls, 1);
-  assert.equal(classifyError(new Error('HTTP 503 Service Unavailable')), 'failed_transient');
+  assert.equal(readLedger(ws).at(-1).status, 'failed_policy');
 });
 
 test('ledger: per_day ceiling blocks a batch plan; stop condition required', () => {
@@ -141,7 +141,7 @@ const reg = {
     { model_id: 'gen-a', provider: 'p1', modality: 'image', capabilities: ['image-edit', 'product-consistency', 'text-rendering'], last_verified: '2026-10-01', source: 'x', est_unit_cost: { amount: 0.15, currency: 'USD', per: 'image' } },
     { model_id: 'gen-b', provider: 'p2', modality: 'image', capabilities: ['image-edit'], last_verified: '2025-01-01', source: 'x' },
     { model_id: 'vid', provider: 'p1', modality: 'video', capabilities: ['image-to-video'] },
-    { model_id: 'dead', provider: 'p1', modality: 'image', capabilities: ['image-edit', 'product-consistency'], last_verified: '2026-10-01', source: 'x', status: 'shut_down', last_verified: '2026-10-01', source: 'x' },
+    { model_id: 'dead', provider: 'p1', modality: 'image', capabilities: ['image-edit', 'product-consistency'], last_verified: '2026-10-01', source: 'x', status: 'shut_down' },
   ],
 };
 
@@ -149,6 +149,7 @@ test('router: ranks by required capabilities and flags stale entries', () => {
   const r = route(reg, { modality: 'image', needs: ['image-edit', 'product-consistency'], today: '2026-10-03' });
   assert.equal(r.candidates[0].model_id, 'gen-a');
   assert.ok(r.candidates.find((c) => c.model_id === 'gen-b').stale);
+  assert.ok(!r.candidates.some((c) => c.model_id === 'dead'), 'shut-down models are excluded');
 });
 
 test('router: a task benchmark outranks generic claims', () => {
@@ -208,8 +209,7 @@ test('budget: growth beyond tolerance fails, shrink passes', () => {
 });
 
 // ---------- schemas ----------
-test('schemas: all compile; anti references require why_it_fails', () => {
-  for (const n of schemaNames()) validator(n);
+test('schemas: anti references require why_it_fails', () => {
   const anti = { id: 'ref-1', kind: 'image', library: 'anti', rights: { status: 'inspiration_only' }, transferable_mechanism: 'n/a' };
   assert.equal(validateValue('reference', anti).ok, false);
   assert.equal(validateValue('reference', { ...anti, why_it_fails: 'beautiful but too luxury' }).ok, true);
@@ -267,6 +267,7 @@ test('tokens: aliases resolve, cycles fail, raw colors are flagged', () => {
 
 // ---------- research tool detection ----------
 import { detectTools } from '../scripts/lib/tools.mjs';
+import { tmpDir } from './tmp.mjs';
 test('tools: detects by agent-visible MCP server name and env presence, never by guess', () => {
   const w = tmpWs();
   const res = detectTools(w, { mcpServers: ['Figma'], env: { FOREPLAY_API_KEY: 'x' } });

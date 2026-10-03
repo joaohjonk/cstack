@@ -7,15 +7,28 @@ const BASE = process.env.TASTE_API_BASE ?? 'https://api.tastelabs.com';
 const KEY = () => process.env.TASTE_API_KEY;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Retry-After is seconds or an HTTP date; clamp to 1..60 s, default 5 (never NaN, which would hot-loop).
+function retryAfterSeconds(h) {
+  if (h == null || h === '') return 5;
+  const n = /^\d+$/.test(h.trim()) ? Number(h) : (Date.parse(h) - Date.now()) / 1000;
+  return Number.isFinite(n) ? Math.min(60, Math.max(1, n)) : 5;
+}
+
 async function call(method, path, body) {
   if (!KEY()) throw new Error('TASTE_API_KEY is not set (auth)');
   const res = await fetch(`${BASE}${path}`, { method, headers: { 'X-API-Key': KEY(), 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
   const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
+  let data = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    // a proxy's HTML error page: keep the status so a 502 stays transient
+    if (res.ok) throw new Error(`taste-labs returned non-JSON (HTTP ${res.status})`);
+  }
   if (res.status === 409) return { _not_ready: true };
   if (res.status === 503) {
     const e = new Error(`taste-labs 503 at capacity; retry after ${res.headers.get('retry-after') ?? '?'}s`);
-    e.retryAfter = Number(res.headers.get('retry-after') ?? 5);
+    e.retryAfter = retryAfterSeconds(res.headers.get('retry-after'));
     throw e;
   }
   if (!res.ok) throw new Error(`taste-labs HTTP ${res.status} ${data?.detail?.error ?? ''}: ${(data?.detail?.message ?? text).slice(0, 300)}`);
@@ -30,19 +43,18 @@ async function poll(path, { done, timeoutMs = 10 * 60 * 1000 } = {}) {
     try {
       r = await call('GET', path);
     } catch (e) {
-      if (e.retryAfter) {
-        await sleep(e.retryAfter * 1000);
-        continue;
-      }
-      throw e;
+      if (!e.retryAfter) throw e;
+      r = { _busy: e.retryAfter * 1000 };
     }
-    if (!r._not_ready && done(r)) return r;
-    if (Date.now() - t0 > timeoutMs) {
+    if (!r._not_ready && !r._busy && done(r)) return r;
+    const pause = r._busy ?? wait;
+    if (Date.now() - t0 + pause > timeoutMs) {
       const e = new Error(`taste-labs poll timeout on ${path}; job left running (resume later, never resubmit)`);
       e.pending = true;
       throw e;
     }
-    await sleep(wait);
+    await sleep(pause);
+    if (r._busy) continue;
     wait = Math.min(wait * 1.5, 15000);
   }
 }
@@ -79,20 +91,20 @@ export const tasteLabs = {
   },
 
   // extractor: raw design_system kept verbatim by the caller; normalisation into brand-system happens in /brand-import
-  async extract({ url, sections, force = false, deep = false }) {
+  async extract({ url, sections, force = false, deep = false, timeout_ms }) {
     const sub = await call('POST', '/design/submissions', { url, force, enable_deep_analysis: deep, ...(sections ? { sections } : {}) });
     const id = sub.submission_id;
-    const res = await poll(`/design/submissions/${id}/result`, { done: (r) => ['completed', 'failed'].includes(r.status) });
+    const res = await poll(`/design/submissions/${id}/result`, { done: (r) => ['completed', 'failed'].includes(r.status), timeoutMs: timeout_ms });
     if (res.status === 'failed') throw new Error(`extraction failed: ${JSON.stringify(res.error ?? {}).slice(0, 300)}`);
     return { extraction_id: res.extraction_id ?? id, submission_id: id, source_url: res.source_url ?? url, captured_at: res.completed_at, cache_hit: res.cache_hit, credits: res.credits_consumed ?? null, design_system: res.result?.design_system ?? null, artifacts: res.artifacts ?? {} };
   },
 
   // verifier: brand adherence of a reachable candidate URL vs a reference URL. NEVER a universal taste score.
-  async verify({ reference, candidate }) {
+  async verify({ reference, candidate, timeout_ms }) {
     if (!/^https?:\/\//.test(candidate) || /localhost|127\.0\.0\.1/.test(candidate))
       throw new Error('candidate must be a publicly reachable URL; for local work use the local verifier or ask before opening a tunnel');
     const job = await call('POST', '/judge/brand-adherence', { reference_url: reference, candidate_url: candidate });
-    const v = await poll(`/judge/brand-adherence/${job.job_id}/result`, { done: (r) => ['completed', 'failed'].includes(r.status) });
+    const v = await poll(`/judge/brand-adherence/${job.job_id}/result`, { done: (r) => ['completed', 'failed'].includes(r.status), timeoutMs: timeout_ms });
     return {
       verdict_id: job.job_id,
       kind: 'brand_adherence',

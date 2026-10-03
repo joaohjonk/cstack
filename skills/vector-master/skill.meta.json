@@ -2,32 +2,60 @@
   "slug": "vector-master",
   "type": "capability",
   "summary": "Clean, lint and export vector masters and kits (variants, lockups, favicon and app icons); vectorize rasters as a last resort; icon-set grammar and consistency",
-  "tags": ["svg", "vector", "logo master", "icons", "favicon", "vectorize"],
-  "triggers": ["vector master", "clean the svg", "vectorize", "trace the logo", "favicon", "app icon", "icon set", "check this svg"],
-  "not_for": ["symbol-design", "identity-system"],
-  "required_inputs": ["svg or raster with provenance"],
-  "outputs": ["work/marks/", "work/icons/"],
-  "reads": ["assets/official/", "brand/tokens/", "brand/brand-system.json"],
-  "writes": ["work/marks/", "work/icons/", "brand/icons/", "brand/tokens/icons.tokens.json", "state/lineage.jsonl"],
+  "tags": [
+    "svg",
+    "vector",
+    "logo master",
+    "icons",
+    "favicon",
+    "vectorize"
+  ],
+  "triggers": [
+    "vector master",
+    "clean the svg",
+    "vectorize",
+    "trace the logo",
+    "favicon",
+    "app icon",
+    "icon set",
+    "check this svg"
+  ],
+  "required_inputs": [
+    "svg or raster with provenance"
+  ],
+  "outputs": [
+    "work/marks/",
+    "work/icons/"
+  ],
   "cost_class": "free",
   "context_class": "s",
   "mutating": true,
-  "destructive": false,
-  "handoff": ["identity-system", "mockup", "creative-review", "brand-verify"],
-  "evals": ["evals/fixtures/mark-fails-16px.yaml", "evals/fixtures/icon-set-mixed-strokes.yaml", "evals/fixtures/vectorize-when-vector-exists.yaml"],
-  "approval_gates": [
-    { "id": "master", "after_step": "lint", "artifact": "work/marks/*/master/", "never_self_approve": true }
+  "handoff": [
+    "identity-system",
+    "mockup",
+    "creative-review",
+    "brand-verify"
   ],
-  "depends_on_fields": ["logo_marks", "color"],
-  "deterministic_steps": ["cstack svg lint", "cstack svg reduce", "cstack svg kit"],
-  "generative_steps": ["geometric icon drafts"],
+  "approval_gates": [
+    {
+      "id": "master",
+      "after_step": "lint",
+      "artifact": "work/marks/*/master/",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "logo_marks",
+    "color"
+  ],
   "required_providers": [],
-  "optional_providers": [],
-  "baseline": "last_approved",
-  "fallback": { "when_missing": ["Chromium", "tracer"], "mode": "degraded" },
-  "compatible_hosts": ["claude-code", "codex", "cursor", "gemini-cli", "opencode"],
-  "version": "0.1.0",
+  "fallback": {
+    "when_missing": [
+      "Chromium",
+      "tracer"
+    ],
+    "mode": "degraded"
+  },
   "last_verified": "2026-10-03",
-  "status": "beta",
-  "budget": { "skill_md_tokens_max": 2700 }
+  "status": "beta"
 }

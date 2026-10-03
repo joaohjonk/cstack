@@ -1,10 +1,10 @@
-// Diff-aware eval selection (section 24A test tiers). Cheapest evidence first:
+// Diff-aware eval selection (test tiers: docs/evals.md). Cheapest evidence first:
 // T0 static (free) always; T1 fixture/unit (free) when code or schemas change; T2 cheap-LLM behavior
 // fixtures only for touched skills; T3 live media only for touched providers; T4 release is manual.
 // A changed file nobody declared runs the full T2 gate (unknown dependency = run everything cheap).
 import path from 'node:path';
 import fs from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { ROOT, exists, readData } from './core.mjs';
 
 const FIXTURE_DIR = path.join(ROOT, 'evals', 'fixtures');
@@ -21,20 +21,25 @@ export function loadFixtures() {
     .map((f) => ({ file: `evals/fixtures/${f}`, ...readData(path.join(FIXTURE_DIR, f)) }));
 }
 
+const git = (...a) => execFileSync('git', ['-C', ROOT, ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+
+// Files changed since a ref, plus unstaged and untracked ones. Argument arrays only (no shell); a failed diff throws
+// so a diff-aware gate never reads as "nothing changed".
 export function changedFiles(since) {
+  const base = String(since ?? 'HEAD~1');
+  if (!base || base.startsWith('-')) throw new Error(`--since "${base}" is not a git ref`);
   try {
-    const base = since ?? 'HEAD~1';
-    const out = execSync(`git -C "${ROOT}" diff --name-only ${base} -- . && git -C "${ROOT}" diff --name-only && git -C "${ROOT}" ls-files --others --exclude-standard`, { encoding: 'utf8' });
+    const out = [git('diff', '--name-only', base, '--', '.'), git('diff', '--name-only'), git('ls-files', '--others', '--exclude-standard')].join('\n');
     return [...new Set(out.split('\n').filter(Boolean))];
-  } catch {
-    return null;
+  } catch (e) {
+    throw new Error(`git diff against "${base}" failed: ${String(e.stderr || e.message).trim().split('\n')[0]} (in a shallow clone, fetch the base first or pass origin/main)`);
   }
 }
 
 const KNOWN = [/^docs\//, /^README\.md$/, /^CHANGELOG\.md$/, /^LICENSE$/, /^\.gitignore$/, /^examples\//, /^references\//, /^experiments\//, /^state\//, /^canon\//, /^registry\/skills-index\.json$/, /^registry\/research-tools\.json$/, /^evals\/static\//];
 
 export function evalPlan({ since, files } = {}) {
-  const changed = files ?? changedFiles(since) ?? [];
+  const changed = files ?? changedFiles(since);
   const fixtures = loadFixtures();
   const tiers = { T0: ['cstack validate', 'cstack budget --check'], T1: [], T2: [], T3: [], T4: [] };
   const why = [];
@@ -75,7 +80,7 @@ export function checkFixtures({ skills = null, files = null } = {}) {
   let tracked = files;
   if (!tracked) {
     try {
-      tracked = execSync(`git -C "${ROOT}" ls-files -co --exclude-standard`, { encoding: 'utf8' }).split('\n').filter(Boolean);
+      tracked = git('ls-files', '-co', '--exclude-standard').split('\n').filter(Boolean);
     } catch {
       tracked = null;
     }

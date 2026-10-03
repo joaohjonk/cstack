@@ -2,6 +2,13 @@ name: product-video
 status: template
 summary: A product film or ad from brief to verified master and channel cut-downs, label exact, spend staged.
 entry_skill: workflow
+methods:
+- product-hero-video
+- brand-mood-film
+- ugc-style-ad
+- logo-sting
+- explainer-voice-first
+- paid-social-cutdowns
 triggers:
 - product video
 - video ad

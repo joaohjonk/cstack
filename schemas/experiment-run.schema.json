@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/experiment-run.schema.json",
   "title": "Experiment run spec",
-  "description": "Section 12A. Bounded keep/discard loop over a frozen fixture and evaluator.",
+  "description": "Bounded keep/discard loop over a frozen fixture and evaluator.",
   "type": "object",
   "required": [
     "run_id",
@@ -57,7 +57,8 @@
         "higher_is_better": {
           "type": "boolean"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "guardrails": {
       "type": "array",
@@ -74,7 +75,8 @@
           "rule": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "regression_fixtures": {
@@ -110,5 +112,6 @@
       "type": "string",
       "description": "path to the human-editable program.md that steers proposals"
     }
-  }
+  },
+  "additionalProperties": true
 }

@@ -17,12 +17,6 @@
     "image to video",
     "upscale"
   ],
-  "not_for": [
-    "shot-dna",
-    "prompt-director",
-    "model-router",
-    "image-edit"
-  ],
   "required_inputs": [
     "compiled recipe",
     "model",
@@ -31,18 +25,8 @@
   "outputs": [
     "work/**/*.gen.json"
   ],
-  "writes": [
-    "work/",
-    "state/cost-ledger.jsonl",
-    "state/pending-jobs/",
-    "state/lineage.jsonl"
-  ],
   "required_providers": [
     "media provider"
-  ],
-  "optional_providers": [
-    "fal",
-    "mock"
   ],
   "cost_class": "high",
   "context_class": "s",
@@ -54,9 +38,6 @@
     "campaign-sequence",
     "learn-loop"
   ],
-  "evals": [
-    "evals/fixtures/expensive-overnight-batch.yaml"
-  ],
   "approval_gates": [
     {
       "id": "spend",
@@ -65,25 +46,12 @@
       "never_self_approve": true
     }
   ],
-  "baseline": "n/a",
   "fallback": {
     "when_missing": [
       "provider key"
     ],
     "mode": "blocked"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
-  "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  }
+  "status": "beta"
 }

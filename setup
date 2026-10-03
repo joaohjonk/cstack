@@ -39,7 +39,10 @@ else
   say "playwright-core absent (optional): browser commands will report MISSING; everything else works."
 fi
 
-cat <<'NEXT'
+cat <<NEXT
+
+Make \`cstack\` a command (skills and docs call it that); add this to your shell profile:
+  alias cstack="node $(pwd)/bin/cstack.mjs"
 
 Next steps
   node bin/cstack.mjs help                       list commands

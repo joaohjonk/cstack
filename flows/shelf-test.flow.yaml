@@ -1,0 +1,92 @@
+id: shelf-test
+outcome: test whether a pack design is found fast and read right on the real competitor shelf at shelf distance, before print
+aliases:
+- shelf test
+- shelf impact
+- shelf simulation
+- findability test
+- find test at distance
+- shelf standout
+- planogram mockup
+- competitor shelf capture
+status: researched
+target:
+  description: a simulated shelf built from the real competitor set at true scale, and a timed find test that shows whether the candidate is found as fast as or faster than the current pack, with the variant cue still read at distance
+  must:
+  - competitor facings captured from real packs or listings with dates, at known scale
+  - planogram built deterministically at true millimetre scale; the candidate placed from the approved artwork, never generated
+  - a near view and a far view (downscaled to the acuity of the viewing distance)
+  - a timed find task with people who did not design the pack, candidate and current pack tested the same way
+  must_not:
+  - testing on a white background
+  - a generated shelf where competitor or candidate packs are drawn by a model
+  - treating an AI attention heatmap or a handful of people as a launch decision
+  quality_bar: find time and hit rate recorded per variant; the owner sees the shelf images, the numbers and the misses before choosing a route
+when:
+- choosing between pack routes, before a redesign ships, line extensions that must be told apart
+not_when:
+- e-commerce-only products (test the thumbnail at listing size instead; same method at 200 px)
+candidates_considered:
+- name: deterministic planogram simulation plus a small timed find test
+  summary: capture competitors, lay out the shelf at true scale in HTML, screenshot near and far, show each person one image for a fixed time and log time to find
+  verdict: chosen
+  why: cheap, repeatable, uses the real competitor set; catches gross findability failures before money is spent
+- name: commissioned virtual-shelf or eye-tracking study (monadic cells of about 200)
+  verdict: fallback
+  why: the right tool for a launch decision on a major SKU; costs real money and weeks
+- name: AI predicted-attention heatmap on a shelf image
+  verdict: fallback
+  why: advisory only; vendor claims, no find task, no variant reading
+- name: designer judgement on screen against a white background
+  verdict: rejected
+  why: standout depends on contrast with neighbours; a design tested on white was not tested for standout
+steps:
+- id: capture
+  does: capture the competitor set (leaders, closest substitutes, look-alikes, own variants) as straight front-panel photos or listing images with measured pack sizes and dates; note facings and typical shelf position
+  kind: retrieval
+  skill: competitor-intel
+  outputs: [work/shelf/captures/, state/competitors.jsonl]
+  gate: {type: auto, check: "every facing has a source, a date and real dimensions in millimetres"}
+  compare_to_target: does the set match what the shopper actually sees in the main channel?
+- id: planogram
+  does: lay out a shelf bay as a local HTML page in the workspace at true scale (facings, shelf edges, price strips), candidate and current pack from approved artwork; render near (bay at full width) and far (bay downscaled to about 1,400 px wide for 3 m) with cstack browse shot
+  kind: deterministic
+  outputs: [work/shelf/planogram.html, work/shelf/shots/]
+  gate: {type: deterministic_check, check: "cstack audit confirms the near and far image sizes; a human confirms every facing is at its measured scale"}
+  compare_to_target: side by side with a store photo of the same category bay
+  fallback: lay out the bay in Figma when the Figma MCP is present, or composite the planogram onto a shelf photo with cstack mockup render (one quad for the bay)
+- id: variants
+  does: make the test set - current pack vs each candidate route, each in two shelf positions; same neighbours in each
+  kind: deterministic
+  gate: {type: auto, check: "only the tested pack changes between images"}
+  compare_to_target: one variable per image pair
+- id: find-test
+  does: show each person one shelf image for a fixed time (e.g. 2 s, flash) and ask them to point to the product named; log time to find, hit or miss and what they mistook it for; then a three-second read of the front panel (what, which variant, main claim)
+  kind: probe
+  gate: {type: independent_review, check: "at least 5-8 people per variant who did not design the pack; results logged per person"}
+  compare_to_target: candidate find time and hit rate vs current pack; variant cue named correctly at the far view
+  est_cost: {amount: 0, currency: USD}
+- id: decide
+  does: report numbers, misses and the shelf images; recommend a route or a commissioned study
+  kind: human
+  gate: {type: owner, check: "owner chooses a route or orders the fallback study"}
+  compare_to_target: target find time no worse than the current pack
+cost_ladder: capture and planogram cost no API money; the find test costs people's time (5-8 per variant); a commissioned study only for a launch decision on a major SKU; stop after two rounds where the candidate is slower than the current pack and go back to the strategy keep-list
+failure_modes:
+- competitor set chosen by the designer's taste, not by the shelf
+- candidate drawn larger or brighter than its neighbours
+- far view never tested; variant cue invisible at distance
+- loyal buyers' navigation cue (colour block, silhouette) removed in the redesign
+evidence:
+- {ref: docs/research/packaging.md, kind: documented, date: 2026-10-03, note: section 5}
+- {ref: "https://www.blauw.com/en/method/package-check", kind: practitioner, date: 2026-10-03, note: find current and new pack among competitors; time to find}
+- {ref: "https://insights.realeye.io/packaging-shelf-test-research", kind: practitioner, date: 2026-10-03, note: "metrics, realistic shelf, competitor set (published 2026-07-22)"}
+- {ref: "https://www.surveymonkey.com/learn/market-research/packaging-design-testing/", kind: practitioner, date: 2026-10-03, note: "standout vs findability, white background trap, ~200 per monadic cell"}
+- {ref: "https://packagingstrategies.com/articles/92095-assessing-what-consumers-see", kind: practitioner, date: 2026-10-03, note: flash exposure and eye-tracking in a shelf set (2004)}
+- {ref: "acuity proxy: 1 arcminute; 1.2 m bay at 3 m subtends about 23 degrees, about 1,400 resolvable px", kind: inferred, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- flow:packaging-system
+- workflow:packaging
+- skill:competitor-intel

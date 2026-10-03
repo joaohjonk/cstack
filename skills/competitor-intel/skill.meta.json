@@ -16,32 +16,12 @@
     "ad library",
     "market research"
   ],
-  "not_for": [
-    "cultural-scan",
-    "taste-search"
-  ],
   "required_inputs": [
     "competitor list or category"
   ],
   "outputs": [
     "state/competitors.jsonl",
     "work/competitors/*-category-map.md"
-  ],
-  "writes": [
-    "state/competitors.jsonl",
-    "references/competitors/",
-    "work/competitors/"
-  ],
-  "optional_providers": [
-    "particl",
-    "builtwith",
-    "store-leads",
-    "helium10",
-    "smartscout",
-    "nexscope-mcp",
-    "foreplay",
-    "shortimize",
-    "baymard"
   ],
   "cost_class": "low",
   "context_class": "m",
@@ -52,29 +32,13 @@
     "claims-proof",
     "copywriting"
   ],
-  "evals": [
-    "evals/fixtures/competitor-observation-vs-inference.yaml"
-  ],
-  "baseline": "n/a",
   "fallback": {
     "when_missing": [
       "paid intelligence tools"
     ],
     "mode": "degraded"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
   "required_providers": []
 }

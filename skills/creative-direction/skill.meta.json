@@ -16,21 +16,11 @@
     "concept",
     "feels generic"
   ],
-  "not_for": [
-    "identity-system",
-    "shot-dna",
-    "campaign-sequence"
-  ],
   "required_inputs": [
     "approved brief"
   ],
   "outputs": [
     "work/direction/*-territories.md"
-  ],
-  "writes": [
-    "work/direction/",
-    "campaigns/",
-    "references/anti/"
   ],
   "cost_class": "free",
   "context_class": "m",
@@ -42,10 +32,6 @@
     "copywriting",
     "workflow"
   ],
-  "evals": [
-    "evals/fixtures/beautiful-but-off-brand.yaml",
-    "evals/fixtures/make-it-cooler.yaml"
-  ],
   "approval_gates": [
     {
       "id": "direction",
@@ -54,21 +40,7 @@
       "never_self_approve": true
     }
   ],
-  "baseline": "brief",
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

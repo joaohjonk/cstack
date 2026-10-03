@@ -2,6 +2,11 @@ name: product-3d
 status: template
 summary: Product 3D (web hero, packshots, turntable, AR) from truth source to verified asset, label exact.
 entry_skill: workflow
+methods:
+- 3d-web-hero
+- 3d-packshot
+- 3d-social-turntable
+- 3d-ar-view
 triggers:
 - rotating product
 - 3d hero

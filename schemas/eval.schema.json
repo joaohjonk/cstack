@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/eval.schema.json",
   "title": "Eval record",
-  "description": "Section 18. One judgment on one artifact. Layered: gates are pass/fail; axes are separate; never one scalar unless a workflow declares a weighted composite.",
+  "description": "One judgment on one artifact. Layered: gates are pass/fail; axes are separate; never one scalar unless a workflow declares a weighted composite.",
   "type": "object",
   "required": [
     "id",
@@ -49,11 +49,12 @@
         "separate_from_author": {
           "type": "boolean"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "baseline": {
       "type": "string",
-      "description": "what this is judged relative to: brief, reference, incumbent, previous approved (section 1.4A, Trail of Bits)"
+      "description": "what this is judged relative to: brief, reference, incumbent, previous approved"
     },
     "gates": {
       "type": "array",
@@ -79,7 +80,8 @@
           "evidence": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "axes": {
@@ -109,12 +111,13 @@
           "evidence": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "lenses": {
       "type": "array",
-      "description": "section 27 independent reviewer lenses; disagreement survives",
+      "description": "independent reviewer lenses; disagreement survives",
       "items": {
         "type": "object",
         "required": [
@@ -150,7 +153,8 @@
           "fix": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "provider_verdict": {
@@ -171,7 +175,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "failures": {
       "type": "array",
@@ -201,5 +206,6 @@
     "cost": {
       "$ref": "common.schema.json#/$defs/money"
     }
-  }
+  },
+  "additionalProperties": false
 }

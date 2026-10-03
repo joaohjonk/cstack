@@ -2,32 +2,57 @@
   "slug": "symbol-design",
   "type": "capability",
   "summary": "Explore and direct marks like an identity studio: brief as mechanisms, category silhouettes, canon, wide cheap exploration judged in one colour at 32 px, construction grids, 2-3 directions",
-  "tags": ["logo", "symbol", "monogram", "mark", "identity"],
-  "triggers": ["new logo", "logo design", "symbol", "monogram", "brand mark", "refresh the logo", "secondary mark"],
-  "not_for": ["identity-system", "vector-master"],
-  "required_inputs": ["brief", "applications list"],
-  "outputs": ["work/marks/"],
-  "reads": ["brand/brand-system.json", "canon/", "references/"],
-  "writes": ["work/marks/", "state/feedback.jsonl", "state/cost-ledger.jsonl"],
+  "tags": [
+    "logo",
+    "symbol",
+    "monogram",
+    "mark",
+    "identity"
+  ],
+  "triggers": [
+    "new logo",
+    "logo design",
+    "symbol",
+    "monogram",
+    "brand mark",
+    "refresh the logo",
+    "secondary mark"
+  ],
+  "required_inputs": [
+    "brief",
+    "applications list"
+  ],
+  "outputs": [
+    "work/marks/"
+  ],
   "cost_class": "low",
   "context_class": "s",
   "mutating": true,
-  "destructive": false,
-  "handoff": ["vector-master", "identity-system", "creative-review", "competitor-intel"],
-  "evals": ["evals/fixtures/logo-generated-raster-as-master.yaml", "evals/fixtures/llm-svg-organic-mark.yaml"],
-  "approval_gates": [
-    { "id": "directions", "after_step": "shortlist", "artifact": "work/marks/*/directions.md", "never_self_approve": true }
+  "handoff": [
+    "vector-master",
+    "identity-system",
+    "creative-review",
+    "competitor-intel"
   ],
-  "depends_on_fields": ["logo_marks"],
-  "deterministic_steps": ["cstack svg reduce", "cstack svg lint", "grid overlays"],
-  "generative_steps": ["exploration thumbnails"],
+  "approval_gates": [
+    {
+      "id": "directions",
+      "after_step": "shortlist",
+      "artifact": "work/marks/*/directions.md",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "logo_marks"
+  ],
   "required_providers": [],
-  "optional_providers": ["fal"],
-  "baseline": "reference",
-  "fallback": { "when_missing": ["vector model", "Chromium"], "mode": "degraded" },
-  "compatible_hosts": ["claude-code", "codex", "cursor", "gemini-cli", "opencode"],
-  "version": "0.1.0",
+  "fallback": {
+    "when_missing": [
+      "vector model",
+      "Chromium"
+    ],
+    "mode": "degraded"
+  },
   "last_verified": "2026-10-03",
-  "status": "beta",
-  "budget": { "skill_md_tokens_max": 2500 }
+  "status": "beta"
 }

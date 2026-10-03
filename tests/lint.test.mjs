@@ -5,6 +5,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { lintLighting, lintShotDNA, lintShotDNATree, findShotDNAFiles } from '../scripts/lib/lint.mjs';
+import { readData } from '../scripts/lib/core.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rec = (lighting, extra = {}) => ({ id: 'DNA-t', source: 'proposed', what: 'x', why: 'y', camera: {}, composition: 'c', lighting, transferable_mechanism: 'm', do_not_copy: [], ...extra });
@@ -46,11 +47,13 @@ test('lint: a LIGHT_* recipe id covers terse text but not adjective prose; empty
   assert.equal(lintShotDNA(null).ok, false);
 });
 
-test('lint: repo records are found and clean; the deliberate test fixture is skipped by the tree walk', () => {
+test('lint: repo records are found and clean; test fixtures are skipped by the tree walk', () => {
   const files = findShotDNAFiles(ROOT).map((f) => path.relative(ROOT, f));
-  assert.ok(files.includes('fixtures/shot-dna/counter-flash.shot-dna.yaml'));
+  assert.ok(files.includes('examples/lumen-field/references/dna/shot-autumn-hero-aftermath.shot-dna.yaml'));
   assert.ok(!files.some((f) => f.startsWith('tests/')));
-  assert.deepEqual(lintShotDNATree(ROOT).filter((x) => x.file.startsWith('fixtures/')), []);
+  assert.deepEqual(lintShotDNATree(ROOT), []);
+  const good = readData(path.join(ROOT, 'tests', 'fixtures', 'shot-dna', 'counter-flash.shot-dna.yaml'));
+  assert.equal(lintShotDNA(good).ok, true);
 });
 
 test('cli: cstack lint shot-dna warns on the adjective fixture (exit 0, --strict exit 1)', () => {

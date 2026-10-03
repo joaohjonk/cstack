@@ -2,9 +2,6 @@
 name: brand-import
 description: "Ingest an existing brand (official assets, website, docs, repos, design files, a design-system extraction) into structured, sourced brand state: brand-system.json, brand-world entities, DTCG tokens, and seed gold/anti libraries. Use when a brand already exists and cstack needs its truth, when assets conflict, or when brand state is stale. Not for inventing a new brand (use workflow create-brand) or for judging a single artifact (use brand-verify)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /brand-import
@@ -36,7 +33,7 @@ Turns a brand that lives in PDFs, folders, sites and heads into machine-readable
 
 ## Source precedence
 
-Owner instruction > approved state > `assets/official/` > verified live behavior > campaign exception > extracted pattern (Taste, CSS, screenshots) > external reference > model inference. An extraction never overrides an official asset; a vision model's reading of a hex value is never accepted as proof (measure it from the file or CSS).
+The preamble ladder (§2); extracted patterns are Taste, CSS and screenshots. An extraction never overrides an official asset; a vision model's reading of a hex value is never accepted as proof (measure it from the file or CSS).
 
 ## Tools / providers
 

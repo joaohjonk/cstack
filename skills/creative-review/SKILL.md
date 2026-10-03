@@ -2,14 +2,11 @@
 name: creative-review
 description: "Review creative work through independent lenses (strategist, brand director, art director, photographer, type director, editor, culture, copy, commerce, production, compliance) run separately from the author, keep their disagreements, gate on hard failures, score distinct axes against a stated baseline, and make an explicit tradeoff. Use after anything is made and before it is shown as final, for A/B choices, or when the owner asks is this good. Not for deterministic brand checks (use brand-verify) or claim legality (use claims-proof)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /creative-review
 
-Multi-lens, not committee mush (section 27). The author never certifies its own work. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Multi-lens, not committee mush. The author never certifies its own work. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 
@@ -42,7 +39,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 ## Process
 
 1. **Gates first** (cheap → expensive): schema/size audits, `brand-verify`, `product-fidelity`, compliance flags. Any hard fail → decision `fix` with the failing gate; skip aesthetics.
-2. **Pick lenses** relevant to the artifact (not all eleven every time): STRATEGIST (right problem?), BRAND DIRECTOR (is this ours?), ART DIRECTOR (coherent, specific visual idea?), PHOTOGRAPHER (intentional photograph? lens, light, contact, materials), TYPE DIRECTOR (type doing real work? the section-18 axes in the type-director primer, with `cstack type qa` evidence), EDITOR (what to remove?), CULTURE (belongs in the world now?), COPY (sharp, ownable?), COMMERCE (helps someone understand and buy?), PRODUCTION (can it ship?), COMPLIANCE (anything risky or false?).
+2. **Pick lenses** relevant to the artifact (not all eleven every time): STRATEGIST (right problem?), BRAND DIRECTOR (is this ours?), ART DIRECTOR (coherent, specific visual idea?), PHOTOGRAPHER (intentional photograph? lens, light, contact, materials), TYPE DIRECTOR (type doing real work? the review axes in the type-director primer, with `cstack type qa` evidence), EDITOR (what to remove?), CULTURE (belongs in the world now?), COPY (sharp, ownable?), COMMERCE (helps someone understand and buy?), PRODUCTION (can it ship?), COMPLIANCE (anything risky or false?).
 3. **Each lens independently**: verdict, 1-3 evidence points tied to the artifact, the one change it would make.
 4. **Axes** (0-2 or null, each with evidence and the anchor case): beauty, brand fit, cultural vitality, message clarity, craft, product truth, commercial usefulness, novelty, correctness. Never summed.
 5. **Disagreements stay visible**. The orchestrator writes an explicit tradeoff ("keeping the harsher light: brand director and photographer outweigh commerce's concern; mitigated by a clearer PDP crop").
@@ -68,7 +65,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Handoff
 
-`image-edit` / `copywriting` / `identity-system` (fixes), `brand-verify` (re-verify), `learn-loop` (owner corrections, repeated failures).
+`image-edit` / `copywriting` / `identity-system` / `type-director` (fixes), `brand-verify` (re-verify), `learn-loop` (owner corrections, repeated failures).
 
 ## Failure modes
 

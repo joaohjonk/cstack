@@ -2,9 +2,6 @@
 name: creative-direction
 description: "Develop distinct creative territories (identity, verbal and art direction) from a brief, references and culture, using diverge, critique and mutate rather than averaging, and land one recommended direction with a written rationale and rejection list. Use when a brand, campaign or major asset needs a direction, or when work feels generic and needs a stronger idea. Not for systemizing an approved direction (use identity-system) or planning a specific shoot (use shot-dna and campaign-sequence)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /creative-direction

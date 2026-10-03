@@ -2,6 +2,9 @@ name: product-photoshoot
 status: template
 summary: High-end product imagery with the real product locked and verified.
 entry_skill: workflow
+methods:
+- mockup-set
+- food-still-life
 triggers:
 - product photoshoot
 - packshot

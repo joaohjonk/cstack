@@ -1,6 +1,6 @@
 # gstack browse: what it is, what cstack needs, and a small port plan
 
-Source: gstack v1.91.13.0 (`VERSION`), cloned at `/home/claude/research-src/gstack`.
+Source: gstack v1.91.13.0 (`VERSION`), cloned at `research-src/gstack`.
 License: MIT, Copyright (c) 2026 Garry Tan (`LICENSE:1-3`). gstack's `NOTICE.md`
 lists Apache-2.0 derived material (impeccable). None of it sits in `browse/`,
 so a browse-derived port inherits only the MIT notice.

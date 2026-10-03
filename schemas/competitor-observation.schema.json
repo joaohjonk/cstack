@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/competitor-observation.schema.json",
   "title": "Competitor observation",
-  "description": "Section 16. Normalized observation; observation and inference are separate fields.",
+  "description": "Normalized observation; observation and inference are separate fields.",
   "type": "object",
   "required": [
     "id",
@@ -63,7 +63,8 @@
         "cta": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "performance_proxy": {
       "type": "object",
@@ -77,7 +78,8 @@
         "source": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "inference": {
       "type": "string"
@@ -89,5 +91,6 @@
         "authenticated_with_permission"
       ]
     }
-  }
+  },
+  "additionalProperties": false
 }

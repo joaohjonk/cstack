@@ -2,14 +2,11 @@
 name: cultural-scan
 description: "Observe live culture (scenes, behaviors, language, rituals, objects, status signals, creators, events) and translate it into brand behavior, scoring cultural assets on legibility, repetition, mobility, aggregation and organization. Use when a campaign or brand needs cultural relevance, when an idea must belong in the world now, or for a cultural-fit review of finished work. Not for competitor tracking (use competitor-intel) or aesthetic reference search (use taste-search)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /cultural-scan
 
-Good taste and current culture are different inputs (section 15). Culture is observed, dated and staged, never assumed. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Good taste and current culture are different inputs. Culture is observed, dated and staged, never assumed. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

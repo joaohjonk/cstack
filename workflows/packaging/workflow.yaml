@@ -2,6 +2,13 @@ name: packaging
 status: template
 summary: Packaging from category truth to verified renders and a prepress checklist.
 entry_skill: workflow
+methods:
+- packaging-system
+- shelf-test
+- print-proof-loop
+- mockup-set
+- 3d-packshot
+- food-still-life
 triggers:
 - packaging
 - pack design
@@ -15,18 +22,24 @@ steps:
   gate: owner
 - id: market-retail-context
   skill: competitor-intel
+  does: category map plus competitor shelf capture (front panels at known scale, dated) for the shelf test
   gate: auto
+- id: converter-spec
+  does: converter's current dieline, process, substrate, inks, colour targets per substrate, proof tolerance, minimum order and lead time, before artwork starts (flow packaging-system, step converter-spec)
+  gate: owner
 - id: strategy
   skill: creative-direction
   gate: owner
-- id: shelf-blocking
-  does: shelf and blocking studies (deterministic layouts at shelf distance)
+- id: hierarchy
+  skill: identity-system
+  does: written information hierarchy on every panel; routes sketched at true size on the dieline; three-second read test by people who did not design it (flow packaging-system, step panel-hierarchy)
   gate: auto
+- id: shelf-blocking
+  skill: competitor-intel
+  does: deterministic planogram of the real competitor set at true scale, near and far views, timed find test against the current pack (flow shelf-test)
+  gate: owner
 - id: identity-application
   skill: identity-system
-  gate: auto
-- id: hierarchy
-  does: information hierarchy on every panel
   gate: auto
 - id: claims-architecture
   skill: claims-proof
@@ -35,24 +48,37 @@ steps:
   skill: claims-proof
   does: BR/US mandatory statements from current primary sources
   gate: auto
+- id: legacy-stock
+  skill: claims-proof
+  does: when a label changes for compliance, count printed and packed stock, weeks to run out, and the regulator's current transition and over-sticker rules; owner decides over-sticker, run-out or write-off and records it with dated sources (an over-sticker goes through print-proof-loop)
+  gate: owner
 - id: dieline-production
-  does: dieline, bleed, finishes, barcode, print constraints; checklist
+  skill: identity-system
+  does: artwork on the converter's dieline (cut, crease, bleed, copy limit, no-print zones as named spot colours), spot names from the converter spec, GS1 barcode size, quiet zones and placement from the official number; a second person checks it (flow packaging-system, step artwork)
   gate: auto
+- id: file-parity
+  does: export every design-tool panel the printer opens at the gated artwork size; cstack audit for size and cstack mockup verify through a flat template against the approved panel; a human checks line breaks and overflow; any difference fails (flow print-proof-loop, step file-parity)
+  gate: owner
 - id: renders
   skill: three-d
-  does: 3D packshot renders from the dieline and official label art (flow 3d-packshot); label art never generated
+  does: 3D packshot renders from the dieline and official label art (flow 3d-packshot); label art never generated; a render that redraws the pack is labelled illustrative and decides nothing until the label pixel diff passes
   gate: auto
   fallback: 'no 3D tools: generate-media plates with the label composited by mockup'
 - id: mockups
   skill: mockup
-  does: physical-context mockups composited from the dieline art (per-panel quads, cylinder unwrap), verified by inverse warp
+  does: physical-context mockups composited from the dieline art (per-panel quads, cylinder unwrap); cstack mockup verify passes before any render enters review (flow mockup-set)
   gate: auto
+- id: food-shots
+  skill: product-fidelity
+  does: food and ingredient stills for the pack and launch - real product, hero selection, pictured ingredients checked by claims-proof (flow food-still-life)
+  gate: owner
 - id: verification
   skill: brand-verify
   gate: auto
 - id: review
   skill: creative-review
+  does: review of verified renders only; illustrative renders are not decision material
   gate: owner
 - id: prepress
-  does: prepress checklist signed by a human
+  does: preflight checklist, frozen file hash, proof on the real substrate measured and photographed, compared with the file, barcode graded, signed by the owner (flow print-proof-loop)
   gate: owner

@@ -3,7 +3,6 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFile } from 'node:child_process';
@@ -11,6 +10,7 @@ import { promisify } from 'node:util';
 import { binPath, toolInfo } from '../scripts/lib/video/ffmpeg.mjs';
 import { runVideo } from '../scripts/lib/video/cli.mjs';
 import { decodePNG, encodePNG } from '../scripts/lib/image/png.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const exec = promisify(execFile);
 const ffmpeg = (args, cwd) => exec(binPath('ffmpeg'), ['-hide_banner', '-nostdin', '-loglevel', 'error', ...args], { cwd, maxBuffer: 64 * 1024 * 1024 });
@@ -32,7 +32,7 @@ const X264 = ['-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p'];
 const testsrc = (size, d) => ['-f', 'lavfi', '-i', `testsrc2=size=${size}:rate=30:duration=${d}`];
 
 async function makeFixtures() {
-  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-video-'));
+  const d = tmpDir('cstack-video-');
   // a high-contrast checker "label" for the ROI gate: SSIM reacts to it going soft or changing
   const label = new Uint8ClampedArray(60 * 60 * 4);
   for (let y = 0; y < 60; y++) for (let x = 0; x < 60; x++) label.fill((Math.floor(x / 6) + Math.floor(y / 6)) % 2 ? 235 : 20, (y * 60 + x) * 4, (y * 60 + x) * 4 + 3);

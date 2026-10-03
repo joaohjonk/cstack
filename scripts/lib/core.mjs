@@ -10,12 +10,28 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 export const rel = (p) => path.relative(ROOT, p) || '.';
 export const exists = (p) => fs.existsSync(p);
-export const readText = (p) => fs.readFileSync(p, 'utf8');
-export const readJSON = (p) => JSON.parse(readText(p));
-export const readYAML = (p) => YAML.parse(readText(p));
+// Read errors name the file (a raw "Unexpected token" or ENOENT says neither which file nor what to do); e.code is kept.
+const named = (p, what, e) => Object.assign(new Error(e.code === 'ENOENT' ? `cannot read ${p}: not found` : `${p}: ${what} (${e.message.split('\n')[0]})`), { code: e.code, cause: e });
+export const readText = (p) => {
+  try {
+    return fs.readFileSync(p, 'utf8');
+  } catch (e) {
+    throw named(p, 'unreadable', e);
+  }
+};
+const parsed = (p, what, parse) => {
+  const t = readText(p);
+  try {
+    return parse(t);
+  } catch (e) {
+    throw named(p, what, e);
+  }
+};
+export const readJSON = (p) => parsed(p, 'invalid JSON', JSON.parse);
+export const readYAML = (p) => parsed(p, 'invalid YAML', YAML.parse);
 export const readData = (p) => (p.endsWith('.json') ? readJSON(p) : readYAML(p));
 
-// Atomic write: write to a temp file in the same dir, then rename (section 25).
+// Atomic write: write to a temp file in the same dir, then rename.
 export function writeAtomic(p, content) {
   fs.mkdirSync(path.dirname(p), { recursive: true });
   const tmp = `${p}.tmp-${process.pid}-${Date.now()}`;

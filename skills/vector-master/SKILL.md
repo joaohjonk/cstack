@@ -2,9 +2,6 @@
 name: vector-master
 description: "Turn a refined drawing, a raster logo or an icon set into checked vector masters and a kit: retrieve before tracing, clean SVG, lint structure, palette, strokes and grid, test reduction and one colour, export variants, lockups, favicon and app icons; icon-set mode lints every icon against one grammar. Use when marks or icons must become production files. Not for exploring marks (use symbol-design)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /vector-master

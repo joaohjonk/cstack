@@ -16,14 +16,14 @@ budget:
 
 - **No `budget:` block, no paid calls.** Every guarded call is `budget_blocked`, and `cstack brand check` warns.
 - **New workspaces start at 0.** A priced call (estimate > 0) is blocked until you raise the limits on purpose.
-- `confirm_over` does not block. It sets `needs_confirmation: true` in the plan, and the skills ask the owner before going ahead.
-- `per_day` counts the ledger since midnight UTC. It includes `ok` rows and failed rows (`failed_transient`, `failed_policy`, `failed_other`), using the actual cost when known and the estimate otherwise, in the envelope's currency.
+- `confirm_over`: a batch estimated above it sets `needs_confirmation: true`, and the guard blocks the call until the owner confirms it (`cstack generate ... --confirm`).
+- `per_day` counts the ledger since local midnight: `ok` rows, failed rows and queued jobs, at the actual cost when known and the estimate otherwise, in the envelope's currency.
 
 ## guardedCall
 
 Every paid operation goes through `guardedCall(ws, spec, fn)` in `scripts/lib/ledger.mjs`. `cstack generate` (media) and `cstack taste` (Taste Labs) both use it. Each call follows these steps in order:
 
-1. **Idempotency key** = sha256 of `{provider, model, operation, input_hashes (sorted), prompt_recipe_hash, params}`. Image inputs are hashed by file content.
+1. **Idempotency key** = sha256 of `{provider, model, operation, input_hashes (sorted), prompt_recipe_hash, prompt_hash, params}`. Image inputs are hashed by file content, and `prompt_hash` covers `inputs.prompt`, so two different prompts never dedupe to each other.
 2. **Dedupe.** An earlier `ok` row with the same key is returned without calling the provider, and a `deduplicated` row (`cache_status: hit`) is appended. Nothing is paid twice.
 3. **Dry run.** With `dry_run`, a `dry_run` row is logged and nothing is called.
 4. **Budget gate.** The call is planned against the envelope. On failure, a `budget_blocked` row records the reasons.
@@ -49,7 +49,7 @@ cstack spend plan batch.json --stop "stop when 2 of the first 4 probes fail prod
 
 The plan fails (exit 1) if there is no budget envelope, the batch exceeds `per_run`, today's spend plus the batch exceeds `per_day`, or there is **no stop condition**. A batch without a stop condition is a bug, not a plan.
 
-The production ladder from the shared preamble applies: contact-sheet probes → select a direction → one targeted high-quality still → local repair → upscale only approved frames → motion only from approved stills. Never render many expensive finals to discover a composition.
+The production ladder in the [shared preamble](../skills/cstack-shared/PREAMBLE.md) applies: probes before finals, never many expensive finals to discover a composition.
 
 ## Cost ledger
 
@@ -69,21 +69,9 @@ cstack spend summary --since 2026-10-01 --currency USD --json
 
 `actual_cost_if_available` stays null when a provider bills asynchronously (fal). Reconcile it from billing later and never infer it from balance deltas. Rows tagged with `experiment_id` let `/creative-autoresearch` total an experiment's spend.
 
-## Context budgets and the ratchet
+## Context budgets
 
-Skill context is budgeted like spend. Each SKILL.md has a token ceiling in `evals/static/context-budgets.json`. Tokens are estimated as `ceil(chars / 4)`, and the same estimator is used on both sides of every comparison.
-
-```bash
-cstack budget --check                                  # CI gate
-cstack budget --ratchet                                # shrinking lowers ceilings automatically
-cstack budget --accept copywriting --reason "..."      # growth needs a recorded reason
-```
-
-- 10% tolerance over the ceiling, then `over`.
-- The always-loaded catalog (every skill's name and description) has its own ceiling.
-- Bundled reference files load on demand and are reported separately.
-
-Details: [skill-authoring.md](skill-authoring.md#context-budgets-and-the-ratchet).
+Skill context is budgeted like spend: every SKILL.md and the always-loaded catalog have token ceilings that `cstack budget --check` enforces in CI. The rules and the ratchet: [skill-authoring.md](skill-authoring.md#context-budgets-and-the-ratchet).
 
 ## Cache-stable brand context
 
@@ -123,12 +111,10 @@ The router (`scripts/lib/router.mjs`) scores the `registry/models.json` entries 
 
 It prints the top candidates with reasons, a 3-model fallback chain and warnings. If the top candidate is stale, verify current docs and pricing before a paid batch. If the top two are within 6 points, run a 2–4 probe micro-benchmark on the real task before scaling. `--max-cost` compares against `est_unit_cost.amount` (per image or per second), never a token price. Entries without a unit price are reported as "no unit price: estimate before a batch".
 
-Vocabulary: modalities are `image | video | vector | analysis`, and capabilities use the registry's names (`text-to-image`, `image-edit`, `mask-inpainting`, `text-rendering`, `image-to-video`, `native-audio`, ...). `--providers` filters on the registry's `provider` field, which is the model's maker (for example `openai`, `black-forest-labs`), not the cstack adapter (`fal`).
+Vocabulary: modalities are `image | video | vector | 3d | audio | analysis`, and capabilities use the registry's names (`text-to-image`, `image-edit`, `mask-inpainting`, `text-rendering`, `image-to-video`, `native-audio`, ...). `--providers` filters on the registry's `provider` field, which is the model's maker (for example `openai`, `black-forest-labs`), not the cstack adapter (`fal`).
 
-The registry is a dated snapshot. `cstack health` reports how many entries are stale. A workspace may carry its own `registry/models.json`, which takes priority. The `/model-router` skill re-verifies live docs before important batches. To update the shared registry, edit `docs/research/models.seed.json` and run `node scripts/dev/seed_models.mjs`. Every entry needs a dated source.
+The registry is a dated snapshot. `cstack health` reports how many entries are stale. A workspace may carry its own `registry/models.json`, which takes priority. The `/model-router` skill re-verifies live docs before important batches. To update the shared registry, edit `registry/models.seed.json` and run `node scripts/dev/seed_models.mjs`. Every entry needs a dated source.
 
 ## Unpriced calls
 
-A call with no cost estimate (neither the request's `estimated_cost`, the adapter's `estimate()`, nor the registry's `est_unit_cost` for that model) is blocked, not treated as free. Unblock it per call with `--confirm-unpriced` after asking the owner, or set `budget.allow_unpriced: true` in `cstack.config.yaml`. Taste Labs calls are credit-priced and always unpriced in USD terms, so `cstack taste` needs `--confirm-unpriced` or `allow_unpriced`.
-
-The idempotency key includes a hash of `inputs.prompt` as well as params, input image hashes and `recipe_hash`, so two different prompts never dedupe to each other.
+A call with no cost estimate (no `estimated_cost` in the request, no adapter `estimate()`, no `est_unit_cost` in the registry) is not free. It is blocked unless the owner agrees per call (`--confirm-unpriced`) or the budget sets `allow_unpriced: true`, and even then it is refused while the budget is 0. An allowed unpriced call is booked against `per_day` at `budget.unpriced_call_cost`, or at `per_run` when that is unset. Taste Labs calls are credit-priced, so `cstack taste` always needs one of the two.

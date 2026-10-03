@@ -2,33 +2,69 @@
   "slug": "type-director",
   "type": "capability",
   "summary": "Choose and pair typefaces for the job, build a measurable type system as tokens and rules, and review typography with checks",
-  "tags": ["typography", "type", "pairing", "type-system", "tokens", "review"],
-  "triggers": ["choose a typeface", "font pairing", "type system", "type scale", "typography review", "fonts feel wrong", "hierarchy is a mess"],
-  "not_for": ["identity-system", "creative-direction"],
-  "required_inputs": ["brief or brand context", "surfaces and languages"],
-  "outputs": ["work/type/", "brand/tokens/type.tokens.json", "brand/rules/brand-rules.yaml"],
-  "reads": ["brand/brand-system.json", "brand/tokens/", "references/"],
-  "writes": ["work/type/", "brand/tokens/", "brand/rules/brand-rules.yaml", "state/feedback.jsonl"],
+  "tags": [
+    "typography",
+    "type",
+    "pairing",
+    "type-system",
+    "tokens",
+    "review"
+  ],
+  "triggers": [
+    "choose a typeface",
+    "font pairing",
+    "type system",
+    "type scale",
+    "typography review",
+    "fonts feel wrong",
+    "hierarchy is a mess"
+  ],
+  "required_inputs": [
+    "brief or brand context",
+    "surfaces and languages"
+  ],
+  "outputs": [
+    "work/type/",
+    "brand/tokens/type.tokens.json",
+    "brand/rules/brand-rules.yaml"
+  ],
   "cost_class": "free",
   "context_class": "m",
   "mutating": true,
-  "destructive": false,
-  "handoff": ["identity-system", "brand-verify", "creative-review", "copywriting", "workflow", "learn-loop"],
-  "evals": ["evals/fixtures/type-pairing-near-miss.yaml", "evals/fixtures/type-system-measurable.yaml", "evals/fixtures/type-review-beyond-font-choice.yaml"],
-  "approval_gates": [
-    { "id": "pairing", "after_step": "specimens", "artifact": "work/type/*/specimen.html", "never_self_approve": true },
-    { "id": "system", "after_step": "verify", "artifact": "brand/tokens/type.tokens.json", "never_self_approve": true }
+  "handoff": [
+    "identity-system",
+    "brand-verify",
+    "creative-review",
+    "copywriting",
+    "learn-loop"
   ],
-  "depends_on_fields": ["typography", "type_hierarchy", "voice"],
-  "deterministic_steps": ["cstack type scale", "cstack type font", "cstack type qa", "cstack tokens check", "cstack tokens build"],
-  "generative_steps": ["longlist", "pairing rationale", "review judgment"],
-  "baseline": "brief",
-  "fallback": { "when_missing": ["font files", "browser engine"], "mode": "degraded" },
-  "compatible_hosts": ["claude-code", "codex", "cursor", "gemini-cli", "opencode"],
-  "version": "0.1.0",
+  "approval_gates": [
+    {
+      "id": "pairing",
+      "after_step": "specimens",
+      "artifact": "work/type/*/specimen.html",
+      "never_self_approve": true
+    },
+    {
+      "id": "system",
+      "after_step": "verify",
+      "artifact": "brand/tokens/type.tokens.json",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "typography",
+    "type_hierarchy",
+    "voice"
+  ],
+  "fallback": {
+    "when_missing": [
+      "font files",
+      "browser engine"
+    ],
+    "mode": "degraded"
+  },
   "last_verified": null,
   "status": "beta",
-  "budget": { "skill_md_tokens_max": 3200 },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

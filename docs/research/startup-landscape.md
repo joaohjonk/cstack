@@ -1,6 +1,6 @@
-# Startup landscape: companies in master prompt §1.4, checked against public repos per §1.4A
+# Startup landscape: creative-AI companies, checked against their public repos
 
-Researched 2026-10-03. This note covers the YC companies listed in §1.4 and the non-YC creative tooling that matters most for cstack. Following §1.4A, I searched each company's public GitHub presence **before** relying on product copy. GitHub searches went through the GitHub MCP search API. Repos were shallow-cloned into `/home/claude/research-src/<owner>_<repo>`.
+Researched 2026-10-03. This note covers the YC companies in the creative-AI space and the non-YC creative tooling that matters most for cstack. I searched each company's public GitHub presence **before** relying on product copy. GitHub searches went through the GitHub MCP search API. Repos were shallow-cloned into `research-src/<owner>_<repo>`.
 
 **Evidence labels** (used in every table):
 - **architecture-seen**: I read code, schemas, tests or CI in a public repo.
@@ -8,7 +8,7 @@ Researched 2026-10-03. This note covers the YC companies listed in §1.4 and the
 - **UI-observed**: a third party documented the live product UI. This is not code.
 - **marketing-claim**: only the company's site, YC page or launch post. Not verified.
 
-Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patterns.md` (another worker). Here I only summarize them and point to that note. The exceptions are two Gooseworks repos not listed in §1.4A (`gooseworks-ai/gooseworks`, `gooseworks-ai/gooseworks-ads`), which I cover briefly because they show the brand-memory contract.
+Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patterns.md` (another worker). Here I only summarize them and point to that note. The exceptions are two Gooseworks repos not covered elsewhere (`gooseworks-ai/gooseworks`, `gooseworks-ai/gooseworks-ads`), which I cover briefly because they show the brand-memory contract.
 
 ---
 
@@ -103,7 +103,7 @@ Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patte
 | verification mechanism | Not documented. |
 | human role | Creative teams execute briefs. "Only pay for the creatives you like". |
 | borrow | Tag creatives with an explicit, versioned **creative-parameter taxonomy** so performance can be attributed per parameter. Use a **brief as the output of analysis** (insight → brief → production). Minimum-data honesty: the launch required ≥$500k/yr spend, 20–25 tests/month, 6 months of history before claiming patterns. |
-| NOT borrow | Letting performance tags define taste (§3.12). "100+ parameters" without a public schema. Auto-publishing. |
+| NOT borrow | Letting performance tags define taste. "100+ parameters" without a public schema. Auto-publishing. |
 | public repo | **No.** GitHub search found only unrelated portfolio projects (`AryAgarwal/adcreative-agent`, "GetCrux portfolio project"), which are not company code. |
 | evidence quality | **marketing-claim** (https://www.getcrux.ai/, https://www.ycombinator.com/launches/MaN-getcrux-ai-creative-strategist-to-launch-winning-ads, …/O5K-…). |
 
@@ -153,7 +153,7 @@ Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patte
 | feedback signal | Post performance (claims "up to 8.3% CTR"). |
 | verification mechanism | Not documented. Users can edit "any line, scene, or image… without re-recording the source". |
 | human role | Edit outputs. Publishing is automatic. |
-| borrow | **Capture real product footage from the actual artifact** (sandboxed PR build) instead of generating it: deterministic before generative (§3.15). Make the source of truth a code change, so assets can **regenerate when the source changes**. Edit layer kept separate from capture. |
+| borrow | **Capture real product footage from the actual artifact** (sandboxed PR build) instead of generating it: deterministic before generative. Make the source of truth a code change, so assets can **regenerate when the source changes**. Edit layer kept separate from capture. |
 | NOT borrow | Automatic publishing without a gate. CTR as the headline quality metric. |
 | public repo | **No** (searches for tday/tdaycom found nothing). |
 | evidence quality | **marketing-claim** (YC page; https://www.ycombinator.com/launches/Qd3-tday-com-your-code-ships-we-make-it-famous). tday.com itself was unreachable. |
@@ -187,7 +187,7 @@ Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patte
 | feedback signal | Human review rounds (marketing: "fewer review rounds"). |
 | verification mechanism | `image_compare_node.py`; size/resolution handling; **cost ledger** (`fal_cost_ledger.py`, `fal_cost_report_node.py`, `fal_pricing.py`). |
 | human role | Primary. Creative directors and designers own judgment; AI is inside the workflow. |
-| borrow | Deterministic transforms around generative steps, per-run cost ledger, region-scoped edits (details in `public-repo-patterns.md`). The human-led service model as proof that taste stays with humans (§3.10). |
+| borrow | Deterministic transforms around generative steps, per-run cost ledger, region-scoped edits (details in `public-repo-patterns.md`). The human-led service model as proof that taste stays with humans. |
 | NOT borrow | Dependence on a ComfyUI GUI runtime as the cstack core. Opaque "Brand Brain" claims. |
 | public repo | **Yes:** `Superside/comfyui-superside-nodes` (~80 node modules, active 2026-10-02). Deep-dive is in `public-repo-patterns.md`. |
 | evidence quality | **architecture-seen** for media nodes. **marketing-claim** for Brand Brain, Superspace, AI agents (https://www.superside.com/). |
@@ -310,8 +310,8 @@ Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patte
 | feedback signal | n/a. |
 | verification mechanism | `fal-ai/arbiter`: named metrics behind one interface: no-reference (MUSIQ, NIMA, ARNIQA, CLIP-IQA, variance of Laplacian), reference-based (LPIPS, SSIM, DISTS, MSE), text-image (CLIP score), set-level (FID, KID), video variants, WER. Last commit 2025-12, so somewhat stale. |
 | human role | Developer. |
-| borrow | A **cheap deterministic/learned metric layer** before LLM judges: sharpness, reference preservation (LPIPS/SSIM vs source), prompt adherence (CLIP). §3.17: evals cheaper than generation. Per-call pricing feeds the cost ledger (Superside's `fal_pricing.py` does this). |
-| NOT borrow | Treating aesthetic predictors (NIMA/MUSIQ) as "on brand". They are not brand judgments (§3.8). |
+| borrow | A **cheap deterministic/learned metric layer** before LLM judges: sharpness, reference preservation (LPIPS/SSIM vs source), prompt adherence (CLIP). Evals cheaper than generation. Per-call pricing feeds the cost ledger (Superside's `fal_pricing.py` does this). |
+| NOT borrow | Treating aesthetic predictors (NIMA/MUSIQ) as "on brand". They are not brand judgments. |
 | public repo | **Yes:** `fal-ai/fal`, `fal-js`, `arbiter`. No official skills/MCP repo found. |
 | evidence quality | **architecture-seen** (SDK/arbiter). Router scale claims are **marketing-claim** (https://fal.ai/docs). |
 
@@ -332,7 +332,7 @@ Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patte
 5. **Verification is the weakest layer across the market.** Public evidence of verification exists only at Krea (eval suites + vision compare + QA thresholds), Gooseworks (contract validators, forward-test fixtures), Ad Army (graph lint), Superside (image compare + cost ledger) and fal (metric library). Every "self-improving loop" claim (Lapis, Uplane, Palette, GetCrux, Gooseworks performance) is **marketing-claim with no visible mechanism**.
 6. **Cost is becoming an explicit protocol.** Figma Weave (quote → acknowledged cost), Runway (dryRun, credit caps, one billable verification), Palette (cost gating, refunds on fallback), Superside (cost ledger). The counterexample is Gooseworks' "no preflight".
 7. **Product-truth-from-code is a new cluster** (tday, Memoir). Source of truth is the repo/PR plus a captured live product, deterministic capture beats generation, and assets re-generate when the source changes. This is the most git-native pattern in the landscape.
-8. **Ads-loop companies (Lapis, Uplane, GetCrux) optimize toward platform metrics** and take autonomy over budgets. None show how they keep taste from collapsing into CTR (§3.12).
+8. **Ads-loop companies (Lapis, Uplane, GetCrux) optimize toward platform metrics** and take autonomy over budgets. None show how they keep taste from collapsing into CTR.
 9. **Human gates appear as per-step settings, not global modes**: Ad Army manual-review/auto-advance, Memoir Slack approval, Gooseworks chat approval, Runway/Figma spend approval.
 
 ---
@@ -354,7 +354,7 @@ Gooseworks, Superside and Higgsfield repos get a deep-dive in `public-repo-patte
 | Two-layer evals with diff/dispatch triggers (Krea) | Adopt the eval case schema (`required_facts`, `expected_tool_path`, fixtures, PASS/FAIL). Free lint/self-test on every PR; paid live evals only when the touched skill or provider adapter changes. | P0 |
 | Cheap metric layer (fal arbiter, Krea vision-compare) | Before any LLM judge, run deterministic checks: resolution, safe zones, LPIPS/SSIM preservation vs source for edits, CLIP adherence. Label them "technical quality", never "on brand". | P1 |
 | Product truth from code (tday, Memoir) | A `/launch-from-pr` workflow: PR diff → evidence record (screens captured from the real build) → audience fan-out → gate. Regenerate when the source changes. This fits cstack being git-native better than any competitor does. | P2 |
-| Creative-parameter taxonomy (GetCrux) | A versioned taxonomy for tagging creative (hook, format, CTA, …) so performance data attaches to parameters. Keep it separate from taste judgments (§3.8, §3.12). Enforce minimum-data thresholds before claiming patterns. | P2 |
+| Creative-parameter taxonomy (GetCrux) | A versioned taxonomy for tagging creative (hook, format, CTA, …) so performance data attaches to parameters. Keep it separate from taste judgments. Enforce minimum-data thresholds before claiming patterns. | P2 |
 | Durable outputs, hints not directives (Gooseworks) | Store outputs in the repo or durable storage, never expiring CDN URLs. Template metadata is advisory and the brand spec wins. | P1 |
 
 **Do NOT borrow, market-wide:** a hosted proprietary brand store as truth; volume-first "thousands of variants"; autonomous budget control; self-scored virality as a delivery gate; model-version lists as UI; Pipedream-scale action catalogs; claims of "self-improving" without a visible eval/learning mechanism; voice cloning from posts without consent/provenance.

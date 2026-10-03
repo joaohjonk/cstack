@@ -15,24 +15,12 @@
     "before delivery",
     "validate import"
   ],
-  "not_for": [
-    "creative-review",
-    "claims-proof",
-    "product-fidelity"
-  ],
   "required_inputs": [
     "artifact"
   ],
   "outputs": [
     "state/evals.jsonl",
     "work/verify/*.md"
-  ],
-  "writes": [
-    "state/evals.jsonl",
-    "state/failures.jsonl"
-  ],
-  "optional_providers": [
-    "taste-labs"
   ],
   "cost_class": "low",
   "context_class": "s",
@@ -44,37 +32,13 @@
     "copywriting",
     "learn-loop"
   ],
-  "evals": [
-    "evals/fixtures/agent-output-fails-verify.yaml",
-    "evals/fixtures/beautiful-but-off-brand.yaml",
-    "evals/fixtures/existing-brand-clear-assets.yaml"
-  ],
-  "baseline": "reference",
   "fallback": {
     "when_missing": [
       "taste-labs"
     ],
     "mode": "local"
   },
-  "deterministic_steps": [
-    "tokens lint",
-    "aspect audit",
-    "banned words",
-    "contrast"
-  ],
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
   "required_providers": []
 }

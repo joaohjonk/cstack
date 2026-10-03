@@ -90,19 +90,48 @@ export function buildCSS(ws, { out } = {}) {
   return { file: p, count: lines.length };
 }
 
-// Raw-value lint: hex colors in CSS/HTML that are not a brand token value. Exceptions must be explicit.
+// #rgb, #rgba, #rrggbb, #rrggbbaa -> '#rrggbb' (alpha dropped: a translucent brand colour is still that colour)
+export function hexRGB(hex) {
+  let h = String(hex).trim().toLowerCase().replace(/^#/, '');
+  if (!/^([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/.test(h)) return null;
+  if (h.length <= 4) h = [...h].map((c) => c + c).join('');
+  return '#' + h.slice(0, 6);
+}
+
+// rgb(255 0 0) / rgba(255, 0, 0, .5) / rgb(100% 0% 0%) -> '#rrggbb'; null when not plain numbers
+function rgbFn(args) {
+  const parts = args.split(/[\s,/]+/).filter(Boolean).slice(0, 3);
+  if (parts.length < 3) return null;
+  const ch = parts.map((x) => (/^\d+(\.\d+)?%$/.test(x) ? (parseFloat(x) / 100) * 255 : /^\d+(\.\d+)?$/.test(x) ? Number(x) : NaN));
+  if (ch.some((c) => !Number.isFinite(c) || c > 255)) return null;
+  return '#' + ch.map((c) => Math.round(c).toString(16).padStart(2, '0')).join('');
+}
+
+const RAW_COLOR = /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})\b|\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(([^()]*)\)/gi;
+
+// Raw-value lint: colours in CSS/HTML that are not a brand token value (hex with or without alpha, rgb() and the
+// other colour functions). Exceptions must be explicit (--allow, compared the same way).
 export function lintRaw(ws, files, { allow = [] } = {}) {
   const tokens = loadTokens(ws);
-  const palette = new Set(allow.map((a) => a.toLowerCase()));
-  for (const name of Object.keys(tokens)) if (tokens[name].type === 'color') palette.add(colorHex(resolve(tokens, name)));
+  const palette = new Set();
+  const literal = new Set();
+  for (const a of allow) {
+    const h = hexRGB(a);
+    if (h) palette.add(h);
+    else literal.add(String(a).replace(/\s+/g, '').toLowerCase());
+  }
+  for (const name of Object.keys(tokens)) if (tokens[name].type === 'color') palette.add(hexRGB(colorHex(resolve(tokens, name))));
   const findings = [];
   for (const f of files) {
     const text = fs.readFileSync(f, 'utf8');
     text.split('\n').forEach((line, i) => {
-      for (const m of line.matchAll(/#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g)) {
-        let hex = m[0].toLowerCase();
-        if (hex.length === 4) hex = '#' + [...hex.slice(1)].map((c) => c + c).join('');
-        if (!palette.has(hex)) findings.push({ file: f, line: i + 1, value: m[0], detail: 'raw color not in brand tokens (use a token or record an exception)' });
+      for (const m of line.matchAll(RAW_COLOR)) {
+        if (m[2]?.includes('var(') || literal.has(m[0].replace(/\s+/g, '').toLowerCase())) continue;
+        const fn = m[1]?.toLowerCase();
+        const hex = fn ? (fn.startsWith('rgb') ? rgbFn(m[2]) : null) : hexRGB(m[0]);
+        if (hex && palette.has(hex)) continue;
+        const detail = fn && !hex ? `raw ${fn}() colour cannot be matched to a token (use a token or record an exception)` : 'raw color not in brand tokens (use a token or record an exception)';
+        findings.push({ file: f, line: i + 1, value: m[0], detail });
       }
     });
   }

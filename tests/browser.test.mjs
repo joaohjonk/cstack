@@ -3,7 +3,6 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
@@ -17,9 +16,10 @@ import { parseSteps } from '../scripts/lib/browser/skills.mjs';
 import { parseBreakpoints } from '../scripts/lib/browser/capture.mjs';
 import { runBrowse } from '../scripts/lib/browser/cli.mjs';
 import { loadEngine, launch } from '../scripts/lib/browser/launch.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const FIX = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'browser');
-const tmpWs = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-browse-'));
+const tmpWs = () => tmpDir('cstack-browse-');
 const runJSON = (ws, out) => JSON.parse(fs.readFileSync(path.join(ws, out.match(/^run: (.+)$/m)[1], 'run.json'), 'utf8'));
 const runDir = (ws, out) => path.join(ws, out.match(/^run: (.+)$/m)[1]);
 
@@ -204,6 +204,8 @@ browserTest('browser: qa finds missing alt, broken image and horizontal overflow
   assert.deepEqual(ov, { 375: true, 768: true, 1440: false });
   assert.ok(q.low_contrast.some((c) => c.text === 'Low contrast copy'));
   assert.match(out, /MISSING_ALT=1/);
+  assert.equal(q.ok, false, 'broken images and overflow fail qa');
+  assert.match(out, /VERDICT=FAIL \(.*broken images.*\)/);
 });
 
 browserTest('browser: media lists and downloads reference-only files with sha256 manifest', async () => {

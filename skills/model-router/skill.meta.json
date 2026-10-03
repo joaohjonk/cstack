@@ -15,20 +15,12 @@
     "switch model",
     "benchmark models"
   ],
-  "not_for": [
-    "prompt-director",
-    "generate-media"
-  ],
   "required_inputs": [
     "job capabilities"
   ],
   "outputs": [
     "work/routing/*.md",
     "registry/models.json"
-  ],
-  "writes": [
-    "registry/models.json",
-    "work/routing/"
   ],
   "cost_class": "low",
   "context_class": "s",
@@ -38,24 +30,7 @@
     "generate-media",
     "creative-autoresearch"
   ],
-  "evals": [
-    "evals/fixtures/model-list-stale.yaml"
-  ],
-  "baseline": "incumbent",
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

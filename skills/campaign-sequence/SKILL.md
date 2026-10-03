@@ -2,14 +2,11 @@
 name: campaign-sequence
 description: "Plan and critique a campaign as a sequence of shot roles (ICON, WORLD, HUMAN, RITUAL, PRODUCT, DETAIL, CULTURE, WEIRD, PROOF, CLOSER), assign each role a job, Shot DNA and channel use, and evaluate the set as a sequence rather than as separate good images. Use when planning a campaign or shoot, when a set of strong images lacks narrative, or before channel adaptation. Not for single-image direction (use shot-dna) or picking the campaign idea (use creative-direction)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /campaign-sequence
 
-Ten unrelated good images are not a campaign (section 14). [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Ten unrelated good images are not a campaign. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

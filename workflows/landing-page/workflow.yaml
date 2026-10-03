@@ -2,6 +2,9 @@ name: landing-page
 status: template
 summary: A landing page from objective to verified, accessible, conversion-reviewed build.
 entry_skill: workflow
+methods:
+- 3d-web-hero
+- type-system
 triggers:
 - landing page
 - LP

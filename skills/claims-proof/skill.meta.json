@@ -18,10 +18,6 @@
     "FDA",
     "mandatory statements"
   ],
-  "not_for": [
-    "copywriting",
-    "brand-verify"
-  ],
   "required_inputs": [
     "claims",
     "jurisdictions"
@@ -29,19 +25,11 @@
   "outputs": [
     "work/claims/*.md"
   ],
-  "writes": [
-    "work/claims/",
-    "brand/brand-system.json"
-  ],
   "cost_class": "low",
   "context_class": "m",
   "mutating": true,
   "handoff": [
-    "copywriting",
-    "workflow"
-  ],
-  "evals": [
-    "evals/fixtures/compliance-claim-uncertain.yaml"
+    "copywriting"
   ],
   "approval_gates": [
     {
@@ -51,21 +39,7 @@
       "never_self_approve": true
     }
   ],
-  "baseline": "n/a",
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

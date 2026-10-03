@@ -2,9 +2,6 @@
 name: generate-media
 description: "Run guarded image, video and vector generation through the cstack provider runner: dry run and spend estimate first, cheap probes before finals, idempotent calls that never double-pay, pending jobs that re-attach instead of resubmitting, lineage sidecars and size audits on every output. Use whenever a paid model call is about to happen (generate, edit, upscale, image-to-video). Not for deciding what to make (use shot-dna and prompt-director), choosing the model (use model-router) or repairing one region (use image-edit)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /generate-media

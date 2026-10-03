@@ -1,11 +1,11 @@
 # Model landscape for `/model-router` (snapshot 2026-10-03)
 
-Scope: master prompt §11. This is a **dated snapshot to seed the registry**, not a ranking to freeze into prose. The machine-readable seed is `models.seed.json`, with 45 entries. 37 of them have `last_verified: "2026-10-03"` because a price or spec was read from a provider page or provider-hosted catalogue today. The other 8 are `null`.
+Scope: the model router. This is a **dated snapshot to seed the registry**, not a ranking to freeze into prose. The machine-readable seed is `registry/models.seed.json`, with 45 entries. 37 of them have `last_verified: "2026-10-03"` because a price or spec was read from a provider page or provider-hosted catalogue today. The other 8 are `null`.
 
 Method:
 - WebSearch to find primary URLs, then WebFetch on provider docs and pricing pages.
-- Higgsfield's first-party skills repo at `/home/claude/research-src/higgsfield-ai_skills` (release 0.13.0, 2026-09-26) as a cross-check of which models a serious aggregator routes to today.
-- Artificial Analysis (AA) arenas for third-party preference rankings. These are a benchmark, not a source of truth. They go in `benchmark_results` only after cstack runs its own micro-benchmarks (§11), so the seed leaves those arrays empty.
+- Higgsfield's first-party skills repo at `research-src/higgsfield-ai_skills` (release 0.13.0, 2026-09-26) as a cross-check of which models a serious aggregator routes to today.
+- Artificial Analysis (AA) arenas for third-party preference rankings. These are a benchmark, not a source of truth. They go in `benchmark_results` only after cstack runs its own micro-benchmarks, so the seed leaves those arrays empty.
 
 Caveat: WebFetch returns a model-written summary of each page, not raw HTML. Numbers that looked inconsistent are flagged below and set to `confidence: medium` or `low` in the seed.
 
@@ -27,7 +27,7 @@ Caveat: WebFetch returns a model-written summary of each page, not raw HTML. Num
 
 ## 2. Third-party preference rankings (AA, pages dated Sep 2026)
 
-These are for orientation only. cstack's micro-benchmark on the real task overrides them (§11).
+These are for orientation only. cstack's micro-benchmark on the real task overrides them.
 
 | Arena | Top entries (Elo) |
 |---|---|
@@ -45,9 +45,9 @@ Price per 1k images on AA ranges from ~$10 (Muse) to ~$211 (GPT Image at max qua
 | Job | Candidates to micro-benchmark | Why (evidence) |
 |---|---|---|
 | Hero packshot / product edit with label text | gpt-image-2.5-sunburst, gemini-3.1-flash-image, seedream-5.0-pro, flux-3-image | Top of the AA edit arena; multi-ref; custom res up to 3840x2160 (OpenAI) / 4K (NB2, FLUX 3) |
-| Cheap composition probes / contact sheets | recraftv4_1_flash ($0.007), z-image-turbo ($0.005/MP), gemini-3.1-flash-lite-image ($0.034, batch $0.017), flux-2-klein ($0.014), gpt-image-2.5-flare at `low` quality | §11 ladder: probe cheaply, then escalate |
+| Cheap composition probes / contact sheets | recraftv4_1_flash ($0.007), z-image-turbo ($0.005/MP), gemini-3.1-flash-lite-image ($0.034, batch $0.017), flux-2-klein ($0.014), gpt-image-2.5-flare at `low` quality | Probe cheaply, then escalate |
 | Logo / icon / vector brand marks | recraft-v4.1 vector ($0.08) / pro vector ($0.30); recraft vectorize ($0.01) after a raster model | The only native SVG generator verified. Higgsfield routes logos to Recraft (model-catalog.md:116) |
-| Typography-heavy posters | gpt-image-2.5-*, ideogram-4.0/4.5, gemini image | Vendor claims plus AA rank. Ideogram has bbox text placement. **Deterministic layout first (§3.15)** |
+| Typography-heavy posters | gpt-image-2.5-*, ideogram-4.0/4.5, gemini image | Vendor claims plus AA rank. Ideogram has bbox text placement. **Deterministic layout first** |
 | Character / face consistency | seedream-5.0-pro, Higgsfield Soul 2.0 (+Soul ID), NB2 | Higgsfield picking flow (model-catalog.md:111-114) |
 | Pixel-exact local edit | ideogram-4.5 precise-edit (copies untouched pixels exactly per vendor), gpt-image-2.5-sunburst mask, flux-1-fill-pro | Vendor docs |
 | Image-to-video from approved still | seedance-2.5, minimax-h3-max (cheap, #1 I2V), gemini-omni-1.1-flash, kling-video-v3-pro, veo-3.1 | AA I2V; Higgsfield default is Seedance 2.5 |
@@ -55,7 +55,7 @@ Price per 1k images on AA ranges from ~$10 (Muse) to ~$211 (GPT Image at max qua
 | Native 4K video | seedance-2.0 4K, flux-3-video UHD ($0.80/s), veo-3.1 4K, kling O3 4K | Docs |
 | Conversational video revision | gemini-omni-1.1-flash (`previous_interaction_id`), seedance-2.5 `video_edit`, flux-3-video edit | Docs |
 | Ad / UGC video with avatars | Higgsfield marketing_studio_video | First-party Higgsfield skill |
-| Video creative scoring | Higgsfield brain_activity ("Virality Predictor") | Vendor claim; method undocumented. Treat as one weak signal (§3.12) |
+| Video creative scoring | Higgsfield brain_activity ("Virality Predictor") | Vendor claim; method undocumented. Treat as one weak signal |
 
 ## 4. Pricing snapshot highlights (USD; see the seed for units and sources)
 
@@ -100,7 +100,7 @@ Rules for the registry: prices are snapshots with `source_url` and `last_verifie
 
 ### Design consequences for cstack's provider layer
 1. **Default to queue + webhook, with polling as a fallback.** Every provider here can lose or duplicate a webhook. Verify signatures (fal and Ideogram both use ED25519 + JWKS; OpenAI uses Standard-Webhooks). Dedupe on the provider's id.
-2. **Client-side idempotency is our job.** Of the providers checked, only Runway's guide mentions idempotency. cstack derives `call_key = hash(provider, model@snapshot, compiled_prompt_hash, input_hashes, params, seed)` and checks the ledger and asset store before submitting (dedupe, §11). It reuses `call_key` on retry and records the provider request id against it.
+2. **Client-side idempotency is our job.** Of the providers checked, only Runway's guide mentions idempotency. cstack derives `call_key = hash(provider, model@snapshot, compiled_prompt_hash, input_hashes, params, seed)` and checks the ledger and asset store before submitting (dedupe). It reuses `call_key` on retry and records the provider request id against it.
 3. **Download immediately.** BFL results die in 10 min. Veo keeps them 2 days. fal, Runway and Ideogram URLs expire. Copy outputs into the cstack asset store on completion and hash them.
 4. **Batch for overnight work.** OpenAI images −50% output, Gemini −50%, Vertex Flex, xAI up to −20%, fal `low` priority.
 5. **Record actual cost where the provider reports it** (fal `X-Fal-Billable-Units`, Runway cost-in-response for routers, Higgsfield `generate cost`). Otherwise estimate from the snapshot and flag the row as estimated.
@@ -122,10 +122,10 @@ Rules for the registry: prices are snapshots with `source_url` and `last_verifie
 
 | Mechanism | Borrow | Don't borrow |
 |---|---|---|
-| A registry snapshot with `source_url` + `last_verified` | Seed `/model-router` from `models.seed.json`. Run a weekly re-verify job that diffs prices and model ids and flags stale rows in the skill health dashboard (§24A). | Ranking prose in skills. Skills should reference registry capabilities, not model names. |
+| A registry snapshot with `source_url` + `last_verified` | Seed `/model-router` from `models.seed.json`. Run a weekly re-verify job that diffs prices and model ids and flags stale rows in the skill health dashboard. | Ranking prose in skills. Skills should reference registry capabilities, not model names. |
 | Higgsfield picking flow (intent → default, others "only when asked") | A short default per job type plus explicit fallback chains. Honour a model the user names and keep it for follow-ups. | Higgsfield's "don't pre-estimate cost". cstack always estimates for batches and autoresearch. |
 | Runway Model Routers (price cap + optimise cost/latency/quality) | The router API shape: `route(job, constraints{max_cost, max_latency, needs[]}, optimise)` → model + reason, logged. | Opaque vendor routing as final authority. Keep our own micro-benchmark evidence. |
-| Draft tiers (FLUX 3 draft, Veo Lite, NB2 Lite, Recraft Flash, GPT `low`) | The §11 probe → select → final ladder maps directly onto these. | Rendering finals at premium tier to "discover composition". |
+| Draft tiers (FLUX 3 draft, Veo Lite, NB2 Lite, Recraft Flash, GPT `low`) | The probe → select → final ladder maps directly onto these. | Rendering finals at premium tier to "discover composition". |
 | Dated snapshots (OpenAI `-2026-09-08`) | Pin snapshots in experiment run specs. | Floating aliases inside autoresearch runs. |
 | Webhook signatures + dedupe ids | One verified-webhook receiver with per-provider verifiers and a dedupe table. | Trusting unsigned callbacks. |
 | AA arenas | A cheap prior for which candidates enter a micro-benchmark. | Promoting a model on AA Elo alone. Brand fidelity isn't what AA measures. |

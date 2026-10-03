@@ -1,12 +1,12 @@
 # Taste Labs (Taste Engine): research note
 
-Scope: master prompt §1.3 and the Taste Labs part of §1.4A.
+Scope: Taste Labs (the Taste Engine) and what cstack can borrow from it.
 Researched 2026-10-03.
 
 Sources:
 - Docs: every page listed in `https://docs.tastelabs.com/llms.txt` that bears on the design (fetched with WebFetch; the docs host refuses curl through the proxy).
-- OpenAPI spec: saved to `/home/claude/research-src/tastelabs-openapi.json`.
-- Skills repo: `/home/claude/research-src/Taste-AI_skills`. 18 commits, last one 2026-09-29, so it is current, not stale.
+- OpenAPI spec: saved to `research-src/tastelabs-openapi.json`.
+- Skills repo: `research-src/Taste-AI_skills`. 18 commits, last one 2026-09-29, so it is current, not stale.
 - Blog post: "requests for research".
 
 Two caveats about the evidence:
@@ -36,7 +36,7 @@ Every claim below is labelled with one of these:
 - Search is independent, except for `GET /search/similar`, which reads a completed extraction.
 - Search results send you back to the Extractor.
 
-This is the loop the master prompt names: `CONTEXT → CREATION → VERIFICATION → CORRECTION`.
+The loop is: `CONTEXT → CREATION → VERIFICATION → CORRECTION`.
 
 **Version status** [docs: `changelog.md`, 2026-09-14]:
 - Extractor: **v1.0.0**.
@@ -343,9 +343,9 @@ search (prompt words verbatim) → inspect every card in rank order
 Short quotes: "AI makes creation cheap, but judgment rare." "Designers think in states of their work, not line diffs." [claim / position statements]
 
 **For cstack, this supports three choices:**
-- learning from edits (§3.11);
-- versioning by intent state (§22);
-- keeping verifiable checks separate from aesthetic judgment (§3.8).
+- learning from edits;
+- versioning by intent state;
+- keeping verifiable checks separate from aesthetic judgment.
 
 ## Unreachable sources
 
@@ -367,7 +367,7 @@ Short quotes: "AI makes creation cheap, but judgment rare." "Designers think in 
 2. **REST**: `TASTE_API_KEY` is set. Probe with `GET /design/me`.
 3. **Local fallback** (see the end of this section).
 
-The resolved provider id is written into every output's `provider` field. Keys are never written to state; only provider job IDs are persisted (§25).
+The resolved provider id is written into every output's `provider` field. Keys are never written to state; only provider job IDs are persisted.
 
 ### Shared job model
 
@@ -436,7 +436,7 @@ Extraction { extraction_id, source_url, captured_at, cache_hit,
              artifacts: {html, css, screenshot, full_page_screenshot, element_layout} (local paths + remote urls) }
 ```
 
-**Keep the raw Taste `design_system` verbatim** as `references/extractions/<host>/<extraction_id>/design_system.<section>.json`, one file per section (the skill's "save each pull" rule). Download the artifacts beside it. Then **normalise into `brand-system.schema.json`** (§5 of the master prompt). Every mapped field gets this provenance block:
+**Keep the raw Taste `design_system` verbatim** as `references/extractions/<host>/<extraction_id>/design_system.<section>.json`, one file per section (the skill's "save each pull" rule). Download the artifacts beside it. Then **normalise into `brand-system.schema.json`**. Every mapped field gets this provenance block:
 
 `{source: "taste-labs:<extraction_id>#/<section>/<path>", source_url, captured_at: completed_at, method: "extracted", confidence: "observed", permanence: "core"|"campaign" (human decides; default "unconfirmed"), approval: "unconfirmed"}`
 
@@ -484,7 +484,7 @@ Fix { action, target: {property?, from?, to?, token?}, raw: {...provider object.
 | `recommendations` | `recommendations` (keep the order: worst first) |
 | `partial` | `status != completed` |
 | `cost` | from the job `credits_consumed` where present |
-| `kind` | always `"brand_adherence"`. **This is never a universal taste score** (§3.8, §29 anti-pattern "one universal taste score"). |
+| `kind` | always `"brand_adherence"`. **This is never a universal taste score**. |
 
 **Loop policy** (in the `/verify` workflow, not the adapter):
 - Apply `fixes` mechanically, then recommendations top-down.
@@ -523,14 +523,14 @@ At preflight, a missing key yields one clear notice: "Taste Labs not configured;
 | "Tools give capability, skills give judgment" | **Borrow as a rule.** Adapters hold no taste logic; skills hold the rules (verbatim queries, rank-as-authority, the verdict loop). Every skill's `TOOLS / PROVIDERS` section names capabilities, not vendors. |
 | Search before you design; carry the prompt words verbatim; inspect every card; rank decides authority | **Borrow** into `/taste-search`, including the "no invented adjectives" rule |
 | Lock evidence, write state with citations, close sources, build only from state | **Borrow.** Brand state is a build dependency; a value gate fails the build on untraced hex, size or radius |
-| Extraction kept as verbatim JSON + captured HTML/CSS/screenshot artifacts | **Borrow.** Store the raw provider output beside the normalised brand state for lineage (§3.6) |
-| Pull large state in small sections and save each one | **Borrow** as a context-budget rule (§24A) |
+| Extraction kept as verbatim JSON + captured HTML/CSS/screenshot artifacts | **Borrow.** Store the raw provider output beside the normalised brand state for lineage |
+| Pull large state in small sections and save each one | **Borrow** as a context-budget rule |
 | Verdict = score + worst-first fixes (mechanical) + recommendations (prose), each capped at 20 | **Borrow** the `Verdict` shape for all verifiers, local ones included |
 | Loop: verify → fix → re-verify once → human decides | **Borrow.** Cap at 2 passes; spend goes to the cost ledger |
-| Calibrate thresholds with control runs | **Borrow** into evals (§18): one positive and one negative control per brand |
+| Calibrate thresholds with control runs | **Borrow** into evals: one positive and one negative control per brand |
 | Verifier crawls public URLs only, plus an SSH tunnel | **Treat carefully.** The tunnel exposes local work; require explicit consent. Keep the local verifier path first-class |
-| A single 0–1 adherence score | **Do not generalise.** Keep it as `kind: brand_adherence`. Beauty, culture, effectiveness and correctness stay separate judgments (§3.8) |
+| A single 0–1 adherence score | **Do not generalise.** Keep it as `kind: brand_adherence`. Beauty, culture, effectiveness and correctness stay separate judgments |
 | Web-only scope (sites, CSS) | **Do not overreach.** Taste covers web identity; photography, packaging, voice and campaigns need other evaluators behind the same interface |
-| `BRAND.json` = extraction-shaped `design_system` | **Use as an export view** for web builds, not as the canonical brand schema (which is far broader: §5) |
+| `BRAND.json` = extraction-shaped `design_system` | **Use as an export view** for web builds, not as the canonical brand schema (`brand-system.schema.json` is far broader) |
 | Alpha APIs, naming drift (`source_url` vs `candidate_url`, legacy tool names, two dashboard domains), undocumented `lookup_slop` | **Pin.** Snapshot the vocabularies and versions in the adapter with `last_verified`; probe tools at runtime; give T3 live tests a tiny budget |
 | Unpublished credit prices and rate limits | **Log** `credits_consumed` per call; dry-run estimates before batch extraction (map mode up to 200 URLs) |

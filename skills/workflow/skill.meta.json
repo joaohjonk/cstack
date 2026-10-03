@@ -18,18 +18,12 @@
     "deck",
     "resume"
   ],
-  "not_for": [
-    "brief"
-  ],
   "required_inputs": [
     "workflow name",
     "workspace"
   ],
   "outputs": [
     "work/plans/*.md"
-  ],
-  "writes": [
-    "work/plans/"
   ],
   "cost_class": "medium",
   "context_class": "m",
@@ -38,22 +32,7 @@
     "brief",
     "learn-loop"
   ],
-  "evals": ["evals/fixtures/wrong-artifact.yaml"],
-  "baseline": "n/a",
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

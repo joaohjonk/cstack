@@ -2,14 +2,11 @@
 name: claims-proof
 description: "Build and check the claims architecture: every claim tied to proof, jurisdiction and current primary regulatory sources (e.g. ANVISA/RDC for Brazil, FDA/CFR for the US), separating legal requirement, retailer requirement, best practice and creative preference, and marking uncertainty instead of inventing certainty. Use for packaging, PDPs, ads, landing pages or any copy that states a benefit, ingredient, health, environmental or comparative claim. Not for writing the copy (use copywriting) or brand tone checks (use brand-verify)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /claims-proof
 
-Never fabricate compliance certainty (section 9, compliance). This skill is research and structure, not legal advice; high-risk items go to qualified counsel. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Never fabricate compliance certainty. This skill is research and structure, not legal advice; high-risk items go to qualified counsel. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 
@@ -54,6 +51,7 @@ Web research on primary sources **every time rules may have changed** (re-check 
 
 - Uncertain stays uncertain. The output says "uncertain: needs counsel" rather than "compliant".
 - Category saturation never lowers the proof bar.
+- Check the loudest element first. If the most prominent number or phrase on a pack, page or ad is itself a claim (a nutrient figure, a percentage, a superlative), it needs proof that meets the strictest applicable test (for nutrients, the quality-adjusted rule where one applies) before layout is approved; an unproven hero becomes a design change, not a footnote.
 - Approved claims enter brand state with `approval: current`, `scope`, and an `expires` or review date.
 - A synthetic presenter never gives a testimonial or claims personal results; AI disclosure stays on (see `video-direction`).
 

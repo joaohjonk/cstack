@@ -28,11 +28,6 @@
     "device mockup",
     "ad in the feed"
   ],
-  "not_for": [
-    "product-fidelity",
-    "three-d",
-    "generate-media"
-  ],
   "required_inputs": [
     "approved art",
     "placement list"
@@ -40,32 +35,16 @@
   "outputs": [
     "work/mockups/"
   ],
-  "reads": [
-    "assets/official/",
-    "brand/brand-world.json",
-    "brand/tokens/"
-  ],
-  "writes": [
-    "work/mockups/",
-    "state/cost-ledger.jsonl",
-    "state/lineage.jsonl",
-    "state/failures.jsonl"
-  ],
   "cost_class": "low",
   "context_class": "s",
   "mutating": true,
-  "destructive": false,
   "handoff": [
     "product-fidelity",
     "image-edit",
     "three-d",
+    "video-direction",
     "creative-review",
     "brand-verify"
-  ],
-  "evals": [
-    "evals/fixtures/mockup-logo-must-composite.yaml",
-    "evals/fixtures/mockup-harmonize-leaks-label.yaml",
-    "evals/fixtures/mockup-template-licence-unknown.yaml"
   ],
   "approval_gates": [
     {
@@ -80,21 +59,7 @@
     "packaging_rules",
     "product_representation"
   ],
-  "deterministic_steps": [
-    "cstack mockup render",
-    "cstack mockup verify",
-    "cstack edit paste",
-    "cstack audit"
-  ],
-  "generative_steps": [
-    "scene plate",
-    "masked light harmonize"
-  ],
   "required_providers": [],
-  "optional_providers": [
-    "fal"
-  ],
-  "baseline": "reference",
   "fallback": {
     "when_missing": [
       "template",
@@ -103,17 +68,6 @@
     ],
     "mode": "degraded"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "version": "0.1.0",
   "last_verified": "2026-10-03",
-  "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 2600
-  }
+  "status": "beta"
 }

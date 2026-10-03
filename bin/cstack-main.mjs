@@ -26,24 +26,47 @@ import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.m
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts } from '../scripts/lib/hosts.mjs';
+import { checkLinks } from '../scripts/lib/links.mjs';
 
 const [, , cmd, ...argv] = process.argv;
 
+// Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
+const BOOLEAN_FLAGS = new Set(['json', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background']);
+// Flags that may repeat: values accumulate in an array.
+const REPEATABLE_FLAGS = new Set(['set']);
+
 function parseArgs(a) {
   const out = { _: [] };
+  const put = (k, v) => {
+    if (REPEATABLE_FLAGS.has(k)) out[k] = [...(out[k] ?? []), v];
+    else out[k] = v;
+  };
   for (let i = 0; i < a.length; i++) {
     const t = a[i];
+    if (t === '--') {
+      out._.push(...a.slice(i + 1));
+      break;
+    }
     if (t.startsWith('--')) {
-      const [k, v] = t.slice(2).split('=');
-      if (v !== undefined) out[k] = v;
-      else if (a[i + 1] && !a[i + 1].startsWith('--')) out[k] = a[++i];
-      else out[k] = true;
+      const eq = t.indexOf('=');
+      const k = eq === -1 ? t.slice(2) : t.slice(2, eq);
+      if (eq !== -1) put(k, t.slice(eq + 1));
+      else if (!BOOLEAN_FLAGS.has(k) && a[i + 1] !== undefined && !a[i + 1].startsWith('--')) put(k, a[++i]);
+      else put(k, true);
     } else out._.push(t);
   }
   return out;
 }
 const args = parseArgs(argv);
 const ws = path.resolve(args.ws ?? process.env.CSTACK_WORKSPACE ?? process.cwd());
+if (args.ws !== undefined && (args.ws === true || !fs.existsSync(ws))) {
+  console.error(`--ws ${args.ws === true ? '(no value)' : ws}: no such directory`);
+  process.exit(1);
+}
+// Commands that read or write brand state need a real workspace, not whatever folder the shell is in.
+const requireWs = () => {
+  if (!fs.existsSync(path.join(ws, 'brand', 'brand-system.json'))) die(`${ws} is not a brand workspace (no brand/brand-system.json). Pass --ws <dir>, or create one with cstack brand init <dir>`);
+};
 const json = (o) => console.log(JSON.stringify(o, null, 2));
 const die = (msg, code = 1) => {
   console.error(msg);
@@ -67,12 +90,12 @@ const COMMANDS = {
   'brand context': 'compact, cache-stable brand facts for a prompt: cstack brand context [--sections voice,color] [--inferred]',
   'brand stale': 'artifacts whose brand inputs changed since they were made',
   'brand resolve': 'owner resolves an open conflict by picking a position: cstack brand resolve <conflict-id> --pick 1|2 [--by name] [--note "..."]',
-  'prompt compile': 'compile a prompt recipe: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]',
+  'prompt compile': 'compile a prompt recipe: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]... (one --set per slot)',
   'prompt diff': 'component-level diff of two recipes: cstack prompt diff a.yaml b.yaml',
   route: 'rank models: cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers google,openai] [--avoid id,...]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]',
-  generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run]',
+  generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
   providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json',
@@ -108,7 +131,8 @@ const COMMANDS = {
   'svg kit': 'favicon and app-icon kit from a vector master (svg, ico, apple-touch, 192/512, maskable with the safe zone checked, manifest): cstack svg kit <file.svg> --out dir [--bg #fff] [--name "Brand"]',
   '3d inspect': 'check a GLB/glTF against a delivery budget: bytes, triangles, textures, real-world size, origin, compression; model text is untrusted: cstack 3d inspect <file> [--budget web-hero|ar|social] [--dims 70x210x70mm]; exits 1 on FAIL',
   '3d frames': 'check an image-sequence hero: frame count, total and per-frame bytes, one size, no gaps, format: cstack 3d frames <dir> [--max-frames 150] [--max-bytes 8MB]; exits 1 on FAIL',
-  '3d blender-script': 'write a Blender turntable or packshot script the owner runs (no Blender needed here): cstack 3d blender-script --glb <file> --mode turntable|packshot [--size 1080x1920] [--out script.py]',
+  '3d blender-script': 'write a Blender turntable or packshot script the owner runs (no Blender needed here): cstack 3d blender-script --glb <file> --mode turntable|packshot [--size 1080x1920] [--frames N] [--seconds S] [--out script.py]',
+  'workflow list': 'the gated workflows (outcome → skills in order, owner gates) and the methods each one follows',
   'flows list': 'researched best-way-to-an-outcome flows (cstack flows/ + workspace flows/), with staleness',
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage"',
   'flows show': 'print one flow: cstack flows show <id>',
@@ -147,8 +171,9 @@ function cmdValidate() {
   // 2 skills
   const skills = listSkills();
   const slugs = skills.map((s) => s.slug);
-  for (const s of skills) checkSkill(s, r, { allSlugs: slugs });
-  r.note(`${skills.length} skills checked against the section-24 contract`);
+  const fixtures = loadFixtures();
+  for (const s of skills) checkSkill(s, r, { allSlugs: slugs, fixtures });
+  r.note(`${skills.length} skills checked against the skill contract`);
   // 3 index freshness
   const idxPath = path.join(ROOT, 'registry', 'skills-index.json');
   const fresh = JSON.stringify(buildIndex(skills).skills);
@@ -172,6 +197,8 @@ function cmdValidate() {
       const wf = readData(p);
       for (const st of wf.steps ?? []) if (st.skill && !slugs.includes(st.skill)) r.error(rel(p), `step "${st.id}" uses unknown skill "${st.skill}"`);
       if (!slugs.includes(d) && !wf.entry_skill) r.warn(rel(p), 'workflow has no matching playbook skill (entry_skill)');
+      for (const m of wf.methods ?? []) if (!exists(path.join(ROOT, 'flows', `${m}.flow.yaml`))) r.error(rel(p), `method "${m}" has no flows/${m}.flow.yaml`);
+      for (const st of wf.steps ?? []) if (!st.skill && !st.does) r.error(rel(p), `step "${st.id}" has neither a skill nor a does`);
     }
   // flows: the library passes the same check a run's plan must pass; stale flows are flagged
   const flows = listFlows(ROOT);
@@ -188,7 +215,12 @@ function cmdValidate() {
   for (const [f, e] of fx.errors) r.error(f, e);
   for (const [f, w] of fx.warnings) r.warn(f, w);
   // commands named in skills, docs, fixture graders and flow gates exist; a planned one says "planned"
-  const knownCmd = (a, b) => !!(COMMANDS[`${a} ${b}`] || COMMANDS[a] || (!b && Object.keys(COMMANDS).some((k) => k.startsWith(`${a} `))));
+  // a command with subcommands must name a real one (`cstack generate banana` is fine: generate has none; `cstack brand banana` is not)
+  const knownCmd = (a, b) => {
+    const subs = Object.keys(COMMANDS).filter((k) => k.startsWith(`${a} `));
+    if (!subs.length || !b) return !!COMMANDS[a] || subs.length > 0;
+    return !!COMMANDS[`${a} ${b}`] || (!!COMMANDS[a] && !/^[a-z]+$/.test(b));
+  };
   const refRe = /\bcstack ([a-z0-9][\w-]*)(?: ([a-z][\w-]*))?/g;
   const checkRefs = (where, text, re) => {
     for (const m of text.matchAll(re)) if (!knownCmd(m[1], m[2])) r.error(where, `names \`cstack ${m[1]}${m[2] ? ` ${m[2]}` : ''}\`, which is not a command (implement it, fix the name, or say it is planned)`);
@@ -198,9 +230,12 @@ function cmdValidate() {
     ...['README.md', 'AGENTS.md'].map((f) => path.join(ROOT, f)).filter(exists),
     ...fs.readdirSync(path.join(ROOT, 'docs')).filter((f) => f.endsWith('.md') && !f.startsWith('backlog')).map((f) => path.join(ROOT, 'docs', f)),
   ];
-  for (const f of docFiles) for (const line of fs.readFileSync(f, 'utf8').split('\n')) if (!/\bplanned\b/i.test(line)) checkRefs(rel(f), line, /`cstack ([a-z0-9][\w-]*)(?: ([a-z][\w-]*))?/g);
+  for (const f of docFiles) for (const line of fs.readFileSync(f, 'utf8').split('\n')) if (!/\(planned\b/i.test(line)) checkRefs(rel(f), line, /`cstack ([a-z0-9][\w-]*)(?: ([a-z][\w-]*))?/g);
   for (const x of loadFixtures()) for (const g of x.graders ?? []) if (g.type === 'command' && /^cstack /.test(g.run ?? '')) checkRefs(x.file, g.run.split(/\s+/).slice(0, 3).join(' '), refRe);
   for (const f of flows) for (const st of f.steps ?? []) if (st.gate?.check) checkRefs(rel(f.file), st.gate.check, refRe);
+  // markdown links resolve and their #anchors exist
+  for (const f of execFileSync('git', ['ls-files', '-co', '--exclude-standard', '*.md'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean).map((x) => path.join(ROOT, x)).filter(exists))
+    for (const p of checkLinks(f)) r.error(rel(f), `broken link ${p.link}: ${p.problem}`);
   // research tools name real skills and workflows
   const rt = readJSON(path.join(ROOT, 'registry', 'research-tools.json'));
   const wfNames = exists(path.join(ROOT, 'workflows')) ? fs.readdirSync(path.join(ROOT, 'workflows')) : [];
@@ -211,7 +246,7 @@ function cmdValidate() {
   // 6 hygiene: no absolute home paths, no secrets-looking strings in tracked text
   for (const f of walkText()) {
     const t = fs.readFileSync(f, 'utf8');
-    if (/\/Users\/[a-z]+\/|\/home\/[a-z]+\/(?!claude\b)/i.test(t) && !f.includes('tests')) r.error(rel(f), 'absolute home path; use workspace-relative paths');
+    if (/\/Users\/[a-z]+\/|\/home\/[a-z]+\//i.test(t) && !f.includes('tests')) r.error(rel(f), 'absolute home path; use workspace-relative paths');
     if (/(sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|fal_[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{30,})/.test(t)) r.error(rel(f), 'looks like a credential; keys never live in the repo');
   }
   // 7 brand-agnostic: terms from a private, untracked denylist (owner brands, private projects) must not appear anywhere, docs included
@@ -292,12 +327,13 @@ function cmdHealth() {
 function cmdPrompt(sub) {
   if (sub === 'compile') {
     const f = args._[0];
-    if (!f) die('usage: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value,...]');
+    if (!f) die('usage: cstack prompt compile <recipe.yaml> [--seed N] [--set slot=value]... (repeat --set per slot; values may contain commas)');
     const recipe = readData(path.resolve(f));
     const values = {};
-    for (const kv of [].concat(args.set ?? [])) for (const pair of String(kv).split(',')) {
-      const [k, ...v] = pair.split('=');
-      if (k) values[k] = v.join('=');
+    for (const kv of args.set ?? []) {
+      const eq = String(kv).indexOf('=');
+      if (eq < 1) die(`--set expects slot=value, got "${kv}"`);
+      values[String(kv).slice(0, eq)] = String(kv).slice(eq + 1);
     }
     const res = compile(recipe, { values, seed: args.seed });
     if (args.json) json(res);
@@ -315,7 +351,7 @@ function cmdPrompt(sub) {
     if (args.json) return json(d);
     if (!d.length) return console.log('no component changes');
     for (const x of d) console.log(`${x.part}: ${x.change ?? `${JSON.stringify(x.from)} → ${JSON.stringify(x.to)}`}`);
-    if (d.length > 1) console.log(`\nnote: ${d.length} components changed; refinement should change one meaningful variable (section 3.7)`);
+    if (d.length > 1) console.log(`\nnote: ${d.length} components changed; refinement should change one meaningful variable`);
     return;
   }
   die('usage: cstack prompt compile|diff ...');
@@ -416,6 +452,7 @@ function cmdBrand(sub) {
     console.log(initBrand(dir, { name: args.name, id: args.id }));
     return;
   }
+  requireWs();
   if (sub === 'check') {
     const r = checkBrand(ws);
     r.print(`brand check ${rel(ws)}`);
@@ -423,7 +460,8 @@ function cmdBrand(sub) {
   }
   if (sub === 'set') {
     const field = args._[0] ?? die('usage: cstack brand set <section.field> --file field.json');
-    const res = applyToBrand(ws, field, readData(path.resolve(args.file ?? die('--file field.json required'))));
+    if (!args.file || !/\.json$/i.test(String(args.file))) die('--file <field>.json required: one JSON object with value and sources');
+    const res = applyToBrand(ws, field, readData(path.resolve(args.file)));
     if (args.json) return json(res);
     console.log(`${field}: ${res.action}${res.reason ? ` (${res.reason})` : ''}`);
     const st = staleArtifacts(ws);
@@ -437,7 +475,8 @@ function cmdBrand(sub) {
   if (sub === 'resolve') {
     const id = args._[0] ?? die('usage: cstack brand resolve <conflict-id> --pick 1|2 [--by name]');
     try {
-      const r = resolveConflict(ws, id, { pick: args.pick ?? die('--pick required (the owner chooses)'), by: args.by, note: args.note });
+      if (!['1', '2'].includes(String(args.pick))) die('--pick 1|2 required: the owner chooses a position; nothing is picked by default');
+      const r = resolveConflict(ws, id, { pick: args.pick, by: args.by, note: args.note });
       return console.log(`${r.conflict} resolved: ${r.field} = ${JSON.stringify(r.value)} (stale artifacts: cstack brand stale)`);
     } catch (e) {
       die(e.message);
@@ -457,6 +496,7 @@ async function cmdGenerate() {
   const req = readData(path.resolve(args.file ?? die('usage: cstack generate --file request.json [--dry-run]')));
   if (args['dry-run']) req.dry_run = true;
   if (args['confirm-unpriced']) req.confirm_unpriced = true;
+  if (args.confirm) req.confirmed = true;
   const res = await runMedia(ws, req);
   if (args.json) return json(res);
   if (res.dry_run) return console.log(`dry run logged (${req.provider}/${req.model}); nothing was paid`);
@@ -487,7 +527,7 @@ async function cmdTaste(sub) {
     if (res.dry_run) { console.log('dry run logged; nothing was paid'); process.exit(0); }
     return res;
   };
-  const spec = (operation, params) => ({ provider: 'taste-labs', model: t.versions?.[operation === 'search' ? 'search' : operation === 'extract' ? 'extractor' : 'verifier'] ?? 'n/a', operation, params, skill: args.skill, estimated_cost: null, confirm_unpriced: !!args['confirm-unpriced'], stop_condition: 'single call' });
+  const spec = (operation, params) => ({ provider: 'taste-labs', model: t.versions?.[operation === 'search' ? 'search' : operation === 'extract' ? 'extractor' : 'verifier'] ?? 'n/a', operation, params, skill: args.skill, estimated_cost: null, confirm_unpriced: !!args['confirm-unpriced'], confirmed: !!args.confirm, stop_condition: 'single call' });
   const save = (kind, obj) => {
     const dir = path.join(ws, 'references', '_taste');
     const p = path.join(dir, `${kind}-${today()}-${newId('T').slice(-6)}.json`);
@@ -589,6 +629,20 @@ const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
 if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
+// Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
+// help documents plus every flag this file reads. Media CLIs (type, video, svg, mockup, browse, 3d) check their own.
+if (!['type', 'video', 'svg', 'mockup', 'browse', '3d'].includes(cmd)) {
+  const src = fs.readFileSync(new URL(import.meta.url), 'utf8');
+  const known = new Set(['ws', ...BOOLEAN_FLAGS, ...REPEATABLE_FLAGS]);
+  for (const m of Object.values(COMMANDS).join(' ').matchAll(/--([a-z][a-z0-9-]*)/g)) known.add(m[1]);
+  for (const m of src.matchAll(/args(?:\.([a-z][a-z0-9_]*)|\['([a-z][a-z0-9-]*)'\])/g)) known.add(m[1] ?? m[2]);
+  const unknown = Object.keys(args).filter((k) => k !== '_' && !known.has(k));
+  if (unknown.length) {
+    const msg = `unknown flag${unknown.length > 1 ? 's' : ''}: ${unknown.map((k) => `--${k}`).join(', ')} (see cstack help)`;
+    if (['generate', 'spend', 'taste'].includes(cmd)) die(`refused: ${msg}; spending commands never guess at flags`);
+    console.error(`warning: ${msg}; ignored`);
+  }
+}
 switch (cmd) {
   case undefined:
   case 'help':
@@ -635,7 +689,16 @@ switch (cmd) {
   case 'generate':
     await cmdGenerate();
     break;
+  case 'workflow': {
+    if (argv[0] && argv[0] !== 'list') die('usage: cstack workflow list [--json]');
+    const dir = path.join(ROOT, 'workflows');
+    const rows = fs.readdirSync(dir).filter((d) => exists(path.join(dir, d, 'workflow.yaml'))).map((d) => readData(path.join(dir, d, 'workflow.yaml')));
+    if (args.json) json(rows.map(({ name, status, summary, methods, steps }) => ({ name, status, summary, methods: methods ?? [], steps: (steps ?? []).length })));
+    else for (const w of rows) console.log(`${w.name.padEnd(20)} ${String(w.status).padEnd(9)} ${w.summary}${w.methods?.length ? `\n${' '.repeat(31)}methods: ${w.methods.join(', ')}` : ''}`);
+    break;
+  }
   case 'jobs': {
+    requireWs();
     const p = listPending(ws);
     if (args.json) json(p);
     else console.log(p.length ? p.map((j) => `${j.provider}/${j.model} ${j.request_id ?? ''} since ${j.submitted_at ?? '?'}`).join('\n') : 'no pending jobs');
@@ -679,6 +742,7 @@ switch (cmd) {
     const out = await runBrowse(argv[0] ?? 'help', args, ws);
     if (typeof out === 'string') console.log(out);
     else json(out);
+    if ((typeof out === 'string' && /^VERDICT=FAIL/m.test(out)) || out?.result?.ok === false) process.exitCode = 1;
     break;
   }
   case 'type': {
@@ -767,4 +831,3 @@ switch (cmd) {
   default:
     die(`unknown command "${cmd}". Run: cstack help`);
 }
-export { nowISO };

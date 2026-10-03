@@ -9,7 +9,22 @@ import path from 'node:path';
 const KEY = () => process.env.FAL_KEY;
 const scrub = (s) => (KEY() ? String(s).replaceAll(KEY(), '<key>') : String(s));
 
+// FAL_KEY goes only to fal's queue host. status_url/response_url come from a response and are persisted in an
+// editable pending-job file, so they are checked before every authenticated request.
+const FAL_ORIGINS = new Set(['https://queue.fal.run']);
+function falUrl(url) {
+  let u;
+  try {
+    u = new URL(url);
+  } catch {
+    throw new Error(`refusing to call a non-URL with FAL_KEY: ${String(url).slice(0, 80)}`);
+  }
+  if (!FAL_ORIGINS.has(u.origin)) throw new Error(`refusing to send FAL_KEY to ${u.origin} (only ${[...FAL_ORIGINS].join(', ')})`);
+  return u.href;
+}
+
 async function http(url, init = {}) {
+  url = falUrl(url);
   const res = await fetch(url, { ...init, headers: { Authorization: `Key ${KEY()}`, 'Content-Type': 'application/json', ...(init.headers ?? {}) } });
   const text = await res.text();
   if (!res.ok) throw new Error(scrub(`fal HTTP ${res.status}: ${text.slice(0, 400)}`));
@@ -36,6 +51,7 @@ export const fal = {
     return { job_id: r.request_id, status_url: r.status_url, response_url: r.response_url };
   },
   async status(job) {
+    falUrl(job.status_url); // a tampered job fails loudly; it is not "still running"
     try {
       const s = await http(job.status_url);
       if (s.status === 'COMPLETED') return { state: 'done' };
@@ -48,6 +64,7 @@ export const fal = {
   },
   async result(job) {
     // a result-fetch failure is retried here (the job is paid already); never resubmit
+    falUrl(job.response_url);
     let last;
     for (let i = 0; i < 5; i++) {
       try {

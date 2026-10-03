@@ -194,7 +194,7 @@ export async function runBrowse(sub, args, ws = process.cwd()) {
       const run = await pageRun(sub, a, ws, async ({ page, run, log }) => {
         const q = await runQa(page, log, { breakpoints: bps });
         run.addJSON('qa.json', q);
-        return { evidence: q.evidence };
+        return { ok: q.ok, fails: q.fails, evidence: q.evidence };
       });
       return report(run, ws, a, [`URL=${run.record.final_url}`, ...run.record.result.evidence]);
     }

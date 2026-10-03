@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/cultural-signal.schema.json",
   "title": "Cultural signal",
-  "description": "Section 15. Observation, not 'Gen Z' adjectives.",
+  "description": "Observation, not 'Gen Z' adjectives.",
   "type": "object",
   "required": [
     "id",
@@ -61,7 +61,8 @@
         "lateness": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "brand_behavior": {
       "type": "string",
@@ -73,5 +74,6 @@
         "inferred"
       ]
     }
-  }
+  },
+  "additionalProperties": false
 }

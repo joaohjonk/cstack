@@ -1,4 +1,4 @@
-// Prompt Slots compiler (section 12): one stable template, named slots, deterministic variant pools.
+// Prompt Slots compiler: one stable template, named slots, deterministic variant pools.
 // Fails loudly on missing required slots, undeclared placeholders and unused values (wiring bugs).
 import { hashValue, sha256 } from './core.mjs';
 
@@ -19,6 +19,8 @@ export function seededIndex(seed, slot, n) {
  * Precedence for each slot: explicit value > variant_index > seed-derived variant > (required ? error : empty).
  */
 export function compile(recipe, opts = {}) {
+  if (!recipe || typeof recipe !== 'object' || Array.isArray(recipe) || typeof recipe.template !== 'string' || !recipe.template.trim() || (recipe.slots != null && typeof recipe.slots !== 'object'))
+    throw new Error('not a prompt recipe (needs a template string and a slots map)');
   const errors = [];
   const template = recipe.template ?? '';
   const slots = recipe.slots ?? {};
@@ -74,16 +76,27 @@ export function compile(recipe, opts = {}) {
   return { prompt, slot_values, resolution: resolved, hash, errors, ok: errors.length === 0 };
 }
 
-// Component-level diff between two recipes (section 12: never diff two 4k strings by eye).
+// Component-level diff between two recipes (never diff two 4k strings by eye).
 export function diffRecipes(a, b) {
   const out = [];
   if ((a.template ?? '') !== (b.template ?? '')) out.push({ part: 'template', change: 'changed' });
   if ((a.target_model ?? '') !== (b.target_model ?? '')) out.push({ part: 'target_model', from: a.target_model, to: b.target_model });
+  if (JSON.stringify(a.seed ?? null) !== JSON.stringify(b.seed ?? null)) out.push({ part: 'seed', from: a.seed ?? null, to: b.seed ?? null });
   const keys = new Set([...Object.keys(a.values ?? {}), ...Object.keys(b.values ?? {}), ...Object.keys(a.slots ?? {}), ...Object.keys(b.slots ?? {})]);
+  const same = (x, y) => JSON.stringify(x ?? null) === JSON.stringify(y ?? null);
   for (const k of [...keys].sort()) {
     const av = a.values?.[k];
     const bv = b.values?.[k];
     if (av !== bv) out.push({ part: `slot.${k}`, from: av ?? null, to: bv ?? null });
+    if (!same(a.variant_index?.[k], b.variant_index?.[k])) out.push({ part: `slot.${k}.variant_index`, from: a.variant_index?.[k] ?? null, to: b.variant_index?.[k] ?? null });
+    const as = a.slots?.[k];
+    const bs = b.slots?.[k];
+    if (!as || !bs) {
+      if (as || bs) out.push({ part: `slot.${k}.definition`, change: as ? 'removed' : 'added' });
+      continue;
+    }
+    if (!same(as.variants, bs.variants)) out.push({ part: `slot.${k}.variants`, from: as.variants ?? [], to: bs.variants ?? [] });
+    if (!same(as.required, bs.required)) out.push({ part: `slot.${k}.required`, from: as.required ?? null, to: bs.required ?? null });
   }
   const ap = JSON.stringify(a.parameters ?? {});
   const bp = JSON.stringify(b.parameters ?? {});

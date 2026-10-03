@@ -1,21 +1,21 @@
 {
   "tolerance": 0.1,
-  "catalog_ceiling": 3836,
+  "catalog_ceiling": 3835,
   "skills": {
     "brand-import": {
-      "ceiling": 1620,
+      "ceiling": 1576,
       "set": "2026-10-03"
     },
     "brand-verify": {
-      "ceiling": 1162,
+      "ceiling": 1146,
       "set": "2026-10-03"
     },
-    "browse": {
-      "ceiling": 1118,
+    "site-capture": {
+      "ceiling": 1105,
       "set": "2026-10-03"
     },
     "campaign-sequence": {
-      "ceiling": 998,
+      "ceiling": 977,
       "set": "2026-10-03"
     },
     "claims-proof": {
@@ -23,7 +23,7 @@
       "set": "2026-10-03"
     },
     "competitor-intel": {
-      "ceiling": 1138,
+      "ceiling": 1119,
       "set": "2026-10-03"
     },
     "copywriting": {
@@ -31,23 +31,23 @@
       "set": "2026-10-03"
     },
     "creative-autoresearch": {
-      "ceiling": 1200,
+      "ceiling": 1181,
       "set": "2026-10-03"
     },
     "creative-direction": {
-      "ceiling": 1189,
+      "ceiling": 1168,
       "set": "2026-10-03"
     },
     "creative-review": {
-      "ceiling": 1287,
+      "ceiling": 1273,
       "set": "2026-10-03"
     },
     "cultural-scan": {
-      "ceiling": 1354,
+      "ceiling": 1338,
       "set": "2026-10-03"
     },
     "generate-media": {
-      "ceiling": 1298,
+      "ceiling": 1282,
       "set": "2026-10-03"
     },
     "identity-system": {
@@ -55,23 +55,23 @@
       "set": "2026-10-03"
     },
     "image-edit": {
-      "ceiling": 1080,
+      "ceiling": 1060,
       "set": "2026-10-03"
     },
-    "learn": {
-      "ceiling": 1260,
+    "learn-loop": {
+      "ceiling": 1242,
       "set": "2026-10-03"
     },
     "model-router": {
-      "ceiling": 1255,
+      "ceiling": 1234,
       "set": "2026-10-03"
     },
     "brief": {
-      "ceiling": 1562,
+      "ceiling": 1509,
       "set": "2026-10-03"
     },
     "product-fidelity": {
-      "ceiling": 1335,
+      "ceiling": 1316,
       "set": "2026-10-03"
     },
     "prompt-director": {
@@ -79,31 +79,31 @@
       "set": "2026-10-03"
     },
     "shot-dna": {
-      "ceiling": 1337,
+      "ceiling": 1317,
       "set": "2026-10-03"
     },
     "taste-search": {
-      "ceiling": 1565,
+      "ceiling": 1544,
       "set": "2026-10-03"
     },
     "workflow": {
-      "ceiling": 1241,
+      "ceiling": 1227,
       "set": "2026-10-03"
     },
     "flow-research": {
-      "ceiling": 1524,
+      "ceiling": 1503,
       "set": "2026-10-03"
     },
     "mockup": {
-      "ceiling": 1499,
+      "ceiling": 1483,
       "set": "2026-10-03"
     },
     "symbol-design": {
-      "ceiling": 1294,
+      "ceiling": 1276,
       "set": "2026-10-03"
     },
     "three-d": {
-      "ceiling": 1558,
+      "ceiling": 1544,
       "set": "2026-10-03"
     },
     "type-director": {
@@ -111,15 +111,15 @@
       "set": "2026-10-03"
     },
     "vector-master": {
-      "ceiling": 1451,
+      "ceiling": 1434,
       "set": "2026-10-03"
     },
     "video-assembly": {
-      "ceiling": 1280,
+      "ceiling": 1266,
       "set": "2026-10-03"
     },
     "video-direction": {
-      "ceiling": 1370,
+      "ceiling": 1353,
       "set": "2026-10-03"
     }
   },

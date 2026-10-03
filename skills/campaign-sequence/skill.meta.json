@@ -15,10 +15,6 @@
     "images lack narrative",
     "channel adaptation"
   ],
-  "not_for": [
-    "shot-dna",
-    "creative-direction"
-  ],
   "required_inputs": [
     "direction",
     "channels"
@@ -26,9 +22,6 @@
   "outputs": [
     "campaigns/*.campaign.yaml",
     "work/campaigns/*/sequence.png"
-  ],
-  "writes": [
-    "campaigns/"
   ],
   "cost_class": "free",
   "context_class": "m",
@@ -40,24 +33,7 @@
     "copywriting",
     "creative-review"
   ],
-  "evals": [
-    "evals/fixtures/strong-images-no-narrative.yaml"
-  ],
-  "baseline": "brief",
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

@@ -1,8 +1,8 @@
 # Public-repo patterns: mechanism, evidence, cstack implication
 
-Master prompt section 1.4A. Written 2026-10-03.
+Written 2026-10-03.
 
-**Method.** I read repository mechanics, not READMEs: agent guidance files, skill layout, metadata and schemas, generators, validators, CI workflows, provider adapters, retry code, cost code, state files and recent `git log`. Every claim cites `repo/path:line` under `/home/claude/research-src/`. Where I ran a check myself (for example counting broken index entries), the command is described inline.
+**Method.** I read repository mechanics, not READMEs: agent guidance files, skill layout, metadata and schemas, generators, validators, CI workflows, provider adapters, retry code, cost code, state files and recent `git log`. Every claim cites `repo/path:line` under `research-src/`. Where I ran a check myself (for example counting broken index entries), the command is described inline.
 
 **Caveat on history.** Most clones are shallow (depth 50), so commit counts give a lower bound and "recent commits" covers only the last ~50. gstack has ~228 commits. The gstack section covers only engineering mechanics. Another note covers its narrative.
 
@@ -365,7 +365,7 @@ Verdicts: **Adopt now** (Phase B baseline), **Later** (after the core works), **
 |---|---|---|---|---|
 | 1 | Canonical skill source compiled to host views; unknown or leftover placeholders throw | gstack `scripts/gen-skill-docs.ts:628,646`; `hosts/codex.ts` | One `skills/<id>/SKILL.md.tmpl` plus host configs. Compile is the only path to `SKILL.md`. | Adopt now |
 | 2 | Generated header plus CI regenerate, `git diff --exit-code`, and an untracked-files check | gstack `skill-docs.yml:42-60`; goose `ci.yml` | Every generated file (index, host views, catalog README) gets a freshness gate, untracked check included. | Adopt now |
-| 3 | Human SKILL.md plus machine metadata, schema-validated | goose `schemas/skill-meta.schema.json`; `validate-skills.js` | `skill.meta.json` (or strict frontmatter) holding the section 24 contract fields: level, inputs, outputs, files written, state updated, evals, cost class, providers. | Adopt now |
+| 3 | Human SKILL.md plus machine metadata, schema-validated | goose `schemas/skill-meta.schema.json`; `validate-skills.js` | `skill.meta.json` (or strict frontmatter) holding the skill contract fields: level, inputs, outputs, files written, state updated, evals, cost class, providers. | Adopt now |
 | 4 | Three abstraction levels enforced by folder plus meta: capability / composite / playbook | goose `validate-skills.js:12,115` | cstack levels: `capability` (one tool/provider), `skill` (judgment), `workflow` (orchestrator). Validate that level matches location. | Adopt now |
 | 5 | Generated searchable index from tracked files only, with reproducible date | goose `build-index.js:26-46,401-417` | `skills-index.json` drives runtime search. Never load the whole catalog into context. | Adopt now |
 | 6 | Tree ⊆ index assertion | goose `validate-skills.js:144-180` | Every SKILL.md on disk must appear in the index. Catches generator drops. | Adopt now |
@@ -375,10 +375,10 @@ Verdicts: **Adopt now** (Phase B baseline), **Later** (after the core works), **
 | 10 | Reference links resolve both ways (no orphans, no dangling) | higgsfield `validate-skills.yml:128-153`; rampstack `lint_skills.py:269-307` | Part of T0 static checks. | Adopt now |
 | 11 | Cross-skill and workflow→skill slug resolution | rampstack `tools/check_workflow_drift.py`; `lint_skills.py:310-343`; goose `requires_skills` | Workflows and `handoff` fields bind by slug. CI checks each slug against the index, with explicit non-slug markers. | Adopt now |
 | 12 | Checksum lockfile for skills (sha256 per file) | rampstack `tools/gen_skills_lock.py` | `SKILLS.lock` gives cheap change detection for diff-aware evals and provenance of which skill version produced an asset. | Adopt now |
-| 13 | Context-budget ratchet with calibrated token estimate; re-capture in the same commit | gstack `lib/context-bill.ts`; `capture-context-budget.ts:1-35` | Required by master prompt 24A. Two ledgers: always-on (frontmatter) and eager (SKILL.md plus forced refs). | Adopt now |
+| 13 | Context-budget ratchet with calibrated token estimate; re-capture in the same commit | gstack `lib/context-bill.ts`; `capture-context-budget.ts:1-35` | Two ledgers: always-on (frontmatter) and eager (SKILL.md plus forced refs). | Adopt now |
 | 14 | Description length cap plus required "Use when" / "NOT for" phrases | higgsfield `validate-skills.yml:66-72`; gstack codex `descriptionLimit: 1024` | Enforce ≤1024 characters and require trigger plus boundary phrases. A trigger eval comes later. | Adopt now |
 | 15 | Diff-aware eval selection via touchfiles; fail closed | gstack `test/helpers/test-selection.ts:355-420` | Each eval declares globs. Global files run all. Unknown cases run all. | Adopt now (simple form) |
-| 16 | Test tiers: free / gate / periodic / release | gstack `package.json` scripts | Maps directly onto T0-T4 in master prompt 24A. | Adopt now |
+| 16 | Test tiers: free / gate / periodic / release | gstack `package.json` scripts | Maps directly onto the cstack eval tiers (see `docs/evals.md`). | Adopt now |
 | 17 | Paid evals never auto-retry; failed verdict is final; record `cost_usd` | gstack `eval-budgets.ts:50-57`; `eval-store.ts:433` | Re-runs add trials. A spend log per eval run. | Adopt now |
 | 18 | Idempotency key = hash(model, canonical args) on paid media submits | goose `media_proxy.py:163-179,377-391` | Provider adapter computes `input_digest`. It doubles as the cache key and the sidecar ID. | Adopt now |
 | 19 | Persist pending job at submit; re-attach; **poll timeout never resubmits** | goose `media_proxy.py:239-333,429` | `state/pending-jobs/<id>.json`, plus a `cstack resume <job>` command. | Adopt now |
@@ -387,7 +387,7 @@ Verdicts: **Adopt now** (Phase B baseline), **Later** (after the core works), **
 | 22 | Cost ledger at one choke point; dated price table; unpriced calls listed, never guessed | Superside `fal_pricing.py:1-26,550-605`; `fal_cost_ledger.py` | Append-only `ledger/costs.jsonl` with `usd | null` plus reason and `price_source_date`. | Adopt now (persist to disk, unlike Superside) |
 | 23 | Price-drift checker that diffs amounts, not prose | Superside `fal_pricing.py` `_check_against_fal` | A periodic job flags stale price entries in the model registry. | Later |
 | 24 | Sidecar `.meta.json` next to every generated asset | goose-video `lib.py:43-47`; `render_keyframe.py:101-109` | Required fields: prompt (compiled), refs, seed, provider, model, settings, resolution/duration (requested vs actual), cost, `input_digest`, skill and SKILLS.lock hash. goose-video omitted seed and cost, so do not copy it as-is. | Adopt now |
-| 25 | Prompt Slots: named-placeholder template with mismatch report | Superside `prompt_variants_node.py:126-205` | Implement slot reporting, but **fail** in CI and in non-interactive runs on any unfilled or unused slot. The master prompt asks for fail. Superside only warns. | Adopt now (stricter) |
+| 25 | Prompt Slots: named-placeholder template with mismatch report | Superside `prompt_variants_node.py:126-205` | Implement slot reporting, but **fail** in CI and in non-interactive runs on any unfilled or unused slot. Superside only warns. | Adopt now (stricter) |
 | 26 | Prompt Variants: pool addressed by seed or index; output records which one | Superside `prompt_variants_node.py:39-123` | Deterministic `variant = pool[seed % n]` or seeded random. The chosen label goes in the sidecar. | Adopt now |
 | 27 | Resolution audit: aspect drift raises, area loss warns | Superside `base_node.py:247-307` | Post-generation size audit in the adapter. Tolerance 4% aspect, 50% area, with stated rationale. | Adopt now |
 | 28 | Exact local composite: resize crop to exact box, feather, paste back | Superside `stitch_region_node.py:11-28`; `normalize_product_node.py:24-35` | Deterministic `pack-composite` tool. The product pixels never pass through a model. | Adopt now |
@@ -474,7 +474,7 @@ Run in this order. Every step reports all errors, then exits non-zero if there w
    - name equals the directory, and the slug regex matches
    - description is a non-empty string, ≤1024 characters, and contains trigger plus boundary phrases (higgsfield)
    - level matches folder (goose)
-   - required section-24 contract fields are present
+   - required skill contract fields are present
 4. **Uniqueness**. Check uniqueness across skills, packs and workflows (goose `:136-139`, `:394-399`).
 5. **Resolve references**:
    - `references/*` links both ways (higgsfield, rampstack)
@@ -486,7 +486,7 @@ Run in this order. Every step reports all errors, then exits non-zero if there w
 8. **Generate** `skills-index.json` (13a, with the bugs fixed) and `SKILLS.lock` (sha256 per file, sorted, as in rampstack). Use a stable date as in goose.
 9. **Tree ⊆ index** (goose 13b step 4).
 10. **Freshness**. Run `git diff --exit-code` on all generated outputs, and fail on untracked generated files (gstack `skill-docs.yml`).
-11. **Health report** (master prompt 24A). Emit a JSON/HTML report with per-skill rows: schema status, broken refs, eval presence, context tokens, last live verification, cost class, and the `status` of linked workflows (rampstack `template | validated`).
+11. **Health report**. Emit a JSON/HTML report with per-skill rows: schema status, broken refs, eval presence, context tokens, last live verification, cost class, and the `status` of linked workflows (rampstack `template | validated`).
 
 ---
 
@@ -494,16 +494,16 @@ Run in this order. Every step reports all errors, then exits non-zero if there w
 
 | Claim | Where claimed | What the repo shows |
 |---|---|---|
-| "Research → Analyze → Create → **Learn**" loop | goose README `:9`, `:93`; master prompt 1.4A | `collection.meta.json:30-46` has only `research`, `analyze` and `create` stages. `growth_loop` is `research, create, run, measure, improve` (`:47`). There is no Learn stage and no learning store. "Learn" means "re-run the analysis skill" (README `:93`). |
-| Every skill has machine-readable metadata that is validated | goose positioning; master prompt | Metadata is validated only for slug, category, tags and installation. Descriptions are not validated: **105/293 index entries have description `">"`** (computed from `skills-index.json`). |
+| "Research → Analyze → Create → **Learn**" loop | goose README `:9`, `:93` | `collection.meta.json:30-46` has only `research`, `analyze` and `create` stages. `growth_loop` is `research, create, run, measure, improve` (`:47`). There is no Learn stage and no learning store. "Learn" means "re-run the analysis skill" (README `:93`). |
+| Every skill has machine-readable metadata that is validated | goose positioning | Metadata is validated only for slug, category, tags and installation. Descriptions are not validated: **105/293 index entries have description `">"`** (computed from `skills-index.json`). |
 | Evals for skills | goose `test/TESTING.md` | Only **1 of 293** skills has `eval/eval.json` (`find skills -name eval.json`). There are 94 markdown files under skill `tests/` dirs (smoke-test notes), which are not executable. |
-| Sidecar metadata including seed and cost | master prompt 1.4A (goose) | goose-video sidecars have no seed and no cost (`render_keyframe.py:101-109`). goose-skills `gen_image.py` prints JSON to stdout and writes no sidecar. Cost lives server-side in the proxy. |
-| Prompt Slots "fail on unresolved/mismatched slots" | master prompt 1.4A (Superside) | Superside **warns** on a side `info` output. It removes an unfilled placeholder and leaves unknown `{x}` in the text (`prompt_variants_node.py:186-200`). cstack should be stricter than its source here. |
+| Sidecar metadata including seed and cost | goose positioning | goose-video sidecars have no seed and no cost (`render_keyframe.py:101-109`). goose-skills `gen_image.py` prints JSON to stdout and writes no sidecar. Cost lives server-side in the proxy. |
+| Prompt Slots "fail on unresolved/mismatched slots" | secondhand summary of Superside | Superside **warns** on a side `info` output. It removes an unfilled placeholder and leaves unknown `{x}` in the text (`prompt_variants_node.py:186-200`). cstack should be stricter than its source here. |
 | "Retries" in the video helper lib | goose-video `lib.py:3-4` | No retry code exists in the file. |
 | The 300-line rule | higgsfield `CLAUDE.md:101` | Not enforced. `higgsfield-generate/SKILL.md` is 322 lines. |
 | CHANGELOG | higgsfield `CLAUDE.md` repo tree | There is no `CHANGELOG.md` ("when wired up"). |
 | Evals catch regressions | higgsfield `evals/README.md` | "There is no automated runner yet." The Key Decisions block is empty. |
-| Every specialist says when to use / when not | rampstack positioning; master prompt | **36 of 103** SKILL.md files lack `## When NOT to use`. 38 lack `## Required inputs` (grep). The linter enforces only `## The framework` and `## Reference files`. |
+| Every specialist says when to use / when not | rampstack positioning | **36 of 103** SKILL.md files lack `## When NOT to use`. 38 lack `## Required inputs` (grep). The linter enforces only `## The framework` and `## Reference files`. |
 | "Verified quotes, checked verbatim" | lenny `README.md:15` | No verification tooling is public. One skill's counts disagree internally (18 vs 25). |
 | Operating rules "word-identical across all 14" metaskills | wondel `CLAUDE.md` | True today (hash-checked), but enforced by nothing. There is no validation CI at all. |
 | BRAND.json-style truth / verify against evidence | Taste README | Real as instructions only. The extraction, verification and scoring all run in a closed remote service. Do not infer its internals. |

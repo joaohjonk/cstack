@@ -24,11 +24,11 @@ Every outcome gets a researched flow before anything is made:
 
 - **A stated gap is a complete answer.** "UNKNOWN: no source for the product's dimensions" beats a plausible number. Write UNKNOWN, mark `approval: unknown`, and say what would resolve it.
 - Never claim an action happened that did not (a render, a publish, a verification, a test). Report outcomes with the evidence: file path, ledger row, verdict id.
-- Classify every input before using it (section 3.4): `FACT`, `HARD_CONSTRAINT`, `SOFT_CONSTRAINT`, `CAMPAIGN_DIRECTION`, `REFERENCE_MECHANISM`, `OPEN_CREATIVE_SPACE`, `UNKNOWN`. Only FACT and HARD_CONSTRAINT bind; open creative space is where judgment goes.
+- Classify every input before using it: `FACT`, `HARD_CONSTRAINT`, `SOFT_CONSTRAINT`, `CAMPAIGN_DIRECTION`, `REFERENCE_MECHANISM`, `OPEN_CREATIVE_SPACE`, `UNKNOWN`. Only FACT and HARD_CONSTRAINT bind; open creative space is where judgment goes.
 - Separate observation from inference in every report. Inferred values carry `approval: inferred` and `confidence: low|medium` until the owner confirms.
 - When the owner asks a vague question ("make it cooler", "more premium"), diagnose what is wrong before changing anything. Adjective expansion is a failure mode (`adjective_prompting`).
 
-## 2. Source precedence (section 23)
+## 2. Source precedence
 
 ```text
 1 user_instruction  2 approved_brand_state  3 official_asset  4 live_brand_behavior
@@ -40,7 +40,7 @@ Every outcome gets a researched flow before anything is made:
 - Write brand truth only through `cstack brand set <section.field> --file field.json`, which applies precedence, records conflicts and lists artifacts made stale by the change.
 - Recent local evidence that contradicts a generic framework: keep both, cite provenance, and explain why the practical local evidence may govern this brand.
 
-## 3. Cost and context (sections 11, 3.16, 34)
+## 3. Cost and context
 
 Use the cheapest layer that answers correctly:
 
@@ -53,7 +53,7 @@ Use the cheapest layer that answers correctly:
 - Media: contact-sheet probes → select direction → targeted high-quality still → local repair → upscale only approved frames → motion only from approved stills. Never render many expensive finals to discover composition.
 - Every paid call goes through `cstack generate` (or another ledgered command). It dedupes identical calls, blocks over budget, persists pending jobs and never resubmits on timeout.
 - Before any batch: `cstack spend plan items.json --stop "<condition>"` and show the estimate. Ask the owner before spending beyond small validation tests, before anything over `budget.confirm_over`, and whenever no budget is configured.
-- Prefer a deterministic transform (crop, composite, token, vector, layout, retrieval) over a generative one whenever it can be exact (section 3.15).
+- Prefer a deterministic transform (crop, composite, token, vector, layout, retrieval) over a generative one whenever it can be exact.
 
 ## 4. Judgment
 
@@ -72,7 +72,7 @@ Use the cheapest layer that answers correctly:
 - Local defects get local fixes (crop-and-paste, mask, composite) before full regeneration.
 - Real brand marks, type and legal text are composited from official assets, never approximated by an image model.
 
-## 6. Safety (section 25)
+## 6. Safety
 
 - Ask first before: deleting or overwriting user files, installing system software, publishing anything externally, sending messages, spending beyond small validation tests, opening tunnels to local work.
 - Credentials come from environment variables only. Never write keys into a workspace, a prompt, a log or a commit. Persist provider job ids, never credentials.

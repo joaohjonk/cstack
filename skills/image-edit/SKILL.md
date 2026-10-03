@@ -2,14 +2,11 @@
 name: image-edit
 description: "Repair or change one region of an image while preserving every good decision: crop the region, edit or regenerate only that crop, paste it back with a feathered edge and color match, or composite official assets (logos, labels, type) instead of generating them. Use when one area is wrong (hands, label, reflection, background intrusion), when a mark or text must be exact, or for retouch and grade. Not for new images (use generate-media) or deciding whether the product is faithful (use product-fidelity)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /image-edit
 
-Fix the minimum necessary (section 19). A good frame with one bad hand is not a reroll. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Fix the minimum necessary. A good frame with one bad hand is not a reroll. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

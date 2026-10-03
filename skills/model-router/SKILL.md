@@ -2,14 +2,11 @@
 name: model-router
 description: "Pick the best current model and provider for a specific generation or edit job from the dated model registry, verify that the entry is fresh against live docs when the job matters, run a 2-4 probe micro-benchmark when the choice is uncertain, and record why plus a fallback chain. Use before a paid batch, when a model is named that may be stale or shut down, or when outputs disappoint and the model may be wrong. Not for writing prompts (use prompt-director) or running the calls (use generate-media)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /model-router
 
-Model rankings go stale in weeks. The router never freezes a 2026 snapshot into prose (section 11). [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Model rankings go stale in weeks. The router never freezes a 2026 snapshot into prose. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

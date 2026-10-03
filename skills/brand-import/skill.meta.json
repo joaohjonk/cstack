@@ -15,10 +15,6 @@
     "conflicting assets",
     "brand state stale"
   ],
-  "not_for": [
-    "workflow",
-    "brand-verify"
-  ],
   "required_inputs": [
     "official assets or brand URLs"
   ],
@@ -29,19 +25,6 @@
     "references/gold",
     "references/anti"
   ],
-  "reads": [
-    "assets/official/"
-  ],
-  "writes": [
-    "brand/",
-    "references/",
-    "briefs/"
-  ],
-  "optional_providers": [
-    "taste-labs",
-    "figma-mcp",
-    "shopify-mcp"
-  ],
   "cost_class": "low",
   "context_class": "l",
   "mutating": true,
@@ -51,11 +34,6 @@
     "identity-system",
     "brief"
   ],
-  "evals": [
-    "evals/fixtures/existing-brand-clear-assets.yaml",
-    "evals/fixtures/existing-brand-conflicting-assets.yaml",
-    "evals/fixtures/repeated-brand-context.yaml"
-  ],
   "approval_gates": [
     {
       "id": "consequential-conflicts",
@@ -64,35 +42,13 @@
       "never_self_approve": true
     }
   ],
-  "baseline": "n/a",
   "fallback": {
     "when_missing": [
       "taste-labs"
     ],
     "mode": "local"
   },
-  "deterministic_steps": [
-    "inventory and hash",
-    "parse CSS/SVG/JSON",
-    "measure colors",
-    "tokens check"
-  ],
-  "generative_steps": [
-    "candidate rule inference"
-  ],
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
   "required_providers": []
 }

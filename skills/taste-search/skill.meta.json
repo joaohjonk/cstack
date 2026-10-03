@@ -16,31 +16,12 @@
     "find examples",
     "reference packet"
   ],
-  "not_for": [
-    "shot-dna",
-    "competitor-intel",
-    "cultural-scan"
-  ],
   "required_inputs": [
     "brief or intent"
   ],
   "outputs": [
     "references/*/*.reference.yaml",
     "work/references/*-packet.md"
-  ],
-  "writes": [
-    "references/",
-    "state/feedback.jsonl"
-  ],
-  "optional_providers": [
-    "taste-labs",
-    "cosmos",
-    "refero-mcp",
-    "mobbin-mcp",
-    "ecomm-design",
-    "foreplay",
-    "really-good-emails",
-    "figma-mcp"
   ],
   "cost_class": "low",
   "context_class": "m",
@@ -51,29 +32,13 @@
     "prompt-director",
     "brand-import"
   ],
-  "evals": [
-    "evals/fixtures/no-brand-vague-aesthetic.yaml"
-  ],
-  "baseline": "brief",
   "fallback": {
     "when_missing": [
       "research tools"
     ],
     "mode": "local"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
   "required_providers": []
 }

@@ -15,19 +15,12 @@
     "compile prompt",
     "prompt diff"
   ],
-  "not_for": [
-    "model-router",
-    "creative-review"
-  ],
   "required_inputs": [
     "shot dna or brief",
     "target model"
   ],
   "outputs": [
     "recipes/*.prompt-recipe.yaml"
-  ],
-  "writes": [
-    "recipes/"
   ],
   "cost_class": "free",
   "context_class": "s",
@@ -38,29 +31,7 @@
     "image-edit",
     "creative-autoresearch"
   ],
-  "evals": [
-    "evals/fixtures/retired-rule-in-template.yaml"
-  ],
-  "baseline": "n/a",
-  "deterministic_steps": [
-    "slot validation",
-    "variant selection",
-    "hashing"
-  ],
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

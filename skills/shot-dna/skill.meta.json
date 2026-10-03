@@ -16,19 +16,11 @@
     "lighting recipe",
     "looks like AI"
   ],
-  "not_for": [
-    "taste-search",
-    "campaign-sequence",
-    "prompt-director"
-  ],
   "required_inputs": [
     "reference image or shot role"
   ],
   "outputs": [
     "references/dna/*.shot-dna.yaml"
-  ],
-  "writes": [
-    "references/dna/"
   ],
   "cost_class": "free",
   "context_class": "s",
@@ -39,24 +31,7 @@
     "campaign-sequence",
     "model-router"
   ],
-  "evals": [
-    "evals/fixtures/exact-product-photo.yaml"
-  ],
-  "baseline": "reference",
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
-  "required_providers": [],
-  "optional_providers": []
+  "required_providers": []
 }

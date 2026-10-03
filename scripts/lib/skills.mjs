@@ -5,10 +5,11 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { ROOT, exists, readText, readJSON, parseFrontmatter, estimateTokens, walk, rel } from './core.mjs';
 import { validateValue } from './schemas.mjs';
+import { loadFixtures } from './evalplan.mjs';
 
 export const SKILLS_DIR = path.join(ROOT, 'skills');
 
-// Section 24 output contract. Each keyword must appear in at least one H2 heading;
+// The skill contract. Each keyword must appear in at least one H2 heading;
 // one heading may cover several ("## Outputs, files written, state updated").
 export const CONTRACT_KEYWORDS = [
   ['when to use', /when to use/i],
@@ -71,7 +72,18 @@ export function loadSkill(dir) {
   };
 }
 
-export function checkSkill(s, report, { allSlugs = [] } = {}) {
+// Slugs named in backticks under the Handoff heading: the list an agent actually reads.
+export function proseHandoffs(s, allSlugs) {
+  const m = s.body.match(/^##[^\n]*handoff[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/im);
+  return [...new Set([...(m?.[1] ?? '').matchAll(/`([a-z0-9-]+)`/g)].map((x) => x[1]).filter((x) => allSlugs.includes(x)))];
+}
+
+// Evals are not declared in meta: a fixture targets a skill through its own `skills:` list.
+export function evalsFor(slug, fixtures = loadFixtures()) {
+  return fixtures.filter((f) => (f.skills ?? []).includes(slug)).map((f) => f.file ?? f.id);
+}
+
+export function checkSkill(s, report, { allSlugs = [], fixtures } = {}) {
   const where = rel(s.mdPath);
   const fm = s.frontmatter;
   if (!fm) report.error(where, 'missing YAML frontmatter');
@@ -95,8 +107,13 @@ export function checkSkill(s, report, { allSlugs = [] } = {}) {
     if (!v.ok) report.error(mwhere, v.errors);
     if (s.meta.slug !== s.slug) report.error(mwhere, `slug "${s.meta.slug}" must equal directory "${s.slug}"`);
     for (const h of s.meta.handoff ?? []) if (allSlugs.length && !allSlugs.includes(h)) report.error(mwhere, `handoff to unknown skill "${h}"`);
-    if (s.meta.status !== 'stub' && !(s.meta.evals ?? []).length) report.warn(mwhere, 'no evals declared');
-    for (const e of s.meta.evals ?? []) if (!exists(path.join(ROOT, e))) report.error(mwhere, `declared eval "${e}" does not exist`);
+    if (allSlugs.length) {
+      const prose = proseHandoffs(s, allSlugs);
+      const meta = s.meta.handoff ?? [];
+      const diff = [...prose.filter((x) => !meta.includes(x)).map((x) => `+${x}`), ...meta.filter((x) => !prose.includes(x)).map((x) => `-${x}`)];
+      if (diff.length) report.error(mwhere, `handoff differs from the SKILL.md Handoff section (${diff.join(' ')}); keep them equal`);
+    }
+    if (s.meta.status !== 'stub' && !evalsFor(s.slug, fixtures).length) report.warn(mwhere, 'no eval fixture targets this skill');
   }
   // relative links inside SKILL.md must resolve (relative to the skill dir, or to repo root for `/`-less repo paths)
   for (const m of s.body.matchAll(/\]\(([^)#\s]+)(#[^)]*)?\)/g)) {
@@ -109,6 +126,7 @@ export function checkSkill(s, report, { allSlugs = [] } = {}) {
 }
 
 export function buildIndex(skills) {
+  const fixtures = loadFixtures();
   return {
     generated_by: 'cstack index',
     note: 'GENERATED from skills/*/skill.meta.json. Do not edit by hand; run `cstack index`.',
@@ -125,6 +143,7 @@ export function buildIndex(skills) {
         required_inputs: s.meta.required_inputs ?? [],
         outputs: s.meta.outputs ?? [],
         handoff: s.meta.handoff ?? [],
+        evals: evalsFor(s.slug, fixtures),
         cost_class: s.meta.cost_class,
         context_class: s.meta.context_class,
         mutating: s.meta.mutating,
@@ -170,7 +189,7 @@ export function search(index, query, k = 5) {
 }
 
 // Duplicate instruction detection: normalized lines (>= 60 chars) that appear in 2+ skills.
-// Shared boilerplate belongs in skills/cstack-shared/, not copied into every skill (section 24A).
+// Shared boilerplate belongs in skills/cstack-shared/, not copied into every skill.
 export function duplicateLines(skills, minLen = 60) {
   const seen = new Map();
   for (const s of skills) {

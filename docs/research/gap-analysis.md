@@ -1,4 +1,4 @@
-# Gap analysis (master prompt section 2)
+# Gap analysis
 
 Three columns per dimension: what the **prior local system** had (the private client brand system described, anonymized, in [local-learning-migration.md](local-learning-migration.md)), what the **state of the art** shows in public evidence ([startup-landscape.md](startup-landscape.md), [public-repo-patterns.md](public-repo-patterns.md), [gstack.md](gstack.md), [taste-labs.md](taste-labs.md), [model-landscape.md](model-landscape.md), [agent-skills.md](agent-skills.md)), and what **cstack v0.1** now has. The last two columns are the gap that remains and its class.
 

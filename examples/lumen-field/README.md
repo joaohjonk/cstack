@@ -69,10 +69,10 @@ node bin/cstack.mjs brand stale --ws /tmp/lf
 | `recipes/autumn-hero-plate.prompt-recipe.yaml` | A slot recipe that compiles. It generates only the background plate; the real product is composited (glaze truth is locked). No person or studio names in the prompt. |
 | `work/plans/product-photoshoot-2026-10-03.md` | An **illustrative** workflow tracker that stops at the owner gate `routing`, with options, a recommendation and what is blocked. The workflow stays `template`; this is not a validated run. |
 | `work/plans/*.items.json`, `probe-request.json` | Inputs for `spend plan` (a 0-cost mock plan and a paid what-if that the budget guard rejects) and for `generate`. |
-| `state/cost-ledger.jsonl` | Two mock rows: one `ok` at 0 USD and one `dry_run`. See the failure event below for why there is an `ok` row. |
+| `state/cost-ledger.jsonl` | Two mock rows: one `ok` at 0 USD and one `dry_run`. |
 | `state/feedback.jsonl` | An owner edit on the brief (banned words) and a decisive pairwise choice between two copy drafts. |
 | `state/learnings.jsonl` | A strong human correction (promotion candidate) and a durable observation about print vs screen colour specs. |
-| `state/failures.jsonl` | A real failure from building this example: `cstack generate --dry-run` did not dry-run (the flag is not passed to the runner). It cost nothing only because the provider was the mock. |
+| `state/failures.jsonl` | One `failure-event` recorded while building this example (a CLI bug, since fixed), kept as a sample of the format. |
 | `state/lineage.jsonl`, `work/copy/*` | The approved copy draft's creative commit, with `brand_refs` hashes so `brand stale` can flag it when those fields change. |
 | `experiments/` | A bounded keep/discard run on one variable (`prompt.slot.traces`) with two rows in `results.tsv`. The rows are marked ILLUSTRATIVE: the provider is the mock, so the scores are placeholders. |
 | `work/inputs/` | The JSON files fed to `brand set`, `feedback`, `learn add`, `failure`, `lineage` and `experiment log`, kept so every state row can be traced to its input. |

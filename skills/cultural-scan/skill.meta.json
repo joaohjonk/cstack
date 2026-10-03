@@ -16,10 +16,6 @@
     "belongs in the world now",
     "rituals"
   ],
-  "not_for": [
-    "competitor-intel",
-    "taste-search"
-  ],
   "required_inputs": [
     "brief",
     "audience"
@@ -27,15 +23,6 @@
   "outputs": [
     "state/culture.jsonl",
     "work/culture/*.md"
-  ],
-  "writes": [
-    "state/culture.jsonl",
-    "work/culture/"
-  ],
-  "optional_providers": [
-    "shortimize",
-    "foreplay",
-    "cosmos"
   ],
   "cost_class": "low",
   "context_class": "m",
@@ -46,29 +33,13 @@
     "copywriting",
     "learn-loop"
   ],
-  "evals": [
-    "evals/fixtures/culture-without-observation.yaml"
-  ],
-  "baseline": "n/a",
   "fallback": {
     "when_missing": [
       "social tools"
     ],
     "mode": "degraded"
   },
-  "compatible_hosts": [
-    "claude-code",
-    "codex",
-    "cursor",
-    "gemini-cli",
-    "opencode"
-  ],
-  "destructive": false,
-  "version": "0.1.0",
   "last_verified": null,
   "status": "beta",
-  "budget": {
-    "skill_md_tokens_max": 3200
-  },
   "required_providers": []
 }

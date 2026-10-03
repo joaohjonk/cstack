@@ -2,14 +2,11 @@
 name: product-fidelity
 description: "Lock the real product (geometry, proportions, label, logo, closures, materials, color) as a brand-world entity, choose a production method that preserves it (single pass vs. decomposed plate, product and composite), and verify outputs for silhouette, label and color drift. Use for any packshot, product photo, PDP image or ad where the actual product appears, or when a generated product looks slightly wrong. Not for lifestyle images without the product (use generate-media) or brand-level adherence (use brand-verify)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /product-fidelity
 
-The product is a fact, not a style (section 13). An image model is allowed to invent light; it is not allowed to invent the product. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+The product is a fact, not a style. An image model is allowed to invent light; it is not allowed to invent the product. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

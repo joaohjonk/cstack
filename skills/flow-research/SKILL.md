@@ -2,14 +2,11 @@
 name: flow-research
 description: "Research the best step-by-step method for a creative outcome before making anything: define the target, search the flow library, benchmark current tools, MCP-first and YC companies and what practitioners use, compare at least two candidate flows, and write one with gates, fallbacks, a cost ladder and a stop condition. Use when an outcome has no fresh flow, the flow is stale, or the ask is new. Not for the brief (use brief) or running a known workflow (use workflow)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /flow-research
 
-Method before making. The quality of the output is mostly decided by the method chosen before the first call; one-shotting an outcome is a failure mode. [Shared preamble](../cstack-shared/PREAMBLE.md) applies (section 0.5).
+Method before making. The quality of the output is mostly decided by the method chosen before the first call; one-shotting an outcome is a failure mode. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 
@@ -71,7 +68,7 @@ Web search and fetch, `site-capture` (inspect a reference page: how it is built,
 
 ## Handoff
 
-`workflow` (run it), `model-router` (per-step model choice), `generate-media`, `three-d`, `video-direction`, `mockup`, `vector-mark`, `learn-loop` (close the loop).
+`workflow` (run it), `model-router` (per-step model choice), `generate-media`, `three-d`, `video-direction`, `mockup`, `vector-master`, `learn-loop` (close the loop).
 
 ## Failure modes
 

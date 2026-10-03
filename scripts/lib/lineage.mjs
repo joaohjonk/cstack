@@ -1,4 +1,4 @@
-// Creative lineage (section 22): sidecar `<output>.lineage.json` per artifact version, plus an append-only
+// Creative lineage: sidecar `<output>.lineage.json` per artifact version, plus an append-only
 // index in <ws>/state/lineage.jsonl. Git diffs lines; this records intent, changed and kept dimensions.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,7 +17,7 @@ export function record(ws, entry) {
   const version = (prev.at(-1)?.version ?? 0) + 1;
   const parent_version = prev.at(-1)?.version ?? null;
   if (parent_version != null && !(entry.changed_dimensions ?? []).length)
-    throw new Error('a new version must name changed_dimensions (one meaningful variable at a time, section 3.7)');
+    throw new Error('a new version must name changed_dimensions (one meaningful variable at a time)');
   if ((entry.changed_dimensions ?? []).length > 2)
     console.warn(`lineage: ${entry.changed_dimensions.length} dimensions changed at once; refinement should change one meaningful variable`);
   const output_files = (entry.output_files ?? []).map((f) => {

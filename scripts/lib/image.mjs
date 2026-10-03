@@ -1,4 +1,4 @@
-// Deterministic image checks with zero dependencies (section 13 automated audits).
+// Deterministic image checks with zero dependencies.
 // Reads dimensions from PNG / JPEG / WebP / GIF headers; audits unintended reframing.
 import fs from 'node:fs';
 
@@ -41,9 +41,21 @@ export function imageSize(file) {
  * or the pipeline reframed); area loss beyond tolerance WARNS (resolution dropped).
  * expected: {width, height} | {aspect: 'W:H', min_width}
  */
+// Expected aspect as a number; throws on anything malformed ("4x5", "banana", width without height) so the gate fails closed.
+export function parseExpected(expected) {
+  const pos = (n) => Number.isFinite(n) && n > 0;
+  if (expected?.aspect != null) {
+    const m = String(expected.aspect).match(/^\s*(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)\s*$/);
+    if (!m || !pos(+m[1]) || !pos(+m[2])) throw new Error(`bad expected aspect "${expected.aspect}" (use W:H, e.g. 4:5)`);
+    return +m[1] / +m[2];
+  }
+  if (!pos(Number(expected?.width)) || !pos(Number(expected?.height))) throw new Error(`bad expected size ${JSON.stringify(expected)} (use {width, height} or --size WxH, or --aspect W:H)`);
+  return expected.width / expected.height;
+}
+
 export function sizeAudit(actual, expected, { aspectTol = 0.04, areaTol = 0.5 } = {}) {
   const findings = [];
-  const expAspect = expected.aspect ? (([w, h]) => w / h)(expected.aspect.split(':').map(Number)) : expected.width / expected.height;
+  const expAspect = parseExpected(expected);
   const actAspect = actual.width / actual.height;
   const drift = Math.abs(actAspect - expAspect) / expAspect;
   if (drift > aspectTol) findings.push({ level: 'fail', check: 'aspect', detail: `aspect ${actAspect.toFixed(4)} vs expected ${expAspect.toFixed(4)} (drift ${(drift * 100).toFixed(1)}% > ${aspectTol * 100}%): unintended reframe` });

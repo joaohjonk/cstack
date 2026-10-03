@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/cost-ledger-entry.schema.json",
   "title": "Cost / latency ledger entry",
-  "description": "Section 11. One line per provider call in state/cost-ledger.jsonl.",
+  "description": "One line per provider call in state/cost-ledger.jsonl.",
   "type": "object",
   "required": [
     "run_id",
@@ -103,5 +103,6 @@
     "error": {
       "type": "string"
     }
-  }
+  },
+  "additionalProperties": true
 }

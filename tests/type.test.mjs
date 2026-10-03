@@ -3,7 +3,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { execFileSync } from 'node:child_process';
@@ -13,10 +12,11 @@ import { readFont, fontInfo, languageCoverage, requiredChars, decodeFsType, hasC
 import { evaluateTypography, parseScaleCss } from '../scripts/lib/type/qa.mjs';
 import { parseTypeArgs } from '../scripts/lib/type/cli.mjs';
 import { checkTokens, buildCSS } from '../scripts/lib/tokens.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CLI = path.join(ROOT, 'bin', 'cstack.mjs');
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-type-'));
+const tmp = () => tmpDir('cstack-type-');
 const SYSTEM_FONT = ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf', '/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf'].find((f) => fs.existsSync(f));
 const noFont = SYSTEM_FONT ? false : 'no DejaVu Sans or Liberation Sans TTF under /usr/share/fonts';
 

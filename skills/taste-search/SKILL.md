@@ -2,14 +2,11 @@
 name: taste-search
 description: "Find and curate references as a graph, not a moodboard: search the user's available research tools (Taste Labs, Cosmos, Refero, Mobbin, Ecomm.Design, Foreplay, Really Good Emails and others) plus local gold/canon libraries, mix near, middle and far references, and store each with Source, Mechanism, Transfer, rights and do-not-copy notes. Use when visual or verbal direction is underdefined, before generating anything new, or to extend gold and anti libraries. Not for decomposing one photograph in depth (use shot-dna) or tracking competitors over time (use competitor-intel)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /taste-search
 
-Retrieval before invention (section 3.3). Taste is the objective function, associative distance the search radius. This skill widens the radius and keeps only what carries a mechanism. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Retrieval before invention. Taste is the objective function, associative distance the search radius. This skill widens the radius and keeps only what carries a mechanism. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 
@@ -68,7 +65,6 @@ Route by job (detect first with `cstack tools`; never assume access):
 
 - Reject references with no articulable mechanism (moodboard mimicry).
 - Ten references from one category = reference monoculture: widen before presenting.
-- Credits and names never enter a generation prompt; mechanisms do.
 - Rights `unknown` references are inspiration only and never used as image inputs.
 
 ## Outputs, files written, state updated
@@ -80,7 +76,7 @@ Route by job (detect first with `cstack tools`; never assume access):
 ## Evals required
 
 - T0: every reference validates; anti references have `why_it_fails`.
-- T1: packet distance mix check (at least one near and one far); no names in downstream recipes.
+- Reviewer check (no automated test yet): the packet mixes at least one near and one far reference; no names in downstream recipes.
 - Fixture: `no-brand-vague-aesthetic.yaml` (search before visual invention).
 
 ## Handoff

@@ -3,30 +3,41 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, Report, exists, readData, writeAtomic, rel, walk, readText } from './core.mjs';
-import { validateTree } from './schemas.mjs';
+import { validateTree, validateValue } from './schemas.mjs';
 
 const TEMPLATE = path.join(ROOT, 'templates', 'brand-workspace');
 
-function copyDir(src, dst, vars) {
+function copyDir(src, dst, vars, tally = { added: 0, kept: 0 }) {
   fs.mkdirSync(dst, { recursive: true });
   for (const e of fs.readdirSync(src, { withFileTypes: true })) {
     const s = path.join(src, e.name);
     const d = path.join(dst, e.name.replace(/^_dot_/, '.'));
-    if (e.isDirectory()) copyDir(s, d, vars);
+    if (e.isDirectory()) copyDir(s, d, vars, tally);
     else {
-      if (exists(d)) continue; // never overwrite existing brand files (section 25)
+      if (exists(d)) {
+        tally.kept++;
+        continue; // never overwrite existing brand files
+      }
       let t = fs.readFileSync(s, 'utf8');
       for (const [k, v] of Object.entries(vars)) t = t.replaceAll(`{{${k}}}`, v);
       writeAtomic(d, t);
+      tally.added++;
     }
   }
+  return tally;
 }
 
+const BRAND_ID = /^[A-Za-z0-9][A-Za-z0-9_.:-]*$/; // brand-system.schema metadata.brand_id
+
 export function initBrand(dir, { name, id } = {}) {
-  if (!name) throw new Error('--name is required');
-  const brandId = id ?? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  if (!name || name === true) throw new Error('--name is required');
+  const brandId = id ?? String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  if (!brandId) throw new Error(`--id needed: "${name}" gives no usable id; pass --id like my-brand`);
+  if (!BRAND_ID.test(brandId) || brandId.includes('..')) throw new Error(`--id "${brandId}" must match ${BRAND_ID.source}`);
+  if (exists(dir) && !fs.statSync(dir).isDirectory()) throw new Error(`${dir} exists and is not a folder`);
   const date = new Date().toISOString().slice(0, 10);
-  copyDir(TEMPLATE, dir, { BRAND_NAME: name, BRAND_ID: brandId, DATE: date });
+  const { added, kept } = copyDir(TEMPLATE, dir, { BRAND_NAME: name, BRAND_ID: brandId, DATE: date });
+  if (kept) return `already a workspace at ${dir} (${kept} files kept, ${added} added); name and id unchanged`;
   return [
     `brand workspace ready at ${dir}`,
     `next: cd ${dir} && run /brand-import (existing brand) or /workflow create-brand (new brand) in your agent`,
@@ -37,9 +48,12 @@ export function initBrand(dir, { name, id } = {}) {
 export function checkBrand(ws) {
   const r = new Report();
   const cfgPath = ['cstack.config.yaml', 'cstack.config.yml', 'cstack.config.json'].map((f) => path.join(ws, f)).find(exists);
-  if (!cfgPath) r.error(rel(ws), 'no cstack.config.yaml; run `cstack brand init`');
-  const cfg = cfgPath ? readData(cfgPath) : {};
-  if (cfgPath && !cfg?.budget) r.warn(rel(cfgPath), 'no budget envelope: paid provider calls will be blocked');
+  if (!cfgPath) {
+    r.error(rel(ws), 'no cstack.config.yaml; run `cstack brand init` (not walking a folder that is not a workspace)');
+    return r;
+  }
+  const cfg = readData(cfgPath);
+  if (!cfg?.budget) r.warn(rel(cfgPath), 'no budget envelope: paid provider calls will be blocked');
   for (const res of validateTree(ws, { base: ws, skip: ['node_modules', '.git'] })) if (!res.ok) r.error(res.file, `[${res.schema}] ${res.errors}`);
   const bsPath = path.join(ws, 'brand', 'brand-system.json');
   if (exists(bsPath)) {
@@ -67,7 +81,7 @@ export function checkBrand(ws) {
   return r;
 }
 
-// ---------- source precedence in code (section 23) ----------
+// ---------- source precedence in code ----------
 import { hashValue, readJSONL, writeJSON, today } from './core.mjs';
 export const PRECEDENCE = ['user_instruction', 'approved_brand_state', 'official_asset', 'live_brand_behavior', 'campaign_exception', 'extracted_pattern', 'external_reference', 'model_inference'];
 export const rankOf = (field) => Math.min(...(field.sources ?? []).map((s) => PRECEDENCE.indexOf(s.kind)).filter((i) => i >= 0), PRECEDENCE.length);
@@ -83,7 +97,14 @@ export function mergeField(path_, existing, incoming) {
   const same = fieldHash(existing) === fieldHash(incoming);
   const re = rankOf(existing);
   const ri = rankOf(incoming);
-  if (same) return { action: 'set', field: { ...existing, sources: [...existing.sources, ...incoming.sources], confidence: incoming.confidence === 'high' ? 'high' : existing.confidence }, reason: 'same value; evidence added' };
+  if (same) {
+    const k = (x) => `${x.kind}|${x.ref ?? ''}|${x.quote ?? ''}`;
+    const known = new Set(existing.sources.map(k));
+    const fresh = (incoming.sources ?? []).filter((x) => !known.has(k(x)));
+    const confidence = incoming.confidence === 'high' ? 'high' : existing.confidence;
+    if (!fresh.length && confidence === existing.confidence) return { action: 'keep', reason: 'same value and evidence' };
+    return { action: 'set', field: { ...existing, sources: [...existing.sources, ...fresh], confidence }, reason: 'same value; evidence added' };
+  }
   // a newer owner instruction replaces an older one (the owner can change their mind); the old value is kept in history
   if (ri === 0 && re === 0) return { action: 'set', field: { ...incoming, history: [...(existing.history ?? []), { value: existing.value, sources: existing.sources, replaced: today() }] }, reason: 'newer owner instruction replaces the earlier one (kept in history)' };
   if (existing.approval === 'locked' && incoming.sources?.[0]?.kind !== 'user_instruction') return { action: 'keep', reason: 'field is locked; only an explicit owner instruction changes it' };
@@ -96,32 +117,81 @@ export function mergeField(path_, existing, incoming) {
   };
 }
 
+// One writer at a time for brand-system.json: a wx lock file; a lock older than 5 minutes is from a crashed run.
+const LOCK_STALE_MS = 5 * 60 * 1000;
+function withBrandLock(p, fn) {
+  const lock = `${p}.lock`;
+  const take = () => fs.writeFileSync(lock, String(process.pid), { flag: 'wx' });
+  try {
+    take();
+  } catch (e) {
+    if (e.code !== 'EEXIST') throw e;
+    if (Date.now() - fs.statSync(lock).mtimeMs < LOCK_STALE_MS) throw new Error(`${path.basename(p)} is being updated by another run (${lock}); retry in a moment`);
+    fs.rmSync(lock, { force: true });
+    take();
+  }
+  try {
+    return fn();
+  } finally {
+    fs.rmSync(lock, { force: true });
+  }
+}
+
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+function parseFieldPath(path_) {
+  const m = /^([a-z][a-z0-9_]*)\.([a-z0-9_][a-z0-9_-]*)$/i.exec(String(path_ ?? ''));
+  if (!m || UNSAFE_KEYS.has(m[1]) || UNSAFE_KEYS.has(m[2])) throw new Error(`field must be <section>.<field>, e.g. voice.tone (got "${path_}")`);
+  return [m[1], m[2]];
+}
+
+// Validates the incoming field on its own (known section, required keys, enums) before anything is merged or written.
+function checkIncoming(bs, sec, key, incoming) {
+  if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) throw new Error(`${sec}.${key}: the file must hold one JSON object {value, sources[], confidence, approval}`);
+  const probe = { schema_version: bs.schema_version, metadata: bs.metadata, sections: { [sec]: { [key]: incoming } } };
+  const v = validateValue('brand-system', probe);
+  if (!v.ok) throw new Error(`${sec}.${key}: not a valid brand field (schemas/brand-system.schema.json): ${v.errors}`);
+}
+
 export function applyToBrand(ws, path_, incoming) {
+  const [sec, key] = parseFieldPath(path_);
   const p = path.join(ws, 'brand', 'brand-system.json');
-  const bs = readData(p);
-  const [sec, key] = path_.split('.');
-  bs.sections[sec] ??= {};
-  const res = mergeField(path_, bs.sections[sec][key], { last_updated: today(), ...incoming });
-  if (res.action === 'set') bs.sections[sec][key] = res.field;
-  if (res.action === 'conflict') {
-    bs.conflicts ??= [];
-    const dup = bs.conflicts.find((c) => c.status === 'open' && c.field === path_ && c.positions?.some((x) => fieldHash(x) === fieldHash(incoming)));
-    if (dup) return { action: 'keep', reason: `same conflict already open (${dup.id})` };
-    const base = res.conflict.id;
-    let n = 1;
-    while (bs.conflicts.some((c) => c.id === res.conflict.id)) res.conflict.id = `${base}-${++n}`;
-    bs.conflicts.push(res.conflict);
-  }
-  if (res.action !== 'keep') {
-    bs.metadata.updated = today();
-    writeJSON(p, bs);
-  }
-  return res;
+  if (!exists(p)) throw new Error(`no brand/brand-system.json in ${ws}; run cstack brand init or pass --ws`);
+  return withBrandLock(p, () => {
+    const bs = readData(p);
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) throw new Error(`${sec}.${key}: the file must hold one JSON object {value, sources[], confidence, approval}`);
+    const field = { last_updated: today(), ...incoming };
+    checkIncoming(bs, sec, key, field);
+    bs.sections ??= {};
+    bs.sections[sec] ??= {};
+    const res = mergeField(path_, bs.sections[sec][key], field);
+    if (res.action === 'set') bs.sections[sec][key] = res.field;
+    if (res.action === 'conflict') {
+      bs.conflicts ??= [];
+      const dup = bs.conflicts.find((c) => c.status === 'open' && c.field === path_ && c.positions?.some((x) => fieldHash(x) === fieldHash(incoming)));
+      if (dup) return { action: 'keep', reason: `same conflict already open (${dup.id})` };
+      const base = res.conflict.id;
+      let n = 1;
+      while (bs.conflicts.some((c) => c.id === res.conflict.id)) res.conflict.id = `${base}-${++n}`;
+      bs.conflicts.push(res.conflict);
+      // the field reads as disputed until the owner resolves it; its value is only the default meanwhile
+      Object.assign(bs.sections[sec][key], { approval: 'conflict', notes: `conflict ${res.conflict.id} open; value is the default until the owner resolves it` });
+    }
+    if (res.action !== 'keep') {
+      bs.metadata.updated = today();
+      writeJSON(p, bs);
+    }
+    return res;
+  });
 }
 
 // Owner resolves an open conflict by picking one position (1-based). The pick becomes a user_instruction.
 export function resolveConflict(ws, id, { pick, by = 'owner', note } = {}) {
   const p = path.join(ws, 'brand', 'brand-system.json');
+  if (!/^\d+$/.test(String(pick))) throw new Error(`--pick needs a position number (the owner chooses), got "${pick}"`);
+  return withBrandLock(p, () => resolveLocked(p, id, { pick, by, note }));
+}
+
+function resolveLocked(p, id, { pick, by, note }) {
   const bs = readData(p);
   const c = (bs.conflicts ?? []).find((x) => x.id === id);
   if (!c) throw new Error(`no conflict "${id}" (open: ${(bs.conflicts ?? []).filter((x) => x.status === 'open').map((x) => x.id).join(', ') || 'none'})`);
@@ -131,7 +201,7 @@ export function resolveConflict(ws, id, { pick, by = 'owner', note } = {}) {
   const [sec, key] = c.field.split('.');
   const prev = bs.sections?.[sec]?.[key] ?? {};
   bs.sections[sec] ??= {};
-  bs.sections[sec][key] = { ...prev, value: pos.value, sources: [{ kind: 'user_instruction', ref: `resolved ${id} by ${by}` }, ...(pos.source ? [pos.source] : [])], approval: prev.approval === 'locked' ? 'locked' : 'current', confidence: 'high', last_updated: today() };
+  bs.sections[sec][key] = { ...prev, value: pos.value, sources: [{ kind: 'user_instruction', ref: `resolved ${id} by ${by}` }, ...(pos.source ? [pos.source] : [])], approval: prev.approval === 'locked' ? 'locked' : 'current', confidence: 'high', last_updated: today(), notes: /^conflict \S+ open;/.test(prev.notes ?? '') ? undefined : prev.notes };
   Object.assign(c, { status: 'resolved', resolved: today(), resolved_by: by, picked: Number(pick), ...(note ? { note } : {}) });
   // the owner's decision settles the field: other open disagreements about it are superseded, not left dangling
   for (const o of bs.conflicts) if (o !== c && o.status === 'open' && o.field === c.field) Object.assign(o, { status: 'superseded', superseded_by: id });
@@ -156,7 +226,7 @@ export function staleArtifacts(ws) {
   return out;
 }
 
-// Compact, deterministic brand context for prompts (section 12 stable prefix; section 31 "20 tasks").
+// Compact, deterministic brand context for prompts (a stable prompt prefix).
 // Only sections asked for; approved values inline; unknown/conflict/inferred values listed separately
 // so they never ship as fact. Sorted keys + hash: identical inputs produce an identical, cacheable prefix.
 const USABLE = new Set(['locked', 'current', 'testing']);

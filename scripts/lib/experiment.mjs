@@ -1,4 +1,4 @@
-// Bounded keep/discard experiments (section 12A, Karpathy autoresearch pattern).
+// Bounded keep/discard experiments (Karpathy autoresearch pattern).
 // The code enforces what prompts cannot: one mutable surface, budget ceilings, an append-only ledger,
 // and an incumbent that only changes on a KEEP.
 import fs from 'node:fs';
@@ -9,7 +9,12 @@ import { validateValue } from './schemas.mjs';
 
 export const COLUMNS = ['run_id', 'timestamp', 'hypothesis', 'changed_variable', 'baseline', 'candidate', 'provider', 'model', 'seed_or_index', 'cost', 'latency', 'primary_score', 'guardrails', 'human_pref', 'decision', 'notes'];
 
-const runDir = (ws, id) => path.join(ws, 'experiments', 'runs', id);
+// run ids name a folder under experiments/runs/: a plain name, never a path
+const RUN_ID = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/;
+const runDir = (ws, id) => {
+  if (!RUN_ID.test(String(id ?? '')) || String(id).includes('..')) throw new Error(`run_id must match ${RUN_ID.source} (got "${id}")`);
+  return path.join(ws, 'experiments', 'runs', id);
+};
 const specPath = (ws, id) => path.join(runDir(ws, id), 'experiment-run.yaml');
 const tsvPath = (ws) => path.join(ws, 'experiments', 'results.tsv');
 
@@ -52,6 +57,7 @@ export function readRows(ws, id) {
 }
 
 export function loadSpec(ws, id) {
+  if (!exists(specPath(ws, id))) throw new Error(`no experiment run "${id}" (start one: cstack experiment init ${id})`);
   const spec = readData(specPath(ws, id));
   const v = validateValue('experiment-run', spec);
   if (!v.ok) throw new Error(`experiment-run.yaml invalid: ${v.errors}`);

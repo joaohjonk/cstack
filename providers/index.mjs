@@ -18,8 +18,6 @@ export const REGISTRY_PATH = path.join(path.dirname(fileURLToPath(import.meta.ur
 const KINDS = ['media', 'research', 'local'];
 const STATUSES = ['live', 'stub', 'mock'];
 
-export const adapterIds = () => Object.keys(ADAPTERS);
-
 export function getProvider(id) {
   const p = ADAPTERS[id];
   if (!p) throw new Error(`unknown provider "${id}" (known: ${Object.keys(ADAPTERS).join(', ')})`);

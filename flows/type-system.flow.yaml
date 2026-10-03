@@ -16,7 +16,7 @@ target:
   must_not:
   - near-miss pairings
   - type drawn by an image model
-  quality_bar: an independent type review finds no fail on the section-18 axes and the owner picks the pairing from specimens
+  quality_bar: an independent type review finds no fail on the type review axes and the owner picks the pairing from specimens
 when:
 - new brand, rebrand or a type system that is missing or inconsistent
 not_when:
@@ -73,7 +73,7 @@ steps:
   gate: {type: deterministic_check, check: no fail findings at 375/768/1440}
   compare_to_target: findings list is empty of fails; warns have reasons
 - id: review
-  does: independent type review on the section-18 axes, then owner approval
+  does: independent type review on the type review axes, then owner approval
   kind: human
   skill: creative-review
   gate: {type: independent_review, check: no axis fails; owner approves the system}

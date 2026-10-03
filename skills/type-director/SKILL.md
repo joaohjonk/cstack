@@ -2,9 +2,6 @@
 name: type-director
 description: "Choose, pair and systematize typography and review it with measurements: typefaces chosen for the job (sizes, languages, voice, licence, performance), paired by role and structure, built into a system (roles, scale, fluid sizes, leading and tracking by size, measure, figures, fallbacks) as tokens and checkable rules, then audited on real pages. Use when type must be chosen, paired, rebuilt or reviewed. Not for marks (use symbol-design) or the whole visual system (use identity-system)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /type-director
@@ -52,7 +49,7 @@ Method first: `cstack flows search "type system"` (preamble 0.5).
 4. **Specimens with real copy at real sizes** on each surface (HTML page with `brand/generated/tokens.css`, packaging fine print at print size, a 9:16 caption frame), in every language; `browse shot` them; owner picks pairwise (`cstack feedback`).
 5. **System.** Roles table (family, weight, size step, line height, tracking, case, figures, max measure, max lines, spacing); scale from `cstack type scale` adjusted by eye at the extremes; leading falls and tracking tightens as size rises; measure sets column widths; figures and details per role; fallback stack with metric overrides; loading policy.
 6. **Encode** at the lowest reliable level: DTCG type tokens; type rules in `brand/rules/brand-rules.yaml` with `check: deterministic` where `cstack type qa` measures them; `typography` and `type_hierarchy` via `cstack brand set` (`provisional` until the owner approves).
-7. **Verify** the specimen and a real page: `cstack type qa` at 375/768/1440, then the review rubric in the primer (section 9). Fix, re-run, then the owner.
+7. **Verify** the specimen and a real page: `cstack type qa` at 375/768/1440, then the review rubric in the primer. Fix, re-run, then the owner.
 
 ## Decision rules
 
@@ -61,6 +58,7 @@ Method first: `cstack flows search "type system"` (preamble 0.5).
 - Contrast on one or two axes at a time (size, weight, structure, case, colour, space). Hierarchy needs few, clear steps.
 - Defaults (45–75 characters, body leading about 1.4–1.6, WCAG contrast) hold unless a rule records why not.
 - Real copy, real sizes, real languages. Lorem ipsum hides rhythm, coverage and line-break problems.
+- `cstack type qa` gates web pages only. A print or design-tool file passes only when each exported frame's text bounds and line breaks match the gated artwork; live text that reflows in the file the printer opens is a fail.
 - No synthesized bold, italic or small caps; no letter-spaced lowercase body; no long all-caps passages.
 - A licence for each use, checked against the foundry EULA; `fsType` is a technical flag, not a licence. Record the licence state with the choice: model (perpetual, subscription, open), whether the fonts stop working when a subscription ends, what the EULA says about modifying or subsetting, any AI or data-mining clause, and trial status. Trial files never ship.
 - Recommend a bespoke typeface only when equity, scale and budget justify it; otherwise a strong retail family and a rigorous system.

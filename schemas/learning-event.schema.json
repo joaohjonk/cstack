@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/learning-event.schema.json",
   "title": "Learning event / promoted learning",
-  "description": "Section 28A. Raw events append to state/learnings.jsonl; promoted ones also land in docs/learnings.md or a skill/provider note/eval.",
+  "description": "Raw events append to state/learnings.jsonl; promoted ones also land in docs/learnings.md or a skill/provider note/eval.",
   "type": "object",
   "required": [
     "id",
@@ -92,5 +92,6 @@
         "type": "string"
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

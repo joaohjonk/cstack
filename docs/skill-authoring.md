@@ -2,7 +2,7 @@
 
 A cstack skill is two files in `skills/<slug>/`:
 
-- `SKILL.md`: the instructions an agent reads. It uses the portable Agent Skills format: YAML frontmatter, then a markdown body that follows the section-24 contract.
+- `SKILL.md`: the instructions an agent reads. It uses the portable Agent Skills format: YAML frontmatter, then a markdown body that follows the skill contract.
 - `skill.meta.json`: the machine-readable twin, validated against `schemas/skill-meta.schema.json`. The catalog index, search, budgets and health all read this file instead of loading every SKILL.md.
 
 Optional bundled files, such as `skills/<slug>/references/*.md` or templates, are loaded on demand and counted separately from the skill's budget.
@@ -20,9 +20,6 @@ cstack index && cstack validate && cstack budget --check
 name: my-skill                 # must equal the directory name
 description: "What it does, when to use it, and when not to (name the skill to use instead)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 ```
 
@@ -38,7 +35,7 @@ metadata:
 
 The description is the trigger. Hosts preload every skill's name and description, so it counts against the catalog budget.
 
-## The section-24 contract
+## The skill contract
 
 The body must have H2 (`## `) headings that cover all 15 contract keywords. Matching is case-insensitive and looks for the keyword anywhere in the heading. One heading may cover several keywords, as in `## Outputs, files written, state updated`.
 
@@ -97,16 +94,14 @@ Required fields:
 | `summary` | max 200 chars; shown by `cstack search` |
 | `triggers` | phrases a user might say; weighted heavily in search |
 | `required_inputs`, `outputs` | strings; outputs are usually workspace path globs |
-| `compatible_hosts` | any of `claude-code, codex, cursor, gemini-cli, opencode, any` |
 | `cost_class` | `free, low, medium, high` |
 | `context_class` | `s, m, l` |
-| `mutating`, `destructive` | booleans |
-| `version` | semver `x.y.z` |
-| `status` | `stable, beta, stub, deprecated`. Moving past `stub` needs a linked run record or eval result. |
+| `mutating` | boolean |
+| `status` | `stable, beta, stub, deprecated`. Moving past `stub` needs at least one eval fixture. |
 
-Optional fields: `tags`, `not_for`, `reads`, `writes`, `required_providers`, `optional_providers`, `handoff` (each one must be an existing skill slug; checked), `evals` (fixture paths; a non-stub skill with none gets a warning), `examples`, `last_verified`, `phase`, `approval_gates` (`id`, `after_step`, `artifact`, `never_self_approve`), `depends_on_fields` (brand-system paths that outputs pin into lineage `brand_refs`), `deterministic_steps`, `generative_steps`, `fallback` (`when_missing`, `mode`: `brief-only | degraded | blocked | local`), `output_contract` (`path`, `schema`, `headings`), `baseline` (`brief | reference | last_approved | incumbent | absolute | n/a`), `budget` (`skill_md_tokens_max`, `refs_tokens_max`), `allowed_tools`, `host_overrides`, `trigger_eval`.
+Optional fields: `tags`, `required_providers`, `handoff` (each one must be an existing skill slug; checked), `last_verified`, `approval_gates` (`id`, `after_step`, `artifact`, `never_self_approve`), `depends_on_fields` (brand-system paths that outputs pin into lineage `brand_refs`), `fallback` (`when_missing`, `mode`: `brief-only | degraded | blocked | local`).
 
-Unknown keys fail validation (`additionalProperties: false`).
+Unknown keys fail validation. Fixtures are not listed here: a fixture names its skills in its own `skills:` list, and `cstack index` derives each skill's `evals` from that. A non-stub skill that no fixture targets gets a warning.
 
 ## Index regeneration
 
@@ -133,13 +128,12 @@ cstack budget --accept my-skill --reason "adds the fallback table every run need
 - **Shrinking is free.** `--ratchet` lowers a ceiling whenever a skill gets smaller and removes ceilings for deleted skills.
 - **Growing needs a reason.** Only `--accept <slug|catalog> --reason "..."` raises a ceiling, and it appends `{date, slug, from, to, reason}` to the file's `history`.
 - **The catalog** (every skill's `name: description`) has its own `catalog_ceiling`. Accept growth there with `--accept catalog`.
-- The `budget` field in `skill.meta.json` is informational. The enforced ceiling lives in `context-budgets.json`.
 
 If you are over budget, move detail into `skills/<slug>/references/` or the shared preamble rather than raising the ceiling. The fixture `evals/fixtures/skill-grows-significantly.yaml` checks that this happens.
 
 ## Evals and fixtures
 
-Add at least one behavior fixture in `evals/fixtures/<case>.yaml` and list it in `evals`:
+Add at least one behavior fixture in `evals/fixtures/<case>.yaml` that names your skill in `skills`:
 
 ```yaml
 id: glaze-names-not-invented
@@ -158,15 +152,7 @@ graders:
 runs: 3
 ```
 
-Tiers, graders and how `cstack evals plan` selects fixtures from your diff are covered in [evals.md](evals.md). In short:
-
-| Tier | What | Cost |
-|---|---|---|
-| T0 | static: `cstack validate`, `cstack budget --check` | free, always |
-| T1 | unit / fixture tests: `node --test tests/*.test.mjs` | free |
-| T2 | behavior fixtures on a cheap model | low |
-| T3 | live provider smoke, dry run first | paid, bounded |
-| T4 | release: end-to-end workflow on a fixture brand | manual |
+Tiers, graders and how `cstack evals plan` selects fixtures from your diff: [evals.md](evals.md).
 
 ## Host install
 
@@ -192,11 +178,12 @@ cstack setup --dry-run                        # print what would be installed
 - A same-named skill that cstack did not install (another toolkit's folder or symlink) is never replaced. Setup skips it and names it in a warning.
 - `skills/cstack-shared/` travels with the skills. It has no SKILL.md, so host scanners ignore it, and skills link to it as `../cstack-shared/`.
 - Cursor and OpenCode also scan `.claude/skills`, so installing into every compatible folder at one scope produces duplicate skills. Stay on the default unless you need a specific host.
+- Per-host caveats (consent prompts, name rules, the 1024-character description limit) are in `registry/hosts.json`.
 
 ## Checklist
 
 1. Frontmatter `name` equals the directory and the description says when *not* to use the skill.
 2. All 15 contract keywords appear in H2 headings, and relative links resolve.
-3. `skill.meta.json` validates, `handoff` slugs exist, `evals` lists at least one fixture.
+3. `skill.meta.json` validates, `handoff` slugs exist, and at least one fixture names the skill.
 4. `cstack index && cstack validate && cstack budget --check` pass.
 5. `cstack evals plan --files skills/my-skill/SKILL.md` shows your fixture under T2.

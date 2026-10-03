@@ -17,7 +17,7 @@ npm run check          # T0 + T1: validate, budget --check, node --test
 cstack health          # per-skill validity, budget, fixture count, cost class, staleness, known failures
 ```
 
-`evals/live/` and `evals/release/` are reserved for T3 and T4 records. A harness that runs T2 fixtures automatically (`cstack evals run`) is planned (v0.2, see [backlog-v0.2.md](backlog-v0.2.md)). Until it exists, a person or an agent runs a T2 fixture by following it and records the result with `cstack eval --file`.
+No harness runs T2 fixtures yet (`cstack evals run` is (planned, backlog #1); see [backlog-v0.2.md](backlog-v0.2.md)). Until then a person or an agent follows the fixture and records the result with `cstack eval --file`.
 
 ## Diff-aware plan
 
@@ -59,7 +59,7 @@ skills: [creative-review, brand-verify]
 depends_on:                            # globs; a change here selects the fixture
   - skills/creative-review/SKILL.md
   - skills/cstack-shared/PREAMBLE.md
-description: Section 31 behavior case.
+description: One sentence on the behavior under test.
 cannot_isolate: What a pass does NOT prove, so nobody over-reads it.
 setup: The situation and the request, in plain words.
 expected:

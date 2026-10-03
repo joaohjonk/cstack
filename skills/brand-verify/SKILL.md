@@ -2,9 +2,6 @@
 name: brand-verify
 description: "Check an artifact against brand truth with deterministic gates first (tokens, raw colors, type, logo clear space, aspect, required elements, banned language) and a brand-adherence verifier second (Taste Labs verify for public URLs, or an independent local judge), then fix and re-verify once before escalating to a human. Use on every page, image set, pack or deck before review or delivery, and to validate a brand import on known artifacts. Not for multi-lens creative judgment (use creative-review) or claim legality (use claims-proof)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /brand-verify

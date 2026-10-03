@@ -118,5 +118,13 @@ export async function runQa(page, log, { breakpoints }) {
     `OVERFLOW=${overflow.map((o) => `${o.breakpoint}:${o.overflow ? 'yes' : 'no'}`).join(',')}`,
     `HTML_LANG=${a.lang ?? 'missing'}`,
   ];
-  return { ...log, overflow, ...a, evidence: lines };
+  // verdict: broken things fail (errors, failed requests, broken images, overflow); a11y counts are reported, not gated
+  const fails = [
+    log.console_errors.length + log.page_errors.length ? 'console errors' : null,
+    log.failed_requests.length ? 'failed requests' : null,
+    a.broken_images.length ? 'broken images' : null,
+    overflow.some((o) => o.overflow) ? 'horizontal overflow' : null,
+  ].filter(Boolean);
+  lines.push(`VERDICT=${fails.length ? `FAIL (${fails.join(', ')})` : 'PASS'}`);
+  return { ...log, overflow, ...a, ok: !fails.length, fails, evidence: lines };
 }

@@ -3,12 +3,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
 import { buildCSS } from '../scripts/lib/tokens.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WS = path.join(ROOT, 'examples', 'lumen-field');
@@ -25,7 +25,7 @@ test('example: tokens check passes and the built CSS is up to date', () => {
   const r = cli('tokens', 'check', '--ws', WS);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /tokens; PASS/);
-  const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-ex-')), 'tokens.css');
+  const out = path.join(tmpDir('cstack-ex-'), 'tokens.css');
   buildCSS(WS, { out });
   assert.equal(fs.readFileSync(out, 'utf8'), fs.readFileSync(path.join(WS, 'brand', 'generated', 'tokens.css'), 'utf8'), 'run: cstack tokens build --ws examples/lumen-field');
 });

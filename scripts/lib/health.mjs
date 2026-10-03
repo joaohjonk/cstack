@@ -1,4 +1,4 @@
-// Skill health dashboard (section 24A): one table a maintainer reads before trusting the catalog.
+// Skill health dashboard: one table a maintainer reads before trusting the catalog.
 import path from 'node:path';
 import fs from 'node:fs';
 import { ROOT, Report, exists, readData, readJSONL } from './core.mjs';
@@ -7,12 +7,13 @@ import { checkBudgets } from './budget.mjs';
 import { loadFixtures } from './evalplan.mjs';
 import { STALE_DAYS } from './router.mjs';
 
-export function healthReport() {
+// ws: a brand workspace whose state/failures.jsonl feeds the failures column (cstack itself keeps no state/).
+export function healthReport({ ws } = {}) {
   const skills = listSkills();
   const slugs = skills.map((s) => s.slug);
   const budgets = checkBudgets(skills);
   const fixtures = loadFixtures();
-  const failures = readJSONL(path.join(ROOT, 'state', 'failures.jsonl'));
+  const failures = ws ? readJSONL(path.join(ws, 'state', 'failures.jsonl')) : [];
   const wfSkills = new Set();
   const wfDir = path.join(ROOT, 'workflows');
   if (exists(wfDir))
@@ -29,7 +30,7 @@ export function healthReport() {
     const fx = fixtures.filter((f) => (f.skills ?? []).includes(s.slug)).length;
     const lv = s.meta?.last_verified;
     const stale = !lv || (now - new Date(lv)) / 86400000 > STALE_DAYS;
-    const used = wfSkills.has(s.slug) || handedTo.has(s.slug) || s.meta?.type === 'playbook' || ['office-hours', 'retro', 'learn'].includes(s.slug);
+    const used = wfSkills.has(s.slug) || handedTo.has(s.slug) || s.meta?.type === 'playbook' || ['brief', 'learn-loop'].includes(s.slug);
     return {
       slug: s.slug,
       type: s.meta?.type ?? '?',
@@ -49,7 +50,7 @@ export function healthReport() {
   const lines = [];
   lines.push('slug'.padEnd(24) + 'type'.padEnd(11) + 'status'.padEnd(8) + 'valid'.padEnd(8) + 'tokens'.padStart(7) + ' budget'.padEnd(8) + ' fx'.padStart(4) + ' cost'.padEnd(8) + ' verified'.padEnd(12) + ' notes');
   for (const r of rows) {
-    const notes = [r.fixtures ? null : 'no eval fixture', r.used ? null : 'unused (no workflow/handoff reaches it)', r.failures ? `${r.failures} known failures` : null].filter(Boolean).join('; ');
+    const notes = [r.fixtures ? null : 'no eval fixture', r.stale ? (r.last_verified === 'never' ? 'stale (never verified)' : `stale (> ${STALE_DAYS} days)`) : null, r.used ? null : 'unused (no workflow/handoff reaches it)', r.failures ? `${r.failures} known failures` : null].filter(Boolean).join('; ');
     lines.push(r.slug.padEnd(24) + r.type.padEnd(11) + r.status.padEnd(8) + r.valid.padEnd(8) + String(r.tokens).padStart(7) + ' ' + r.budget.padEnd(7) + String(r.fixtures).padStart(4) + ' ' + r.cost.padEnd(7) + ' ' + r.last_verified.padEnd(11) + ' ' + notes);
   }
   lines.push('');

@@ -2,6 +2,8 @@ name: paid-social
 status: template
 summary: A controlled paid-social round that learns from performance without erasing brand distinctiveness.
 entry_skill: workflow
+methods:
+- paid-social-cutdowns
 triggers:
 - paid social
 - ads

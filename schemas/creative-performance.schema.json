@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/creative-performance.schema.json",
   "title": "Creative performance record",
-  "description": "Section 17. Creative feature decomposition + metrics. Observational data never implies causation.",
+  "description": "Creative feature decomposition + metrics. Observational data never implies causation.",
   "type": "object",
   "required": [
     "id",
@@ -86,7 +86,8 @@
         "landing_page_match": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "variable_tested": {
       "type": "string"
@@ -117,5 +118,6 @@
     "brand_building_vs_conversion": {
       "type": "string"
     }
-  }
+  },
+  "additionalProperties": false
 }

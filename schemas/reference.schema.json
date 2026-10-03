@@ -67,7 +67,8 @@
         "notes": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "credit": {
       "type": "string",
@@ -188,5 +189,6 @@
         ]
       }
     }
-  ]
+  ],
+  "additionalProperties": false
 }

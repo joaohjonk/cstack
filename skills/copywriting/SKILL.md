@@ -2,9 +2,6 @@
 name: copywriting
 description: "Write and QA brand copy in an explicit mode (clarity and conversion, direct response, brand campaign, editorial, conceptual, product truth and proof) using the brand's voice system, vocabulary and banned language, producing a few distinct options with rationale and a separate QA pass. Use for headlines, ads, PDP and landing page copy, emails, social, manifestos and packaging text. Not for checking claim legality (use claims-proof) or deciding the campaign idea (use creative-direction)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /copywriting
@@ -59,7 +56,7 @@ Text work, no paid media. Deterministic checks: length limits, banned words, req
 
 ## Evals required
 
-- T1: banned-language and length checks.
+- Planned (backlog: copy lint): banned-language and length checks. Until then the reviewer checks them by hand.
 - Lens COPY and EDITOR in `creative-review`; fixture `make-it-cooler.yaml` for copy variants.
 
 ## Handoff

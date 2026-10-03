@@ -2,32 +2,59 @@
   "slug": "video-assembly",
   "type": "capability",
   "summary": "Deterministic edit and finish: normalize, assemble from an EDL, reframe, captions in safe zones, loudness, frame-level QA, per-channel delivery, OTIO handoff",
-  "tags": ["video", "edit", "captions", "loudness", "cut-downs", "qa", "ffmpeg"],
-  "triggers": ["edit the video", "cut-downs", "reframe for reels", "add captions", "normalize audio", "deliver the video", "qa the video"],
-  "not_for": ["video-direction", "generate-media"],
-  "required_inputs": ["clips", "edit decision list or plan"],
-  "outputs": ["work/*/edit/"],
-  "reads": ["work/", "assets/official/"],
-  "writes": ["work/", "state/lineage.jsonl", "state/failures.jsonl"],
+  "tags": [
+    "video",
+    "edit",
+    "captions",
+    "loudness",
+    "cut-downs",
+    "qa",
+    "ffmpeg"
+  ],
+  "triggers": [
+    "edit the video",
+    "cut-downs",
+    "reframe for reels",
+    "add captions",
+    "normalize audio",
+    "deliver the video",
+    "qa the video"
+  ],
+  "required_inputs": [
+    "clips",
+    "edit decision list or plan"
+  ],
+  "outputs": [
+    "work/*/edit/"
+  ],
   "cost_class": "free",
   "context_class": "s",
   "mutating": true,
-  "destructive": false,
-  "handoff": ["video-direction", "creative-review", "brand-verify", "learn-loop"],
-  "evals": ["evals/fixtures/video-label-drift.yaml", "evals/fixtures/frozen-tail.yaml", "evals/fixtures/cutdown-safe-zones.yaml", "evals/fixtures/video-loudness.yaml"],
-  "approval_gates": [
-    { "id": "delivery", "after_step": "qa", "artifact": "work/*/edit/manifest.json", "never_self_approve": true }
+  "handoff": [
+    "video-direction",
+    "creative-review",
+    "brand-verify",
+    "learn-loop"
   ],
-  "depends_on_fields": ["motion", "typography"],
-  "deterministic_steps": ["cstack video normalize", "cstack video assemble", "cstack video reframe", "cstack video captions", "cstack video audio", "cstack video qa", "cstack video deliver"],
-  "generative_steps": [],
+  "approval_gates": [
+    {
+      "id": "delivery",
+      "after_step": "qa",
+      "artifact": "work/*/edit/manifest.json",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "motion",
+    "typography"
+  ],
   "required_providers": [],
-  "optional_providers": [],
-  "baseline": "brief",
-  "fallback": { "when_missing": ["ffmpeg"], "mode": "degraded" },
-  "compatible_hosts": ["claude-code", "codex", "cursor", "gemini-cli", "opencode"],
-  "version": "0.1.0",
+  "fallback": {
+    "when_missing": [
+      "ffmpeg"
+    ],
+    "mode": "degraded"
+  },
   "last_verified": "2026-10-03",
-  "status": "beta",
-  "budget": { "skill_md_tokens_max": 2800 }
+  "status": "beta"
 }

@@ -1,4 +1,4 @@
-// Learning memory (section 28A): raw events are append-only; promotion needs repeated evidence or a
+// Learning memory: raw events are append-only; promotion needs repeated evidence or a
 // strong human correction, plus scope/expiry and an approver. Promotion appends a `promoted` event;
 // the human-readable rule is then written where the event's `target` says (docs/learnings.md, a skill,
 // a provider note, an eval) by the /learn skill.

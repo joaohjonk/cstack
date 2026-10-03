@@ -1,0 +1,118 @@
+id: food-still-life
+outcome: food and ingredient still life photography - texture close-ups, the product broken open, ingredients around the pack - that looks appetising and stays true to what is inside
+aliases:
+- food photography
+- food still life
+- ingredient texture shot
+- ingredient photography
+- food styling
+- macro texture of the product
+- product broken open
+- bar broken open
+- cross-section shot
+- crumb and inclusion close-up
+status: researched
+target:
+  description: art directed food images where the edible product, its texture and its pictured ingredients are real and representative, styled by selection rather than invention
+  must:
+  - the edible product photographed from real units (hero pieces selected from many), or composited from real photographs
+  - every pictured ingredient is in the product, checked against the ingredient list by claims-proof
+  - a neutral as-is reference capture (same light, colour chart, ruler) of an average unit before styling
+  - lighting written as a recipe (direction, ratio, modifier) in Shot DNA
+  must_not:
+  - generated food, crumb, inclusions, melt or drip on pack or product imagery
+  - ingredients that are not in the product, or a flavouring shown as the whole fruit, without the market's rule allowing it
+  - a portion, piece count or inclusion density the product does not have
+  quality_bar: side by side with the as-is reference, an independent reviewer finds the same colour, crumb, inclusion density and size; claims-proof signs the pictured ingredients
+when:
+- pack photography, ingredient vignettes, PDP texture shots, launch stills of a food product
+not_when:
+- mood boards marked not for pack or product use (generation allowed there, labelled)
+- the pack alone without food (use 3d-packshot or the product-photoshoot workflow)
+candidates_considered:
+- name: real shoot with a food stylist and hero selection
+  verdict: chosen
+  why: the only route that is true by construction for edible texture; selection beats retouching
+- name: composite - real product and ingredient photos on a generated or shot plate
+  verdict: chosen
+  why: art directed scenes at lower cost; the food stays real, only the surface and backdrop are made
+- name: CG or simulated non-food elements (splash, dust, abstract crumbs as graphics)
+  verdict: fallback
+  why: for effects a camera cannot catch; never stands in for the product's own texture
+- name: image model generates the food or the texture
+  verdict: rejected
+  why: models mishandle crumb, browning, texture, melt and drip and add or remove pieces; misleading imagery on food is a legal risk
+steps:
+- id: truth
+  does: lock the edible product - buy or receive many units, take the as-is reference capture (average unit, whole and broken, same light, colour chart, ruler), record inclusions, colour and crumb in the PRODUCT entity
+  kind: retrieval
+  skill: product-fidelity
+  outputs: [brand/brand-world.json, work/food/<id>/as-is/]
+  gate: {type: owner, check: "owner confirms the as-is capture shows a normal unit"}
+  compare_to_target: does the reference show what a buyer gets?
+- id: ingredient-rules
+  does: check every ingredient and prop in the shot list against the ingredient list and the market's rules on pictorial representation (serving suggestion, flavourings, proportion)
+  kind: research
+  skill: claims-proof
+  gate: {type: owner, check: "claims-proof marks each pictured item allowed, needs a serving suggestion line, or removed"}
+  compare_to_target: nothing pictured that the product does not contain
+- id: shot-dna
+  does: write per shot the lighting recipe (side light for texture, back light for edge glow, ratio, modifier), lens and magnification, focus stacking if needed, surface and props
+  kind: research
+  skill: shot-dna
+  gate: {type: auto, check: "cstack lint shot-dna passes with no adjective-only lighting"}
+  compare_to_target: matches the reference look the owner chose
+- id: method
+  does: route each shot - real shoot, composite (real food on a plate), or CG effect; generated plates only for surfaces and backdrops
+  kind: research
+  skill: product-fidelity
+  gate: {type: owner, check: "owner approves the route per shot; no shot routes the food to a model"}
+  compare_to_target: does any route let a model draw the food?
+- id: plates
+  does: where a composite needs a backdrop or surface, two to four cheap plate probes with no food in frame
+  kind: probe
+  skill: generate-media
+  gate: {type: owner, check: "owner picks plates; light direction matches the shot recipe"}
+  compare_to_target: same light direction and lens as the shot recipe
+  est_cost: {amount: 0.5, currency: USD}
+- id: shoot
+  does: style and shoot - select hero pieces, break or cut several units and keep the most representative, tweezers and swabs for crumbs, shoot fast for anything that degrades; tethered capture with the chart frame first
+  kind: human
+  outputs: [work/food/<id>/raw/]
+  gate: {type: owner, check: "owner or art director approves selects on set"}
+  compare_to_target: selects next to the as-is reference on the tether screen
+- id: composite-grade
+  does: composite real food onto plates, contact shadows, grade within brand photography rules; no generative edit inside the food region
+  kind: generative
+  skill: image-edit
+  gate: {type: independent_review, check: "reviewer compares food region with the as-is reference for colour, crumb, inclusions and size"}
+  compare_to_target: food region matches the reference; only light and background changed
+  est_cost: {amount: 0.5, currency: USD}
+- id: review
+  does: brand-verify and creative-review; claims-proof re-checks the final frames for pictured ingredients
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: "owner approval and claims-proof sign-off on finals"}
+  compare_to_target: against the target and the as-is reference
+cost_ladder: the shoot is the real spend (stylist, studio, units); plates two to four cheap probes each before one final; harmonize passes only outside the food region; stop after two failed composites on a shot and reshoot it for real
+failure_modes:
+- a generated close-up whose crumb or inclusions differ from the product
+- the best unit of a hundred shown as if every unit looks like it, with no as-is comparison
+- whole fruit pictured for a flavouring
+- a relight pass that changes the food region
+evidence:
+- {ref: docs/research/packaging.md, kind: documented, date: 2026-10-03, note: section 6}
+- {ref: "https://www.legislation.gov.uk/eur/2011/1169/article/7", kind: documented, date: 2026-10-03, note: "Art. 7(1)(d) pictorial representations"}
+- {ref: "https://www.culinaria-europe.eu/download/culinaria-europe-guidance-on-pictorial-representations-names-or-allusions-of-ingredients.pdf", kind: practitioner, date: 2026-10-03, note: "industry guidance (2018-12-24)"}
+- {ref: "https://www.packaginglaw.com/index.php/ask-an-attorney/what-are-labeling-rules-governing-principle-display-panel-pdp-photos", kind: practitioner, date: 2026-10-03, note: "US FD&C Act 403(a)(1); 2007"}
+- {ref: "https://nightjar.so/help-desk/what-are-the-technical-limitations-of-using-ai-for-food-product-photography", kind: marketing, date: 2026-10-03, note: vendor list of AI food failures}
+- {ref: "https://fstoppers.com/hero-food-in-recipes-and-products", kind: practitioner, date: 2026-10-03, note: hero selection from many units}
+- {ref: "https://www.americastestkitchen.com/articles/765-photo-shoot-tips-from-a-professional-food-stylist", kind: practitioner, date: 2026-10-03}
+- {ref: "https://www.nikon.pl/pl_PL/learn-and-explore/magazine/tips-and-tricks/9-macro-food-photography-styles-and-how-to-achieve-them", kind: practitioner, date: 2026-10-03, note: side and back light for texture; macro}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- flow:packaging-system
+- workflow:packaging
+- workflow:product-photoshoot
+- skill:product-fidelity

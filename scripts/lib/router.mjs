@@ -1,4 +1,4 @@
-// Model router (section 11): rank CURRENT registry entries for a job, explain why, give a fallback chain.
+// Model router: rank CURRENT registry entries for a job, explain why, give a fallback chain.
 // The registry is a snapshot. Entries older than STALE_DAYS are flagged so the /model-router skill
 // re-verifies them against live docs before an important batch.
 import { today } from './core.mjs';

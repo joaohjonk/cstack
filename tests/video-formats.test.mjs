@@ -3,7 +3,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readData } from '../scripts/lib/core.mjs';
@@ -16,10 +15,11 @@ import { fitFilter, cropWindow, xExpression, aspectPlan, parseAspects } from '..
 import { parsePlan, parseROI, specFinding, freezeFinding, blackFinding, cutsFinding, durationFinding } from '../scripts/lib/video/qa.mjs';
 import { parseChannels, deliveryFps } from '../scripts/lib/video/deliver.mjs';
 import { normArgs, runVideo, VIDEO_HELP } from '../scripts/lib/video/cli.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = path.join(ROOT, 'tests', 'fixtures', 'video');
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-videof-'));
+const tmp = () => tmpDir('cstack-videof-');
 
 const threeClips = () =>
   parseEDL(

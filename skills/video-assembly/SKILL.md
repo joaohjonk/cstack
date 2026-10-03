@@ -2,9 +2,6 @@
 name: video-assembly
 description: "Cut, finish and check video with no model spend: normalize, assemble from an edit list, reframe per channel, burn captions inside safe zones, normalize loudness, run frame-level QA (drift at first, last and cut frames, frozen tails, specs) and deliver per channel with an OpenTimelineIO handoff. Use when clips or a master need editing, cut-downs or delivery. Not for planning (use video-direction)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /video-assembly

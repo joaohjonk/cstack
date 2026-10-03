@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/shot-dna.schema.json",
   "title": "Shot DNA",
-  "description": "Section 7. Decomposes a reference or a proposed photograph into transferable decisions. Store why it works, not only the image.",
+  "description": "Decomposes a reference or a proposed photograph into transferable decisions. Store why it works, not only the image.",
   "type": "object",
   "required": [
     "id",
@@ -139,7 +139,8 @@
         "perspective": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "do_not_copy": {
       "type": "array",
@@ -178,7 +179,8 @@
           "purpose": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       },
       "description": "anti-AI realism layer; each needs a purpose that serves the art direction"
     },
@@ -187,7 +189,8 @@
       "items": {
         "type": "string"
       },
-      "description": "dimension names locked for refinement (section 3.7)"
+      "description": "dimension names locked for refinement"
     }
-  }
+  },
+  "additionalProperties": false
 }

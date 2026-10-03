@@ -20,7 +20,7 @@ Method: two independent passes over the client repo (system/process/verbal/digit
 | A1 | An AI judge passing a set ("system passes", 9/10) did not predict the owner's verdict ("really far from the references"). AI judges filter rules; taste stays with the human owner until calibrated against their picks. | contact-sheet review vs generation log | 27-28 Sep | durable | H | trusting the internal judge as the gate before human review | principle + calibration fixture | `skills/cstack-shared/PREAMBLE.md` (judgment), `skills/creative-review`, `evals/fixtures/ai-judge-not-owner.yaml` |
 | A2 | The author never judges their own output. Judge records carry `separate_from_author: true`; with no separate judge available, the piece is `judge_pending` and cannot ship. | judge records, lint `not_shippable`, judge queue | 25-28 Sep | durable | H | self-grading | eval contract | `schemas/eval.schema.json` (`evaluator.separate_from_author`), `skills/creative-review`, `skills/brand-verify` |
 | A3 | Self-grading converges on 2 (top score) across every dimension. | final eval report, uniform-score check | 26 Sep | durable | H | author scores | eval (uniform-score detector) | `skills/creative-review` decision rules |
-| A4 | Rule-usability and taste are separate measurements: the model that kept product truth best (4/4) was not the one the owner preferred on taste. | 3-model hero pilot | 28 Sep | durable | H | one "best model" score | principle (§3.8) | `skills/model-router`, `registry/models.json` notes |
+| A4 | Rule-usability and taste are separate measurements: the model that kept product truth best (4/4) was not the one the owner preferred on taste. | 3-model hero pilot | 28 Sep | durable | H | one "best model" score | principle | `skills/model-router`, `registry/models.json` notes |
 | A5 | Totals hide what failed. A deprecated weighted "brand consistency score" was replaced by layered verdicts with no aggregate. | rubric, validator fails on weights | 25-26 Sep | durable | H | weighted score | principle | `docs/evals.md`, `schemas/eval.schema.json` |
 | A6 | A rubric that cannot say n/a says fail. Score only dimensions that apply to the surface. | portability run 3 finding R1 | 26 Sep | durable | H | 0 for irrelevant dims | eval rule | `schemas/eval.schema.json` (`score: null`), `skills/creative-review` |
 | A7 | Record what was authored (none / line / device / idea) so the piece is scored, not the assembled template. | rubric `authored` field | 26 Sep | durable | M | scoring the assembly | eval field | `skills/creative-review` |
@@ -131,33 +131,14 @@ These are observations from real runs through one model host's queue API between
 
 ## Do Not Relearn
 
-Expensive or frustrating lessons already paid for once. Each is enforced in code or written into a skill rule.
-
-1. A passing AI proof judge is not owner approval (a day and a batch lost). → A1
-2. The author never judges their own work; no separate judge means not shippable. → A2
-3. Never total the layers; n/a is not 0. → A5, A6
-4. Never trust model-drawn product print; never trust an integration pass to keep it. → D2, D3
-5. Check product masters for alpha before compositing. → D5
-6. Prompts are compiled from current rules; job templates outlive rule changes. → D13
-7. Do not "fix to spec" frames the owner liked; fix locally and keep the before file. → D8, D9, D10
-8. Count limbs at full size on every frame. → D12
-9. Never name a real brand or photographer in a prompt. → D15
-10. Fetch timeouts still bill: retry the fetch, never resubmit. Listed price is not real price. → E5, E6
-11. Measure real product dimensions; inferred sizes spread errors. → D18
-12. Compose for type in the shot brief; do not darken the owner's photograph for copy. → D22
-13. A gate must name a checker that exists. → B1
-14. The sidecar is evidence, not trust. → B2
-15. Preferences are pairwise records, not pick lists; a loop is built only after its first record. → A11, A12
-16. No absolute home paths, case-exact references, CI on Linux. → B10, B11
-17. Spend and permission limits are stops, not detours. → C9
-18. Binaries out of git history. → C5
+The list lives in [`docs/learnings.md`](../learnings.md#do-not-relearn). Source rows for items 1-18: A1; A2; A5-A6; D2-D3; D5; D13; D8-D10; D12; D15; E5-E6; D18; D22; B1; B2; A11-A12; B10-B11; C9; C5.
 
 ## Conflicts between local evidence and generic advice
 
 | Topic | Generic advice | Local evidence | Resolution in cstack |
 |---|---|---|---|
 | Automated aesthetic judges | Taste Labs and others ship LLM verifiers with a score | An AI judge's set verdict was the opposite of the owner's | Verifiers gate rules and adherence; taste stays human until a judge is calibrated against the owner's own pairwise picks (`docs/evals.md`). Both views are kept: verifiers are useful, but not as taste certification. |
-| "Fix to spec" QA passes | Verify → fix → re-verify everywhere (master prompt §19) | A global fix pass degraded liked frames | The loop stays, but fixes are local and minimal, and a fix is diffed against the liked raw before it replaces it. |
+| "Fix to spec" QA passes | Verify → fix → re-verify everywhere | A global fix pass degraded liked frames | The loop stays, but fixes are local and minimal, and a fix is diffed against the liked raw before it replaces it. |
 | Reference images as model inputs | Rights caution: inspiration only, never an input | Reference-led inputs were the single biggest quality jump | Keep the conflict visible: a reference's `rights.status` decides whether it may be an input (`inspiration_only` = mechanism notes only; owned/licensed = may be input). The owner decides per brand. |
 | Strict product true-scale | Product fidelity first | True scale read tiny in a hero; the owner accepted ~1.1-1.35x | Truth vs presence is a logged human decision (D32), never a silent agent choice. |
 

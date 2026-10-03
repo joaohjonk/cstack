@@ -93,7 +93,7 @@ export async function gotoGuarded(page, url, { allowOrigins, ws, warnings, check
     if (r.warning) warnings.push(r.warning);
   }
   const signIn = await page.locator('input[type=password]').count().catch(() => 0);
-  if (signIn) warnings.push(`sign-in form at ${new URL(final).origin}: cstack never types credentials; the user signs in themselves`);
+  if (signIn) warnings.push(`sign-in form at ${new URL(final).origin === 'null' ? final : new URL(final).origin}: cstack never types credentials; the user signs in themselves`);
   return { status: res?.status() ?? null, final_url: final };
 }
 
@@ -127,9 +127,28 @@ export function findGstackBrowse({ cwd = process.cwd(), home = os.homedir() } = 
   return null;
 }
 
+// Only a binary the user installed is ever executed: CSTACK_GSTACK_BROWSE, or one under $HOME that is not inside
+// the current repository (a cloned repo must not get code run by `cstack browse engines`).
+function trustedBin(bin, { cwd, home }) {
+  const real = (p) => {
+    try {
+      return fs.realpathSync(p);
+    } catch {
+      return path.resolve(p);
+    }
+  };
+  const b = real(bin);
+  if (process.env.CSTACK_GSTACK_BROWSE) return b === real(process.env.CSTACK_GSTACK_BROWSE);
+  const inside = (dir) => !!dir && (b + path.sep).startsWith(real(dir) + path.sep);
+  const g = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8', timeout: 3000 });
+  const repo = g.status === 0 ? g.stdout.trim() : null;
+  return inside(home) && !inside(cwd) && !inside(repo);
+}
+
 /** Probe with `--help` only (exits without contacting a daemon); read VERSION from the install root. */
-export function probeGstack(bin) {
+export function probeGstack(bin, { cwd = process.cwd(), home = os.homedir() } = {}) {
   if (!bin) return { found: false };
+  if (!trustedBin(bin, { cwd, home })) return { found: true, path: bin, ok: null, version: null, note: 'found inside this repository; not executed (set CSTACK_GSTACK_BROWSE to its path to trust it)' };
   const r = spawnSync(bin, ['--help'], { encoding: 'utf8', timeout: 5000 });
   const first = (r.stdout || '').split('\n')[0];
   const verFile = path.resolve(path.dirname(bin), '..', '..', 'VERSION');

@@ -2,6 +2,10 @@ name: create-brand
 status: template
 summary: 'Build a new brand from zero: problem, strategy, culture, references, territories, system, world, applications, verification.'
 entry_skill: workflow
+methods:
+- logo-system
+- type-system
+- icon-set
 triggers:
 - create a brand
 - new brand

@@ -2,9 +2,6 @@
 name: symbol-design
 description: "Explore and direct a logo, symbol or monogram like an identity studio: brief as mechanisms, category silhouettes, canon, cheap wide exploration judged in one colour at 32 px, construction grids and optical corrections, two or three directions for the owner. Never makes or approves the master. Use for a new or refreshed mark. Not for usage rules (use identity-system) or master files (use vector-master)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /symbol-design

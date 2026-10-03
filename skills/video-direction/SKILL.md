@@ -2,9 +2,6 @@
 name: video-direction
 description: "Direct AI and hybrid video: pick the branch (product hero, brand film, cut-downs, presenter ad, logo sting, explainer), write a beat sheet with one world and a production path per beat, set ethics and disclosure gates, and stage stills, draft probes and finals with a stop condition. Use for films, ads, reels and stings. Not for running calls (use generate-media), editing (use video-assembly) or 3D turntables (use three-d)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /video-direction

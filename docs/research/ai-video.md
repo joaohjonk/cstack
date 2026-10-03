@@ -260,7 +260,7 @@ Add `fal-mcp` (remote `https://mcp.fal.ai/mcp-relay`, OAuth, pricing tool), `hig
 
 ### 6.4 Model registry entries (proposed; registry shape; verified 2026-10-03)
 
-Per AGENTS.md, land these through `docs/research/models.seed.json` + `node scripts/dev/seed_models.mjs`, not by editing `registry/models.json` by hand. Router-relevant new capability tags: `first-last-frame`, `multi-shot`, `native-audio`, `lip-sync`, `avatar`, `video-upscale`, `draft-mode`, `hdr`, `open-weights`.
+Per AGENTS.md, land these through `registry/models.seed.json` + `node scripts/dev/seed_models.mjs`, not by editing `registry/models.json` by hand. Router-relevant new capability tags: `first-last-frame`, `multi-shot`, `native-audio`, `lip-sync`, `avatar`, `video-upscale`, `draft-mode`, `hdr`, `open-weights`.
 
 Corrections to existing rows: **`minimax-h3-max`** has a resolution-tiered price (below). **`kling-video-v3-pro`**: keep the fal row, add a direct row. **`veo-3.1`**: add a fal row (fal Fast audio = $0.15/s vs the Vertex snapshot $0.10–0.12). **`kling-video-o3`** stays `watch`. **`sora-2`** stays a tombstone; add a router test that aggregator catalogs listing Sora are ignored.
 

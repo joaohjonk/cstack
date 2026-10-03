@@ -4,7 +4,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +18,7 @@ import { parseSizes, prepareOut } from '../scripts/lib/svg/reduce.mjs';
 import { buildKit, KIT_FILES } from '../scripts/lib/svg/kit.mjs';
 import { runSvg, SVG_HELP } from '../scripts/lib/svg/cli.mjs';
 import { encodePNG, decodePNG } from '../providers/local/region_paste.mjs';
+import { tmpDir } from './tmp.mjs';
 
 // Probed before any test is registered: a test that points CSTACK_CHROMIUM at a missing path must not run first.
 // ---------- Chromium ----------
@@ -36,7 +36,7 @@ const withChromium = { timeout: 120000, skip: chromium === true ? false : `Chrom
 const FIX = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'svg');
 const fx = (...p) => path.join(FIX, ...p);
 const read = (...p) => fs.readFileSync(fx(...p), 'utf8');
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-svg-'));
+const tmp = () => tmpDir('cstack-svg-');
 const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 const has = (findings, id, level, re) => findings.some((f) => f.id === id && (!level || f.level === level) && (!re || re.test(f.detail)));
 const ICON = (body, attrs = '') =>

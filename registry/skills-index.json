@@ -37,12 +37,17 @@
         "identity-system",
         "brief"
       ],
+      "evals": [
+        "evals/fixtures/existing-brand-clear-assets.yaml",
+        "evals/fixtures/existing-brand-conflicting-assets.yaml",
+        "evals/fixtures/repeated-brand-context.yaml"
+      ],
       "cost_class": "low",
       "context_class": "l",
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-import/SKILL.md",
-      "tokens": 1621
+      "tokens": 1576
     },
     {
       "slug": "brand-verify",
@@ -76,12 +81,17 @@
         "copywriting",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/agent-output-fails-verify.yaml",
+        "evals/fixtures/beautiful-but-off-brand.yaml",
+        "evals/fixtures/existing-brand-clear-assets.yaml"
+      ],
       "cost_class": "low",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-verify/SKILL.md",
-      "tokens": 1163
+      "tokens": 1146
     },
     {
       "slug": "brief",
@@ -114,12 +124,18 @@
         "copywriting",
         "claims-proof"
       ],
+      "evals": [
+        "evals/fixtures/existing-brand-clear-assets.yaml",
+        "evals/fixtures/make-it-cooler.yaml",
+        "evals/fixtures/no-brand-vague-aesthetic.yaml",
+        "evals/fixtures/wrong-artifact.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/brief/SKILL.md",
-      "tokens": 1558
+      "tokens": 1509
     },
     {
       "slug": "campaign-sequence",
@@ -154,12 +170,15 @@
         "copywriting",
         "creative-review"
       ],
+      "evals": [
+        "evals/fixtures/strong-images-no-narrative.yaml"
+      ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/campaign-sequence/SKILL.md",
-      "tokens": 998
+      "tokens": 977
     },
     {
       "slug": "claims-proof",
@@ -190,15 +209,19 @@
         "work/claims/*.md"
       ],
       "handoff": [
-        "copywriting",
-        "workflow"
+        "copywriting"
+      ],
+      "evals": [
+        "evals/fixtures/compliance-claim-uncertain.yaml",
+        "evals/fixtures/food-texture-generated-for-pack.yaml",
+        "evals/fixtures/ugc-fake-testimonial.yaml"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/claims-proof/SKILL.md",
-      "tokens": 1216
+      "tokens": 1284
     },
     {
       "slug": "competitor-intel",
@@ -232,12 +255,15 @@
         "claims-proof",
         "copywriting"
       ],
+      "evals": [
+        "evals/fixtures/competitor-observation-vs-inference.yaml"
+      ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/competitor-intel/SKILL.md",
-      "tokens": 1140
+      "tokens": 1119
     },
     {
       "slug": "copywriting",
@@ -269,8 +295,10 @@
       ],
       "handoff": [
         "claims-proof",
-        "creative-review",
-        "workflow"
+        "creative-review"
+      ],
+      "evals": [
+        "evals/fixtures/make-it-cooler.yaml"
       ],
       "cost_class": "free",
       "context_class": "s",
@@ -312,12 +340,15 @@
         "model-router",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/expensive-overnight-batch.yaml"
+      ],
       "cost_class": "high",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-autoresearch/SKILL.md",
-      "tokens": 1202
+      "tokens": 1181
     },
     {
       "slug": "creative-direction",
@@ -351,12 +382,17 @@
         "copywriting",
         "workflow"
       ],
+      "evals": [
+        "evals/fixtures/beautiful-but-off-brand.yaml",
+        "evals/fixtures/make-it-cooler.yaml",
+        "evals/fixtures/no-brand-vague-aesthetic.yaml"
+      ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-direction/SKILL.md",
-      "tokens": 1186
+      "tokens": 1168
     },
     {
       "slug": "creative-review",
@@ -389,16 +425,23 @@
         "image-edit",
         "copywriting",
         "identity-system",
+        "type-director",
         "brand-verify",
-        "learn-loop",
-        "type-director"
+        "learn-loop"
+      ],
+      "evals": [
+        "evals/fixtures/agent-output-fails-verify.yaml",
+        "evals/fixtures/ai-judge-not-owner.yaml",
+        "evals/fixtures/beautiful-but-off-brand.yaml",
+        "evals/fixtures/local-learning-contradicts-framework.yaml",
+        "evals/fixtures/type-review-beyond-font-choice.yaml"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-review/SKILL.md",
-      "tokens": 1290
+      "tokens": 1273
     },
     {
       "slug": "cultural-scan",
@@ -433,12 +476,15 @@
         "copywriting",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/culture-without-observation.yaml"
+      ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/cultural-scan/SKILL.md",
-      "tokens": 1358
+      "tokens": 1338
     },
     {
       "slug": "flow-research",
@@ -472,14 +518,23 @@
         "workflow",
         "model-router",
         "generate-media",
+        "three-d",
+        "video-direction",
+        "mockup",
+        "vector-master",
         "learn-loop"
+      ],
+      "evals": [
+        "evals/fixtures/3d-fake-vs-real.yaml",
+        "evals/fixtures/one-shot-temptation.yaml",
+        "evals/fixtures/video-one-shot-temptation.yaml"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/flow-research/SKILL.md",
-      "tokens": 1523
+      "tokens": 1503
     },
     {
       "slug": "generate-media",
@@ -516,6 +571,11 @@
         "campaign-sequence",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/exact-product-photo.yaml",
+        "evals/fixtures/expensive-overnight-batch.yaml",
+        "evals/fixtures/food-texture-generated-for-pack.yaml"
+      ],
       "cost_class": "high",
       "context_class": "s",
       "mutating": true,
@@ -523,7 +583,7 @@
         "media provider"
       ],
       "path": "skills/generate-media/SKILL.md",
-      "tokens": 1299
+      "tokens": 1282
     },
     {
       "slug": "identity-system",
@@ -556,18 +616,21 @@
       ],
       "handoff": [
         "type-director",
-        "brand-verify",
-        "copywriting",
-        "workflow",
         "symbol-design",
-        "vector-master"
+        "vector-master",
+        "brand-verify",
+        "copywriting"
+      ],
+      "evals": [
+        "evals/fixtures/pack-file-drift-before-proof.yaml",
+        "evals/fixtures/type-system-measurable.yaml"
       ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/identity-system/SKILL.md",
-      "tokens": 1441
+      "tokens": 1458
     },
     {
       "slug": "image-edit",
@@ -601,12 +664,16 @@
         "creative-review",
         "brand-verify"
       ],
+      "evals": [
+        "evals/fixtures/mockup-harmonize-leaks-label.yaml",
+        "evals/fixtures/one-region-wrong.yaml"
+      ],
       "cost_class": "low",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/image-edit/SKILL.md",
-      "tokens": 1080
+      "tokens": 1060
     },
     {
       "slug": "learn-loop",
@@ -642,12 +709,18 @@
         "identity-system",
         "creative-autoresearch"
       ],
+      "evals": [
+        "evals/fixtures/ai-judge-not-owner.yaml",
+        "evals/fixtures/local-learning-contradicts-framework.yaml",
+        "evals/fixtures/retired-rule-in-template.yaml",
+        "evals/fixtures/skill-grows-significantly.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/learn-loop/SKILL.md",
-      "tokens": 1262
+      "tokens": 1242
     },
     {
       "slug": "mockup",
@@ -691,15 +764,22 @@
         "product-fidelity",
         "image-edit",
         "three-d",
+        "video-direction",
         "creative-review",
         "brand-verify"
+      ],
+      "evals": [
+        "evals/fixtures/mockup-harmonize-leaks-label.yaml",
+        "evals/fixtures/mockup-logo-must-composite.yaml",
+        "evals/fixtures/mockup-template-licence-unknown.yaml",
+        "evals/fixtures/pack-file-drift-before-proof.yaml"
       ],
       "cost_class": "low",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/mockup/SKILL.md",
-      "tokens": 1500
+      "tokens": 1483
     },
     {
       "slug": "model-router",
@@ -731,12 +811,16 @@
         "generate-media",
         "creative-autoresearch"
       ],
+      "evals": [
+        "evals/fixtures/model-list-stale.yaml",
+        "evals/fixtures/stale-video-model.yaml"
+      ],
       "cost_class": "low",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/model-router/SKILL.md",
-      "tokens": 1255
+      "tokens": 1234
     },
     {
       "slug": "product-fidelity",
@@ -769,12 +853,18 @@
         "creative-review",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/3d-label-truth.yaml",
+        "evals/fixtures/exact-product-photo.yaml",
+        "evals/fixtures/food-texture-generated-for-pack.yaml",
+        "evals/fixtures/one-region-wrong.yaml"
+      ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/product-fidelity/SKILL.md",
-      "tokens": 1336
+      "tokens": 1316
     },
     {
       "slug": "prompt-director",
@@ -807,12 +897,16 @@
         "image-edit",
         "creative-autoresearch"
       ],
+      "evals": [
+        "evals/fixtures/repeated-brand-context.yaml",
+        "evals/fixtures/retired-rule-in-template.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/prompt-director/SKILL.md",
-      "tokens": 1265
+      "tokens": 1268
     },
     {
       "slug": "shot-dna",
@@ -845,12 +939,15 @@
         "campaign-sequence",
         "model-router"
       ],
+      "evals": [
+        "evals/fixtures/exact-product-photo.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/shot-dna/SKILL.md",
-      "tokens": 1337
+      "tokens": 1317
     },
     {
       "slug": "site-capture",
@@ -885,6 +982,9 @@
         "brand-verify",
         "creative-review"
       ],
+      "evals": [
+        "evals/fixtures/3d-web-budget.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": false,
@@ -892,7 +992,7 @@
         "playwright-core + chromium"
       ],
       "path": "skills/site-capture/SKILL.md",
-      "tokens": 1123
+      "tokens": 1105
     },
     {
       "slug": "symbol-design",
@@ -928,12 +1028,16 @@
         "creative-review",
         "competitor-intel"
       ],
+      "evals": [
+        "evals/fixtures/llm-svg-organic-mark.yaml",
+        "evals/fixtures/logo-generated-raster-as-master.yaml"
+      ],
       "cost_class": "low",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/symbol-design/SKILL.md",
-      "tokens": 1293
+      "tokens": 1276
     },
     {
       "slug": "taste-search",
@@ -967,12 +1071,15 @@
         "prompt-director",
         "brand-import"
       ],
+      "evals": [
+        "evals/fixtures/no-brand-vague-aesthetic.yaml"
+      ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/taste-search/SKILL.md",
-      "tokens": 1573
+      "tokens": 1544
     },
     {
       "slug": "three-d",
@@ -1010,17 +1117,24 @@
       "handoff": [
         "product-fidelity",
         "generate-media",
-        "workflow",
         "brand-verify",
         "creative-review",
         "learn-loop"
+      ],
+      "evals": [
+        "evals/fixtures/3d-ar-scale.yaml",
+        "evals/fixtures/3d-fake-vs-real.yaml",
+        "evals/fixtures/3d-label-truth.yaml",
+        "evals/fixtures/3d-provider-missing.yaml",
+        "evals/fixtures/3d-tool-injection.yaml",
+        "evals/fixtures/3d-web-budget.yaml"
       ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/three-d/SKILL.md",
-      "tokens": 1561
+      "tokens": 1544
     },
     {
       "slug": "type-director",
@@ -1058,15 +1172,19 @@
         "brand-verify",
         "creative-review",
         "copywriting",
-        "workflow",
         "learn-loop"
+      ],
+      "evals": [
+        "evals/fixtures/type-pairing-near-miss.yaml",
+        "evals/fixtures/type-review-beyond-font-choice.yaml",
+        "evals/fixtures/type-system-measurable.yaml"
       ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/type-director/SKILL.md",
-      "tokens": 2041
+      "tokens": 2077
     },
     {
       "slug": "vector-master",
@@ -1104,12 +1222,18 @@
         "creative-review",
         "brand-verify"
       ],
+      "evals": [
+        "evals/fixtures/icon-set-mixed-strokes.yaml",
+        "evals/fixtures/logo-generated-raster-as-master.yaml",
+        "evals/fixtures/mark-fails-16px.yaml",
+        "evals/fixtures/vectorize-when-vector-exists.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/vector-master/SKILL.md",
-      "tokens": 1451
+      "tokens": 1434
     },
     {
       "slug": "video-assembly",
@@ -1147,12 +1271,19 @@
         "brand-verify",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/cutdown-safe-zones.yaml",
+        "evals/fixtures/frozen-tail.yaml",
+        "evals/fixtures/video-label-drift.yaml",
+        "evals/fixtures/video-loudness.yaml",
+        "evals/fixtures/video-text-from-model.yaml"
+      ],
       "cost_class": "free",
       "context_class": "s",
       "mutating": true,
       "required_providers": [],
       "path": "skills/video-assembly/SKILL.md",
-      "tokens": 1283
+      "tokens": 1266
     },
     {
       "slug": "video-direction",
@@ -1198,12 +1329,18 @@
         "claims-proof",
         "creative-review"
       ],
+      "evals": [
+        "evals/fixtures/stale-video-model.yaml",
+        "evals/fixtures/ugc-fake-testimonial.yaml",
+        "evals/fixtures/video-one-shot-temptation.yaml",
+        "evals/fixtures/video-text-from-model.yaml"
+      ],
       "cost_class": "high",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/video-direction/SKILL.md",
-      "tokens": 1370
+      "tokens": 1353
     },
     {
       "slug": "workflow",
@@ -1237,12 +1374,15 @@
         "brief",
         "learn-loop"
       ],
+      "evals": [
+        "evals/fixtures/one-shot-temptation.yaml"
+      ],
       "cost_class": "medium",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/workflow/SKILL.md",
-      "tokens": 1236
+      "tokens": 1227
     }
   ]
 }

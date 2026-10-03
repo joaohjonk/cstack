@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/canon-entry.schema.json",
   "title": "Canon entry (practitioner / world index)",
-  "description": "Section 28. Retrievable reasoning, not authority worship: a person, studio, work, place or scene recorded for the MENTAL MODEL it contributes, when it helps, when it misleads, and the tensions it carries. Never used to imitate a living person's voice or to put a name in a generation prompt.",
+  "description": "Retrievable reasoning, not authority worship: a person, studio, work, place or scene recorded for the MENTAL MODEL it contributes, when it helps, when it misleads, and the tensions it carries. Never used to imitate a living person's voice or to put a name in a generation prompt.",
   "type": "object",
   "required": [
     "id",
@@ -109,5 +109,6 @@
         "deprecated"
       ]
     }
-  }
+  },
+  "additionalProperties": false
 }

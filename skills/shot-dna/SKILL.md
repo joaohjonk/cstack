@@ -2,14 +2,11 @@
 name: shot-dna
 description: "Decompose a reference photograph or plan a proposed shot into Shot DNA: what and why, camera (format, focal length, distance, height, angle), composition, a named lighting recipe, exposure, focus, materials, surfaces, color logic, controlled imperfection, post, transferable mechanism, do-not-copy and risks. Use before any high-end image work, when a reference must be transferred without copying, or when generated images feel generic. Not for finding references (use taste-search) or ordering a whole campaign (use campaign-sequence)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /shot-dna
 
-Do not store references only as images. Store why they work (section 7). Shot DNA is the bridge between taste and a prompt recipe. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
+Do not store references only as images. Store why they work. Shot DNA is the bridge between taste and a prompt recipe. [Shared preamble](../cstack-shared/PREAMBLE.md) applies.
 
 ## When to use
 

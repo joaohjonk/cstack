@@ -1,8 +1,8 @@
 # gstack — mechanism study for cstack
 
-Source: `garrytan/gstack`, cloned at `/home/claude/research-src/gstack`. HEAD `f30b7b78` (v1.91.13.0, 2026-10-02); visible history 2026-04-04 → 2026-10-02, 228 commits (mostly squashed PR "waves"). All paths below are relative to the repo root. The repo is current, not stale.
+Source: `garrytan/gstack`, cloned at `research-src/gstack`. HEAD `f30b7b78` (v1.91.13.0, 2026-10-02); visible history 2026-04-04 → 2026-10-02, 228 commits (mostly squashed PR "waves"). All paths below are relative to the repo root. The repo is current, not stale.
 
-Scope: master prompt §1.1 (all six questions) and the gstack part of §1.4A.
+Scope: how gstack works and what cstack should borrow from it.
 
 **Evidence label.** "Architecture" means I saw it in code, tests or generator output. "Claim" means it is marketing or self-reported and I did not verify it. Examples of claims: the ~810× productivity figure (`README.md:9`), "10-15 parallel sprints" (`README.md:439`), and A/B token savings (`CHANGELOG.md:1323`).
 
@@ -210,33 +210,33 @@ gstack does not rely on the model being humble. It uses structural forcing funct
 
 | gstack mechanism | Evidence | Creative-work analogue for cstack |
 |---|---|---|
-| `/office-hours` hard gate + forcing questions + mandatory alternatives | `office-hours/SKILL.md.tmpl:68,214-272` | `/creative-office-hours`: no generation allowed. Ask about the job of the piece, the audience shift, the product truth, the tension, and which convention to use, invert or ignore (master §26). Output a creative brief with ≥2 routes: "safe", "ideal", "lateral". |
+| `/office-hours` hard gate + forcing questions + mandatory alternatives | `office-hours/SKILL.md.tmpl:68,214-272` | `/creative-office-hours`: no generation allowed. Ask about the job of the piece, the audience shift, the product truth, the tension, and which convention to use, invert or ignore. Output a creative brief with ≥2 routes: "safe", "ideal", "lateral". |
 | Mode selection by goal and stage | `office-hours/SKILL.md.tmpl:97-116`; `phase-2a…:73-79` | Mode by job type (brand-building / conversion / culture / launch) and by brand maturity (new / established / rebrand). Each mode routes to a different question subset. |
 | CEO scope postures (expand / selective / hold / reduce) | `plan-ceo-review/SKILL.md.tmpl:58-67,399-416` | Ambition posture for a campaign: Big Idea expansion / selective adds / hold to brief / reduce to hero asset. Chosen explicitly and recorded. |
-| Premises must be agreed | `office-hours/SKILL.md.tmpl:224-232` | Classified input sheet (FACT / HARD_CONSTRAINT / … / UNKNOWN, master §3.4) confirmed line by line before production. |
-| 0-10 rating per dimension + "what makes it a 10" + one question per gap | `plan-design-review/SKILL.md.tmpl:273-293` | Multi-lens review (strategist, brand director, art director, photographer…). Each lens scores separately, never one merged score (master §3.8, §27). Each gap is resolved individually. |
-| Mockups are the plan ("reviews without visuals are just opinion") | `plan-design-review/SKILL.md.tmpl:77-90` | Moodboard or low-cost thumbnails before high-cost renders. References are retrieved before generating (master §3.3). |
-| AI-slop pass with hard rejections and litmus tests | `plan-design-review/sections/review-sections.md.tmpl:70-83`; `lib/design-catalog.ts` | Brand anti-library and slop catalog as a typed source rendered into every creative skill (master §3.9, §8). |
+| Premises must be agreed | `office-hours/SKILL.md.tmpl:224-232` | Classified input sheet (FACT / HARD_CONSTRAINT / … / UNKNOWN) confirmed line by line before production. |
+| 0-10 rating per dimension + "what makes it a 10" + one question per gap | `plan-design-review/SKILL.md.tmpl:273-293` | Multi-lens review (strategist, brand director, art director, photographer…). Each lens scores separately, never one merged score. Each gap is resolved individually. |
+| Mockups are the plan ("reviews without visuals are just opinion") | `plan-design-review/SKILL.md.tmpl:77-90` | Moodboard or low-cost thumbnails before high-cost renders. References are retrieved before generating. |
+| AI-slop pass with hard rejections and litmus tests | `plan-design-review/sections/review-sections.md.tmpl:70-83`; `lib/design-catalog.ts` | Brand anti-library and slop catalog as a typed source rendered into every creative skill. |
 | Plan-stage vs live-stage twins ("boomerang") | `README.md:226,294-301` | `/plan-art-direction` scores the brief; `/creative-qa` scores the actual assets against the same rubric and reports the delta. |
-| Atomic fix loop: before/after evidence, revert on regression, risk budget, hard cap | `design-review/SKILL.md.tmpl:197-265`; `qa/SKILL.md.tmpl:240-255` | Refinement loop: change one variable per iteration (master §3.7) and store before/after plus a diff note. Stop and ask when "drift risk" rises (e.g. a regenerated identity element, an off-palette result, more than N iterations). Hard cap on paid regenerations. |
+| Atomic fix loop: before/after evidence, revert on regression, risk budget, hard cap | `design-review/SKILL.md.tmpl:197-265`; `qa/SKILL.md.tmpl:240-255` | Refinement loop: change one variable per iteration and store before/after plus a diff note. Stop and ask when "drift risk" rises (e.g. a regenerated identity element, an off-palette result, more than N iterations). Hard cap on paid regenerations. |
 | Red-first regression test | `qa/SKILL.md.tmpl:175-196` | Each rejected asset becomes an anti-example fixture, and the eval must flag it before the fix is accepted. |
 | Planted-bug ground-truth fixtures | `test/fixtures/qa-eval-ground-truth.json` | Brand-QA eval sets with planted violations (wrong logo clearspace, off-brand color, banned phrase, legal claim) and an answer key. |
 | Typed learnings with source + confidence + files + staleness | `scripts/resolvers/learnings.ts` | Brand learnings tied to the assets or brand-state files they reference. Each records its source (client-stated / observed-in-edits / inferred / cross-judge). A learning goes stale when its referenced asset is retired. |
-| Mandatory "no learnings" explicit result | `generate-completion-status.ts:~53` | Every creative skill ends with a learnings step that cannot be skipped. Edit diffs are mined (master §3.11). |
+| Mandatory "no learnings" explicit result | `generate-completion-status.ts:~53` | Every creative skill ends with a learnings step that cannot be skipped. Edit diffs are mined. |
 | Decision log, resurfaced at session start | `CLAUDE.md:828-851`; `generate-context-recovery.ts` | Creative decision log: route chosen, routes killed and why. Shown on resume so settled art-direction calls are not reopened. |
 | Taste memory with decay | `bin/gstack-taste-update:30,145` | Per-brand preference model from pairwise picks, with decay, kept separate from fixed brand truth. |
 | Domain skills (quarantined → active → global) | `docs/domain-skills.md` | Provider and tool notes ("model X ignores negative prompts", "platform Y crops 4:5") under the same probation lifecycle. |
 | Retro from deterministic metrics + snapshot deltas + shortcut-debt ledger | `retro/SKILL.md.tmpl:106-375` | `/retro` on campaign data: cost per accepted asset, rounds per approval, rejection reasons, spend by provider, performance deltas. Plus a "creative shortcut ledger" (placeholder copy, AI-only image approved without a photo shoot, etc.). |
 | Review Readiness Dashboard bound to content fingerprint | `docs/skills.md:237-261` | Release gate per deliverable. Brand verification counts only for the exact asset hash that was reviewed; any edit invalidates it. |
 | Orchestrator with Mechanical / Taste / User-Challenge classes | `autoplan/SKILL.md.tmpl:62-97` | `/campaign-autopilot` auto-decides only mechanical choices. It surfaces taste choices at one gate and never auto-overrides a creative director's stated direction. |
-| Template + resolver compile to host views | `ARCHITECTURE.md:314-403`; `hosts/define-host.ts` | One canonical skill source compiled per host (master §24A). Brand state is injected by resolvers, not copy-pasted. |
+| Template + resolver compile to host views | `ARCHITECTURE.md:314-403`; `hosts/define-host.ts` | One canonical skill source compiled per host. Brand state is injected by resolvers, not copy-pasted. |
 | Tiered preamble | `scripts/resolvers/preamble.ts:54-113` | Preamble tiers: T1 load brand state; T2 add recovery, ask format and decision log; T3 add reference retrieval. |
 | Passive section manifest + section self-check | `office-hours/sections/manifest.json` | Load medium-specific rubrics (packaging, video, OOH) only when that medium is in scope. |
 | Context budgets: catalog cap + per-skill ratchet + bill CLI | `CLAUDE.md:179-209` | The same three ledgers for cstack, plus a budget for brand-state injection size. |
-| Diff-aware paid eval selection via touchfiles | `test/helpers/touchfiles-data.ts`; `CLAUDE.md:50-54` | A typography-skill edit runs only typography fixtures; a provider adapter edit runs only that provider's tiny live test (master §24A T3). |
+| Diff-aware paid eval selection via touchfiles | `test/helpers/touchfiles-data.ts`; `CLAUDE.md:50-54` | A typography-skill edit runs only typography fixtures; a provider adapter edit runs only that provider's tiny live test. |
 | Paid evals never retry; fixed trial panels | `AGENTS.md:212-222` | Multimodal judges run as a pre-registered panel with fixed samples. Spend is recorded. No re-judging until a pass appears. |
 | Redaction at sink + egress receipts | `CLAUDE.md:287-306,385-421` | Unreleased campaign material and client data are scanned before leaving the machine. Each provider call writes a receipt (provider, hash, cost). |
-| Ownership gate on install | `CLAUDE.md:332-354` | Never overwrite official brand assets or a user's own skills without proof of ownership; back up first (master §25). |
+| Ownership gate on install | `CLAUDE.md:332-354` | Never overwrite official brand assets or a user's own skills without proof of ownership; back up first. |
 
 ---
 
@@ -258,12 +258,12 @@ gstack does not rely on the model being humble. It uses structural forcing funct
 
 **Do not borrow (or borrow carefully)**
 
-1. **The "Boil the Ocean" completeness ethos** (`ETHOS.md:34-60`; autoplan P1/P2). It conflicts with master §3.14 (minimal baseline) and §3.16 (cost). Creative generation has real marginal cost per variant, and "complete" is not a coherent goal for taste. Keep the pressure for completeness in verification, not in generation volume.
+1. **The "Boil the Ocean" completeness ethos** (`ETHOS.md:34-60`; autoplan P1/P2). It conflicts with a minimal baseline and with cost. Creative generation has real marginal cost per variant, and "complete" is not a coherent goal for taste. Keep the pressure for completeness in verification, not in generation volume.
 2. **Persona voice and founder branding baked into skills** (`CLAUDE.md:458-474`). cstack's voice should come from each brand's state, not from the toolkit author.
 3. **Prompt-only enforcement of critical handoffs.** gstack's own TODO says that wording repairs failed 0/15 and that a hook or tool-result gate is needed (`TODOS.md:16-25`). Put critical gates (approval before paid batch, brand verification before export) in code or hooks, not prose.
-4. **The size of the system.** 3,400 lines of setup bash, ~100 bin CLIs, ~1,000 test files, constant "fix waves". Start with ~15 units (master §9) and add a mechanism only when it fixes a demonstrated failure. gstack's v1.91.8 test purge and v1.64.1 "−24,943 lines" show what happens otherwise.
+4. **The size of the system.** 3,400 lines of setup bash, ~100 bin CLIs, ~1,000 test files, constant "fix waves". Start with ~15 units and add a mechanism only when it fixes a demonstrated failure. gstack's v1.91.8 test purge and v1.64.1 "−24,943 lines" show what happens otherwise.
 5. **Very large skills (25-35K tokens).** gstack tolerates them (`CLAUDE.md:184`). cstack should prefer section carving plus passive manifests from the start.
-6. **Browser-daemon infrastructure.** It is not needed. For creative QA, render through one deterministic renderer and add a vision judge only for finalists (master §3.17).
+6. **Browser-daemon infrastructure.** It is not needed. For creative QA, render through one deterministic renderer and add a vision judge only for finalists.
 
 ---
 

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cstack.dev/schemas/brand-world.schema.json",
   "title": "Brand world / entity system",
-  "description": "Section 6. Reusable, addressable entities (@PRODUCT_STICK_01). Locked entities may only be used, never re-imagined.",
+  "description": "Reusable, addressable entities (@PRODUCT_STICK_01). Locked entities may only be used, never re-imagined.",
   "type": "object",
   "required": [
     "brand_id",
@@ -86,7 +86,8 @@
                 "sha256": {
                   "type": "string"
                 }
-              }
+              },
+              "additionalProperties": false
             }
           },
           "immutable_traits": {
@@ -134,7 +135,8 @@
                 "evidence": {
                   "type": "string"
                 }
-              }
+              },
+              "additionalProperties": false
             }
           },
           "generation_history": {
@@ -155,5 +157,6 @@
         }
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

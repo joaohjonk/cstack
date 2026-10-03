@@ -3,16 +3,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { regionPaste, decodePNG, encodePNG, parseRegion } from '../providers/local/region_paste.mjs';
 import { imageSize } from '../scripts/lib/image.mjs';
+import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-paste-'));
+const tmp = () => tmpDir('cstack-paste-');
 const solid = (w, h, rgba) => {
   const data = new Uint8ClampedArray(w * h * 4);
   for (let i = 0; i < w * h; i++) data.set(rgba, i * 4);

@@ -1,0 +1,151 @@
+id: packaging-system
+outcome: packaging design or redesign from category truth to print-ready files, with panel hierarchy, the converter's dieline and spec, shelf-tested findability, real world mockups, art directed shots and a signed proof
+aliases:
+- packaging design
+- packaging redesign
+- pack redesign
+- label redesign
+- snack bar pack
+- food pack design
+- carton, pouch or wrapper design
+- print-ready pack files
+status: researched
+target:
+  description: a pack that shoppers find faster than or as fast as the current one on the real competitor shelf, reads in the right order on every panel, prints within the converter's colour targets on the chosen substrate, and whose renders, mockups and shots show exactly the approved artwork
+  must:
+  - the converter spec (process, substrate, inks, colour targets per substrate, minimum order, dieline version) is in hand before artwork starts
+  - every panel has a written information hierarchy and passes a three-second read test
+  - mandatory statements and claims come from claims-proof with dated primary sources
+  - the barcode is placed and sized to GS1 rules from the official number, never drawn by a model
+  - the design-tool file (what the printer opens) matches the gated artwork panel by panel, line breaks included
+  - any render that redraws the pack is labelled illustrative and decides nothing until cstack mockup verify or a label pixel diff passes
+  - shelf-test and print-proof-loop pass before release
+  must_not:
+  - generated lettering, logos, barcodes, nutrition tables or legal copy anywhere on the pack
+  - artwork placed on a dieline that is not the converter's current version
+  - one colour value for a brand colour printed on two different substrates
+  - approving colour from a screen or from a photo
+  quality_bar: the owner signs a proof on the real substrate that matches the frozen file; find time on the simulated shelf is no worse than the current pack; verify passes on every render shown for a decision
+when:
+- new pack, redesign, line extension, new substrate or new converter
+- a label must change for compliance (run the legacy-stock decision as well)
+not_when:
+- mockups of already approved art only (use mockup-set)
+- product photography without pack design (use food-still-life or the product-photoshoot workflow)
+candidates_considered:
+- name: category-first, converter-spec-early, deterministic artwork on the official dieline, shelf-tested, proofed on substrate
+  verdict: chosen
+  why: every failure seen in the field (wrong substrate colour, overflowing live text, stale dieline, unreadable shelf) is caught by a gate before print money is spent
+- name: generative concept-first (image model invents pack concepts, designer rebuilds the winner)
+  verdict: fallback
+  why: fast mood exploration; allowed only without readable text, marked illustrative, and never used for hierarchy, shelf or colour decisions
+- name: AI packaging platform that claims the concept is the factory file
+  verdict: fallback
+  why: useful for a dieline-to-3D preview; the factory file still comes from the converter's dieline and passes the same gates
+- name: design on a flat screen and approve from mockups
+  verdict: rejected
+  why: no shelf context, no substrate, no proof; a design tested on white was never tested for standout
+steps:
+- id: category-truth
+  does: capture the competitor shelf (front panels at known scale, prices, facings) and map category conventions, colour blocks and saturated claims
+  kind: retrieval
+  skill: competitor-intel
+  inputs: [competitor list, store visit photos or retail listings]
+  outputs: [work/competitors/<date>-category-map.md, work/shelf/captures/]
+  gate: {type: auto, check: "every observation has a URL or photo path and a date"}
+  compare_to_target: does the set include the leaders, the closest substitutes, likely look-alikes and the brand's own variants?
+- id: converter-spec
+  does: get from the converter the current dieline (version, date), process, substrate, white underlay, ink count and spot targets per substrate, varnishes, proof type and tolerance, minimum order, price breaks and lead time
+  kind: human
+  inputs: [converter quote, dieline file]
+  outputs: [work/packaging/converter-spec.yaml, assets/official/dielines/]
+  gate: {type: owner, check: "owner confirms the converter, the dieline version and the substrate"}
+  compare_to_target: can each brand colour be hit on this substrate and process, and is the minimum order acceptable?
+  fallback: digital print for the first run when the minimum order or plate cost blocks flexo or gravure
+- id: strategy
+  does: decide which distinctive assets to keep for findability (colour block, silhouette, logo position) and which conventions to use, invert or ignore
+  kind: research
+  skill: creative-direction
+  gate: {type: owner, check: "owner approves keep, invert and ignore lists"}
+  compare_to_target: does the strategy protect what loyal buyers navigate by?
+- id: panel-hierarchy
+  does: write the reading order per panel (front, back, sides, top) - brand, descriptor, variant cue, key claim, then mandatory - and sketch two or three routes at true size on the dieline
+  kind: probe
+  skill: identity-system
+  gate: {type: independent_review, check: "three-second read test per front panel - what is it, which variant, main claim - by people who did not design it"}
+  compare_to_target: does each route read in the written order at true size?
+  est_cost: {amount: 0, currency: USD}
+- id: claims-mandatory
+  does: claims matrix and mandatory statements per market from current primary sources
+  kind: research
+  skill: claims-proof
+  gate: {type: owner, check: "owner and counsel sign the claims matrix; uncertain items stay off the pack"}
+  compare_to_target: every printed claim has proof and a dated rule
+- id: shelf
+  does: run the shelf-test flow on the leading routes against the captured competitor set
+  kind: probe
+  skill: competitor-intel
+  gate: {type: owner, check: "shelf-test find-time and three-second results reviewed; route chosen"}
+  compare_to_target: find time no worse than the current pack and the variant cue read at distance
+- id: artwork
+  does: build the chosen route on the converter's dieline - cut, crease, bleed, copy limit and no-print zones as named spot colours; spot colours named as in the converter spec; barcode from the official number at GS1 size, quiet zones and placement; type set and outlined only where the converter asks
+  kind: deterministic
+  skill: identity-system
+  outputs: [work/packaging/<sku>/artwork/]
+  gate: {type: independent_review, check: "second person checks dieline version, bleed, no-print zones, barcode size, quiet zones and placement, and spot colour names against converter-spec.yaml"}
+  compare_to_target: overlay on the dieline; every element inside its zone
+- id: file-parity
+  does: export every panel or frame from the design tool (the file the printer opens) as an image at the gated artwork's size and compare text bounds and line breaks with the approved artwork; check size with cstack audit and diff with cstack mockup verify through a flat template (one quad over the whole canvas, no shading)
+  kind: deterministic
+  gate: {type: deterministic_check, check: "cstack mockup verify passes on every exported panel against the approved panel, and a human confirms no line break, wrap or overflow differs"}
+  compare_to_target: same words on the same lines in the same boxes as the gated artwork; any difference fails
+  fallback: when export at the same size is impossible, a human overlays the two at 50% opacity panel by panel and signs
+- id: renders-and-shots
+  does: packshots from the dieline art (flow 3d-packshot), mockups (flow mockup-set), food and ingredient shots (flow food-still-life); any render that redraws the pack is labelled illustrative
+  kind: generative
+  skill: mockup
+  gate: {type: deterministic_check, check: "cstack mockup verify passes (or the 3d-packshot label pixel diff) before a render enters any review"}
+  compare_to_target: label region identical to the approved art; light and lens per the shot reference
+  est_cost: {amount: 2, currency: USD}
+- id: review
+  does: brand-verify and creative-review on verified renders only
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: "owner approval; no unverified render in the review set"}
+  compare_to_target: against the target and the gated artwork
+- id: proof
+  does: run the print-proof-loop flow with the converter (proof on the real substrate, measured, photographed, signed)
+  kind: human
+  gate: {type: owner, check: "proof sign-off names the file hash, the proof and the measurements"}
+  compare_to_target: spot colours within the agreed tolerance; content identical to the frozen file
+- id: legacy-stock
+  does: when a label changes for compliance, decide over-sticker, run-out or write-off from stock counts, velocity and the regulator's current transition rules
+  kind: human
+  skill: claims-proof
+  gate: {type: owner, check: "owner and counsel record the decision with sources and dates"}
+  compare_to_target: no non-compliant pack sold after the date the rule allows
+cost_ladder: research and artwork cost no API money; route probes are sketches at true size; mockup plates two to four cheap probes per scene (about $0.04-0.15 each) before finals; converter proofs are the real spend, so proof only after file-parity passes; stop after two failed proofs on the same colour and change ink, substrate or target with the converter, not the file
+failure_modes:
+- artwork on a stale dieline
+- design-tool live text overflowing or rewrapping after the type gate passed (wordmark wrap, hero number falling onto the claims row)
+- a generated render that redraws the label used to choose a route
+- brand colour approved on screen, off on film or kraft
+- barcode truncated, too close to a fold, or on a transparent window without white underlay
+- redesign that drops the colour block loyal buyers find the pack by
+evidence:
+- {ref: docs/research/packaging.md, kind: documented, date: 2026-10-03, note: sections 1-5 and 7}
+- {ref: "https://ccn-scc.ca/standardsdb/standards/8174467", kind: documented, date: 2026-10-03, note: ISO 12647-6 flexo scope}
+- {ref: "https://gs1.se/en/guides/how-to-guides/size-guide/", kind: documented, date: 2026-10-03, note: EAN-13 sizes and quiet zones}
+- {ref: "https://www.gs1.org/docs/barcodes/GSCN-23-169-BarcodePlacement.pdf", kind: documented, date: 2026-10-03, note: placement 8-100 mm from edge}
+- {ref: "https://multimedia.3m.com/mws/media/2619412O/global-packaging-dieline-requirements.pdf", kind: practitioner, date: 2026-10-03, note: dieline layers as named spot colours}
+- {ref: "https://www.surveymonkey.com/learn/market-research/packaging-design-testing/", kind: practitioner, date: 2026-10-03, note: standout vs findability; three-second test}
+- {ref: "field run on a packaged-food brand (private; anonymized)", kind: observed, date: 2026-10-03, note: live text overflow after type gate; generated renders redrawing the label}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- workflow:packaging
+- flow:shelf-test
+- flow:print-proof-loop
+- flow:food-still-life
+- flow:mockup-set
+- flow:3d-packshot

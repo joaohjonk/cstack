@@ -71,7 +71,7 @@ cstack learn promote LE-20261003-b105e6 --to references/anti/ --by owner
 
 ## Promotion targets
 
-`should_become` says what a learning wants to be. `--to` says where it goes. Encode at the lowest reliable level: **token > rule > reference > rubric > canon > learning**.
+**Promotion ladder:** encode at the lowest reliable level, **token > rule > reference > rubric > canon > learning**. `should_become` says what a learning wants to be; `--to` says where it goes.
 
 | `should_become` | Typical `--to` target |
 |---|---|

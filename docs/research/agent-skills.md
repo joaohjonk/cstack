@@ -1,7 +1,7 @@
 # Agent Skills: the open standard and five public skill libraries
 
-Research note for cstack Phase A. It covers master prompt §1.2 and the Rampstack, Higgsfield, Wondel, RefoundAI/Lenny and Trail of Bits parts of §1.4A.
-Date: 2026-10-03. Sources are the local clones under `/home/claude/research-src/` (paths below are relative to that directory) plus the agentskills.io and host docs fetched today.
+Research note for cstack Phase A. It covers the Agent Skills standard and the Rampstack, Higgsfield, Wondel, RefoundAI/Lenny and Trail of Bits libraries.
+Date: 2026-10-03. Sources are the local clones under `research-src/` (paths below are relative to that directory) plus the agentskills.io and host docs fetched today.
 
 Labels used in this note:
 - **[code]**: seen in repository files, CI or scripts. This is architecture.
@@ -82,7 +82,7 @@ agentskills.io's client guide recommends that every client scan **both** its nat
 
 ## 2. Per-repo mechanism tables
 
-Each table extracts the 11 dimensions from §1.2 of the master prompt. Cells cite file:line where the cell is load-bearing.
+Each table extracts the same 11 dimensions. Cells cite file:line where the cell is load-bearing.
 
 ### 2.1 Rampstack: `rampstackco/claude-skills` (named skill `creative-direction`)
 
@@ -102,7 +102,7 @@ Each table extracts the 11 dimensions from §1.2 of the master prompt. Cells cit
 | Tool/model availability | Stack-agnostic by rule: principles over tools, and name 2-3 alternatives when a tool must be named (`SKILL_AUTHORING.md:150-180`). | **Honest-stop contract**: 60 of 103 skills carry an identical "If required data is unavailable" section, where the sanctioned output is the deliverable with the gap stated and fabrication is never allowed (commit `e5bc675`; e.g. `skills/accessibility-audit/SKILL.md:235-237`). Workflows have "If a prerequisite is unmet" → a report-blocked statement satisfies done-when, and blocked propagates downstream (`content-pipeline-prove-gates.md:47-53`). `creative-direction` does **not** carry the section (deliberately left alone; grep returns 0). |
 | Chaining | Produces the brief that `landing-page-copy`, `art-direction`, `content-and-copy` and `brand-style-guide` consume (`:117`). `art-direction` says it "consumes" this brief (`skills/art-direction/SKILL.md:3,28`). | Chaining happens in prose through named slugs and is lint-checked (`check_cross_skill_references`). Workflows chain skills per phase with "Skills:", "Input", "Output artifact" and "Done when". |
 
-**Portability [code].** `scripts/build-codex.mjs:1-37` keeps only `name`+`description` in the emitted SKILL.md. Non-spec keys (`category`, `catalog_summary`, `display_order`) go to a **reversible sidecar** at `references/_claude-frontmatter-extras.yaml`, descriptions longer than 1024 chars are truncated with the original kept, and the output is checked byte-for-byte deterministic across two builds. This is the clearest public example of "canonical source → generated host views" (§24A).
+**Portability [code].** `scripts/build-codex.mjs:1-37` keeps only `name`+`description` in the emitted SKILL.md. Non-spec keys (`category`, `catalog_summary`, `display_order`) go to a **reversible sidecar** at `references/_claude-frontmatter-extras.yaml`, descriptions longer than 1024 chars are truncated with the original kept, and the output is checked byte-for-byte deterministic across two builds. This is the clearest public example of "canonical source → generated host views".
 
 ### 2.2 Higgsfield: `higgsfield-ai/skills` (named skill `higgsfield-brandkit`)
 
@@ -218,13 +218,13 @@ Each table extracts the 11 dimensions from §1.2 of the master prompt. Cells cit
 | P11 | **Dependency-aware invalidation** | Higgsfield `required_slots` + revision pinning, so a palette change invalidates only dependents | Unique |
 | P12 | **Graceful degradation per phase** | Wondel inline "Brief (fallback)" + "state which mode you are in"; Higgsfield stage-scoped prerequisites | Strong |
 | P13 | **Chaining through explicit artifacts / return values** | Higgsfield (`reference_id`); Wondel (Journey Map + artifact headings as contract); Rampstack (`BRIEF.md` required reading) | Strong. Lenny's display-name links are the counter-example. |
-| P14 | **Live catalog over memorized catalog** | Higgsfield "never invent model names; run `model list`"; presets are "live CMS data, never embed" | Directly relevant to the cstack model router (§11) |
+| P14 | **Live catalog over memorized catalog** | Higgsfield "never invent model names; run `model list`"; presets are "live CMS data, never embed" | Directly relevant to the cstack model router |
 | P15 | **Context budget rules** | Spec <500 lines; Rampstack <250 target / 500 cap; Higgsfield "300-line rule" with a decision test (keep only what changes the next decision); ToB warns >500 | Universal. Only Rampstack and ToB check it in CI. |
 | P16 | **Validators that test themselves** | ToB `make self-test` + eval-harness `--self-test` before validate; Rampstack dist guard born from a silent 102/103 bug | ToB only. High value. |
 | P17 | **Self-contained skill folders** (no `../`) | Higgsfield (CI-checked; duplicate shared docs rather than link) | Needed for per-skill install (`npx skills add owner/repo/skill`) |
 | P18 | **Version discipline** | Higgsfield single VERSION across 12 places; ToB must-increase per plugin; Wondel `metadata.version` + release sync | Common |
 | P19 | **Status ladder by evidence** | Rampstack `template → validated (public run record) → hardened` | Rare. Maps onto cstack `status` + `last_verified`. |
-| P20 | **Evals record their own blind spots** | ToB `case.yaml` description states what the case cannot isolate | Rare. Supports eval integrity (§24A). |
+| P20 | **Evals record their own blind spots** | ToB `case.yaml` description states what the case cannot isolate | Rare. Supports eval integrity. |
 
 **Anti-patterns observed.**
 - Non-spec top-level frontmatter keys: Higgsfield `version`/`argument-hint` and Rampstack `category`/… in source. Both are portability hazards; Rampstack handles them in its build.
@@ -245,22 +245,22 @@ Each table extracts the 11 dimensions from §1.2 of the master prompt. Cells cit
 | P3 canonical → generated views | **Borrow (Rampstack variant)** | `skills/` is the canonical source. `cstack setup` emits host views. A CI drift check rebuilds and byte-diffs. Spec-only frontmatter in emitted SKILL.md. Non-spec data lives in `skill.meta.json` from the start, so no sidecar is needed. |
 | ToB "no sidecars" | **Partially** | Don't hand-maintain per-host copies. Generated host files (e.g. `agents/openai.yaml`) are fine when built from `skill.meta.json` and drift-checked. |
 | P4/P11 durable state + dependency invalidation | **Borrow (Higgsfield model)** | All brand-state writes go through a script/CLI (`cstack state …`), never by hand-editing. Every approved slot carries a `revision`. Derived artifacts record `depends_on: {slot: revision}`. Changing a slot lists the invalidated artifacts. This maps to `state/approvals.jsonl` + `artifact-lineage.schema.json`. |
-| P5 lock states × evidence labels | **Borrow verbatim as a schema concept** | `brand-system.schema.json` fields carry `lock: fixed\|proposed\|not_applicable\|unknown` and `evidence: source-declared\|measured\|visually-observed\|inferred`, plus `source` provenance (matches §3.4, §23). |
+| P5 lock states × evidence labels | **Borrow verbatim as a schema concept** | `brand-system.schema.json` fields carry `lock: fixed\|proposed\|not_applicable\|unknown` and `evidence: source-declared\|measured\|visually-observed\|inferred`, plus `source` provenance. |
 | P6 rejection list | **Borrow** | Every brief and direction artifact gets a required `rejections[]`. Feed it into anti libraries (§8). |
 | P7 human gates | **Borrow** | `approval_gates[]` in skill.meta. A runtime rule says generation success or self-assessment never counts as approval. Logos and marks are never self-approved, even in autonomous mode. |
-| P8 honest stop | **Borrow, put in the shared preamble once** | One canonical "missing-input behavior" block in `skills/cstack-shared/` rather than 60 copies (Rampstack copy-pastes; §24A asks for single-sourcing). Blocked status propagates through workflows. |
+| P8 honest stop | **Borrow, put in the shared preamble once** | One canonical "missing-input behavior" block in `skills/cstack-shared/` rather than 60 copies (Rampstack copy-pastes). Blocked status propagates through workflows. |
 | P9 deterministic vs generative | **Borrow** | Editable or exact deliverables (SVG, PPTX, HTML, palette swatches, type specimens) are built by scripts. Never accept VLM claims for hex, fonts or spacing; measure them. |
 | P10 baseline-relative evaluation | **Borrow, generalized** | Eval outputs report deltas vs brief, reference and last approved version, not absolute 0-10 alone. A skill must document any metric that is legitimately absolute (the ToB L/I exception pattern). |
 | P12 per-phase fallback | **Borrow** | Each workflow phase has an inline minimal method used when its skill or provider is missing, and must announce the mode. |
 | P13 artifact contracts | **Borrow** | Workflow phases declare `input artifacts` → `output artifact (exact path + headings or schema)`. Prefer JSON schemas over Markdown headings where cstack has them. |
 | P14 live catalogs | **Borrow** | The model router reads `registry/models.json` plus live provider listings. Skills never hardcode model names in the body. |
-| P15/P16 budgets + self-testing validators | **Borrow** | The context-budget ratchet (§24A). The validator ships `--self-test` fixtures, with one bad skill per rule, run before `validate`. |
+| P15/P16 budgets + self-testing validators | **Borrow** | The context-budget ratchet. The validator ships `--self-test` fixtures, with one bad skill per rule, run before `validate`. |
 | P17 self-contained folders | **Borrow with care** | ⚠ The current `scripts/lib/hosts.mjs` installs a sibling `cstack-shared/` dir next to the skills. Skills that `../cstack-shared` break under per-skill installers (`npx skills add …/<skill>`) and under Codex/agents scanners that treat every dir as a candidate skill. Either inline the shared preamble at build time (generated view) or make `cstack-shared` a valid skill itself with `user-invocable: false` semantics. |
 | P19 evidence status ladder | **Borrow** | `status: stub → beta → stable` requires a linked run record or eval result for promotion. Reuse `last_verified`. |
 | Lenny source-backed frameworks | **Borrow the provenance shape, not the pipeline** | Canon references (`references/canon/`) carry author, source URL, timestamp and a short quote (<25 words). Lint for empty or refusal-shaped entries. |
 | Wondel scoring formula | **Borrow** | Diagnostic-table scoring with a reproducible rule that spans the full range. Score bands are documented. |
 | ToB eval case format | **Borrow** | `case.yaml` + typed graders (`regex`, `file_exists`, `tool_used`, `llm`), `runs: N`, and a description field that states what the case cannot measure. Matches T1/T2 tiers. |
-| Higgsfield private "Design Brain" prompt enhancer behind a backend | **Don't borrow** | cstack is open. Prompt recipes are compiled, versioned and testable in-repo (§12). |
+| Higgsfield private "Design Brain" prompt enhancer behind a backend | **Don't borrow** | cstack is open. Prompt recipes are compiled, versioned and testable in-repo. |
 | Non-spec top-level frontmatter | **Don't** | Keep extras in `skill.meta.json` or `metadata`. |
 
 ### 4.2 Recommended SKILL.md frontmatter (canonical source, spec-pure)
@@ -282,7 +282,7 @@ Rules:
 - Keep it ≤1024 chars (Codex drop) and front-load the trigger, because Claude truncates description + `when_to_use` at 1,536 chars and drops descriptions when the catalog overflows.
 - Leave `allowed-tools` out of the canonical source. It is experimental, and its syntax differs per host. Emit it only in the Claude Code view, generated from `skill.meta.json.allowed_tools`.
 - Leave out `disable-model-invocation`, `context: fork`, `paths` and similar. These are host-specific keys and also go only into generated host views.
-- Body order follows the §24 contract: WHEN TO USE / WHEN NOT TO USE / INPUTS / MISSING-INPUT BEHAVIOR (pointer to shared preamble) / SOURCE PRECEDENCE / TOOLS / PROCESS / DECISION RULES / OUTPUTS / FILES WRITTEN / STATE UPDATED / EVALS REQUIRED / HANDOFF / FAILURE MODES / EXAMPLES. Put must-hold rules in the **first ~5k tokens** (compaction re-attach budget).
+- Body order follows the skill contract: WHEN TO USE / WHEN NOT TO USE / INPUTS / MISSING-INPUT BEHAVIOR (pointer to shared preamble) / SOURCE PRECEDENCE / TOOLS / PROCESS / DECISION RULES / OUTPUTS / FILES WRITTEN / STATE UPDATED / EVALS REQUIRED / HANDOFF / FAILURE MODES / EXAMPLES. Put must-hold rules in the **first ~5k tokens** (compaction re-attach budget).
 
 ### 4.3 Recommended `skill.meta.json`: diff against the existing `schemas/skill-meta.schema.json`
 
@@ -301,7 +301,7 @@ The existing schema already covers slug, type, triggers, not_for, required_input
 | `host_overrides` | `{ "claude-code": {disable_model_invocation, context, agent, paths}, "codex": {allow_implicit_invocation, display_name, short_description}, "cursor": {paths} }` | Feeds generated views (Codex `agents/openai.yaml` needs non-empty `display_name` + `short_description`, ToB `AGENTS.md`) |
 | `trigger_eval` | string path to `triggers.json` | P2 |
 | `baseline` | `"brief"\|"reference"\|"last_approved"\|"absolute"` | P10. States what evals are relative to |
-| `budget` | `{skill_md_tokens_max, refs_tokens_max}` | §24A ratchet ceiling recorded per skill |
+| `budget` | `{skill_md_tokens_max, refs_tokens_max}` | ratchet ceiling recorded per skill |
 
 Example:
 

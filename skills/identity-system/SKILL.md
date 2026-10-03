@@ -2,9 +2,6 @@
 name: identity-system
 description: "Turn a chosen identity direction into an executable system: DTCG tokens (color, type, spacing, radius, motion), type hierarchy, grid and composition rules, logo usage rules and component contracts, encoding each decision at the lowest reliable level. Use when a brand needs its system built or repaired after a direction is selected, or when tokens, type or grid are missing. Not for exploring directions (use creative-direction) or importing an existing system (use brand-import)."
 license: MIT
-metadata:
-  cstack-version: "0.1.0"
-  cstack-meta: "skill.meta.json"
 ---
 
 # /identity-system
@@ -55,7 +52,7 @@ Deterministic only: `cstack tokens check|build|lint`, contrast math (WCAG), type
 
 ## Decision rules
 
-- Encode at the lowest reliable level: token > component contract > composition rule > agent rule > exemplar. Never write "use generous whitespace" if a spacing threshold can say it.
+- Encode at the lowest reliable level of the promotion ladder (token > rule > reference > rubric > canon > learning; a component contract or composition rule is a rule). Never write "use generous whitespace" if a spacing threshold can say it.
 - A rule naming a checker nobody wrote is marked `check: judge` until the checker exists.
 - Few families, few accents: state the maximum accent families per screen.
 - Values extracted from inspiration references never enter tokens; only decided values do.
@@ -74,7 +71,7 @@ Deterministic only: `cstack tokens check|build|lint`, contrast math (WCAG), type
 
 ## Handoff
 
-`brand-verify` (system on real artifacts), `copywriting` (voice applied in the type roles), `workflow landing-page|deck|packaging`.
+`type-director` (type system), `symbol-design` and `vector-master` (marks), `brand-verify` (system on real artifacts), `copywriting` (voice applied in the type roles), `workflow landing-page|deck|packaging`.
 
 ## Failure modes
 

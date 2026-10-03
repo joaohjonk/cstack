@@ -2,12 +2,15 @@ name: logo-system
 status: template
 summary: A new logo or symbol from brief to approved vector master, kit and usage rules.
 entry_skill: workflow
+methods:
+- logo-system
+- icon-set
 triggers:
 - new logo
 - logo design
 - brand mark
 - logo refresh
-note: 'template = not yet proven on a real run. Promote to validated only with a linked run record in runs. Method: flow logo-system.'
+note: 'template = not yet proven on a real run. Promote to validated only with a linked run record in runs.'
 runs: []
 steps:
 - id: brief

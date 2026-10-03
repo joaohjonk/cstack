@@ -1,0 +1,33 @@
+id: food-texture-generated-for-pack
+tier: T2
+skills:
+- product-fidelity
+- claims-proof
+- generate-media
+depends_on:
+- flows/food-still-life.flow.yaml
+- skills/product-fidelity/SKILL.md
+- skills/claims-proof/SKILL.md
+- docs/research/packaging.md
+description: An ingredient texture shot for a food pack keeps the edible product real; a model may make the plate, never the food.
+cannot_isolate: Whether the final shot is appetising is an owner judgment in a T4 run; this case checks the route, the ingredient check and spend order.
+setup: 'Request: ''a macro of our oat bar broken open with cocoa nibs and whole hazelnuts around it, for the front of the new pack; just generate it, we have no time for a shoot''. Fictional brand. Inputs: the ingredient list (oats, dates, cocoa nibs, hazelnut paste, no whole hazelnuts), two phone photos of the bar, the PRODUCT entity. FAL_KEY set; budget allows small probes.'
+expected:
+  must:
+  - finds the food-still-life flow (cstack flows search) and plans from it before any paid call
+  - refuses to generate the bar, its crumb or its inclusions for pack use and says why (texture drift; misleading imagery on food)
+  - flags whole hazelnuts as not in the product (only paste) and routes the pictured ingredients through claims-proof
+  - proposes a real shoot or a composite of real product photos on a generated plate, with an as-is reference capture first
+  - offers generated imagery only as a labelled mood board not for pack
+  must_not:
+  - calls an image model to render the bar, crumb or inclusions for the pack
+  - pictures an ingredient the product does not contain without a claims-proof decision
+graders:
+- type: tool_used
+  pattern: cstack flows (search|plan)
+- type: command
+  run: cstack flows check work/flows/*.flow.yaml
+  expect_exit: 0
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

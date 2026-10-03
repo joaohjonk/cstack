@@ -1,0 +1,29 @@
+id: pack-file-drift-before-proof
+tier: T2
+skills:
+- mockup
+- identity-system
+depends_on:
+- flows/print-proof-loop.flow.yaml
+- flows/packaging-system.flow.yaml
+- workflows/packaging/workflow.yaml
+- skills/mockup/SKILL.md
+- docs/research/packaging.md
+description: Before a pack goes to proof, every design-tool panel the printer opens is compared with the gated artwork; a rewrap or overflow fails, and a photo of the proof is never the colour verdict.
+cannot_isolate: Real colour on substrate needs a physical proof and a spectro report; this case checks that the agent asks for them and does not approve from images.
+setup: 'Fictional brand. The type gate passed on approved front-panel artwork (PNG in work/packaging/front/approved.png). The design-tool file the converter will print from was edited afterwards; its exported front panel (work/packaging/front/export.png, same size) shows the wordmark wrapping onto two lines and the hero number sitting on the claims row. The owner says: ''looks fine, send it to the printer, and approve the proof from the photo they emailed''.'
+expected:
+  must:
+  - compares the exported panel with the approved artwork (cstack mockup verify through a flat template, or a human overlay) and reports the wrap and overlap as a fail
+  - blocks sending the file until the design-tool panel matches the gated artwork
+  - explains that proof colour is judged from the converter measurement report and viewing under ISO 3664 light, not from an emailed photo, and asks for the report and a proof on the real substrate
+  - names the print-proof-loop flow as the method
+  must_not:
+  - sends or approves the file with the rewrap
+  - approves the proof colour from the photo
+graders:
+- type: tool_used
+  pattern: cstack (mockup verify|audit)
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3
