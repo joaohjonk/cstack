@@ -24,7 +24,7 @@ It is to brand work what [gstack](https://github.com/garrytan/gstack) is to ship
 ## Quick start
 
 1. Install cstack (one minute, below).
-2. Run `/office-hours` and describe what you need made.
+2. Run `/brief` and describe what you need made.
 3. Run `/creative-direction` on the brief it writes.
 4. Run `/creative-review` on something you already made.
 5. Stop there. You will know if this is for you.
@@ -33,7 +33,7 @@ It is to brand work what [gstack](https://github.com/garrytan/gstack) is to ship
 
 Requires [Node.js](https://nodejs.org) 20 or newer and Git. Open your agent and paste:
 
-> Install cstack: run **`git clone --depth 1 https://github.com/joaohjonk/cstack.git ~/cstack && cd ~/cstack && ./setup`**, then run `node ~/cstack/bin/cstack.mjs help` and tell me which skills are installed. For brand work, start with /office-hours.
+> Install cstack: run **`git clone --depth 1 https://github.com/joaohjonk/cstack.git ~/cstack && cd ~/cstack && ./setup`**, then run `node ~/cstack/bin/cstack.mjs help` and tell me which skills are installed. For brand work, start with /brief.
 
 Or do it yourself:
 
@@ -54,7 +54,7 @@ An abridged session on **Lumen Field**, a fictional ceramics studio that ships w
 
 ```text
 You:    We need three autumn photos for the ochre plates.
-You:    /office-hours
+You:    /brief
 Claude: Before anything is made: where do these live, and what must
         "autumn" never mean here?
         [reads the brand: 22 sourced facts, 3 unknown, 1 in conflict]
@@ -87,7 +87,7 @@ Claude: [strategist, art director, photographer and editor review
          separately from the maker; their disagreement about the crop
          stays visible; you decide]
 
-You:    /learn retro
+You:    /learn-loop retro
 Claude: You struck "curated" and "elevate". The interview says "never say
         artisanal". Promote these to banned language for every future brief?
 ```
@@ -100,11 +100,11 @@ cstack is a process, not a pile of prompts. The skills run in the order good bra
 
 **Think → Know the brand → Look outward → Direct → Make → Judge → Remember**
 
-Each one writes files the next one reads. `/office-hours` writes the brief that `/creative-direction` answers. `/shot-dna` writes the camera and light that `/prompt-director` compiles. `/creative-review` reads the brief, not the maker's opinion of its own work.
+Each one writes files the next one reads. `/brief` writes the brief that `/creative-direction` answers. `/shot-dna` writes the camera and light that `/prompt-director` compiles. `/creative-review` reads the brief, not the maker's opinion of its own work.
 
 | Skill | Your specialist | What they do |
 |---|---|---|
-| `/office-hours` | **Creative strategist** | Start here. Interrogates the ask, reframes it, writes the gold-standard version an exceptional team would make with time, then a short brief every other skill reads. |
+| `/brief` | **Creative strategist** | Start here. Interrogates the ask, reframes it, writes the gold-standard version an exceptional team would make with time, then a short brief every other skill reads. |
 | `/creative-direction` | **Creative director** | Three distinct territories for identity, words and image. Diverge, critique, mutate; never average. One recommendation, a rationale and a rejection list. |
 | `/flow-research` | **Head of production** | Before anything new is made, researches how that outcome is best made today: tools, models, what practitioners actually post. Compares at least two methods and writes the plan with a gate on every step. |
 | `/brand-import` | **Brand archivist** | Turns an existing brand (assets, site, decks, repos, Figma) into sourced facts, tokens, entities and seed gold and anti libraries. Says UNKNOWN instead of guessing. |
@@ -113,7 +113,7 @@ Each one writes files the next one reads. `/office-hours` writes the brief that 
 | `/taste-search` | **Researcher** | References as a graph, not a moodboard: near, middle and far, each with its source, the mechanism that makes it work, and how it transfers. |
 | `/cultural-scan` | **Cultural strategist** | Reads live scenes, rituals, language and objects, and scores a brand's cultural assets: can people decode it, repeat it, carry it? |
 | `/competitor-intel` | **Category analyst** | A dated corpus of the category: its conventions, its white space, the claims everyone already makes. |
-| `/browse` | **Studio assistant with a browser** | Responsive screenshots, PDFs, accessibility snapshots and computed styles from live pages, with an origin lock. Ported from gstack. |
+| `/site-capture` | **Studio assistant with a browser** | Responsive screenshots, PDFs, accessibility snapshots and computed styles from live pages, with an origin lock. Ported from gstack. |
 | `/shot-dna` | **Photographer** | Breaks a reference or a planned shot into camera, lens, height, a named lighting recipe, surfaces and deliberate imperfections. Lighting as a recipe, never an adjective. |
 | `/campaign-sequence` | **Art director** | Plans a campaign as a sequence of roles (icon, world, ritual, product, proof, closer) and judges the set, not the single frame. |
 | `/product-fidelity` | **Product lead** | Locks the real product (silhouette, label, closure, colour) and picks a method that keeps it true. Checks every output for drift. |
@@ -131,7 +131,7 @@ Each one writes files the next one reads. `/office-hours` writes the brief that 
 | `/creative-review` | **The crit** | Independent lenses (strategist, art director, photographer, type, editor, culture, commerce, compliance), run apart from the maker. Disagreement is kept, not averaged. |
 | `/brand-verify` | **Brand guardian** | Deterministic gates first (tokens, raw colours, type, clear space, aspect, banned words), then a verifier, then you. |
 | `/claims-proof` | **Claims editor** | Every claim tied to its proof and to current primary regulation, with uncertainty marked. |
-| `/learn` | **Studio memory** | Observe, compare, articulate, decide, encode. Corrections and picks become rules only when the evidence repeats. |
+| `/learn-loop` | **Studio memory** | Observe, compare, articulate, decide, encode. Corrections and picks become rules only when the evidence repeats. |
 | `/creative-autoresearch` | **R&D** | A bounded keep-or-discard experiment on one variable against a frozen test, with a budget and a stop. |
 | `/workflow` | **Producer of record** | Runs a whole job (brand, campaign, photoshoot, landing page, packaging, deck, 3D, video, logo) as a resumable plan with owner gates. |
 
@@ -167,13 +167,13 @@ cstack providers                                 # which media providers are usa
 Then, in your agent:
 
 ```text
-/office-hours           reframe the ask, write the brief
+/brief                  reframe the ask, write the brief
 /brand-import           an existing brand   (or: /workflow create-brand for a new one)
 /creative-direction     three territories, one recommendation, a rejection list
 /workflow <name>        campaign, product-photoshoot, landing-page, paid-social, packaging, deck ...
 /creative-review        independent lenses, disagreement kept visible
 /brand-verify           deterministic gates, then a verifier, fix, re-verify, then you
-/learn retro            promote only what has earned it
+/learn-loop retro       promote only what has earned it
 ```
 
 A step-by-step walkthrough with no spend is in [docs/quickstart.md](docs/quickstart.md).
