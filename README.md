@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="Ten tiles of a mark asked for by prompt drift in colour, size and angle; ten tiles made from a brand kept in files stay identical." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical, in cstack red." width="100%">
 </p>
 
 # cstack
@@ -152,7 +152,7 @@ Each skill has a fixed contract (inputs, what to do when an input is missing, pr
 ## How it thinks
 
 <p align="center">
-  <img src="docs/images/nine-layers.svg" alt="Nine stacked layers from Reality, Culture, Canon and References through System, Generation, Judgment and Memory to Compounding taste, with an arrow from Memory back to Canon." width="100%">
+  <img src="docs/images/nine-layers.svg" alt="The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
 </p>
 
 Six rules hold the whole thing together:
