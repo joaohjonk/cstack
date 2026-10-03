@@ -253,7 +253,7 @@
     "type_hierarchy": {
       "min_size": {
         "last_updated": "2026-10-03",
-        "value": "no text in a README figure below 20 px at the 1200 px artboard (it renders near 0.27x on a phone)",
+        "value": "every text run at 11 px or more when the figure renders 324 px wide; on a 1200 px artboard that is about 41 px type, so figures carry few, large words",
         "input_class": "HARD_CONSTRAINT",
         "sources": [
           {
@@ -266,7 +266,8 @@
         ],
         "confidence": "high",
         "permanence": "core",
-        "approval": "current"
+        "approval": "current",
+        "notes": "checked by cstack svg legibility (QA thread, 2026-10-03)"
       }
     },
     "grid": {},

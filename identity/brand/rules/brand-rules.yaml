@@ -14,8 +14,8 @@ rules:
     source: brand/brand-system.json#typography.face
   - id: R-TYPE-02
     scope: core
-    rule: no text in a figure below 20 px on its 1200 px artboard, and secondary text at least 4.5:1 on its ground
-    check: judge   # a checker is being built; until then the reviewer measures
+    rule: every text run in a figure renders at 11 px or more at 324 px wide (a phone's README column) and meets 4.5:1 on its ground, light and dark page
+    check: deterministic   # node bin/cstack.mjs svg legibility docs/images --width 324,830 --page "#ffffff,#0d1117"
     source: brand/brand-system.json#type_hierarchy.min_size
   - id: R-MARK-01
     scope: core
