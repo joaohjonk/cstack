@@ -1,0 +1,16 @@
+{
+  "slug": "hook-format-lab",
+  "type": "capability",
+  "summary": "Decompose a bet's concepts into nine attention parts and write hook and first-frame variants on one angle, keeping taxonomy families apart",
+  "tags": ["hooks", "formats", "first frame", "ads", "attention", "social"],
+  "triggers": ["write hooks", "hook ideas", "first frame", "why does this ad hold attention", "hook rate is low", "ad concepts", "hook analysis"],
+  "required_inputs": ["creative bet"],
+  "outputs": ["work/ads/*-hooks.md", "work/ads/*.creative-bet.yaml"],
+  "cost_class": "free",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": ["copywriting", "video-direction", "asset-factory", "claims-proof"],
+  "last_verified": null,
+  "status": "beta",
+  "required_providers": []
+}

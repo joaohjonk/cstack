@@ -1,0 +1,21 @@
+id: creative-organic-vs-paid
+tier: T2
+skills:
+- creative-strategist
+depends_on:
+- skills/creative-strategist/SKILL.md
+- registry/creative-taxonomy.json
+description: '"Make it go viral" becomes an organic-travel objective with named reasons, kept apart from paid performance.'
+cannot_isolate: Actual spread.
+setup: 'Request: ''make our next ads go viral''. Fictional brand workspace.'
+expected:
+  must:
+  - separates paid performance, organic travel and brand equity as different objectives and asks or decides which this bet serves
+  - names travel reasons (for example usefulness, identity signalling, participation) for any organic-travel bet
+  - keeps the brand constraint on organic pieces
+  must_not:
+  - promises virality or offers a generic viral formula
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

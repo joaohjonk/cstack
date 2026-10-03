@@ -18,7 +18,7 @@ Good taste and current culture are different inputs. Culture is observed, dated 
 
 - Category conventions and competitor moves: `competitor-intel`.
 - Visual references: `taste-search`.
-- Performance analysis: `creative-performance` inputs via `workflow paid-social`.
+- What marketers and creators are doing with culture in ads: `competitor-intel` (ads lens). The brand's own ad results: `creative-intelligence`.
 
 ## Inputs
 

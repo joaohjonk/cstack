@@ -13,6 +13,7 @@ export const FIXED = {
   'registry/models.json': 'model-registry',
   'brand/brand-system.json': 'brand-system',
   'brand/brand-world.json': 'brand-world',
+  'registry/creative-taxonomy.json': 'creative-taxonomy',
 };
 export const JSONL = {
   'learnings.jsonl': 'learning-event',
@@ -25,6 +26,7 @@ export const JSONL = {
   'culture.jsonl': 'cultural-signal',
   'competitors.jsonl': 'competitor-observation',
   'performance.jsonl': 'creative-performance',
+  'insights.jsonl': 'creative-insight',
 };
 
 let _ajv;

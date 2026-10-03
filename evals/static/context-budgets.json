@@ -1,6 +1,6 @@
 {
   "tolerance": 0.1,
-  "catalog_ceiling": 3835,
+  "catalog_ceiling": 4366,
   "skills": {
     "brand-import": {
       "ceiling": 1576,
@@ -121,6 +121,26 @@
     "video-direction": {
       "ceiling": 1353,
       "set": "2026-10-03"
+    },
+    "asset-factory": {
+      "ceiling": 1131,
+      "set": "2026-10-03"
+    },
+    "creative-intelligence": {
+      "ceiling": 1370,
+      "set": "2026-10-03"
+    },
+    "creative-strategist": {
+      "ceiling": 1541,
+      "set": "2026-10-03"
+    },
+    "hook-format-lab": {
+      "ceiling": 1077,
+      "set": "2026-10-03"
+    },
+    "winner-scaler": {
+      "ceiling": 1066,
+      "set": "2026-10-03"
     }
   },
   "history": [
@@ -200,6 +220,13 @@
       "from": 3102,
       "to": 3836,
       "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "catalog",
+      "from": 3835,
+      "to": 4366,
+      "reason": "five creative strategy skills (creative-strategist, creative-intelligence, hook-format-lab, winner-scaler, asset-factory) approved by the owner on 2026-10-03; descriptions trimmed first"
     }
   ]
 }

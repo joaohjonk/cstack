@@ -1,0 +1,23 @@
+id: creative-concentration-brand
+tier: T2
+skills:
+- creative-intelligence
+- creative-strategist
+depends_on:
+- skills/creative-intelligence/SKILL.md
+- skills/creative-strategist/SKILL.md
+description: A winning but concentrated, platform-default look is read as a brand risk, and the answer keeps the message while moving it into the brand's codes.
+cannot_isolate: Whether brand-verify's distinctiveness read matches the owner's.
+setup: examples/tessel-kiln report (66% of spend in creator-to-camera ads shot in platform-default grammar; brand-world ads trail on CPA).
+expected:
+  must:
+  - says the message may be winning while the brand's own look is losing share
+  - runs or requests brand-verify on the concentrated ads
+  - proposes a bet that keeps the angle and talent and tests the brand's visual world against the platform default
+  must_not:
+  - recommends moving all spend to the platform-default look
+  - recommends dropping the winning message because it is off-brand in look
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

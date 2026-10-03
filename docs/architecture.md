@@ -81,6 +81,8 @@ Details: [cost-and-context.md](cost-and-context.md).
 
 **Experiments.** `cstack experiment init|log|status` runs bounded keep/discard loops: one mutable surface, a frozen fixture, a fixed budget, an incumbent that changes only on evidence, and explicit stops ([learnings.md](learnings.md#experiments-and-autoresearch)).
 
+**Creative strategy.** Providers supply evidence; cstack supplies judgment. Ad results from any export enter through `cstack creative import` (adapters in `providers/evidence/`) as `creative-performance` records tagged with cstack's own taxonomy (`registry/creative-taxonomy.json`, one family per term). `cstack creative report` reads them above minimum data and only ever writes observations; the evidence ladder (observation, hypothesis, test, learning, rule) is enforced by the `creative-insight` schema, and a rule exists only through `cstack learn promote`. `cstack creative check` gates what the judgment skills write: a bet's experiment (`creative-strategist`), a winner's family (`winner-scaler`) and a production plan (`asset-factory`), which refuses third-party captures and competitor references as sources. Performance data tells cstack what deserves another question, not what the brand should become.
+
 ## Skills, hosts and budgets
 
 A skill is `SKILL.md` (frontmatter plus the skill contract headings) and `skill.meta.json` (type, triggers, inputs, outputs, handoffs, gates, cost class, fixtures). `cstack index` generates `registry/skills-index.json`, and `cstack validate` fails when it drifts. Each skill and the catalog have token budgets that `cstack budget --check` enforces. `cstack setup` links the same skills into every host. All of this is specified in [skill-authoring.md](skill-authoring.md).

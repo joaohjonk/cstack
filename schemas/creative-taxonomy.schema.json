@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/creative-taxonomy.schema.json",
+  "title": "Creative taxonomy",
+  "description": "cstack's own versioned vocabulary for reading an ad in layers. Each family answers one question; a term belongs to one family only. Brands extend it in their workspace.",
+  "type": "object",
+  "required": [
+    "version",
+    "families"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "updated": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "note": {
+      "type": "string"
+    },
+    "families": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "angle",
+          "hook_tactic",
+          "visual_hook",
+          "verbal_hook",
+          "mechanic",
+          "format",
+          "proof",
+          "payoff",
+          "cta",
+          "awareness_stage",
+          "talent",
+          "setting",
+          "visual_world",
+          "offer",
+          "duration",
+          "aspect",
+          "audience"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "question",
+          "is_not",
+          "layer"
+        ],
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "is_not": {
+            "type": "string"
+          },
+          "layer": {
+            "enum": [
+              "concept",
+              "production"
+            ]
+          },
+          "terms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "open": {
+            "type": "boolean",
+            "description": "free text expected (an angle is a sentence, not a term)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "travel_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "why something spreads organically; the organic objective names one or more"
+    }
+  },
+  "additionalProperties": false
+}

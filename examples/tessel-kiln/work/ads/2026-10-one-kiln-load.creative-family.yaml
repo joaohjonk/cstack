@@ -1,0 +1,27 @@
+# Fictional example. winner-scaler on TK-A03 ("one kiln load then gone"), the brand's own ad.
+id: F-2026-10-01
+winner_ref: TK-A03
+winner_tags:
+  format: creator to camera
+  talent: the potter
+  hook_tactic: result first
+  mechanic: ritual
+  angle: one kiln load, then gone
+  visual_world: "platform default: phone, ring light, captions"
+invariant:
+  statement: a finite batch, shown by the person who made it, so the scarcity is something you can check
+  families: [angle, mechanic]
+not_invariant: [format, talent, setting, visual_world, verbal_hook, duration, aspect]
+variants:
+  - id: V1
+    changes: { format: product still, visual_world: "brand codes: north window, warm ground, glaze truth", verbal_hook: "Batch 14. 60 plates. 22 left." }
+    why: same scarcity as a number on a still; the cheapest test of the angle without a person
+  - id: V2
+    changes: { format: behind the scenes, talent: studio team, setting: the kiln room at unloading }
+    why: the batch made visible as a moment, not a claim
+  - id: V3
+    changes: { format: comparison static, proof: numbers, visual_world: "brand codes: north window, warm ground, glaze truth" }
+    why: one batch against a factory run, in the brand's own grammar
+  - id: V4
+    changes: { setting: a first-home kitchen shelf, talent: a customer, format: day in the life }
+    why: the batch arriving where it will be used

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Creative strategy layer.** Five skills: `creative-strategist` (bets with a tension, objectives and one controlled experiment), `creative-intelligence` (the brand's own results, observations only), `hook-format-lab` (nine-part attention design), `winner-scaler` (invariant first, then variants across families), `asset-factory` (production plan with experiment ids, then the existing skills). `competitor-intel` gains an ads lens. The `paid-social` workflow becomes `growth-creative` (old name kept as an alias). `cstack creative import|report|check`; CSV evidence adapter with presets (`providers/evidence/`); cstack's own creative taxonomy; schemas `creative-bet`, `creative-insight` (the evidence ladder), `creative-family`, `production-plan`, `creative-taxonomy`, and tags on `creative-performance`; research-tool entries for Meta Marketing API, TikTok API for Business, Crux and Motion (exports; no public API found for the last two); a `creative` task in the context map; Tessel Kiln example ads data, bet, family and plan; 8 fixtures.
 Method before making, and the media expansion: 3D, mockups, vector and symbols, AI video, typography.
 
 - **Originals and readers.** Every cstack write refuses `assets/official/` (generation, video, SVG, mockup and paste outputs, lineage sidecars; `--force` included). `brand/context-map.yaml` and `cstack brand context --task <name>` give each task its sections and files. `cstack brand guide` writes a human-readable `brand/generated/guide.html` from the same brand files, with the agent-readable context embedded.

@@ -1,0 +1,18 @@
+{
+  "slug": "creative-strategist",
+  "type": "composite",
+  "summary": "Decide the next creative bets from brand, customer, market and performance, each with a tension, objective and one controlled experiment",
+  "tags": ["growth", "ads", "creative strategy", "testing", "paid social", "organic"],
+  "triggers": ["what should we make next", "creative strategy", "ad strategy", "next round of ads", "creative bets", "test plan for ads", "what to test"],
+  "required_inputs": ["brand workspace", "customer evidence or stated assumptions"],
+  "outputs": ["work/ads/*.creative-bet.yaml", "work/ads/*-strategy.md"],
+  "cost_class": "low",
+  "context_class": "m",
+  "mutating": true,
+  "handoff": ["hook-format-lab", "winner-scaler", "asset-factory", "claims-proof", "learn-loop"],
+  "approval_gates": [{ "id": "bet", "after_step": "rank", "artifact": "creative-bet", "never_self_approve": true }],
+  "fallback": { "when_missing": ["performance data"], "mode": "degraded" },
+  "last_verified": null,
+  "status": "beta",
+  "required_providers": []
+}

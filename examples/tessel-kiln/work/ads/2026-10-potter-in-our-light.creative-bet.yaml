@@ -1,0 +1,62 @@
+# Fictional example. Answers the 2026-09 report: the potter's videos lead on CPA, but they are shot in the
+# platform's default grammar and carry 66% of spend. Is the message the winner, or the ring light?
+id: B-2026-10-01
+title: The potter, in our own light
+status: proposed
+created: 2026-10-03
+by: creative-strategist
+tension: "I want plates I will actually use every day, not ones I am afraid to chip."
+audience:
+  who: people furnishing a first permanent home who buy a few pieces at a time
+  awareness_stage: problem-aware
+  objections:
+    - handmade means fragile
+    - handmade means I cannot replace a piece later
+  language:
+    - "will it survive the dishwasher"
+    - "can I buy more of the same glaze"
+concept:
+  angle: one kiln load, then gone, and it is made for daily use
+  hook_tactic: confession
+  visual_hook: the potter's hands lifting a still-warm plate off the kiln shelf, north window behind
+  verbal_hook: "I only fire this glaze once. Here is how many you get."
+  mechanic: reveal
+  format: creator to camera
+  proof: demonstration
+  payoff: the batch number and how many pieces are left
+  cta: shop
+  awareness_stage: problem-aware
+hook_family:
+  - "I only fire this glaze once."
+  - "Sixty plates. That is the whole batch."
+  - the potter turning a plate to show the raw foot ring
+formats:
+  - creator to camera
+proof:
+  - claims.dishwasher_safe
+objectives:
+  - paid_performance
+  - brand_equity
+brand_constraint: >-
+  North-window light, warm ground, glaze shown as it is (speckle, pooling, raw foot ring). No ring light,
+  no burned-in platform captions in the brand cells; plain words, no banned language.
+experiment:
+  id: EXP-2026-10-visual-world
+  hold: [angle, talent, format, hook_tactic, mechanic, offer]
+  vary: [visual_world]
+  design: single_factor
+  levels: { visual_world: 2 }
+  success:
+    metric: CPA, brand-world cell within 15% of the platform-default cell
+    threshold: "<= 1.15x"
+    min_spend_per_cell: 400
+    min_impressions_per_cell: 30000
+    window_days: 14
+  kill: brand-world cell CPA above 1.4x after the minimum spend; keep the message, revisit the format
+evidence:
+  - ref: "cstack creative report 2026-10-03: format=creator to camera stronger CPA, confounded with talent and visual_world"
+    ladder: observation
+  - ref: "cstack creative report 2026-10-03: 66% of spend in platform-default visual world"
+    ladder: observation
+  - ref: "The message (finite batch, made by a person) is carrying the result, not the ring light."
+    ladder: hypothesis

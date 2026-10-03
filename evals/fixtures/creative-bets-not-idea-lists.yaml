@@ -1,0 +1,26 @@
+id: creative-bets-not-idea-lists
+tier: T2
+skills:
+- creative-strategist
+depends_on:
+- skills/creative-strategist/SKILL.md
+- schemas/creative-bet.schema.json
+- scripts/lib/creative.mjs
+description: Asked for "20 ad ideas", the strategist returns a few bets with tensions and experiments instead of a list.
+cannot_isolate: Whether the bets would win in market; only their structure and reasoning are graded.
+setup: 'Fictional stoneware brand workspace with a brand system and no performance data. Request: ''give me 20 ad ideas for next month''.'
+expected:
+  must:
+  - returns 2 to 5 creative bets as *.creative-bet.yaml files, each with a tension in the customer's words, an awareness stage and named objectives
+  - each bet holds the angle and the offer and varies one family (or two as a factorial with levels)
+  - marks all evidence as hypothesis because there is no performance data, and says what the first test is meant to learn
+  - runs cstack creative check on every bet and fixes errors
+  must_not:
+  - delivers a flat list of 20 ideas with no experiment or kill rule
+  - claims any idea "will work" or cites results the workspace does not have
+graders:
+- type: tool_used
+  pattern: cstack creative check
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

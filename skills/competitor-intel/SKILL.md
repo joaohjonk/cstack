@@ -11,14 +11,14 @@ The goal is not to copy competitors; it is to see the category's conventions cle
 ## When to use
 
 - New category or market entry; positioning or packaging work.
-- Before a paid-social round: what hooks and formats are saturated.
+- Before a creative round (`workflow growth-creative`): the ads lens below.
 - Quarterly refresh of the competitor corpus.
 
 ## When not to use
 
 - Culture and behaviors: `cultural-scan`.
 - Aesthetic references from any field: `taste-search`.
-- Interpreting the brand's own ad results: `workflow paid-social`.
+- Interpreting the brand's own ad results: `creative-intelligence`.
 
 ## Inputs
 
@@ -47,11 +47,13 @@ Primary observation (URL + timestamp + screenshot) > tool data (labelled with th
 4. **Map the category**: conventions (what everyone does), white space, overused patterns, rising patterns, claims saturation, creative fatigue, cultural opportunities.
 5. **Implications** for the brand: conventions to keep (category legibility), to invert, to ignore; claims that are crowded; proof that is missing everywhere.
 
+**Ads lens**: [references/ads-lens.md](references/ads-lens.md).
+
 ## Decision rules
 
 - No causal claims from engagement counts.
 - A pattern is "rising" only with at least two dated observations showing growth.
-- Screenshots and copied text are evidence for analysis, never assets for production (reference overcopy).
+- Screenshots and copied text are evidence for analysis, never assets for production (reference overcopy). Never a winner to scale or an asset source.
 
 ## Outputs, files written, state updated
 
@@ -65,7 +67,7 @@ Primary observation (URL + timestamp + screenshot) > tool data (labelled with th
 
 ## Handoff
 
-`brief` (reframe with the map), `creative-direction` (what to invert), `claims-proof` (crowded or risky claims), `copywriting`.
+`brief` (reframe with the map), `creative-direction` (what to invert), `claims-proof` (crowded or risky claims), `copywriting`, `creative-strategist` (ads lens).
 
 ## Failure modes
 

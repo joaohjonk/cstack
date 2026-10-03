@@ -1,0 +1,18 @@
+id: creative-confounded-winner
+tier: T0
+skills:
+- creative-intelligence
+depends_on:
+- scripts/lib/creative.mjs
+- examples/tessel-kiln/state/performance.jsonl
+description: The report finds the planted confound, concentration and fatigue in the example data (deterministic; tests/creative.test.mjs asserts the details).
+cannot_isolate: Real exports with messier tagging.
+setup: examples/tessel-kiln after importing work/ads/2026-09-meta-export.csv.
+expected:
+  must:
+  - report exits 0 and lists the creator-to-camera confound with talent and visual world, 66% concentration, and fatigue on TK-A01
+graders:
+- type: command
+  run: cstack creative report --ws examples/tessel-kiln
+  expect_exit: 0
+runs: 1
