@@ -35,6 +35,33 @@ What was built, what is honestly weak, and what was decided along the way. The f
 - Several research tools forbid agent access in their terms; detection had to distinguish "you have it" from "an agent may use it".
 - The prior private system's best lesson was negative: an AI judge passing a set did not predict the owner's verdict. That single fact shaped the judgment architecture more than any framework.
 
+## Addendum: method first, and the media expansion (later on 2026-10-03)
+
+The owner asked for 3D, mockups, vector and symbol knowledge, AI video and typography, and for one rule across all of it: research the best way to reach an outcome before making anything, then work step by step. Never one-shot.
+
+### What was added
+
+- **Method before making.** A flow schema, `cstack flows list|search|show|plan|check`, preamble section 0.5, the `flow-research` skill and 14 researched flows (type system, logo system, icon set, mockup set, four 3D outcomes, six video outcomes). `flows check` refuses a plan that compared fewer than two ways of getting there, left a step without a gate, made something without saying how it is compared to the target, has no stop condition, or never stated this run's target.
+- **Seven media skills:** type-director, symbol-design, vector-master, mockup, three-d, video-direction, video-assembly. Three workflows: logo-system, product-3d, product-video. landing-page, packaging and paid-social gained 3D, mockup and video steps.
+- **Deterministic checkers** for what models get wrong: `cstack type` (scales, rendered-type QA, font files), `svg`, `mockup`, `3d` (GLB budgets, real-world scale, frame sequences, a Blender script writer) and `video`.
+- 26 more fixtures (46 in all), 13 canon entries on marks, systems and typography (25 in all), a 68-entry model registry and a 48-entry research-tool registry.
+- A typography pass: the primer traces 20 common rules to their reasons, studio lessons were checked against sources ([research/typography.md](research/typography.md)), and fluid type scales warn when zoom can fail.
+- `cstack validate` now runs `flows check` on the library, checks fixture format, and fails when a skill, doc, fixture or flow names a `cstack` command that does not exist.
+
+### What is weak
+
+1. **No paid generation and no Blender run.** The Blender scripts parse and their control flow is tested against a stub, but they have never run in real Blender. No video or 3D model was called.
+2. **Thresholds are researched defaults.** 3D budgets for web heroes and social, type QA limits, mockup tolerances and video checks come from documentation and practitioner reports, not from the owner's verdicts. They need calibration on real runs (backlog P1).
+3. **The owner's reference pages were not inspected.** The build environment's network blocked some reference sites, so the flows rest on documentation and practitioner evidence. The fix is a `cstack browse` pass where the network allows it.
+4. **30 skills.** Each new one has its own failure modes, fixtures and checker, which is the bar for adding a skill. The merge rule after real runs still applies.
+5. **Known blind spots in the checkers.** The video label-drift check (SSIM in a region) is weak on flat colours; freeze detection on lossy video starts a few frames late; the OpenTimelineIO export has not been opened in an editor or the OTIO library; safe zones are operator conventions, not platform specs. `mockup verify` was checked against synthetic changes (a single changed glyph fails, light noise passes), not against owner verdicts. `svg reduce` scores are a heuristic.
+
+### What surprised us
+
+- **A YAML trap hid inside the flows.** An unquoted comma in a one-line mapping (`{check: board, hands and faces}`) silently splits the value into stray keys, so a gate lost half its check without any error. It affected 12 lines across the flows. The flow schema now rejects unknown keys, and a test covers the case.
+- **The method rule needed a checker to be real.** Before `flows check`, "compare at least two candidates" was advice. Now a plan that skips it fails.
+- **Instructions drift ahead of code.** Skills referred to commands that did not exist yet. The new validate check caught every one.
+
 ## Unvalidated, on the record
 
-Paid generation end to end; Taste Labs live calls; T2–T4 behavior; multi-host install outside Claude Code and `.agents`; Windows paths; video routing; any real campaign.
+Paid generation end to end; Taste Labs live calls; T2–T4 behavior; multi-host install outside Claude Code and `.agents`; Windows paths; video and 3D routing; the Blender scripts in real Blender; any real campaign.

@@ -6,7 +6,7 @@ Evals answer one question: does this still behave the way we said it would? csta
 
 | Tier | What runs | Cost | When |
 |---|---|---|---|
-| **T0** static | `cstack validate` (schemas compile, skill contract, `skill.meta.json`, index freshness, governed data files, workflow skill references, no home paths, no credential-looking strings), `cstack budget --check` | free | always |
+| **T0** static | `cstack validate` (schemas compile, skill contract, `skill.meta.json`, index freshness, governed data files, workflow skill references, flows pass `flows check`, fixture format, every named `cstack` command exists, no home paths, no credential-looking strings), `cstack budget --check` | free | always |
 | **T1** unit / fixture | `node --test tests/*.test.mjs` (core libs, providers via the mock, browser) | free | code, schemas or tests changed |
 | **T2** behavior | fixtures in `evals/fixtures/` run on a cheap model and graded | low | a touched skill or a declared dependency changed |
 | **T3** live | provider smoke: dry run first, then one bounded live call if credentials exist | paid, bounded | a provider adapter changed |
@@ -84,7 +84,11 @@ runs: 3                                # repeat to beat model noise
 
 Order graders from deterministic to judged. If a `command` grader can decide the case, the `llm` grader only covers what the command cannot.
 
-The v0.1 suite has 20 fixtures: 19 at T2 and one at T0. Examples: `make-it-cooler` (diagnose before changing), `expensive-overnight-batch` (probes and a spend plan before 200 calls), `existing-brand-conflicting-assets` (surface the conflict, never average), `ai-judge-not-owner`, `model-list-stale`, `skill-grows-significantly`, `retired-rule-in-template`.
+The suite has 46 fixtures: 45 at T2 and one at T0. Examples: `make-it-cooler` (diagnose before changing), `expensive-overnight-batch` (probes and a spend plan before 200 calls), `existing-brand-conflicting-assets` (surface the conflict, never average), `ai-judge-not-owner`, `model-list-stale`, `skill-grows-significantly`, `retired-rule-in-template`.
+
+The craft fixtures added with 3D, mockups, vector, video and typography test the failure each medium is known for: `video-one-shot-temptation` and `3d-label-truth` (a researched plan that passes `cstack flows check` before anything is made), `mockup-logo-must-composite` (the real art is composited, never regenerated), `logo-generated-raster-as-master`, `mark-fails-16px`, `video-label-drift`, `ugc-fake-testimonial`, `cutdown-safe-zones`, `type-pairing-near-miss` and `type-review-beyond-font-choice`.
+
+`cstack validate` checks the format of every fixture: the tier, grader types and their fields, patterns that compile in JavaScript (no inline `(?i)` flags), known skills, and `depends_on` globs that match a file.
 
 ## Judgment separation
 

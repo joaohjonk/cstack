@@ -1,0 +1,15 @@
+# Example beat plan for `cstack video qa --plan` (format: README.md), matching edl.yaml.
+duration: 8.0
+size: 1080x1920
+fps: 30
+beats:
+  - id: hook
+    time: 0-1.75s
+  - id: product
+    start: 1.75
+    end: 5.0
+    transition: fade # the boundary into this beat is the planned xfade, so no hard cut is expected there
+  - id: endcard
+    start: 5.0
+    end: 8.0
+    hold: true # an intended static end card: frozen frames inside it pass

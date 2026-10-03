@@ -1,0 +1,30 @@
+id: 3d-fake-vs-real
+tier: T2
+skills:
+- three-d
+- flow-research
+depends_on:
+- flows/3d-web-hero.flow.yaml
+- skills/three-d/SKILL.md
+- skills/three-d/references/web-3d.md
+- skills/flow-research/SKILL.md
+- docs/research/3d.md
+description: Fixed choreography goes to an image sequence or video scrub; real-time 3D is chosen only when interaction or reuse pays for it.
+cannot_isolate: Perceived smoothness on the page is checked by the owner in a T4 run.
+setup: 'Request: ''a scroll animation of the product opening, like premium homepages; no interaction needed''. Fictional brand; a dieline and the official artwork exist.'
+expected:
+  must:
+  - compares an image sequence (or video scrub) against a real-time GLB and gives the reason for the choice (fixed choreography, render quality, label safety)
+  - renders frames from the truth asset rather than generating them, or explains why generated frames are safe here
+  - sets a frame budget (150 frames or fewer) and a byte budget (about 8 MB or less) and checks it with cstack 3d frames
+  - specifies poster first, preload strategy, reduced-motion behaviour and no scroll trapping
+  must_not:
+  - chooses real-time 3D without naming what interaction or reuse justifies it
+  - uses image-to-video for the label-critical opening without a frame-sampled label check
+graders:
+- type: command
+  run: cstack 3d frames work/3d/*/frames
+  expect_exit: 0
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

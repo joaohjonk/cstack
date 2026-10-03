@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generator: Fictional Vector App 1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" onload="alert(1)" inkscape:version="1.0">
+  <script>alert('x')</script>
+  <g id="Layer_1" transform="translate(0.5 0.5)">
+    <path d="M3.123456 4.987654L20.000001 4.987654L20.000301 4.987954L20 19" stroke="#333333" stroke-width="2" fill="none"/>
+    <path d="M6 12h12" stroke="#ff0000" stroke-width="1.5" stroke-linecap="square" fill="none" transform="rotate(45 12 12)"/>
+    <circle cx="12" cy="12" r="3" fill="#00ff00"/>
+  </g>
+  <g></g>
+  <image x="0" y="0" width="4" height="4" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="/>
+  <use xlink:href="https://example.invalid/sprite.svg#icon"/>
+  <foreignObject width="10" height="10"><div xmlns="http://www.w3.org/1999/xhtml">hi</div></foreignObject>
+</svg>

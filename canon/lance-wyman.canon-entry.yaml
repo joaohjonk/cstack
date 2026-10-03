@@ -1,0 +1,29 @@
+id: lance-wyman
+name: Lance Wyman
+kind: person
+domains:
+- wayfinding
+- pictograms
+- identity
+mental_model: 'a logo is one part of a program; icons can carry a whole city or event across languages'
+mechanisms:
+- derive pictograms and patterns from the mark so the system shares one source
+- icons for places and services that work without reading
+- one visual language from signage to tickets to merchandise
+representative_works:
+- Mexico 68 Olympics identity
+- Mexico City Metro station icons
+when_useful:
+- wayfinding, event and transit systems
+- multilingual audiences
+when_not_useful:
+- quiet brands that should recede
+tensions:
+- 'bold systems vs. restraint'
+sources:
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Lance_Wyman
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research
+status: current

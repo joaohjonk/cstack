@@ -53,6 +53,7 @@ The recipe and Shot DNA decide content; the router decides the model; this skill
 - A timeout is not a failure: the job stays pending; rerun the same request to re-attach. Never resubmit by hand.
 - A policy refusal is reported once with the prompt component likely responsible; rephrasing to evade provider policy is not allowed.
 - Stop when the stop condition triggers, even mid-batch.
+- Video requests state duration, resolution tier, audio on or off, start and end image and seed; spend plans carry the selection ratio (generations per usable clip), not one clip per final.
 
 ## Outputs, files written, state updated
 

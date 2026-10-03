@@ -1,0 +1,35 @@
+id: isotype
+name: Isotype (Otto Neurath, Gerd Arntz, Marie Neurath)
+kind: framework
+domains:
+- information design
+- pictograms
+- symbols
+mental_model: 'a picture language is a system: standardized flat signs, quantity by repetition, and an editor who transforms data into image'
+mechanisms:
+- show more by repeating the same sign, never by enlarging it
+- flat, perspective-free pictograms drawn to one grammar
+- a named transformer role between the data and the drawing
+representative_works:
+- Gesellschaft und Wirtschaft atlas (1930)
+- Gerd Arntz pictogram archive
+when_useful:
+- icon systems
+- data-led campaigns and packaging facts
+- wayfinding
+when_not_useful:
+- expressive one-off marks
+- luxury contexts that rely on ambiguity
+tensions:
+- 'universality claims vs. culturally specific signs'
+distance_from:
+  icon-design: near
+  packaging: middle
+  fashion: far
+sources:
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Isotype_(picture_language)
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research
+status: current

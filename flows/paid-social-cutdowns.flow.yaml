@@ -1,0 +1,69 @@
+id: paid-social-cutdowns
+outcome: channel cut-downs and hook variants of an approved video for paid social
+aliases:
+- cut-downs
+- reels version
+- tiktok version
+- hook variants
+status: researched
+target:
+  description: every channel version derived from one master, hook in the first 2 s, text inside safe zones, loudness and specs right
+  must:
+  - derived from the master, never regenerated
+  - captions burned in from real timings inside the zone
+  - -14 LUFS integrated, -1 dBTP; H.264 yuv420p, AAC, faststart
+  must_not:
+  - captions under platform UI
+  - a re-generated cut-down that drifts from the master
+  quality_bar: video qa passes on every channel file and the owner approves the hooks
+when:
+- any approved master going to paid placements
+not_when:
+- no master exists yet (product-hero-video or brand-mood-film first)
+candidates_considered:
+- name: deterministic reframe and recut from the master
+  verdict: chosen
+  why: consistent, free, reproducible
+- name: generative outpainting where a crop fails
+  verdict: fallback
+  why: only for frames the crop cannot save; gated
+- name: regenerate per channel
+  verdict: rejected
+  why: drift between versions; cost
+steps:
+- id: hooks
+  does: 3-5 hook variants on the first 2 s (product or face plus the claim)
+  kind: research
+  skill: video-direction
+  gate: {type: owner, check: owner approves hooks and claims}
+  compare_to_target: hook lands in 2 s
+- id: reframe
+  does: reframe per channel from the EDL focus
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: subject inside frame on sampled frames}
+  compare_to_target: subject survives the crop
+- id: captions
+  does: captions and cards per safe zone; loudness; encode
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: cstack video qa passes per channel}
+  compare_to_target: platform preview overlay
+- id: export
+  does: experiment ids in names and sidecars
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: auto, check: manifest lists every file}
+  compare_to_target: files match the test plan
+cost_ladder: free (deterministic); only gated outpainting costs money; stop after two outpaints that fail the protected-region check and crop or letterbox instead
+failure_modes:
+- hook arrives after 3 s
+- captions under UI
+- loudness jumps between versions
+evidence:
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: section 4.3 with safe-zone and loudness sources}
+last_verified: 2026-10-03
+stale_after_days: 90
+related:
+- skill:video-assembly
+- workflow:paid-social

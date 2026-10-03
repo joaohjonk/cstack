@@ -53,6 +53,8 @@ Deterministic: `cstack audit` (dimensions, unintended reframe), silhouette/outli
 - Text, logos and legal copy on product are composited from official art, never generated.
 - Two failed full regenerations on the same defect → switch method (decompose or composite); do not reroll a third time.
 - A generated output may become a reference for that model's notes (`model_notes`), never a product master.
+- 3D: label from official artwork on its UV island, four-angle overlay against the artwork, bounding box against measured dimensions (`three-d`).
+- Video: drift grows over a clip, so audit the first frame, the last frame and every cut, not only the first (`cstack video qa`).
 
 ## Outputs, files written, state updated
 

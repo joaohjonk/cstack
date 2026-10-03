@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-03",
-  "source": "docs/research/research-tools.md (primary sources fetched or searched on 2026-10-03)",
+  "source": "docs/research/research-tools.md, 3d.md, mockups-and-vector.md, ai-video.md, typography.md (primary sources fetched or searched on 2026-10-03)",
   "conventions": {
     "auth_env_origin": "Each access entry marks auth_env_origin: 'vendor' when the vendor documents the env var name, 'cstack' when cstack proposes the name because the vendor documents none.",
     "mcp_tool_patterns": "Claude Code names MCP tools mcp__<server>__<tool>. <server> is whatever the user named the server (claude.ai connectors use the display name, e.g. mcp__Figma__*). Match the server segment case-insensitively and also match tool-name fingerprints, never one exact server name.",
@@ -887,7 +887,11 @@
       "fallback": "Ask the user to export tokens (JSON) or share frames as PNG; never infer tokens from screenshots without labelling them as estimates.",
       "cstack_skills": [
         "brand-import",
-        "creative-direction"
+        "creative-direction",
+        "mockup",
+        "vector-master",
+        "symbol-design",
+        "type-director"
       ],
       "last_verified": "2026-10-03",
       "cstack_workflows": [
@@ -1241,6 +1245,1476 @@
       "cstack_workflows": [
         "paid-social"
       ]
+    },
+    {
+      "id": "blender-mcp",
+      "name": "Blender MCP",
+      "layer": "make_3d",
+      "roles": [
+        "scene building",
+        "materials",
+        "renders",
+        "GLB export",
+        "asset retrieval (Poly Haven, Sketchfab)"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": false,
+          "endpoint_or_package": "community MCP stdio (uvx blender-mcp) plus the Blender add-on; set BLENDER_MCP_SAFE_MODE=1",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free, open source",
+          "source": "https://github.com/ahujasid/blender-mcp",
+          "confidence": "high"
+        },
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "official Blender connector for Claude (natural-language interface to the Python API)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified",
+          "source": "https://mcpplaygroundonline.com/blog/claude-creative-connectors-adobe-blender-ableton",
+          "confidence": "medium"
+        },
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "blender -b -P script.py (headless, owner runs the script cstack writes)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://docs.blender.org/manual/en/latest/advanced/command_line/arguments.html",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "Community server is the de facto bridge (execute_blender_code, get_scene_info). Safe mode blocks file and network access inside scripts.",
+        "source": "https://github.com/ahujasid/blender-mcp",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__blender__*",
+          "mcp__*blender*__*"
+        ],
+        "env": [],
+        "cli": [
+          "blender"
+        ],
+        "files": []
+      },
+      "returns": [
+        "scene state",
+        "renders",
+        "exported GLB/FBX"
+      ],
+      "tos_notes": "execute_blender_code runs arbitrary Python in the owner's Blender: use safe mode and review scripts; assets pulled from libraries keep their licences.",
+      "fallback": "cstack 3d blender-script writes a bpy script for the owner to run; otherwise a plan with no render, stated as such.",
+      "cstack_skills": [
+        "three-d",
+        "mockup"
+      ],
+      "cstack_workflows": [
+        "product-3d",
+        "packaging"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "spline",
+      "name": "Spline (desktop MCP)",
+      "layer": "make_3d",
+      "roles": [
+        "authored web 3D scenes",
+        "export to three.js / R3F"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "MCP server bundled in the Spline desktop app, bound to 127.0.0.1 with an origin allowlist, no token",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Spline plan; MCP tier unverified",
+          "source": "https://docs.spline.design/generate/spline-mcp-server",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "Spline V2 (2026-08-21). Tools namespaced mcp__Spline__* (e.g. 3d_run_code, 2d_write_html). Exports vanilla JS, three.js, React, Next.js, R3F; WebGPU with WebGL fallback.",
+        "source": "https://docs.spline.design/generate/spline-mcp-server",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__Spline__*",
+          "mcp__spline__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "scene edits",
+        "exported code"
+      ],
+      "tos_notes": "Local server; owner's account and plan.",
+      "fallback": "Author the scene directly in three.js / R3F from the truth asset and check it against the same budgets.",
+      "cstack_skills": [
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "product-3d",
+        "landing-page"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "meshy",
+      "name": "Meshy",
+      "layer": "make_3d",
+      "roles": [
+        "image-to-3D",
+        "text-to-3D",
+        "remesh",
+        "retexture",
+        "rig"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "@meshy-ai/meshy-mcp-server",
+          "auth_env": [
+            "MESHY_API_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "paid credits",
+          "source": "https://docs.meshy.ai/en/api/ai",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "fal-ai/meshy/v7.1/image-to-3d through cstack generate",
+          "auth_env": [
+            "FAL_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "$0.80 untextured / $1.20 textured per generation (fal)",
+          "source": "https://fal.ai/models/fal-ai/meshy/v7.1/image-to-3d",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "The vendor skill pack has no built-in credit guardrail; route spend through cstack's budget.",
+        "source": "https://github.com/meshy-dev/meshy-3d-agent",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__meshy__*",
+          "mcp__*meshy*__*"
+        ],
+        "env": [
+          "MESHY_API_KEY"
+        ],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "GLB/FBX/OBJ/USDZ meshes with PBR textures"
+      ],
+      "tos_notes": "Generated meshes are shape drafts or props; never product truth or label textures.",
+      "fallback": "fal 3D models through cstack generate (cheaper probes first: TRELLIS.2, Hunyuan 3D).",
+      "cstack_skills": [
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "product-3d"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "tripo",
+      "name": "Tripo",
+      "layer": "make_3d",
+      "roles": [
+        "image-to-3D",
+        "multiview-to-3D",
+        "quad remesh"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "tripo-mcp (alpha; needs the Blender add-on)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified",
+          "source": "https://github.com/VAST-AI-Research/tripo-mcp",
+          "confidence": "medium"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "fal-ai/tripo3d/h3.1/image-to-3d through cstack generate",
+          "auth_env": [
+            "FAL_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "$0.01 per credit; credits per generation unverified",
+          "source": "https://fal.ai/models/fal-ai/tripo3d/h3.1/image-to-3d/api",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "Alpha. API exposes face_limit, quality levels, separate geometry and texture seeds, auto_size for real-world scale.",
+        "source": "https://github.com/VAST-AI-Research/tripo-mcp",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__tripo*__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "GLB (FBX with quad)"
+      ],
+      "tos_notes": "Shape drafts only for real products.",
+      "fallback": "fal TRELLIS.2 or Hunyuan 3D probes through cstack generate.",
+      "cstack_skills": [
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "product-3d"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "needle",
+      "name": "Needle Engine MCP",
+      "layer": "make_3d",
+      "roles": [
+        "inspect and edit three.js scenes",
+        "GLB analysis"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "official MCP over stdio or localhost:8424",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified",
+          "source": "https://engine.needle.tools/docs/ai/needle-mcp-server",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "Docs updated 2026-09-15.",
+        "source": "https://engine.needle.tools/docs/ai/needle-mcp-server",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__needle*__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "scene inspection",
+        "GLB analysis"
+      ],
+      "tos_notes": "",
+      "fallback": "cstack 3d inspect (built in) and gltf-transform inspect if installed.",
+      "cstack_skills": [
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "product-3d"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "gltf-transform",
+      "name": "glTF Transform CLI",
+      "layer": "make_3d",
+      "roles": [
+        "inspect",
+        "simplify",
+        "Draco/Meshopt compression",
+        "KTX2/WebP textures"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "@gltf-transform/cli (npx gltf-transform; installing needs the owner's approval)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free, MIT",
+          "source": "https://gltf-transform.dev/cli",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [
+          "gltf-transform"
+        ],
+        "files": []
+      },
+      "returns": [
+        "optimized GLB",
+        "inspection report"
+      ],
+      "tos_notes": "",
+      "fallback": "cstack 3d inspect reports the budget; optimization is planned and the owner runs it, or the budget is reported as not met.",
+      "cstack_skills": [
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "product-3d"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "poly-haven",
+      "name": "Poly Haven",
+      "layer": "make_3d",
+      "roles": [
+        "CC0 HDRIs",
+        "CC0 textures and models"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "public API https://api.polyhaven.com (no key)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free, CC0",
+          "source": "https://polyhaven.com/license",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "HDRI and texture downloads"
+      ],
+      "tos_notes": "CC0; downloads need network access and land in the workspace, not cstack.",
+      "fallback": "Procedural studio light (three.js RoomEnvironment) with no download.",
+      "cstack_skills": [
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "product-3d"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "capture-apps",
+      "name": "Capture apps (Object Capture, Polycam, KIRI, Scaniverse)",
+      "layer": "make_3d",
+      "roles": [
+        "photogrammetry",
+        "Gaussian splats"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "owner captures on device and exports USDZ/GLB/PLY/SPZ into assets/capture/",
+          "auth_env": [],
+          "auth_env_origin": "cstack",
+          "plan": "app-dependent",
+          "source": "https://developer.apple.com/documentation/realitykit/realitykit-object-capture",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [],
+        "files": [
+          "assets/capture"
+        ]
+      },
+      "returns": [
+        "meshes or splats of the real product"
+      ],
+      "tos_notes": "Owner-operated.",
+      "fallback": "Ask the owner to capture with the protocol in skills/three-d/references/web-3d.md (40-200 photos, even light, turntable).",
+      "cstack_skills": [
+        "three-d",
+        "product-fidelity"
+      ],
+      "cstack_workflows": [
+        "product-3d"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "dynamic-mockups",
+      "name": "Dynamic Mockups",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "template mockup renders",
+        "batch renders",
+        "motion mockups"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.dynamicmockups.com",
+          "auth_env": [
+            "DYNAMIC_MOCKUPS_API_KEY"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "free tier 50 credits, watermarked; Pro about $0.051 per credit; render 1 credit, MockAnything 5-15, MotionMockups 40-160",
+          "source": "https://docs.dynamicmockups.com/ai-assisted-development/mcp",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "About 20 tools: catalogs, PSD upload, render and batch render, print files, generative MockAnything, MotionMockups video.",
+        "source": "https://docs.dynamicmockups.com/ai-assisted-development/mcp",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__*dynamic*mockups*__*"
+        ],
+        "env": [
+          "DYNAMIC_MOCKUPS_API_KEY"
+        ],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "rendered mockup images and videos"
+      ],
+      "tos_notes": "Check template licence for client use; generative modes may alter art, so verify every render.",
+      "fallback": "cstack mockup render with an owned template package.",
+      "cstack_skills": [
+        "mockup"
+      ],
+      "cstack_workflows": [
+        "packaging"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "recraft",
+      "name": "Recraft",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "vector generation",
+        "vectorize",
+        "icons and illustration"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.recraft.ai/mcp (OAuth; bills subscription credits, not API units)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "subscription credits",
+          "source": "https://www.recraft.ai/docs/mcp-reference/getting-started",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Recraft REST API",
+          "auth_env": [
+            "RECRAFT_API_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "V4.1 Vector $0.08, Vector Pro $0.30 per image; vectorize $0.01",
+          "source": "https://www.recraft.ai/docs/recraft-models/recraft-v4-1",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "The old npm server is deprecated; use the remote MCP.",
+        "source": "https://www.recraft.ai/docs/mcp-reference/getting-started",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__*recraft*__*"
+        ],
+        "env": [
+          "RECRAFT_API_TOKEN"
+        ],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "SVG and raster images",
+        "traced SVG"
+      ],
+      "tos_notes": "Generated marks are exploration references; a master needs human refinement.",
+      "fallback": "LLM-written SVG for geometric constructions only; local Potrace or VTracer for tracing; hand sketches.",
+      "cstack_skills": [
+        "symbol-design",
+        "vector-master"
+      ],
+      "cstack_workflows": [
+        "logo-system"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "adobe-creativity",
+      "name": "Adobe for creativity (connector)",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "Photoshop, Illustrator, Firefly, Express, InDesign, Stock"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "remote MCP adobe-creativity.adobe.io/mcp (Claude connector)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Adobe plan; tool list unverified",
+          "source": "https://www.adobe.com/express/learn/blog/adobe-creativity-connector",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "Third parties report 50+ tools; exact list unverified. Detect it, never assume a tool.",
+        "source": "https://www.usecarly.com/blog/adobe-mcp/",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__*adobe*__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "edited documents and exports"
+      ],
+      "tos_notes": "Owner's Adobe account and licences.",
+      "fallback": "The owner works in Adobe apps and exports SVG/PSD into the workspace.",
+      "cstack_skills": [
+        "mockup",
+        "vector-master",
+        "symbol-design"
+      ],
+      "cstack_workflows": [
+        "packaging",
+        "logo-system"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "canva",
+      "name": "Canva MCP",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "design generation and edits",
+        "brand kits",
+        "templates",
+        "exports (PDF, PNG, MP4, PPTX)"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "Canva MCP server",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Canva plan",
+          "source": "https://canva.dev/docs/mcp/",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__*canva*__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "designs and exports"
+      ],
+      "tos_notes": "Template licences follow Canva's terms; record them before client use.",
+      "fallback": "The owner exports placements from Canva into the workspace.",
+      "cstack_skills": [
+        "mockup"
+      ],
+      "cstack_workflows": [
+        "paid-social",
+        "deck"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "pacdora",
+      "name": "Pacdora",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "dieline to 3D box",
+        "packaging mockups"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://www.pacdora.com (human use); Editor API sold by contact",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "unverified",
+          "source": "https://www.pacdora.com/tools/dieline-to-3d-mockup",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [],
+        "files": [
+          "references/pacdora"
+        ]
+      },
+      "returns": [
+        "3D box renders exported by the owner"
+      ],
+      "tos_notes": "No public MCP found; human-operated.",
+      "fallback": "Per-panel quads with cstack mockup render, or a Blender scene.",
+      "cstack_skills": [
+        "mockup",
+        "three-d"
+      ],
+      "cstack_workflows": [
+        "packaging"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "vectorizer-ai",
+      "name": "Vectorizer.AI",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "raster to vector trace (SVG, PDF, EPS, DXF)"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "Vectorizer.AI REST API",
+          "auth_env": [
+            "VECTORIZER_AI_API_ID",
+            "VECTORIZER_AI_API_SECRET"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "$0.20 to $0.05 per image by plan; free test mode",
+          "source": "https://vectorizer.ai/pricing",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [
+          "VECTORIZER_AI_API_ID",
+          "VECTORIZER_AI_API_SECRET"
+        ],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "traced vector files"
+      ],
+      "tos_notes": "Paid: ask before spend. A trace stays provisional until a person cleans it.",
+      "fallback": "Local VTracer or Potrace if installed; Recraft vectorize.",
+      "cstack_skills": [
+        "vector-master"
+      ],
+      "cstack_workflows": [
+        "logo-system"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "vtracer-potrace",
+      "name": "VTracer and Potrace (local tracers)",
+      "layer": "make_mockup_vector",
+      "roles": [
+        "colour trace (VTracer, MIT)",
+        "black-and-white trace (Potrace, GPL-2+)"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "vtracer (Rust CLI, MIT)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://github.com/visioncortex/vtracer",
+          "confidence": "high"
+        },
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "potrace (GPL-2+; call as an external binary, never bundle)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://potrace.sourceforge.net/",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [
+          "vtracer",
+          "potrace"
+        ],
+        "files": []
+      },
+      "returns": [
+        "SVG traces"
+      ],
+      "tos_notes": "Potrace is GPL: cstack (MIT) only calls it if the owner installed it.",
+      "fallback": "A cloud vectorizer after asking about spend, or a human redraw.",
+      "cstack_skills": [
+        "vector-master"
+      ],
+      "cstack_workflows": [
+        "logo-system"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "fal-mcp",
+      "name": "fal MCP",
+      "layer": "make_video",
+      "roles": [
+        "model search",
+        "schemas",
+        "pricing lookup",
+        "async jobs"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.fal.ai/mcp-relay (OAuth)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "pay per use",
+          "source": "https://fal.ai/docs/model-apis/mcp",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "search_models, get_model_schema, get_pricing, submit_job, check_job, cancel_job, upload_file. get_pricing maps onto cstack's spend preflight.",
+        "source": "https://fal.ai/docs/model-apis/mcp",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__fal*__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "model catalogue",
+        "prices",
+        "job results"
+      ],
+      "tos_notes": "Spend still goes through cstack's budget and ledger: prefer cstack generate for paid calls.",
+      "fallback": "cstack generate with FAL_KEY (cstack's own fal adapter).",
+      "cstack_skills": [
+        "model-router",
+        "generate-media",
+        "video-direction"
+      ],
+      "cstack_workflows": [
+        "product-video"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "higgsfield-mcp",
+      "name": "Higgsfield MCP and CLI",
+      "layer": "make_video",
+      "roles": [
+        "video and image generation",
+        "presets",
+        "voice-first explainers"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.higgsfield.ai/mcp (OAuth, credits)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "credits",
+          "source": "https://higgsfield.ai",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "Launched 2026-04-28; live model and preset catalogues; media flags accept a previous job id.",
+        "source": "docs/research/ai-video.md section 3",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__higgsfield*__*"
+        ],
+        "env": [],
+        "cli": [
+          "higgsfield"
+        ],
+        "files": []
+      },
+      "returns": [
+        "generated clips"
+      ],
+      "tos_notes": "Credits are spend; plan them with cstack spend plan.",
+      "fallback": "fal video models through cstack generate.",
+      "cstack_skills": [
+        "generate-media",
+        "video-direction"
+      ],
+      "cstack_workflows": [
+        "product-video"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "heygen-mcp",
+      "name": "HeyGen MCP",
+      "layer": "make_video",
+      "roles": [
+        "avatars",
+        "talking heads",
+        "video translation"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://mcp.heygen.com/mcp/v1/ (OAuth, plan credits)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "plan credits; enterprise API about $0.05 per second for Avatar IV",
+          "source": "https://docs.heygen.com/docs/heygen-remote-mcp-server",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__heygen*__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "avatar videos"
+      ],
+      "tos_notes": "Synthetic presenters never give testimonials; likeness consent and AI disclosure are gates (video-direction).",
+      "fallback": "fal avatar models (Kling Avatar) through cstack generate, after the same gates.",
+      "cstack_skills": [
+        "video-direction",
+        "claims-proof"
+      ],
+      "cstack_workflows": [
+        "paid-social"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "replicate-mcp",
+      "name": "Replicate MCP",
+      "layer": "make_video",
+      "roles": [
+        "second aggregator for model fallbacks"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "replicate-mcp (npm) or remote mcp.replicate.com",
+          "auth_env": [
+            "REPLICATE_API_TOKEN"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "pay per use",
+          "source": "https://replicate.com/docs",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__replicate*__*"
+        ],
+        "env": [
+          "REPLICATE_API_TOKEN"
+        ],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "model runs"
+      ],
+      "tos_notes": "Community wrappers vary in licence; check each model.",
+      "fallback": "fal through cstack generate.",
+      "cstack_skills": [
+        "model-router",
+        "generate-media"
+      ],
+      "cstack_workflows": [
+        "product-video"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "runway-skills",
+      "name": "Runway skills and API",
+      "layer": "make_video",
+      "roles": [
+        "video, image and audio generation scripts",
+        "routers and workflows"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "runwayml/skills plus SDKs and OpenAPI",
+          "auth_env": [
+            "RUNWAYML_API_SECRET"
+          ],
+          "auth_env_origin": "vendor",
+          "plan": "pay per use",
+          "source": "https://github.com/runwayml/skills",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__runway*__*"
+        ],
+        "env": [
+          "RUNWAYML_API_SECRET"
+        ],
+        "cli": [],
+        "files": []
+      },
+      "returns": [
+        "generated clips"
+      ],
+      "tos_notes": "Key only in env; dry run before billable calls.",
+      "fallback": "fal video models through cstack generate.",
+      "cstack_skills": [
+        "generate-media",
+        "video-direction"
+      ],
+      "cstack_workflows": [
+        "product-video"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "hyperframes",
+      "name": "HyperFrames (HTML to video)",
+      "layer": "make_video",
+      "roles": [
+        "deterministic motion graphics",
+        "type, cards, captions, logo stings"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "npx hyperframes init|preview|render|lint (Apache-2.0; installing needs the owner's approval)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://github.com/heygen-com/hyperframes",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [
+          "hyperframes"
+        ],
+        "files": []
+      },
+      "returns": [
+        "rendered motion graphics"
+      ],
+      "tos_notes": "Apache-2.0.",
+      "fallback": "cstack video captions and sheet for text; Remotion or an NLE handled by a person.",
+      "cstack_skills": [
+        "video-direction",
+        "video-assembly"
+      ],
+      "cstack_workflows": [
+        "product-video"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "fonts-in-use",
+      "name": "Fonts In Use",
+      "layer": "type_references",
+      "roles": [
+        "typefaces in real-world use, indexed by typeface, format, industry and period",
+        "in-use evidence for type choices, pairings and identity precedents"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://fontsinuse.com (public archive; a human browses and shares links to individual use pages)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://www.fontsinuse.com/about",
+          "confidence": "high"
+        },
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "RSS feeds listed on the FAQ (https://fontsinuse.com/main.rss, /staff-picks.rss, /blog.rss) for new-use alerts; titles and links only",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free",
+          "source": "https://fontsinuse.com/faq",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "No API or MCP found; the FAQ lists RSS feeds only.",
+        "source": "https://fontsinuse.com/faq",
+        "confidence": "medium"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__fonts_in_use__*",
+          "mcp__fontsinuse__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": [
+          "references/fonts-in-use"
+        ]
+      },
+      "returns": [
+        "use pages naming typefaces, designers, format, industry and year (through links a human shares)",
+        "new-use alerts from the RSS feeds"
+      ],
+      "tos_notes": "Terms of use prohibit data mining, robots, spiders and similar data-gathering or extraction tools, and commercial reproduction without written consent; site content is reproduced under fair use. Never let an agent crawl or bulk-fetch the site; cite individual use pages by URL. Operator: Fonts In Use LLC.",
+      "fallback": "Ask the user for links to specific use pages or screenshots; otherwise cite foundry in-use pages and the brand's own competitor captures, labelled as such, and say Fonts In Use was not queried.",
+      "cstack_skills": [
+        "type-director",
+        "identity-system",
+        "competitor-intel",
+        "taste-search"
+      ],
+      "cstack_workflows": [
+        "create-brand",
+        "logo-system"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "typewolf",
+      "name": "Typewolf",
+      "layer": "type_references",
+      "roles": [
+        "curated site of the day with the fonts each site uses",
+        "font popularity across its featured sites (yearly and all-time, 2013 onwards)",
+        "pairing ideas and alternatives"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://www.typewolf.com (site of the day; /all-fonts usage data; /recommendations lists)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free public pages",
+          "source": "https://www.typewolf.com/all-fonts",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "No API or MCP found.",
+        "source": "unverified (searches on 2026-10-03 found none)",
+        "confidence": "low"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__typewolf__*"
+        ],
+        "env": [],
+        "cli": [],
+        "files": [
+          "references/typewolf"
+        ]
+      },
+      "returns": [
+        "fonts used by featured sites, with dates",
+        "usage counts drawn from about 3,000 featured sites",
+        "curated pairing and alternative lists"
+      ],
+      "tos_notes": "unverified: no terms of use found (the homepage footer links a privacy policy). Browse at human pace; no crawling or bulk extraction. Popularity reflects a curated sample of design-led sites, not the web.",
+      "fallback": "HTTP Archive Web Almanac fonts chapter for measured web-wide usage; Fonts In Use pages the user shares; foundry in-use pages.",
+      "cstack_skills": [
+        "type-director",
+        "taste-search",
+        "cultural-scan"
+      ],
+      "cstack_workflows": [
+        "landing-page"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "google-fonts",
+      "name": "Google Fonts (Developer API, Google Design MCP, google/fonts repository)",
+      "layer": "type_sources",
+      "roles": [
+        "open-licence font catalogue metadata (families, variants, axes, subsets, categories)",
+        "font search and description for agents",
+        "font files and licences for self-hosting"
+      ],
+      "priority": 4,
+      "access": [
+        {
+          "mode": "mcp",
+          "official": true,
+          "endpoint_or_package": "https://design.googleapis.com/mcp (Google Design MCP; tools search_fonts, describe_font, generate_color_scheme, search_icons, icons_instructions)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free; the overview says no API key or OAuth 2.0 credentials are needed, while the reference page mentions enabling MCP servers and setting up authentication, so probe before relying on it",
+          "source": "https://developers.google.com/design-mcp/overview",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "https://www.googleapis.com/webfonts/v1/webfonts?key=<key> (sort alpha|date|popularity|style|trending; filters family, subset, category, capability WOFF2|VF)",
+          "auth_env": [
+            "GOOGLE_FONTS_API_KEY"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "free Google Cloud API key; use is bound by the Google APIs Terms of Service",
+          "source": "https://developers.google.com/fonts/docs/developer_api",
+          "confidence": "high"
+        },
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "github.com/google/fonts (families in ofl/, apache/ and ufl/ directories, each with METADATA.pb and its licence file); fetch only the families needed",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free; per-family OFL, Apache or UFL licence",
+          "source": "https://googlefonts.github.io/gf-guide/googlefonts.html",
+          "confidence": "high"
+        }
+      ],
+      "mcp": {
+        "official": true,
+        "notes": "Google Design MCP covers font discovery and description (plus Material colour and icons). The JSON at fonts.google.com/metadata/fonts that some community tools read is not a documented API; cstack does not depend on it.",
+        "source": "https://developers.google.com/design-mcp/reference/mcp",
+        "confidence": "high"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__google-design__*",
+          "mcp__google_design_mcp__*",
+          "mcp__design-mcp__*"
+        ],
+        "mcp_tool_fingerprints": [
+          "search_fonts",
+          "describe_font",
+          "generate_color_scheme"
+        ],
+        "env": [
+          "GOOGLE_FONTS_API_KEY"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "families with variants, subsets, axes, category, version, lastModified and file URLs (Developer API)",
+        "font descriptions: look and feel, styles, weights, usage, languages (Design MCP)",
+        "font files, METADATA.pb and licence files (repository)"
+      ],
+      "tos_notes": "Developer API use is bound by the Google APIs Terms of Service (Google Fonts API terms page last updated 2021-11-09). Each font carries its own open licence (OFL, Apache or UFL); keep the licence file with any self-hosted copy. Design MCP documentation is CC BY 4.0, code samples Apache 2.0.",
+      "fallback": "Browse fonts.google.com by hand and record family names, or download specific families from the google/fonts repository and inspect them with `cstack type font`.",
+      "cstack_skills": [
+        "type-director",
+        "identity-system"
+      ],
+      "cstack_workflows": [
+        "create-brand",
+        "landing-page"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "adobe-fonts",
+      "name": "Adobe Fonts",
+      "layer": "type_sources",
+      "roles": [
+        "subscription font library for desktop and web projects",
+        "library metadata (families, foundries, classification, CSS stacks) through the legacy Typekit API"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://fonts.adobe.com (Creative Cloud account; web projects served only through Adobe's embed code)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "Creative Cloud subscription; no monthly pageview limit for web projects; web fonts stop working on sites if the subscription is cancelled; no self-hosting",
+          "source": "https://helpx.adobe.com/uk/fonts/web/font-licensing/webfont-licensing.html",
+          "confidence": "high"
+        },
+        {
+          "mode": "api",
+          "official": true,
+          "endpoint_or_package": "https://typekit.com/api/v1/json/ (kits, libraries, families/:family; changelog last updated September 2011)",
+          "auth_env": [
+            "ADOBE_FONTS_API_TOKEN"
+          ],
+          "auth_env_origin": "cstack",
+          "plan": "Adobe account API token; the auth header was not confirmed this pass, and the changelog's last entry is September 2011, so the API may be unmaintained",
+          "source": "https://fonts.adobe.com/docs/api/requests",
+          "confidence": "medium"
+        }
+      ],
+      "mcp": {
+        "official": false,
+        "notes": "No Adobe Fonts MCP found. The adobe-creativity connector entry does not document font licensing tools.",
+        "source": "unverified (searches on 2026-10-03 found none)",
+        "confidence": "low"
+      },
+      "detect": {
+        "mcp_tool_patterns": [
+          "mcp__adobe_fonts__*",
+          "mcp__adobefonts__*",
+          "mcp__typekit__*"
+        ],
+        "env": [
+          "ADOBE_FONTS_API_TOKEN"
+        ],
+        "cli": []
+      },
+      "returns": [
+        "library and family metadata (browse info, foundry, variations, CSS stack) via the legacy API",
+        "availability of a family in the user's account (human check)"
+      ],
+      "tos_notes": "Adobe Fonts Additional Terms (2020): use fonts only through the service; no distributing, converting, modifying or reverse engineering font files; documents and sites stay viewable only while the subscription continues. Adobe's general terms prohibit data mining and extraction, including data scraping for machine learning (quoted via a third-party terms tracker; Adobe's page not fetched). Never scrape fonts.adobe.com or extract font files from kits.",
+      "fallback": "The user checks availability in their Adobe account and shares family names; type-director keeps Adobe Fonts choices provisional until the licence scope (web project, desktop, app, broadcast, logo) is confirmed.",
+      "cstack_skills": [
+        "type-director",
+        "identity-system"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "foundry-trial-fonts",
+      "name": "Foundry trial and test fonts",
+      "layer": "type_sources",
+      "roles": [
+        "test retail typefaces in specimens and pitches before licensing"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "export",
+          "official": true,
+          "endpoint_or_package": "trial files the user downloads from a foundry (examples: Grilli Type trials, Zetafonts trial licence, Pangram Pangram free personal-use fonts) and places in the brand workspace under assets/fonts/trial",
+          "auth_env": [],
+          "auth_env_origin": "cstack",
+          "plan": "free; terms differ per foundry",
+          "source": "https://www.grillitype.com/api/v1/download/eula_trials/Grilli-Type-Trial-Fonts-EULA.pdf",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [],
+        "files": [
+          "assets/fonts/trial",
+          "fonts/trial"
+        ]
+      },
+      "returns": [
+        "font files for `cstack type font` inspection and specimen rendering, for testing only"
+      ],
+      "tos_notes": "Trial licences are for testing. Grilli Type (trial EULA, March 2019) allows testing and paid or unpaid pitches but no final files; Zetafonts allows unpublished pitches and design tests, leaves numerals 0-9 out of trial files and forbids passing files to clients; Pangram Pangram's free fonts are for personal use, and commercial projects need a licence. Read each foundry's EULA; never publish, deploy or hand over trial files; record trial status in the font's provenance.",
+      "fallback": "Use the foundry's own web type tester by hand, or explore with open-licence fonts; keep every trial-based choice provisional until it is licensed.",
+      "cstack_skills": [
+        "type-director",
+        "identity-system",
+        "mockup"
+      ],
+      "cstack_workflows": [
+        "create-brand",
+        "packaging"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "wakamai-fondue",
+      "name": "Wakamai Fondue",
+      "layer": "type_inspection",
+      "roles": [
+        "what a font file can do: OpenType features, variable axes, character set, metadata and licence fields, generated CSS"
+      ],
+      "priority": 2,
+      "access": [
+        {
+          "mode": "browser",
+          "official": true,
+          "endpoint_or_package": "https://wakamaifondue.com (drop a font file; processed locally in the browser, not uploaded)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free; open source",
+          "source": "https://creativepro.com/reveal-your-fonts-hidden-secrets-with-wakamai-fondue/",
+          "confidence": "medium"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": []
+      },
+      "returns": [
+        "OpenType feature list with previews",
+        "variable axes and named instances",
+        "character set by category or Unicode block",
+        "CSS for features and axes"
+      ],
+      "tos_notes": "Runs locally, so font files are not uploaded (per a February 2021 CreativePro review); the tool's own terms were not reviewed. A human tool; `cstack type font` covers the same checks from the CLI.",
+      "fallback": "`cstack type font <file> --languages <codes>` for names, fsType, metrics, axes, features and coverage; fontTools ttx for raw tables.",
+      "cstack_skills": [
+        "type-director"
+      ],
+      "last_verified": "2026-10-03"
+    },
+    {
+      "id": "fonttools",
+      "name": "fontTools",
+      "layer": "type_inspection",
+      "roles": [
+        "inspect, convert, subset, merge and instance font files from the command line"
+      ],
+      "priority": 3,
+      "access": [
+        {
+          "mode": "cli",
+          "official": true,
+          "endpoint_or_package": "Python package fonttools (current docs require Python 3.11+): fonttools, ttx, pyftsubset, pyftmerge; subcommands subset, merge, varLib, varLib.instancer, feaLib, cu2qu (installing needs the owner's approval)",
+          "auth_env": [],
+          "auth_env_origin": "vendor",
+          "plan": "free, MIT",
+          "source": "https://fonttools.readthedocs.io/en/latest/",
+          "confidence": "high"
+        }
+      ],
+      "detect": {
+        "mcp_tool_patterns": [],
+        "env": [],
+        "cli": [
+          "fonttools",
+          "ttx",
+          "pyftsubset"
+        ],
+        "files": []
+      },
+      "returns": [
+        "XML dump of font tables (ttx)",
+        "WOFF2 subsets per script or page (pyftsubset)",
+        "static or partial instances of variable fonts (varLib.instancer)",
+        "merged fonts (pyftmerge)"
+      ],
+      "tos_notes": "The software is MIT; the font's licence still governs what may be done to the font. Many commercial EULAs forbid modifying or converting fonts, and subsetting, instancing or format conversion may count as modification. Check the EULA first; open licences such as the OFL allow modification under their own conditions.",
+      "fallback": "`cstack type font` for read-only inspection; leave subsetting to the foundry's web kit or the font service.",
+      "cstack_skills": [
+        "type-director"
+      ],
+      "cstack_workflows": [
+        "landing-page"
+      ],
+      "last_verified": "2026-10-03"
     }
   ]
 }

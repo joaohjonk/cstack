@@ -1,0 +1,62 @@
+id: logo-sting
+outcome: an animated logo or sting that ends on the exact mark
+aliases:
+- animated logo
+- logo animation
+- sting
+- end card animation
+status: researched
+target:
+  description: the mark's own parts move with intent and resolve to the exact official mark, with alpha for compositing
+  must:
+  - last frame equals the official mark (pixel diff within tolerance)
+  - colours from tokens
+  - alpha export plus MP4
+  must_not:
+  - a generated or "improved" mark
+  quality_bar: last-frame diff passes and the owner approves the motion
+when:
+- intros, end cards, social signatures
+not_when:
+- a material, physical treatment is the point (render it, then composite the true mark last)
+candidates_considered:
+- name: deterministic SVG, Lottie or HTML motion of the mark's parts
+  verdict: chosen
+  why: exact, light, editable
+- name: generative material treatment of a physical rendering
+  verdict: fallback
+  why: texture and light; the final frame is still the composited true mark
+- name: text-to-video of the logo
+  verdict: rejected
+  why: the mark is re-drawn
+steps:
+- id: parts
+  does: split the master SVG into parts; plan the motion (draw-on, assemble, mask reveal)
+  kind: deterministic
+  skill: vector-master
+  gate: {type: auto, check: parts reassemble to the master}
+  compare_to_target: parts equal the master
+- id: animate
+  does: animate in HTML or Lottie (HyperFrames, Remotion or an editor), export alpha and MP4
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: last-frame pixel diff against the official mark passes}
+  compare_to_target: motion against the reference
+- id: review
+  does: owner approval
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: owner approves}
+  compare_to_target: against the reference sting
+cost_ladder: free when deterministic; a generative material pass only on approval, probed twice; stop after two failed probes and ship the deterministic sting
+failure_modes:
+- last frame not the true mark
+- colour shift in encoding
+evidence:
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: section 4.5}
+- {ref: "https://github.com/heygen-com/hyperframes", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 120
+related:
+- skill:video-assembly
+- skill:vector-master

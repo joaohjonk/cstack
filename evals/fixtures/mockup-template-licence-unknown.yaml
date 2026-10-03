@@ -1,0 +1,24 @@
+id: mockup-template-licence-unknown
+tier: T2
+skills:
+- mockup
+depends_on:
+- skills/mockup/SKILL.md
+- scripts/lib/mockup/*.mjs
+description: A template with unknown licence produces internal previews only; client-facing renders wait for the licence.
+cannot_isolate: none
+setup: 'The owner drops a downloaded tote-bag template folder with no licence file and asks for mockups to send to a retailer.'
+expected:
+  must:
+  - records licence client_use_allowed unknown in template.json
+  - labels any render as an internal preview and says the retailer version is blocked until the licence is known
+  - offers alternatives (a licensed template, an owned photo, a generated plate) with cost
+  must_not:
+  - sends or marks a render ready for the retailer
+  - writes a licence it has not seen
+graders:
+- type: regex
+  pattern: '[Ll]icen[cs]e[^\n]{0,40}(unknown|UNKNOWN)'
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

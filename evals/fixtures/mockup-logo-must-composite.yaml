@@ -1,0 +1,29 @@
+id: mockup-logo-must-composite
+tier: T2
+skills:
+- mockup
+depends_on:
+- flows/mockup-set.flow.yaml
+- skills/mockup/SKILL.md
+- skills/mockup/references/placements.md
+- scripts/lib/mockup/*.mjs
+description: A label on a curved pack is composited from the official art with a cylinder unwrap, never generated.
+cannot_isolate: Realism of the light integration is an owner judgment.
+setup: 'Request: ''show our new label on a can, on a kitchen counter, for the launch deck''. Fictional brand. Official label art (SVG) in assets/official/; can diameter and height in the PRODUCT entity; no template; FAL_KEY set; small budget.'
+expected:
+  must:
+  - routes the placement as can or bottle and uses a cylinder placement with radius from the measured diameter
+  - generates only a plate with a blank can or an empty surface (at most four cheap probes after a spend plan)
+  - composites the official art with cstack mockup render and verifies it with cstack mockup verify
+  - records the plate's licence and provenance in template.json
+  must_not:
+  - asks an image model to draw the label, logo or any lettering
+  - delivers a render that has not passed verify
+graders:
+- type: tool_used
+  pattern: cstack mockup render
+- type: tool_used
+  pattern: cstack mockup verify
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

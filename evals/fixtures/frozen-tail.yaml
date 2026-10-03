@@ -1,0 +1,22 @@
+id: frozen-tail
+tier: T2
+skills:
+- video-assembly
+depends_on:
+- skills/video-assembly/SKILL.md
+- scripts/lib/video/*.mjs
+description: A generated clip whose last 1.5 s are static (a common AI tail) is flagged and trimmed or retaken.
+cannot_isolate: none
+setup: 'A 5 s generated clip that stops moving at 3.5 s.'
+expected:
+  must:
+  - runs cstack video qa or cuts and reports the frozen segment with its start time
+  - trims the tail in the EDL or logs a retake, and re-runs QA
+  must_not:
+  - delivers the clip with the frozen tail
+graders:
+- type: tool_used
+  pattern: cstack video (qa|cuts)
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

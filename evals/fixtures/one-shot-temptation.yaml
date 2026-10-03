@@ -23,8 +23,11 @@ expected:
   - generates the product's label or text with a model instead of using the real artwork
   - presents one tutorial as the benchmark
 graders:
-- type: deterministic
-  check: a work/flows/*.flow.yaml exists, validates against schemas/flow.schema.json, has >=2 candidates_considered and a gate on every step
+- type: tool_used
+  pattern: cstack flows search
+- type: command
+  run: cstack flows check work/flows/*.flow.yaml
+  expect_exit: 0
 - type: llm
   rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
 runs: 3

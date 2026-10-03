@@ -58,6 +58,41 @@ Access marked * is unofficial: a user export, or a third-party server. Env var n
 | Figma | MCP (OAuth), API (`FIGMA_ACCESS_TOKEN`) | the brand's own design context, variables/tokens, components | owner exports tokens JSON or frames as PNG | rate limits per seat type |
 | Shopify | MCP (Dev, Storefront/UCP), CLI (`shopify`) | products, variants, prices, policies; API docs | probe the public storefront endpoint; product CSV export | respect store rate limits and the agent-profile requirement |
 
+### Craft tools: type, 3D, mockups, vector, video
+
+The same rules apply: detected, never assumed, each with a fallback. Paid model calls are estimated with `cstack spend plan` and made through `cstack generate` where an adapter exists; an MCP that bills the owner's plan credits (Recraft, HeyGen, Higgsfield, Dynamic Mockups) is used only after the owner agrees to the spend. Installing a CLI (glTF Transform, HyperFrames, VTracer, fontTools) needs the owner's approval too. Fonts In Use and Adobe forbid automated access in their terms, so an agent never crawls them; it cites single pages a person shares.
+
+| Tool | Access (env) | Used by | Fallback |
+|---|---|---|---|
+| Fonts In Use | browser, export | type-director, identity-system, competitor-intel, taste-search | Ask the user for links to specific use pages or screenshots; otherwise cite foundry in-use pages and the brand's own competitor captures, labelled as such, and say Fonts In Use was not queried. |
+| Typewolf | browser | type-director, taste-search, cultural-scan | HTTP Archive Web Almanac fonts chapter for measured web-wide usage; Fonts In Use pages the user shares; foundry in-use pages. |
+| Google Fonts (Developer API, Google Design MCP, google/fonts repository) | MCP, API, export (`GOOGLE_FONTS_API_KEY`) | type-director, identity-system | Browse fonts.google.com by hand and record family names, or download specific families from the google/fonts repository and inspect them with `cstack type font`. |
+| Adobe Fonts | browser, API (`ADOBE_FONTS_API_TOKEN`) | type-director, identity-system | The user checks availability in their Adobe account and shares family names; type-director keeps Adobe Fonts choices provisional until the licence scope (web project, desktop, app, broadcast, logo) is confirmed. |
+| Foundry trial and test fonts | export | type-director, identity-system, mockup | Use the foundry's own web type tester by hand, or explore with open-licence fonts; keep every trial-based choice provisional until it is licensed. |
+| Wakamai Fondue | browser | type-director | `cstack type font <file> --languages <codes>` for names, fsType, metrics, axes, features and coverage; fontTools ttx for raw tables. |
+| fontTools | CLI | type-director | `cstack type font` for read-only inspection; leave subsetting to the foundry's web kit or the font service. |
+| Blender MCP | MCP, CLI* | three-d, mockup | cstack 3d blender-script writes a bpy script for the owner to run; otherwise a plan with no render, stated as such. |
+| Spline (desktop MCP) | MCP | three-d | Author the scene directly in three.js / R3F from the truth asset and check it against the same budgets. |
+| Meshy | MCP, API (`MESHY_API_KEY`, `FAL_KEY`) | three-d | fal 3D models through cstack generate (cheaper probes first: TRELLIS.2, Hunyuan 3D). |
+| Tripo | MCP, API (`FAL_KEY`) | three-d | fal TRELLIS.2 or Hunyuan 3D probes through cstack generate. |
+| Needle Engine MCP | MCP | three-d | cstack 3d inspect (built in) and gltf-transform inspect if installed. |
+| glTF Transform CLI | CLI | three-d | cstack 3d inspect reports the budget; optimization is planned and the owner runs it, or the budget is reported as not met. |
+| Poly Haven | API | three-d | Procedural studio light (three.js RoomEnvironment) with no download. |
+| Capture apps (Object Capture, Polycam, KIRI, Scaniverse) | export | three-d, product-fidelity | Ask the owner to capture with the protocol in skills/three-d/references/web-3d.md (40-200 photos, even light, turntable). |
+| Dynamic Mockups | MCP (`DYNAMIC_MOCKUPS_API_KEY`) | mockup | cstack mockup render with an owned template package. |
+| Recraft | MCP, API (`RECRAFT_API_TOKEN`) | symbol-design, vector-master | LLM-written SVG for geometric constructions only; local Potrace or VTracer for tracing; hand sketches. |
+| Adobe for creativity (connector) | MCP | mockup, vector-master, symbol-design | The owner works in Adobe apps and exports SVG/PSD into the workspace. |
+| Canva MCP | MCP | mockup | The owner exports placements from Canva into the workspace. |
+| Pacdora | browser | mockup, three-d | Per-panel quads with cstack mockup render, or a Blender scene. |
+| Vectorizer.AI | API (`VECTORIZER_AI_API_ID`, `VECTORIZER_AI_API_SECRET`) | vector-master | Local VTracer or Potrace if installed; Recraft vectorize. |
+| VTracer and Potrace (local tracers) | CLI | vector-master | A cloud vectorizer after asking about spend, or a human redraw. |
+| fal MCP | MCP | model-router, generate-media, video-direction | cstack generate with FAL_KEY (cstack's own fal adapter). |
+| Higgsfield MCP and CLI | MCP | generate-media, video-direction | fal video models through cstack generate. |
+| HeyGen MCP | MCP | video-direction, claims-proof | fal avatar models (Kling Avatar) through cstack generate, after the same gates. |
+| Replicate MCP | MCP (`REPLICATE_API_TOKEN`) | model-router, generate-media | fal through cstack generate. |
+| Runway skills and API | API (`RUNWAYML_API_SECRET`) | generate-media, video-direction | fal video models through cstack generate. |
+| HyperFrames (HTML to video) | CLI | video-direction, video-assembly | cstack video captions and sheet for text; Remotion or an NLE handled by a person. |
+
 Rules every skill follows:
 
 - **Detect, never assume.** Run `cstack tools` before planning research.

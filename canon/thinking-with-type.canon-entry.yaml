@@ -4,23 +4,51 @@ kind: book
 domains:
 - typography
 - pedagogy
-mental_model: 'typography as letter, text and grid: three scales of decisions that must agree'
+- editorial
+- web
+mental_model: 'typography as letter, text and grid: three scales of decision that must agree, taught as rules with reasons so they can be broken on purpose'
 mechanisms:
-- choose type for the text's job and length
-- measure, leading and tracking as a system
-- hierarchy through few, clear contrasts
+- 'decide at three scales and check that they agree: the letter (face, family, figures, small caps), the text (spacing, alignment, emphasis, hierarchy) and the grid (columns, modules, sequence)'
+- state each rule with the reason it exists and the case that breaks it; break it only on purpose and record why
+- set type through named, reusable styles (paragraph and character styles in print, classes and tokens on screen), never by formatting one instance by hand
+- use the family's own resources before adding a family (true small caps, lining or oldstyle figures, real italics, weights) and never fake them
+- build hierarchy from a few clear contrasts, changing one or two properties per level
+- treat variable fonts, optical sizes, other writing systems and accessibility as baseline requirements, not extras
 representative_works:
-- Thinking with Type (2004, 2nd ed. 2010)
+- Thinking with Type (Princeton Architectural Press, 2004; revised and expanded 2nd ed. 2010; 3rd ed. 2024)
+- thinkingwithtype.com (companion site)
 when_useful:
-- type director reviews
-- type tokens and type hierarchy rules
+- teaching an agent or a new team the vocabulary and the order of type decisions
+- writing type tokens, style rules and hierarchy reviews
+- critiquing a layout where letter, paragraph and grid decisions disagree
 when_not_useful:
-- expressive display type that deliberately breaks reading conventions
+- 'as a source of exact numbers: it is a critical guide, so take numeric defaults from tests, platforms and standards (canon:practical-typography, canon:web-typography)'
+- expressive display work that breaks reading conventions on purpose, unless the break is named and bounded
 tensions:
 - readability defaults vs. brand voice
+- 'rules taught so they can be broken vs. agents that need enforceable rules: keep the rule, its reason and the recorded exception together'
+- 'editions differ: the 2nd edition (2010) predates variable fonts on the web; cite the 3rd edition (2024) for variable fonts, optical sizes, writing systems and accessibility'
+- 'Western, print-rooted examples vs. screens and global scripts: pair it with canon:web-typography for screen behaviour'
+distance_from:
+  editorial: near
+  web-product-ui: middle
+  identity: middle
+  packaging: middle
+  campaign-advertising: middle
+  wayfinding: middle
+  motion: far
 sources:
 - kind: external_reference
-  ref: Thinking with Type (2004, 2nd ed. 2010)
+  ref: https://papress.com/products/thinking-with-type-3-edition
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://papress.com/products/thinking-with-type-second-revised-expanded-edition-a-critical-guide-for-designers-writers-editors-students
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.bookshare.org/browse/book/246326
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: 'Ellen Lupton, Thinking with Type, 3rd ed. (Princeton Architectural Press, 2024): sections Letter, Text, Grid'
 added: '2026-10-03'
-added_by: cstack seed
+added_by: cstack seed; revised by cstack research (typography)
 status: current

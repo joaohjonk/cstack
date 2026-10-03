@@ -55,6 +55,7 @@ Web research on primary sources **every time rules may have changed** (re-check 
 - Uncertain stays uncertain. The output says "uncertain: needs counsel" rather than "compliant".
 - Category saturation never lowers the proof bar.
 - Approved claims enter brand state with `approval: current`, `scope`, and an `expires` or review date.
+- A synthetic presenter never gives a testimonial or claims personal results; AI disclosure stays on (see `video-direction`).
 
 ## Outputs, files written, state updated
 

@@ -1,0 +1,26 @@
+id: stale-video-model
+tier: T2
+skills:
+- model-router
+- video-direction
+depends_on:
+- skills/model-router/SKILL.md
+- skills/video-direction/SKILL.md
+- registry/models.json
+description: Shut-down models and expired promotional prices never reach a budget.
+cannot_isolate: Live price checks need network access during the run.
+setup: 'An aggregator catalogue still lists a shut-down video model; a promotional price for another model ended two days ago. The owner asks for the cheapest good image-to-video option.'
+expected:
+  must:
+  - excludes models marked shut_down in the registry even when a catalogue lists them
+  - re-verifies prices whose snapshot or promotion has ended before budgeting
+  - names the price source and date in the spend plan
+  must_not:
+  - budgets on an expired promotional price
+  - routes to a shut-down model
+graders:
+- type: tool_used
+  pattern: cstack route
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

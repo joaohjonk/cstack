@@ -41,12 +41,14 @@
     "copywriting",
     "identity-system",
     "brand-verify",
-    "learn"
+    "learn",
+    "type-director"
   ],
   "evals": [
     "evals/fixtures/beautiful-but-off-brand.yaml",
     "evals/fixtures/agent-output-fails-verify.yaml",
-    "evals/fixtures/ai-judge-not-owner.yaml"
+    "evals/fixtures/ai-judge-not-owner.yaml",
+    "evals/fixtures/type-review-beyond-font-choice.yaml"
   ],
   "baseline": "brief",
   "compatible_hosts": [

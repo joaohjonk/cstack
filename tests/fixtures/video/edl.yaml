@@ -1,0 +1,22 @@
+# Example EDL for `cstack video assemble` (format: README.md). Paths are relative to this file; the clips are placeholders.
+version: 1
+name: example-cut
+output:
+  size: 1080x1920
+  fps: 30
+  fit: crop
+  audio: false
+clips:
+  - src: clips/hook.mp4
+    in: 0.4
+    out: 2.4
+    focus_x: 0.35
+    name: hook
+  - src: clips/product.mp4
+    in: "00:01.0"
+    out: "00:04.5"
+    name: product
+    transition: { type: fade, duration: 0.5 }
+  - src: clips/endcard.mp4
+    out: 3s
+    name: endcard

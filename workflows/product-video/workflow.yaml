@@ -1,0 +1,72 @@
+name: product-video
+status: template
+summary: A product film or ad from brief to verified master and channel cut-downs, label exact, spend staged.
+entry_skill: workflow
+triggers:
+- product video
+- video ad
+- reel
+- brand film
+- explainer video
+note: 'template = not yet proven on a real run. Promote to validated only with a linked run record in runs. Method: the method step picks flow product-hero-video, brand-mood-film, ugc-style-ad, logo-sting, explainer-voice-first or paid-social-cutdowns.'
+runs: []
+steps:
+- id: brief
+  skill: office-hours
+  does: objective, audience, channels, length, the reference film that defines the target
+  gate: owner
+- id: method
+  skill: flow-research
+  does: cstack flows plan <video flow>; fill target; cost ladder with stop condition
+  outputs:
+  - work/flows/<date>-<flow>.flow.yaml
+  gate: owner
+- id: product-lock
+  skill: product-fidelity
+  does: packshots (front, three-quarter, back), label artwork, dimensions; unknown views stay UNKNOWN
+  gate: owner
+- id: claims
+  skill: claims-proof
+  does: every spoken or on-screen claim sourced; presenter rules for synthetic people
+  gate: auto
+- id: beat-sheet
+  skill: video-direction
+  does: beats.yaml with one camera move and one physical event per beat, one world, production path per beat; presenter ethics gates when relevant
+  gate: owner
+- id: stills
+  skill: generate-media
+  does: one approved still per beat from real packshots; label checked against artwork
+  gate: owner
+- id: probes
+  skill: generate-media
+  does: draft-tier clips (1-2 per beat); first, last and cut frames checked for drift
+  gate: owner
+- id: finals
+  skill: generate-media
+  does: final tier on the chosen path per beat; beats that fail twice move to a composite or three-d render
+  gate: auto
+  fallback: 'no video provider: deterministic paths only (three-d turntable, stills with motion in assembly)'
+- id: assembly
+  skill: video-assembly
+  does: normalize, assemble, sound and loudness, captions and cards from official files, OTIO handoff
+  gate: auto
+  fallback: 'no ffmpeg: EDL and OTIO for a person to cut in their editor'
+- id: qa
+  skill: video-assembly
+  does: cstack video qa on master and cut-downs; retakes back to video-direction
+  gate: auto
+- id: cut-downs
+  skill: video-assembly
+  does: reframe per channel from the master, captions per safe zone, per-channel delivery
+  gate: auto
+- id: review
+  skill: creative-review
+  does: independent lenses on the cut; disagreement kept visible
+  gate: owner
+- id: brand-verify
+  skill: brand-verify
+  gate: auto
+- id: learn
+  skill: learn
+  does: model quirks, drift rates, selection ratio, run record linked to the flow
+  gate: auto

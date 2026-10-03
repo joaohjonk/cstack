@@ -1,0 +1,57 @@
+name: product-3d
+status: template
+summary: Product 3D (web hero, packshots, turntable, AR) from truth source to verified asset, label exact.
+entry_skill: workflow
+triggers:
+- rotating product
+- 3d hero
+- 3d render
+- turntable
+- view in ar
+note: 'template = not yet proven on a real run. Promote to validated only with a linked run record in runs. Method first: the method step picks flow 3d-web-hero, 3d-packshot, 3d-social-turntable or 3d-ar-view and the plan follows it.'
+runs: []
+steps:
+- id: objective
+  skill: office-hours
+  does: outcome (web hero, packshot, turntable, AR), the reference that defines the target, surfaces and budget
+  gate: owner
+- id: method
+  skill: flow-research
+  does: cstack flows plan <3d flow>; fill target; compare candidates; cost ladder with stop condition
+  outputs:
+  - work/flows/<date>-<flow>.flow.yaml
+  gate: owner
+- id: product-truth
+  skill: product-fidelity
+  does: lock the PRODUCT entity, measured dimensions, truth source (CAD, dieline plus official artwork, capture) and which views are real
+  gate: owner
+  fallback: 'no truth source for a labelled product: stop and ask for CAD, dieline or a capture session'
+- id: classify-and-probe
+  skill: three-d
+  does: truth path T1/T2/T3 (G only for non-product objects) and output branch; probe the riskiest step cheaply
+  gate: owner
+- id: build
+  skill: three-d
+  does: build at real scale, official label artwork as texture, inspect against the budget
+  outputs:
+  - work/3d/<id>/
+  gate: auto
+  fallback: 'no Blender or 3D MCP: cstack 3d blender-script for the owner to run, or the capture protocol'
+- id: label-check
+  skill: product-fidelity
+  does: four-angle overlay of render against official artwork; dimension check against the PRODUCT entity
+  gate: auto
+- id: web-hero
+  skill: workflow
+  does: 'when the outcome is a web hero: hero spec (runtime, poster first, scroll binding, reduced motion, low-tier fallback), then browse qa at 375/768/1440'
+  gate: auto
+- id: brand-verify
+  skill: brand-verify
+  gate: auto
+- id: review
+  skill: creative-review
+  gate: owner
+- id: learn
+  skill: learn
+  does: provider quirks, budget numbers and the run record linked to the flow
+  gate: auto

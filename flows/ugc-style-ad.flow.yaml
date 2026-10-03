@@ -1,0 +1,72 @@
+id: ugc-style-ad
+outcome: a presenter or UGC-style ad with a synthetic or consented presenter, compliant and disclosed
+aliases:
+- ugc ad
+- ai creator ad
+- presenter video
+- avatar ad
+- creator ad for tiktok or reels
+- ugc creator video
+status: researched
+target:
+  description: a native-feeling presenter ad that demonstrates or explains the product honestly, with AI disclosure on
+  must:
+  - no fabricated testimonial; claims sourced through claims-proof
+  - likeness consent or licensed avatars only
+  - disclosure flags set; metadata intact
+  must_not:
+  - first-person results claims by a synthetic presenter
+  - a presenter styled to resemble a known person
+  quality_bar: legal-safe script, owner-approved presenter, adversarial check ("real creator or brand pretending?") answered honestly in the disclosure
+when:
+- testing hooks and scripts at volume
+not_when:
+- the ad needs a real customer's experience (film a real customer with consent)
+candidates_considered:
+- name: licensed avatar demonstrates and explains; product cutaways from approved stills
+  verdict: chosen
+  why: compliant and scalable
+- name: real creator with consent and substantiation
+  verdict: fallback
+  why: required for genuine experience claims
+- name: synthetic testimonial
+  verdict: rejected
+  why: banned as a fabricated testimonial (FTC 16 CFR 465)
+steps:
+- id: gates
+  does: claims, consent, disclosure plan recorded before any generation
+  kind: human
+  skill: claims-proof
+  gate: {type: owner, check: owner signs off the gates}
+  compare_to_target: every claim sourced; consent on file
+- id: matrix
+  does: hooks x scripts x presenters with a stop condition; scripts about 2.5 words per second
+  kind: research
+  skill: video-direction
+  gate: {type: owner, check: owner approves the matrix and budget}
+  compare_to_target: hook in the first 1-2 s
+- id: presenter
+  does: avatar clips; product cutaways from approved stills
+  kind: generative
+  est_cost: {amount: 0.115, currency: USD, unit: "per second of avatar video (fal Kling AI Avatar v2 Pro; HeyGen API about 0.05, Captions 0.15)"}
+  skill: generate-media
+  gate: {type: independent_review, check: realism rubric and claims re-check}
+  compare_to_target: native feel without deception
+- id: assemble
+  does: keep dialogue audio, swap video-track beats only, captions, loudness
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: cstack video qa passes; disclosure flags recorded}
+  compare_to_target: final cut against the script
+cost_ladder: 'avatar clips about $0.05-0.15/s; a 15 s variant about $1-2.5 before assembly; cap the matrix with a stop condition'
+failure_modes:
+- testimonial creep in scripts
+- disclosure stripped by re-encoding
+- cherry-picked results
+evidence:
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: "section 4.4 with FTC, platform and EU sources"}
+last_verified: 2026-10-03
+stale_after_days: 60
+related:
+- skill:video-direction
+- skill:claims-proof

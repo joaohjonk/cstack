@@ -1,6 +1,6 @@
 ---
 name: flow-research
-description: "Research and design the best step-by-step method to reach a creative outcome before making anything: define the target, search the flow library, benchmark current tools, models, MCP-first and YC companies and what practitioners actually post and use, compare at least two candidate flows, and write a flow with steps, tools and fallbacks, gates, a cost ladder and a stop condition. Use when an outcome has no fresh researched flow, when the existing flow is stale or a poor fit, or when the owner asks for something new (a 3D hero, an AI film, a mockup system). Not for writing the brief (use office-hours) or running a known workflow (use workflow)."
+description: "Research the best step-by-step method for a creative outcome before making anything: define the target, search the flow library, benchmark current tools, MCP-first and YC companies and what practitioners use, compare at least two candidate flows, and write one with gates, fallbacks, a cost ladder and a stop condition. Use when an outcome has no fresh flow, the flow is stale, or the ask is new. Not for the brief (use office-hours) or running a known workflow (use workflow)."
 license: MIT
 metadata:
   cstack-version: "0.1.0"
@@ -49,7 +49,7 @@ Web search and fetch, `browse` (inspect a reference page: how it is built, asset
 4. **Candidates.** At least two complete flows, including one that is mostly deterministic (real assets, compositing, code) and one that leans generative. For each: steps, cost, latency, where product truth could break, what the owner must supply.
 5. **Choose.** Pick by closeness to the target first, then reliability, then cost. Record rejected candidates and why (`candidates_considered`).
 6. **Write the flow** (`flow` schema): every step has `kind`, `tools` in preference order with fallbacks, a `gate`, `compare_to_target`, and an estimate; plus `cost_ladder` (probe → selection → final) and `failure_modes`. Generic flows go to cstack `flows/` (no brand material); brand-specific ones to the workspace `flows/`.
-7. **Plan the run**: `cstack flows plan <id> --target "..."`, show it to the owner with the spend estimate, then hand off.
+7. **Plan the run**: `cstack flows plan <id> --target "..."`, make `cstack flows check <plan>` pass, show it to the owner with the spend estimate, then hand off.
 
 ## Decision rules
 

@@ -17,23 +17,26 @@ Prioritized by dependency (see the build order in [research/gap-analysis.md](res
 8. **Copy lint.** Banned and required terms, claim words routed to `claims-proof`, reading level, length per channel.
 9. **Lineage written automatically** by `generate` and `edit` (today it is a separate command).
 10. **Registry refresh skill/command.** Re-check stale model entries against provider pages, with dated diffs for owner review.
-11. **Trigger evals.** For each skill, phrases that must and must not route to it; run against `cstack search` and the host's skill loader.
+11. **Trigger evals.** For each skill, phrases that must and must not route to it; run against `cstack search` and the host's skill loader. `tests/search.test.mjs` is the seed.
+12. **Calibrate the craft thresholds.** The 3D budgets for web heroes and social, `type qa` limits, `mockup verify` tolerances and the video drift and region checks are researched defaults. Record the owner's verdict next to each checker result on real runs and move a threshold only on that evidence.
+13. **Keep flows fresh.** Flows go stale on purpose (`stale_after_days`); `cstack validate` warns. Add a routine that re-runs `/flow-research` on stale flows and proposes dated diffs, and promote a flow from `researched` to `validated` only with a linked run record.
+14. **Inspect the owner's reference pages.** Some reference sites could not be fetched from the build environment. Run `cstack browse` on them in a session whose network allows it, and record how each is built (asset type, sizes, scroll choreography) as evidence on the matching flow.
 
 ## P2
 
-12. **Compliance citation cache** per jurisdiction (ANVISA, FDA, FTC, EU) with retrieval dates, consumed by `claims-proof`.
-13. **More adapters**: OpenAI images, Google (Imagen/Gemini image), Runway, Recraft, Ideogram, a local ComfyUI bridge; each with dry-run and estimate.
-14. **Workspace reference index** for top-k retrieval over large libraries.
-15. **Daemon mode for `browse`** (persistent session for multi-step QA), still with the origin lock; or an opt-in bridge to gstack's own browse.
-16. **Figma variables sync** for tokens (read via Figma MCP, write back only with approval).
+15. **Compliance citation cache** per jurisdiction (ANVISA, FDA, FTC, EU) with retrieval dates, consumed by `claims-proof`.
+16. **More adapters**: OpenAI images, Google (Imagen/Gemini image), Runway, Recraft, Ideogram, a local ComfyUI bridge; each with dry-run and estimate.
+17. **Workspace reference index** for top-k retrieval over large libraries.
+18. **Daemon mode for `browse`** (persistent session for multi-step QA), still with the origin lock; or an opt-in bridge to gstack's own browse.
+19. **Figma variables sync** for tokens (read via Figma MCP, write back only with approval).
 
 ## P3
 
-17. Creative-parameter taxonomy and performance ingestion (needs a real campaign first).
-18. Video workflow: motion from approved stills, frame-level fidelity checks.
-19. Deck and packaging checkers (safe zones, bleed, dielines, minimum type sizes).
-20. Tool-call tracing for observability across a workflow run.
+20. Creative-parameter taxonomy and performance ingestion (needs a real campaign first).
+21. Video beyond the first pass: the product-video workflow, skills and `cstack video` checks exist; still missing are label checks against the master artwork calibrated on real runs and a first paid run.
+22. Deck and packaging checkers (safe zones, bleed, dielines, minimum type sizes).
+23. Tool-call tracing for observability across a workflow run.
 
 ## Skill-count rationale
 
-22 skills today. The target stays "a small number of excellent skills". After the first real-brand run, any skill that never fired or always needed another to be useful is merged; new skills need a fixture and an owner-visible job before they are added.
+30 skills today, up from 22. The eight added cover jobs the first 22 could not do well: researching the method before making (`flow-research`), typography (`type-director`), marks and icons (`symbol-design`), vector masters (`vector-master`), mockups (`mockup`), 3D (`three-d`), and video direction and assembly (`video-direction`, `video-assembly`). Each one has its own failure modes, its own fixtures and a deterministic checker behind it, which is the bar for a new skill. The target stays "a small number of excellent skills". After the first real-brand run, any skill that never fired or always needed another to be useful is merged.

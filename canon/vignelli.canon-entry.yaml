@@ -6,28 +6,73 @@ domains:
 - systems
 - typography
 - wayfinding
-mental_model: 'reduction + systems: a small set of rules applied with discipline beats endless bespoke decisions'
+- editorial
+mental_model: 'reduction + systems: a small, fixed set of typefaces, sizes and grids applied with discipline, judged by meaning, structure and use'
 mechanisms:
-- limit the typeface palette to very few families
-- a grid as the governing structure of every page
-- one system that scales across signage, print and product
-- semantic, syntactic and pragmatic correctness as a review frame
+- fix a small typeface palette for the whole practice or system and spend the effort on how type is used, not on finding new faces
+- default to very few type sizes per page and get hierarchy from position, weight and space; add a size only for a stated reason
+- set text flush left by default, centre only short formal text such as invitations and cards, and justify only when the format demands it
+- 'review every piece three ways: semantics (does it mean the right thing for this subject), syntactics (do grid, type and parts follow one grammar), pragmatics (will the people who use it understand it)'
+- standardize formats to remove routine decisions (modular panel sizes cut from the press sheet, a fixed header band, one grid) so effort goes into content and quality
+- carry one design language across scales and media, from signs and maps to books, products and identity
 representative_works:
-- The Vignelli Canon (book)
-- 1972 New York City subway map
-- Unigrid system for the US National Park Service
+- The Vignelli Canon (free PDF hosted by RIT's Vignelli Center; Lars Müller Publishers, 2010 and later editions)
+- Unigrid publication system for the US National Park Service (1977)
+- New York City subway diagram (1972; replaced 1979)
+- New York City Transit Authority Graphics Standards Manual (Unimark, 1970)
 when_useful:
-- building a brand system that many people and agents must apply consistently
-- cleaning up an incoherent identity
+- a system that many people and agents must apply consistently (tokens, templates, signage families)
+- cleaning up an identity with too many faces, sizes and one-off decisions
+- a review frame for any piece (meaning, grammar, use)
 when_not_useful:
-- brands whose value is warmth, mess or vernacular texture
-- when reduction would erase the product truth
+- 'brands whose value is warmth, mess, vernacular texture or constant renewal (canon:pentagram holds the opposite mode)'
+- when abstraction would erase information people rely on, such as geography on a transit map or detail on a pack
+- 'as a list of approved typefaces: his lists changed over time and much of his own work used other faces'
 tensions:
-- rigor vs. expressiveness
-- 'his subway map was praised by designers and rejected by many riders: system elegance is not the same as usability'
+- 'reduction vs. expressive vernacular: canon:pentagram (Paula Scher) built identities on loud, changing type; keep both and choose per brief'
+- 'the 1972 subway diagram was admired by designers and unpopular with many riders (distorted geography, beige water, grey parks); it was replaced in 1979 and its diagrammatic logic returned in an MTA map in 2025: system elegance is not usability'
+- 'his few basic typefaces differ by source (four on a 1991 exhibition poster, about a dozen in the Canon, six in later retellings): treat the number as a discipline, not a canon of names'
+- 'neutrality as a virtue vs. neutrality as a period signal (canon:spiekermann, canon:collins)'
+- 'lineage: Michael Bierut worked ten years at Vignelli Associates before joining canon:pentagram as a partner in 1990'
+- 'myth to avoid: the 1970 subway signage standard specified Standard Medium, not Helvetica; Helvetica became the official face only in 1989'
+distance_from:
+  identity: near
+  wayfinding: near
+  editorial: near
+  web-product-ui: middle
+  packaging: middle
+  campaign-advertising: far
+  motion: far
 sources:
 - kind: external_reference
-  ref: The Vignelli Canon (book)
+  ref: https://www.rit.edu/vignellicenter/sites/rit.edu.vignellicenter/files/documents/The%20Vignelli%20Canon.pdf
+  quote: 'Personally, I can get along well with a half a dozen, to which I can add another half a dozen, but probably no more.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.lars-mueller-publishers.com/vignelli-canon
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.nps.gov/subjects/hfc/a-brief-history-of-the-unigrid.htm
+  quote: 'The program fulfills the primary objective of a design system, reducing routine decisions so that effort can be concentrated on quality.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.fontsinuse.com/uses/14164/massimo-vignelli-s-a-few-basic-typefaces
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://typedrawers.com/discussion/comment/60116
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.dezeen.com/2021/05/20/gary-hustwit-new-york-subway-interview/amp/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.dezeen.com/2025/04/04/new-york-city-new-subway-map-mta/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://gwern.net/doc/www/www.aiga.org/ee9fbb05bc37c056a78b174381125586cae4b7c7.html
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.rit.edu/events/vignelli-center-lecture-michael-bierut
+  captured_at: '2026-10-03'
 added: '2026-10-03'
-added_by: cstack seed
+added_by: cstack seed; revised by cstack research (typography)
 status: current

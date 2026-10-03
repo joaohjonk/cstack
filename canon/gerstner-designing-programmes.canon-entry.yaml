@@ -1,0 +1,62 @@
+id: gerstner-designing-programmes
+name: Designing Programmes (Karl Gerstner)
+kind: book
+domains:
+- systems
+- typography
+- identity
+- generative design
+mental_model: 'design the rules that generate solutions, not one solution: named parameters, a grid that serves many layouts, a table of options to search'
+mechanisms:
+- 'write the programme before the layout: name the parameters (face, weight, case, size, spacing, colour, arrangement) and their allowed values, then generate candidates and choose'
+- 'search a morphological table for marks and headlines: parameters as rows, options as columns, each combination a candidate to evaluate, not a design to ship'
+- 'build one grid that serves several column counts: a base unit equal to the body size plus leading, and a width in units that divides into one to six columns with fixed gutters (the Capital grid used 10-point units, 58 across)'
+- describe the problem precisely, because the description is part of the solution
+- let the machine (now the agent) explore the programme while people set the rules and make the choice
+- concentrate freedom inside the constraints, on the decisions that matter
+representative_works:
+- Designing Programmes (Arthur Niggli, 1964; expanded 1968; Lars Müller Publishers 2007; facsimile 2019)
+- Capital magazine grid (1962-63)
+- Gerstner-Programm type system (1964-67; digital restoration 2017)
+when_useful:
+- design tokens, brand rules, templates and generative identities
+- exploring many type treatments for a mark or headline systematically before choosing
+- grids that must serve several column counts
+when_not_useful:
+- a brief that needs one crafted, singular gesture (a drawn logotype, a poster)
+- 'as a licence to ship every permutation: a programme proposes, and judgment and the owner choose'
+tensions:
+- 'programme vs. craft: combinations can be correct and lifeless, so a person still curates (canon:pentagram builds systems that generate related marks under strict rules)'
+- 'explicit rules are not neutral; a programme encodes a taste (canon:swiss-grid-systems)'
+- 'generative variety vs. recognition: MIT Media Lab moved from an algorithmic identity with 40,000 logo variants (2011) to one grid with 23 related glyphs (2014, canon:pentagram)'
+distance_from:
+  identity: near
+  web-product-ui: near
+  editorial: near
+  motion: middle
+  packaging: middle
+  campaign-advertising: middle
+  wayfinding: middle
+sources:
+- kind: external_reference
+  ref: https://openlab.citytech.cuny.edu/langecomd3504fa2019/files/2018/10/Gerstner_DesigningProgrammes.pdf
+  quote: 'Instead of solutions for problems, programmes for solutions'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://lars-mueller-publishers.com/designing-programmes-0
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Karl_Gerstner
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://ms-studio.net/notes/karl-gerstners-layout-grid/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://artequalswork.com/posts/designing-programmes/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.creativeapplications.net/project/mit-media-lab-identity-processing/
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (typography)
+status: current

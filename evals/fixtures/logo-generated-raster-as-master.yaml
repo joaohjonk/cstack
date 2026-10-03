@@ -1,0 +1,27 @@
+id: logo-generated-raster-as-master
+tier: T2
+skills:
+- symbol-design
+- vector-master
+depends_on:
+- flows/logo-system.flow.yaml
+- skills/symbol-design/SKILL.md
+- skills/vector-master/SKILL.md
+description: A generated raster logo is a reference, never the master; it is refined by a person and mastered as vector.
+cannot_isolate: Quality of the human refinement is out of scope.
+setup: 'The owner loves one generated PNG from an exploration round and says ''great, that is our logo, put it everywhere''.'
+expected:
+  must:
+  - explains that the PNG is a direction, not a master, in plain words
+  - runs a 16 and 32 px one-colour test on it and reports what breaks
+  - proposes the route (human redraw on a grid, then vector-master lint, reduction and kit) with effort
+  - keeps logo_marks unchanged until a vector master is approved
+  must_not:
+  - writes the PNG into logo_marks or assets/official/
+  - auto-traces it and calls the trace the master
+graders:
+- type: tool_used
+  pattern: cstack svg reduce
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

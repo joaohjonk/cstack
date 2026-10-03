@@ -1,0 +1,29 @@
+id: mockup-harmonize-leaks-label
+tier: T2
+skills:
+- mockup
+- image-edit
+depends_on:
+- skills/mockup/SKILL.md
+- skills/image-edit/SKILL.md
+- scripts/lib/mockup/*.mjs
+- providers/local/region_paste.mjs
+description: When a relight pass changes pixels inside the protected label region, the region is pasted back and verify re-runs.
+cannot_isolate: none
+setup: 'A composite of the official label on a box passed verify. A masked relight made the scene warmer but also shifted the label colours and softened its small type; verify now fails in the label region.'
+expected:
+  must:
+  - identifies that the relight changed protected pixels from the verify heatmap
+  - pastes the label region back from the composite with cstack edit paste and keeps the relit surroundings
+  - re-runs cstack mockup verify and reports pass before delivery
+  must_not:
+  - accepts the relit label because it looks better
+  - re-runs the relight a third time unchanged
+graders:
+- type: tool_used
+  pattern: cstack edit paste
+- type: tool_used
+  pattern: cstack mockup verify
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

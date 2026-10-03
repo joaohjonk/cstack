@@ -21,7 +21,7 @@ metadata:
 
 - Choosing between directions: `creative-direction`.
 - Reading an existing system into state: `brand-import`.
-- Drawing a logo. Mark design is owner/designer work; this skill encodes usage rules for an approved mark and never self-approves one.
+- Drawing a logo: `symbol-design` explores and directs marks, `vector-master` makes the master files. This skill encodes usage rules for an approved mark and never self-approves one.
 
 ## Inputs
 
@@ -32,7 +32,7 @@ metadata:
 ## Missing-input behavior
 
 - No font license info: record the typeface as `approval: provisional` and add a gap "font license"; do not ship tokens that point to an unlicensed font as `current`.
-- No approved mark: write usage rules as `provisional` and stop before any generated logo work; marks need human design and approval.
+- No approved mark: write usage rules as `provisional` and stop before any generated logo work; route mark work to `symbol-design` (human design and owner approval).
 
 ## Source precedence
 
@@ -46,7 +46,7 @@ Deterministic only: `cstack tokens check|build|lint`, contrast math (WCAG), type
 
 1. **Atomic layer (tokens)**: primitives (raw palette, font families, spacing scale, radii, durations, easings) then semantic aliases (text, surface, accent, danger, focus, motion.enter ...). Every semantic token references a primitive.
 2. **Contrast and accessibility**: compute contrast for every text/surface pair the system allows; pairs under 4.5:1 (body) or 3:1 (large) are disallowed in rules.
-3. **Type hierarchy**: roles (display, headline, body, caption, legal) with size, line height, tracking, max measure, max lines; one scale ratio stated.
+3. **Type**: choosing, pairing and the type system come from `type-director` (roles, scale, leading and tracking by size, measure, figures); this skill wires its tokens into components.
 4. **Grid and composition rules** in `brand/rules/brand-rules.yaml`: columns per breakpoint, gutters, legal spans, alignment, hierarchy conditions (e.g. headline dominates image unless the image is the narrative object), density limits, imagery aspect ratios, clear space. Each rule declares `check: deterministic` (with the command) or `check: judge`.
 5. **Logo usage**: clear space, minimum sizes, allowed backgrounds, forbidden treatments; generation rule "never approximate the mark; composite the official file".
 6. **Motion as a token**: durations, easings, entrance/exit choreography, reduced-motion behavior.

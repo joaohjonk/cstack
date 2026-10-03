@@ -1,0 +1,73 @@
+id: 3d-packshot
+outcome: studio packshot stills of a product rendered from 3D, label exact
+aliases:
+- 3d render of the product
+- cgi packshot
+- product render
+status: researched
+target:
+  description: stills that match the brand's photography rules (lens, light ratio, backdrop) with the real label, reusable for any angle or colourway
+  must:
+  - geometry from a truth source and the label from official artwork
+  - lens, light and backdrop from brand photography rules or the reference
+  - colour checked against brand swatches
+  must_not:
+  - an image model repainting the product
+  - generated text anywhere on the pack
+  quality_bar: label OCR and pixel diff against the official artwork pass; owner picks finals from a low-sample contact sheet
+when:
+- many angles, colourways or seasonal variants are needed from one product
+- a photo shoot is impractical or the product is not yet manufactured
+not_when:
+- one hero photo of a product already photographed well (use product-fidelity)
+candidates_considered:
+- name: deterministic Blender render from the truth asset
+  verdict: chosen
+  why: exact label, any angle, cheap re-renders
+- name: render plus masked generative finish for environment only
+  verdict: fallback
+  why: adds atmosphere; product stays masked and locked
+- name: image model generates the packshot from a photo
+  verdict: rejected
+  why: label and proportions drift; no reuse
+steps:
+- id: truth
+  does: lock the PRODUCT entity, collect CAD or dieline plus official artwork and measured dimensions
+  kind: retrieval
+  skill: product-fidelity
+  gate: {type: owner, check: owner confirms the truth source}
+  compare_to_target: every visible face backed by a real source?
+- id: scene
+  does: build the scene from brand photography rules (lens, light ratio, backdrop tokens); render a low-sample contact sheet
+  kind: deterministic
+  skill: three-d
+  tools:
+  - {id: blender-mcp, why: scene and renders, access: mcp}
+  - {id: cstack-3d-blender-script, why: packshot script the owner runs, access: cli}
+  gate: {type: owner, check: owner picks angles from the contact sheet}
+  compare_to_target: same lens and light as the reference?
+- id: finals
+  does: final renders; composite official marks; optional masked environment finish with image-edit
+  kind: deterministic
+  skill: three-d
+  gate: {type: deterministic_check, check: label pixel diff and colour delta-E on brand swatches within tolerance}
+  compare_to_target: overlay against official artwork
+- id: review
+  does: brand-verify and creative-review; owner approval
+  kind: human
+  skill: brand-verify
+  gate: {type: independent_review, check: no fail on product truth}
+  compare_to_target: reviewer compares against reference and artwork
+cost_ladder: renders cost no API money; the only paid step is an optional masked environment finish, probed twice before any batch; stop after two failed probes and ship the clean render
+failure_modes:
+- render that looks CG (no imperfection, perfect symmetry, no contact shadow)
+- colour drift from untagged textures
+evidence:
+- {ref: docs/research/3d.md, kind: documented, date: 2026-10-03, note: section 8 flow B}
+- {ref: "https://polyhaven.com/hdris", kind: documented, date: 2026-10-03, note: CC0 environment light}
+last_verified: 2026-10-03
+stale_after_days: 120
+related:
+- skill:three-d
+- skill:product-fidelity
+- skill:image-edit

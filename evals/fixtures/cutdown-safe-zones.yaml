@@ -1,0 +1,26 @@
+id: cutdown-safe-zones
+tier: T2
+skills:
+- video-assembly
+depends_on:
+- flows/paid-social-cutdowns.flow.yaml
+- skills/video-assembly/SKILL.md
+- scripts/lib/video/*.mjs
+description: Text in a 9:16 cut-down stays inside the platform safe zone; a caption under the UI fails.
+cannot_isolate: none
+setup: 'A 9:16 cut-down with a caption placed at y=1700 px (inside the Reels UI area) and an end card inside the zone.'
+expected:
+  must:
+  - checks text placement against the chosen zone (reels or universal) and reports the caption as outside
+  - moves the caption inside the zone and re-checks
+  - produces a safe-zone overlay image for review
+  must_not:
+  - delivers the cut with the caption under the UI
+graders:
+- type: tool_used
+  pattern: cstack video safezone
+- type: tool_used
+  pattern: cstack video captions
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

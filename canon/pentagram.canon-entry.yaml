@@ -1,0 +1,97 @@
+id: pentagram
+name: Pentagram (Paula Scher, Michael Bierut and partners)
+kind: studio
+domains:
+- identity
+- typography
+- editorial
+- systems
+mental_model: 'two durable modes in one partnership: type as a loud, vernacular voice that becomes the identity, and a simple mark inside a flexible system that earns meaning through use'
+mechanisms:
+- let typography carry the identity, choosing letterforms rooted in the subject's culture (wood type and street posters for a city theatre) and using scale, weight and density as the voice
+- when others copy the style, keep the fixed mark and renew the typographic treatment on a schedule so the identity stays ahead of imitation
+- favour letterforms with a distinctive repeated character; each repetition in a name is another chance to be recognized
+- build one grid that generates a monogram for the whole and related glyphs for every sub-unit, with one shared typeface
+- reduce as recognition accrues, removing elements the audience no longer needs
+- treat a new mark as a vessel shaped for what it must hold and let meaning accrue through use, instead of asking the logo to explain the company
+- know which reason drives each typeface choice (it works, its history, its name, its designer, it was there, the client required it, an association, beauty, ugliness, blandness, exclusivity, belief, necessity) and say it
+- commission, adapt or complete a typeface when the identity needs ownership or range
+representative_works:
+- The Public Theater identity (Paula Scher, from 1994)
+- The New School identity and its Neue typeface (Paula Scher with Peter Biľak, 2015)
+- MIT Media Lab identity (Michael Bierut with Aron Fay, 2014)
+- Mastercard identity (Michael Bierut and Luke Hayman, 2016; symbol without the name from 2019)
+- 'Michael Bierut, How to (2015) and Now You See It and Other Essays on Design (2017); Paula Scher, Make It Bigger (2002)'
+when_useful:
+- identities for cultural institutions, cities and organizations that live in loud public space
+- systems with many sub-units that need related but distinct marks
+- explaining to an owner that a new logo means little until use fills it
+when_not_useful:
+- quiet product UI where type must recede
+- brands that cannot afford constant renewal (scheduled type changes need a team and a budget)
+- 'as a style source: borrow the mechanism (vernacular letterforms, scheduled renewal, grid-generated glyphs), never the look'
+tensions:
+- 'expressive vernacular vs. reduction (canon:vignelli): Bierut worked ten years at Vignelli Associates, and both modes live in one firm'
+- 'Scher rebelled against Helvetica on a grid as the establishment typeface, yet the firm reinstated Helvetica for MIT Media Lab in 2014: context, not dogma'
+- 'a recognisable style invites imitation; at The Public Theater the answer was renewing the typography while keeping the logo'
+- 'partner-owned firm (partners are working designers, profits are shared, new partners are admitted unanimously): lessons are often one partner''s method, not a house method'
+- 'generative systems vs. recognition (canon:gerstner-designing-programmes)'
+- 'expression-first identity (canon:collins) vs. reduction once recognition is earned (the Mastercard path)'
+distance_from:
+  identity: near
+  campaign-advertising: near
+  editorial: near
+  wayfinding: middle
+  packaging: middle
+  web-product-ui: middle
+  motion: middle
+sources:
+- kind: external_reference
+  ref: https://www.pentagram.com/work/the-public-theater
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.theintervalny.com/?p=2781
+  quote: 'Because if everybody uses it, The Public Theater has no identity.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://2001.aigany.org/ideas/features/scher.html
+  quote: 'Also I viewed Helvetica, the visual language of corporations, as the establishment typeface and therefore somehow responsible for the Vietnam War.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.designweek.co.uk/paula-scher-uses-revolutionary-typeface-in-rebrand-of-the-new-school/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.pentagram.com/work/mit-media-lab/story
+  quote: 'Helvetica, so central to MIT''s communications when the Media Lab was new, has been reinstated to support the overall system.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.itsnicethat.com/features/michael-bierut-logo-design
+  quote: 'It is an empty vessel awaiting the meaning that will be poured into it by history and experience.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://itsnicethat.com/articles/michael-bierut-now-you-see-it-and-other-essays-on-design-publication-061117
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.dezeen.com/2019/01/10/mastercard-rebrand-pentagram-design/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.creativereview.co.uk/new-mastercard-logo-pentagram/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://sharptype.co/news/hillary-clinton-sharp-sans
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://eyeondesign.aiga.org/epically-long-how-pentagram-chooses-its-new-partners/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.pentagram.com/about
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Pentagram_(design_firm)
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.rit.edu/events/vignelli-center-lecture-michael-bierut
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (typography)
+status: current

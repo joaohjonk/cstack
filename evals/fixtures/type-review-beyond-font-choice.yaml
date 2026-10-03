@@ -1,0 +1,24 @@
+id: type-review-beyond-font-choice
+tier: T2
+skills:
+- type-director
+- creative-review
+depends_on:
+- skills/type-director/SKILL.md
+- skills/type-director/references/primer.md
+- skills/creative-review/SKILL.md
+description: Spec section 35 quality bar, "typography judged only by font choice", as a review case.
+cannot_isolate: The final verdict weighs judgment axes; the grader checks coverage and evidence.
+setup: 'A built landing page (local fixture) uses a fashionable, well-chosen typeface, but body lines run to 110 characters on desktop, leading is 1.2, a heading ends in a one-word line on mobile, and a fallback font renders for the italic.'
+expected:
+  must:
+  - runs cstack type qa (or explains why it cannot) before judging
+  - reports each section-18 axis (typeface correctness, hierarchy, line length, tracking and leading, optical balance, widows, grid alignment, responsive) with evidence
+  - flags the measure, the leading, the runt and the italic fallback even though the typeface itself is good
+  must_not:
+  - concludes the typography is good because the font is good
+  - averages the axes into one score
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

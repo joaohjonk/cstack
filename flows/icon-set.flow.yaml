@@ -1,0 +1,71 @@
+id: icon-set
+outcome: a consistent icon set for a product or brand, drawn to one grammar
+aliases:
+- icons
+- icon system
+- icon family
+- pictograms
+status: researched
+target:
+  description: icons that read as one family at 16, 20 and 24 px on light and dark, with clear metaphors and a grammar any contributor can follow
+  must:
+  - one declared grammar (grid, padding, stroke, caps, joins, radius, gaps, optical sizes)
+  - every icon passes cstack svg lint --grammar
+  - currentColor for UI use; licence notice kept for any open set extended
+  must_not:
+  - mixed stroke widths or caps
+  - an invented set when an open set already fits
+  quality_bar: a contact sheet on light and dark shows no outlier, and creative-review finds no unclear metaphor
+when:
+- product UI, wayfinding, packaging pictograms, editorial systems
+not_when:
+- a single illustrative spot graphic
+candidates_considered:
+- name: extend an open set (Lucide, Material Symbols, Phosphor) inside its grammar
+  verdict: chosen
+  why: consistency and licence are solved; only new metaphors need drawing
+- name: bespoke grammar and set
+  verdict: fallback
+  why: when the brand needs a distinct voice; declare the grammar first
+- name: generate each icon separately with an image model
+  verdict: rejected
+  why: no shared grammar; strokes, radii and optical sizes drift
+steps:
+- id: grammar
+  does: write icons.tokens.json (grid, padding, stroke, caps, joins, radius, min gap, optical sizes) or adopt an open set's
+  kind: research
+  skill: vector-master
+  gate: {type: owner, check: owner approves the grammar}
+  compare_to_target: grammar matches the brand's type weight and corner language
+- id: draft
+  does: draft geometric icons as SVG inside the grammar; vector model for illustrative sets
+  kind: generative
+  est_cost: {amount: 0.08, currency: USD, unit: "per icon draft from a vector model; LLM-written geometric SVG costs nothing"}
+  skill: vector-master
+  gate: {type: deterministic_check, check: cstack svg lint --grammar has no fail}
+  compare_to_target: each icon next to its neighbours on the contact sheet
+- id: sheet
+  does: contact sheet at 16, 20, 24 on light and dark
+  kind: deterministic
+  skill: vector-master
+  gate: {type: independent_review, check: creative-review consistency and metaphor lenses}
+  compare_to_target: no outlier in weight, size or detail
+- id: approve
+  does: owner approval; write brand/icons and the grammar tokens
+  kind: human
+  skill: vector-master
+  gate: {type: owner, check: owner approves}
+  compare_to_target: set covers the requested metaphors
+cost_ladder: free with LLM-written geometric SVG; a vector model only for illustrative styles, probed on three icons before the set; stop if the probes fail the grid and stroke checks and draw the set on the grid instead
+failure_modes:
+- one contributor's stroke width
+- metaphors that need a label to read
+- detail that fills in at 16 px
+evidence:
+- {ref: docs/research/mockups-and-vector.md, kind: documented, date: 2026-10-03, note: "sections B4, D4"}
+- {ref: "https://lucide.dev/guide/design/icon-design-guide", kind: documented, date: 2026-10-03}
+- {ref: "https://developers.google.com/fonts/docs/material_symbols", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- skill:vector-master

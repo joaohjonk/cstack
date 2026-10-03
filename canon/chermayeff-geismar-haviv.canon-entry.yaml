@@ -1,0 +1,26 @@
+id: chermayeff-geismar-haviv
+name: Chermayeff & Geismar & Haviv
+kind: studio
+domains:
+- identity
+- logos
+mental_model: 'a good mark is simple, appropriate and distinctive, and proves itself across hundreds of applications'
+mechanisms:
+- 'judge every candidate on three tests: simple, appropriate, distinctive'
+- test across the full range of applications before deciding
+- build a portfolio of marks that are each the plainest strong answer
+representative_works:
+- 'Identify: Basic Principles of Identity Design (2011)'
+when_useful:
+- mark critique rubric
+- explaining to an owner why a simpler direction wins
+when_not_useful:
+- brands that need deliberate complexity or illustration
+tensions:
+- 'simplicity can converge on the category average'
+sources:
+- kind: external_reference
+  ref: 'Chermayeff, Geismar, Haviv, Identify: Basic Principles of Identity Design (2011)'
+added: '2026-10-03'
+added_by: cstack research
+status: testing

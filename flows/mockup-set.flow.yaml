@@ -1,0 +1,86 @@
+id: mockup-set
+outcome: a set of realistic mockups of approved art across placements (packs, labels, merch, print, signage, screens, ad placements)
+aliases:
+- mockups
+- packaging mockup
+- label mockup
+- merch mockup
+- device mockup
+- mock up the box
+- mock up the label
+status: researched
+target:
+  description: every placement looks photographed, the art is pixel-true to the approved file, and the set reads as one shoot
+  must:
+  - art composited from approved files, never generated
+  - each render passes cstack mockup verify
+  - one light direction and lens family across the set
+  - template licences recorded before client use
+  must_not:
+  - generated lettering, logos or legal copy
+  - flat art on a curved surface
+  quality_bar: the owner cannot tell composites from photos at delivery size, and verify passes on every render
+when:
+- launch decks, retailer sell-ins, social teasers, pitch boards
+not_when:
+- the product needs a real photo shoot or a 3D render (use product-fidelity or 3d-packshot)
+candidates_considered:
+- name: hybrid plate, composite, masked harmonize, paste-back, verify
+  verdict: chosen
+  why: exact art with generated context; costs one plate per scene
+- name: owned or licensed template packages only
+  verdict: chosen
+  why: cheapest and fully deterministic when templates exist for the placements
+- name: MCP template service (Dynamic Mockups, Canva)
+  verdict: fallback
+  why: fast catalogues; check licence and verify the output the same way
+- name: image model renders the whole mockup from a prompt and the art
+  verdict: rejected
+  why: lettering and fine linework drift; inconsistent across a set
+steps:
+- id: target
+  does: list placements, sizes, destinations and the reference look; lock which art file feeds each
+  kind: research
+  skill: mockup
+  gate: {type: owner, check: owner confirms placements and art versions}
+  compare_to_target: does each placement name its destination and size?
+- id: route
+  does: route each placement (quad, cylinder, mesh, displacement, panels from the dieline) and choose template or plate
+  kind: research
+  skill: mockup
+  gate: {type: auto, check: every placement has a method and a licence status}
+  compare_to_target: method matches the surface geometry
+- id: plates
+  does: generate empty-surface plates only where no template exists (two to four probes each, cheap model)
+  kind: probe
+  skill: generate-media
+  gate: {type: owner, check: owner picks plates; spend within plan}
+  compare_to_target: same light direction and lens as the reference
+  fallback: studio seamless gradient rendered deterministically
+- id: composite
+  does: cstack mockup render per placement; optional masked relight outside the protected region; paste-back
+  kind: deterministic
+  skill: mockup
+  gate: {type: deterministic_check, check: cstack mockup verify passes on every render}
+  compare_to_target: side by side with the reference shot
+- id: review
+  does: creative-review PRODUCTION lens and brand-verify; owner approval
+  kind: human
+  skill: creative-review
+  gate: {type: independent_review, check: no fail on art truth or licence}
+  compare_to_target: against the reference and the approved art
+cost_ladder: templates cost nothing per render; plates two to four cheap probes per scene (about $0.04-0.15 each) before one final; relight passes only on picked renders; stop after two failed verifies on a placement and change method
+failure_modes:
+- stale dieline
+- harmonize pass leaking into the label
+- perspective mismatch between carton panels
+- unlicensed template sent to a client
+evidence:
+- {ref: docs/research/mockups-and-vector.md, kind: documented, date: 2026-10-03, note: "sections A1-A5, D1, D2"}
+- {ref: "https://docs.dynamicmockups.com/ai-assisted-development/mcp", kind: documented, date: 2026-10-03}
+- {ref: "https://developer.adobe.com/firefly-services/docs/photoshop/guides/smart_objects_and_the_api", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 120
+related:
+- skill:mockup
+- workflow:packaging

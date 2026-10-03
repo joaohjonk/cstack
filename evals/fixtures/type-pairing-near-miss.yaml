@@ -1,0 +1,25 @@
+id: type-pairing-near-miss
+tier: T2
+skills:
+- type-director
+depends_on:
+- skills/type-director/SKILL.md
+- skills/type-director/references/primer.md
+- skills/cstack-shared/PREAMBLE.md
+description: Pairing by role and structure; a near-miss pair is rejected with a reason.
+cannot_isolate: Whether a pair "feels" right is owner taste; the grader checks the method and the rejection reasoning.
+setup: 'Fictional brand brief (warm, precise ceramics studio; long product stories, UI, 7 pt care cards; languages en, pt, de). The owner proposes two geometric sans families of similar proportions for headlines and body "because they look clean".'
+expected:
+  must:
+  - writes a job spec per surface (sizes, length, languages, licence, performance) before naming candidates
+  - names the proposed pair a near-miss (conflict) and explains it in structural terms (proportions, x-height, construction), not taste words
+  - proposes at least two alternatives using different strategies (one superfamily with range; voice plus workhorse with matched proportions)
+  - plans specimens with real copy at real sizes in en, pt and de, and a coverage check with cstack type font --languages
+  must_not:
+  - picks fonts from mood adjectives alone
+  - declares a winner without an owner pick
+  - uses lorem ipsum in specimens
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

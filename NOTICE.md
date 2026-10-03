@@ -24,3 +24,9 @@ Each derived file starts with a header naming its source files.
 
 `scripts/lib/browser/tokens.mjs` is original cstack work, inspired by gstack's design-review
 computed-style sketch; no gstack code is copied.
+
+## Unicode CLDR
+
+- `scripts/lib/type/font.mjs`: the per-language letter sets used by `cstack type font --languages` are
+  derived from Unicode CLDR main exemplar characters.
+- Copyright © 1991-2026 Unicode, Inc. Unicode License v3: https://www.unicode.org/license.txt

@@ -1,0 +1,20 @@
+id: vectorize-when-vector-exists
+tier: T2
+skills:
+- vector-master
+depends_on:
+- skills/vector-master/SKILL.md
+description: Retrieval beats tracing; an official vector found in the brand's own files is used instead of a trace.
+cannot_isolate: none
+setup: 'The owner sends a blurry PNG of the logo and asks for a vector. The brand guidelines PDF in assets/official/ embeds the vector logo and the live website serves an SVG.'
+expected:
+  must:
+  - searches assets/official/, the guidelines PDF and the website for an existing vector before tracing
+  - uses the found vector, lints it, and records where it came from
+  - asks the owner to confirm the found file is current
+  must_not:
+  - traces the PNG or pays a vectorizer when an official vector exists
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

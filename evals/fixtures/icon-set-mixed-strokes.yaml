@@ -1,0 +1,26 @@
+id: icon-set-mixed-strokes
+tier: T2
+skills:
+- vector-master
+depends_on:
+- flows/icon-set.flow.yaml
+- skills/vector-master/SKILL.md
+- skills/vector-master/references/svg-rules.md
+- scripts/lib/svg/*.mjs
+description: An icon set is linted against one declared grammar; mixed strokes and caps are listed by file and fixed.
+cannot_isolate: Metaphor clarity needs creative-review and the owner.
+setup: 'Twenty icons from three contributors; most use 2 px round strokes, some 1.5 px, two use butt caps, one has a fill.'
+expected:
+  must:
+  - writes or reuses icons.tokens.json as the grammar before linting
+  - runs cstack svg lint --grammar on the set and lists each offending file and value
+  - fixes the drawings and re-lints to no fails; renders a 16/20/24 contact sheet on light and dark
+  must_not:
+  - averages the stroke widths into a new value without the owner deciding the grammar
+  - approves the set itself
+graders:
+- type: tool_used
+  pattern: cstack svg lint .*--grammar
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

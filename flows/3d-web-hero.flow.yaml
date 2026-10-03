@@ -1,0 +1,118 @@
+id: 3d-web-hero
+outcome: a product that rotates or animates on scroll in a website hero, label exact, fast on mobile
+aliases:
+- rotating 3d product
+- 3d hero
+- scroll animation of the product
+- 360 product on the homepage
+- spinning product website
+status: researched
+target:
+  description: the real product turns or opens in the hero with studio-quality light, the label readable at every angle, and the page as fast as a static hero
+  must:
+  - label and print come from the official artwork, never from a model
+  - real proportions from measured dimensions
+  - a static poster is the largest paint; the 3D or sequence loads after it
+  - prefers-reduced-motion shows the poster or a short crossfade; scrolling is never trapped
+  - GLB at or under 2.5 MB and 100k triangles, or a sequence at or under 150 frames and about 8 MB
+  must_not:
+  - generated texture where the label is
+  - canvas as the largest-contentful-paint element
+  - a hallucinated back view presented as the real product
+  quality_bar: side by side with the reference hero at 375, 768 and 1440 the owner cannot tell which is heavier, and the four-angle label overlay shows no drift
+when:
+- the brief asks for a rotating, drag-to-turn or scroll-linked product on a page
+not_when:
+- a looping social video (use 3d-social-turntable)
+- AR on the product page only (use 3d-ar-view)
+candidates_considered:
+- name: A1 real-time GLB (three.js/R3F or model-viewer)
+  summary: compressed GLB from the truth asset, scroll or drag bound, poster first
+  verdict: chosen
+  why: when the visitor interacts (drag, configure, AR) or the asset is reused across pages
+- name: A2 image sequence or video scrub ("fake 3D")
+  summary: render frames from the truth asset in Blender, WebP frames on a canvas scrubber
+  verdict: chosen
+  why: when the choreography is fixed; offline-render quality and label-safe at a known byte cost
+- name: A3 authored in Spline, exported to R3F
+  summary: a designer authors the scene in Spline (MCP when the desktop app runs) and exports code
+  verdict: fallback
+  why: fast for designers; check the export against the same budgets
+- name: image-to-video orbit of a product photo
+  summary: animate a still with a video model and scrub it
+  verdict: rejected
+  why: labels drift and geometry melts across frames; usable only for non-label beats after frame sampling
+- name: generated mesh with generated texture
+  summary: one image to a 3D model, shipped as is
+  verdict: rejected
+  why: text comes out smeared and the back is invented; a shape draft at best
+steps:
+- id: target
+  does: name the reference hero, the motion (rotate, drag, scroll-open), the surfaces and the budget; record musts and must-nots
+  kind: research
+  skill: three-d
+  outputs: [work/flows/<date>-3d-web-hero.flow.yaml]
+  gate: {type: auto, check: target has a reference and at least one must and must-not}
+  compare_to_target: does the plan name what 'close to the reference' means in motion, light and speed?
+- id: truth
+  does: collect the truth source (CAD, dieline plus official artwork, capture, or photos for a hybrid) and the measured dimensions; classify T1/T2/T3
+  kind: retrieval
+  skill: product-fidelity
+  inputs: [brand/brand-world.json, assets/official/]
+  gate: {type: owner, check: owner confirms the truth source and which side views are real}
+  compare_to_target: is every visible face backed by a real source?
+  fallback: no truth source for a labelled product means stop and ask; never route to a generated texture
+- id: branch
+  does: choose A1, A2 or A3 from interaction, reuse and quality needs; write the cost ladder
+  kind: research
+  skill: three-d
+  gate: {type: owner, check: owner approves branch and spend}
+  compare_to_target: does the branch match the motion the reference actually uses?
+- id: probe
+  does: the riskiest step cheaply - a label UV test on a low-poly mesh, or 12 sequence frames from a Blender turntable
+  kind: probe
+  skill: three-d
+  tools:
+  - {id: blender-mcp, why: build and render in Blender, access: mcp}
+  - {id: cstack-3d-blender-script, why: script the owner runs when no Blender MCP, access: cli}
+  gate: {type: deterministic_check, check: four-angle overlay of render against official artwork shows no drift}
+  compare_to_target: does the label read at the reference's crop and size?
+- id: build
+  does: build at real scale with origin at the base centre, official artwork on the label island, PBR from measured references, CC0 HDRI light; export GLB or render frames
+  kind: deterministic
+  skill: three-d
+  outputs: [work/3d/<id>/model.glb, work/3d/<id>/frames/, work/3d/<id>/poster.webp]
+  gate: {type: deterministic_check, check: cstack 3d inspect --budget web-hero or cstack 3d frames passes}
+  compare_to_target: matches the reference's light and motion at the same frame?
+- id: hero
+  does: wire the hero (R3F, model-viewer or canvas scrubber) with poster first, preload, reduced-motion and low-tier fallback
+  kind: deterministic
+  skill: workflow
+  gate: {type: deterministic_check, check: browse qa at 375/768/1440 passes and the poster is the largest paint}
+  compare_to_target: screenshots side by side with the reference
+- id: review
+  does: brand-verify gates, creative-review, owner approval
+  kind: human
+  skill: creative-review
+  gate: {type: independent_review, check: no fail on product truth or performance; owner approves}
+  compare_to_target: reviewer compares against the reference and the label artwork, not the plan
+cost_ladder: deterministic first (T1 build and Blender renders cost no API money); generative shape drafts only for T3, two probes on the cheapest 3D model (about $0.25-0.38 each) before one premium run (about $0.40-1.20); stop after two failed probes and switch path
+failure_modes:
+- uncompressed 30 MB GLB
+- environment map heavier than the model
+- generated label texture
+- scroll-jacking that breaks accessibility
+- no poster, blank hero on slow networks
+evidence:
+- {ref: docs/research/3d.md, kind: documented, date: 2026-10-03, note: "sections 4, 5 and 8 (flow A)"}
+- {ref: "https://modelviewer.dev/docs/", kind: documented, date: 2026-10-03}
+- {ref: "https://gltf-transform.dev/cli", kind: documented, date: 2026-10-03}
+- {ref: "https://fal.ai/models?categories=image-to-3d", kind: documented, date: 2026-10-03, note: 3D model prices}
+- {ref: "https://github.com/ahujasid/blender-mcp", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 90
+related:
+- skill:three-d
+- skill:product-fidelity
+- workflow:product-3d
+- workflow:landing-page

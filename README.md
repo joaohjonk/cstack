@@ -4,7 +4,7 @@ An open, git-native operating system for brand and creative work, run by AI agen
 
 cstack is to brand work what [gstack](https://github.com/garrytan/gstack) is to shipping software: a set of composable skills, a small CLI, and files in git that let an agent (Claude Code, Codex, Cursor, Gemini CLI, OpenCode) work like a disciplined studio instead of a prompt box. You install it once and use it for any number of brands. Each brand keeps its own workspace in its own repo; cstack itself holds no brand's data.
 
-> Status: v0.1, beta. The foundation, 22 skills, 8 workflow templates and the eval suite exist and pass their static checks. Workflows are `template` until proven on a real run. See [docs/retro.md](docs/retro.md) for what is still weak.
+> Status: v0.1, beta. The foundation, 30 skills, 11 workflow templates, 14 researched flows and the eval suite exist and pass their static checks. Workflows are `template` and flows `researched` until proven on a real run. See [docs/retro.md](docs/retro.md) for what is still weak.
 
 ## Why it exists
 
@@ -14,6 +14,7 @@ cstack's answer is structure, not longer prompts:
 
 - **A brand is infrastructure, not a PDF.** Brand state lives in versioned files with field-level provenance (who said it, how sure, approved or not).
 - **Context before generation, retrieval before invention.** References are stored as mechanisms ("what makes this work and how it transfers"), not as looks.
+- **Method before making.** Before an outcome is attempted, the agent finds or researches the best current flow for it (tools, models, practitioner methods), compares candidates, and works step by step against a stated target. Nothing big is one-shot.
 - **Deterministic before generative, cheap before premium.** Tokens, lints and crops before models; probes before finals; a budget and a stop condition before any batch.
 - **Verification is a stage, and the maker never certifies its own work.** Beautiful, on-brand, culturally alive, effective and correct are separate judgments.
 - **The owner's taste is sovereign.** Picks, kills and edits become preference data; repeated evidence becomes durable rules.
@@ -61,6 +62,8 @@ A fully worked fictional brand lives in [examples/lumen-field](examples/lumen-fi
 
 ```bash
 cstack search "product photoshoot"                       # find the right skill
+cstack flows search "rotating 3d product on the homepage" # the researched method for an outcome, before making
+cstack flows check work/flows/*.flow.yaml                 # the plan compared options, gates every step, has a stop
 cstack brand context --sections voice,color               # compact, cache-stable facts for a prompt
 cstack taste search "a ritual that feels choreographed"   # Taste Labs, when TASTE_API_KEY is set
 cstack route --modality image --needs image-edit,text-rendering
@@ -69,6 +72,11 @@ cstack spend plan batch.json --stop "2 of 4 probes fail fidelity"
 cstack generate --file request.json --dry-run
 cstack browse qa http://localhost:4173                    # overflow, alt text, contrast at 375/768/1440
 cstack tokens check && cstack tokens build
+cstack type qa http://localhost:4173                      # measure, leading, caps, contrast, fallbacks per breakpoint
+cstack svg lint brand/icons --grammar brand/tokens/icons.tokens.json
+cstack mockup render --template t/can --art label.svg --out can.png && cstack mockup verify --template t/can --art label.svg --render can.png
+cstack 3d inspect model.glb --budget web-hero              # bytes, triangles, textures, scale, origin
+cstack video qa master.mp4 --product-ref still.png --roi 380,600,320,420
 cstack evals plan --since main                            # only the evals your diff can break
 cstack health                                             # skill validity, budgets, staleness
 ```
@@ -97,28 +105,34 @@ The CLI is the deterministic part (validation, routing, budgets, lineage, tokens
 
 | Stage | Skills |
 |---|---|
-| Think | `office-hours`, `creative-direction` |
-| Know the brand | `brand-import`, `identity-system` |
+| Think | `office-hours`, `creative-direction`, `flow-research` |
+| Know the brand | `brand-import`, `identity-system`, `type-director` |
 | Look outward | `taste-search`, `cultural-scan`, `competitor-intel`, `browse` |
-| Art-direct | `shot-dna`, `campaign-sequence`, `product-fidelity` |
-| Make | `prompt-director`, `model-router`, `generate-media`, `image-edit`, `copywriting` |
+| Art-direct | `shot-dna`, `campaign-sequence`, `product-fidelity`, `video-direction` |
+| Marks | `symbol-design`, `vector-master` |
+| Make | `prompt-director`, `model-router`, `generate-media`, `image-edit`, `copywriting`, `mockup`, `three-d`, `video-assembly` |
 | Judge | `creative-review`, `brand-verify`, `claims-proof` |
 | Improve | `learn`, `creative-autoresearch` |
 | Orchestrate | `workflow` |
 
-22 skills on purpose: the spec asked for 15–20 excellent ones; `browse` and `workflow` are infrastructure the others lean on. Each fits its context budget (`cstack budget --check`).
+The spec asked for 15–20 excellent skills; v0.1 shipped 22 (`browse` and `workflow` are infrastructure the others lean on). The owner then asked for 3D, mockups, marks and vector, AI video, deeper typography and a method-first rule, which added eight skills, each with its own job, triggers and deterministic checker. Skills that never fire on real runs get merged ([docs/retro.md](docs/retro.md)). Each fits its context budget (`cstack budget --check`).
+
+## Method before making
+
+Every skill starts by naming the target (a reference, musts, must-nots) and looking up how that outcome is best made today: `cstack flows search "<outcome>"` returns researched flows with candidates considered, steps, gates, a cost ladder, failure modes, evidence and a staleness date. `cstack flows plan <id>` copies one into the workspace as this run's plan, and `cstack flows check` refuses a plan that compared fewer than two ways of getting there, left a step without a gate or a comparison to the target, or has no stop condition. The agent then works step by step, comparing each step's output against the target. No fresh flow means `/flow-research` first. Library flows cover typography, product 3D (web hero, packshot, turntable, AR), mockups, logos, icon sets and video (product hero, brand film, cut-downs, presenter ads, logo stings, explainers).
 
 ## Workflows
 
 `/workflow <name>` runs a resumable plan with owner gates and a tracker in `work/plans/`:
 
-`create-brand` · `import-brand` · `campaign` · `product-photoshoot` · `paid-social` · `landing-page` · `packaging` · `deck`
+`create-brand` · `import-brand` · `campaign` · `product-photoshoot` · `paid-social` · `landing-page` · `packaging` · `deck` · `product-3d` · `product-video` · `logo-system`
 
 Definitions are in [workflows/](workflows). Every step names its skill, inputs, outputs, gate and fallback when a tool or provider is missing.
 
 ## Integrations
 
-- **Research tools and MCPs.** cstack knows Taste Labs, Cosmos, Refero, Mobbin, Ecomm.Design, Baymard, Particl, BuiltWith, Store Leads, Helium 10, SmartScout, Nexscope, Foreplay, Shortimize, Really Good Emails, Figma and Shopify's MCPs, and detects which ones you have (`cstack tools`). None is required; every one has a fallback. Tools whose terms bar automated agents are used only through your own exports or by you.
+- **Research tools and MCPs.** cstack knows Taste Labs, Cosmos, Refero, Mobbin, Ecomm.Design, Baymard, Particl, BuiltWith, Store Leads, Helium 10, SmartScout, Nexscope, Foreplay, Shortimize, Really Good Emails, Figma and Shopify's MCPs, plus making tools for 3D (Blender, Spline, Needle, Meshy, Tripo, glTF Transform), mockups and vector (Dynamic Mockups, Recraft, Adobe, Canva, Pacdora, vectorizers), video (fal, Higgsfield, HeyGen, Replicate, Runway, HyperFrames) and type (Google Fonts, Adobe Fonts, foundry trials, Fonts In Use, Typewolf, Wakamai Fondue, fontTools). It detects which ones you have (`cstack tools`). None is required; every one has a fallback. Tools whose terms bar automated agents are used only through your own exports or by you.
+- **Deterministic checkers.** `cstack type`, `svg`, `mockup`, `3d` and `video` measure the things models get wrong (type on rendered pages, mark reduction and icon grammar, label pixels after a mockup, web and AR budgets, drift and loudness in video). Video needs `ffmpeg` on your machine; cstack never installs it.
 - **Browser.** `cstack browse`, ported from gstack's browse layer (MIT, see [NOTICE.md](NOTICE.md)), as one-shot commands with an origin lock and mutation guard.
 - **Media providers.** fal (many image/video models), Taste Labs, a mock provider for tests, and stubs for the rest, all behind one guarded call with dedupe, budgets and pending-job recovery.
 

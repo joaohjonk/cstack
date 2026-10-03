@@ -1,0 +1,21 @@
+/* cstack type scale: base 16px, ratio 1.25 (major-third), steps -2..6 */
+:root {
+  --font-size-step--2: 0.64rem;
+  --font-size-step--1: 0.8rem;
+  --font-size-step-0: 1rem;
+  --font-size-step-1: 1.25rem;
+  --font-size-step-2: 1.5625rem;
+  --font-size-step-3: 1.9531rem;
+  --font-size-step-4: 2.4414rem;
+  --font-size-step-5: 3.0518rem;
+  --font-size-step-6: 3.8147rem;
+  --font-lineHeight-step--2: 1.63;
+  --font-lineHeight-step--1: 1.56;
+  --font-lineHeight-step-0: 1.5;
+  --font-lineHeight-step-1: 1.44;
+  --font-lineHeight-step-2: 1.37;
+  --font-lineHeight-step-3: 1.31;
+  --font-lineHeight-step-4: 1.24;
+  --font-lineHeight-step-5: 1.18;
+  --font-lineHeight-step-6: 1.11;
+}

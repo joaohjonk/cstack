@@ -1,0 +1,97 @@
+id: logo-system
+outcome: a new logo or symbol from brief to approved vector master and a complete mark system
+aliases:
+- new logo
+- logo design
+- brand mark
+- symbol
+- monogram
+- logo refresh
+status: researched
+target:
+  description: a simple, distinctive, appropriate mark that survives 16 px and signage, with masters, variants, lockups and usage rules the whole team can apply
+  must:
+  - works in one colour at 32 px and has an approved 16 px variant
+  - human-refined vector master; generated forms are references only
+  - lockups, clear space and minimum sizes in units of the mark
+  - owner approves directions and master
+  must_not:
+  - generated raster approved as the logo
+  - category cliché the brief did not ask for
+  - trademark clearance asserted by the agent
+  quality_bar: an independent review finds it distinctive in the category silhouette board and the reduction sheet passes; the owner approves
+when:
+- new brand, sub-brand, event mark, refresh
+not_when:
+- usage rules for an existing approved mark only (identity-system)
+candidates_considered:
+- name: brief, research, cheap wide exploration, human refinement, vector master, system
+  verdict: chosen
+  why: how identity studios work; spend stays small until a direction is picked
+- name: commission a designer from the start with cstack doing research and mastering
+  verdict: fallback
+  why: best for high-equity marks; cstack supplies the brief, boards and the master checks
+- name: generate logos from adjectives and pick one
+  verdict: rejected
+  why: category average, no construction, fails reduction, unclear provenance
+steps:
+- id: brief
+  does: name, attributes as mechanisms, applications list, competitors, equity, constraints
+  kind: research
+  skill: office-hours
+  gate: {type: owner, check: owner approves the brief}
+  compare_to_target: brief names what the mark must do, where
+- id: research
+  does: category silhouette board, clichés to avoid, canon mechanisms, references near, middle and far
+  kind: research
+  skill: symbol-design
+  tools:
+  - {id: competitor-intel, why: category marks, access: skill}
+  - {id: taste-labs, why: far references, access: mcp}
+  gate: {type: auto, check: board and canon notes exist}
+  compare_to_target: does the board show what the mark must not look like?
+- id: explore
+  does: 20-40 thumbnails across 3-5 ideas; judge in one colour at 32 px first
+  kind: probe
+  skill: symbol-design
+  tools:
+  - {id: recraft, why: vector exploration, access: mcp}
+  - {id: cstack-svg-reduce, why: small-size test, access: cli}
+  gate: {type: owner, check: owner picks 2-3 directions}
+  compare_to_target: directions read at 32 px and differ from the category board
+- id: refine
+  does: a person redraws on a construction grid; the agent supplies grids, measurements and optical-correction overlays
+  kind: human
+  skill: symbol-design
+  gate: {type: owner, check: owner approves the refined drawing}
+  compare_to_target: construction stated; optical corrections recorded
+- id: master
+  does: clean SVG, lint, reduction test, variants, small-size variant, kit
+  kind: deterministic
+  skill: vector-master
+  gate: {type: deterministic_check, check: cstack svg lint no fail; cstack svg reduce passes at the minimum size}
+  compare_to_target: master equals the approved drawing; kit complete
+- id: system
+  does: lockups, clear space, minimum sizes, misuse sheet, logo_marks through cstack brand set
+  kind: deterministic
+  skill: identity-system
+  gate: {type: owner, check: owner approves the system}
+  compare_to_target: agents applying the rules reproduce the lockups
+cost_ladder: exploration is the only paid step (vector model about $0.08 per draft); a 30-draft round is about $2-3; refinement is human time; mastering is free; stop after two rounds the owner cannot shortlist from and go back to the brief
+failure_modes:
+- a mark that dies at 16 px
+- resemblance to a known mark
+- font licence that forbids logo use
+- forty options shown instead of two or three ideas
+evidence:
+- {ref: docs/research/mockups-and-vector.md, kind: documented, date: 2026-10-03, note: "sections B1-B3, B6, D3"}
+- {ref: "https://www.recraft.ai/docs/recraft-models/recraft-v4-1", kind: documented, date: 2026-10-03}
+- {ref: "https://arxiv.org/abs/2506.03139v1", kind: documented, date: 2026-10-03, note: LLM-written SVG degrades with complexity}
+- {ref: "Chermayeff, Geismar, Haviv, Identify (2011)", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- skill:symbol-design
+- skill:vector-master
+- skill:identity-system
+- workflow:logo-system

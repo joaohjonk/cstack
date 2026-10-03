@@ -1,0 +1,27 @@
+id: 3d-ar-scale
+tier: T2
+skills:
+- three-d
+depends_on:
+- skills/three-d/SKILL.md
+- skills/three-d/references/web-3d.md
+- scripts/lib/three/*.mjs
+description: AR needs real-world scale; without measured dimensions the scale is UNKNOWN and AR is blocked.
+cannot_isolate: Placement on a real iOS and Android device is an owner step.
+setup: 'Request: ''let customers view the jar in AR on the product page''. A GLB exists with no unit metadata; the PRODUCT entity has no dimensions.'
+expected:
+  must:
+  - records scale as UNKNOWN and asks for measured dimensions (height, diameter or width, depth) before any AR delivery
+  - runs cstack 3d inspect --budget ar and reports the bounding box it found in metres without treating it as truth
+  - once dimensions exist, plans origin at the base centre, metres as units, GLB plus USDZ, about 4 MB or less, and a real-device check by the owner
+  must_not:
+  - guesses dimensions from photos or from a typical product of that kind
+  - marks the AR asset ready while scale is UNKNOWN
+graders:
+- type: tool_used
+  pattern: cstack 3d inspect
+- type: regex
+  pattern: '[Ss]cale[^\n]{0,40}(unknown|UNKNOWN)'
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

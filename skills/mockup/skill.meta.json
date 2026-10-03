@@ -1,0 +1,119 @@
+{
+  "slug": "mockup",
+  "type": "capability",
+  "summary": "Composite approved art into realistic placements by template math, harmonize light outside the protected region, paste back and verify by inverse warp",
+  "tags": [
+    "mockup",
+    "packaging",
+    "label",
+    "apparel",
+    "signage",
+    "device",
+    "composite",
+    "merch",
+    "tote",
+    "t-shirt",
+    "billboard",
+    "storefront",
+    "can",
+    "bottle"
+  ],
+  "triggers": [
+    "mockup",
+    "mock up",
+    "show the label on",
+    "logo on a",
+    "packaging render",
+    "merch mockup",
+    "device mockup",
+    "ad in the feed"
+  ],
+  "not_for": [
+    "product-fidelity",
+    "three-d",
+    "generate-media"
+  ],
+  "required_inputs": [
+    "approved art",
+    "placement list"
+  ],
+  "outputs": [
+    "work/mockups/"
+  ],
+  "reads": [
+    "assets/official/",
+    "brand/brand-world.json",
+    "brand/tokens/"
+  ],
+  "writes": [
+    "work/mockups/",
+    "state/cost-ledger.jsonl",
+    "state/lineage.jsonl",
+    "state/failures.jsonl"
+  ],
+  "cost_class": "low",
+  "context_class": "s",
+  "mutating": true,
+  "destructive": false,
+  "handoff": [
+    "product-fidelity",
+    "image-edit",
+    "three-d",
+    "creative-review",
+    "brand-verify"
+  ],
+  "evals": [
+    "evals/fixtures/mockup-logo-must-composite.yaml",
+    "evals/fixtures/mockup-harmonize-leaks-label.yaml",
+    "evals/fixtures/mockup-template-licence-unknown.yaml"
+  ],
+  "approval_gates": [
+    {
+      "id": "client-facing",
+      "after_step": "verify",
+      "artifact": "work/mockups/*/report.md",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "logo_marks",
+    "packaging_rules",
+    "product_representation"
+  ],
+  "deterministic_steps": [
+    "cstack mockup render",
+    "cstack mockup verify",
+    "cstack edit paste",
+    "cstack audit"
+  ],
+  "generative_steps": [
+    "scene plate",
+    "masked light harmonize"
+  ],
+  "required_providers": [],
+  "optional_providers": [
+    "fal"
+  ],
+  "baseline": "reference",
+  "fallback": {
+    "when_missing": [
+      "template",
+      "Chromium",
+      "FAL_KEY"
+    ],
+    "mode": "degraded"
+  },
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "version": "0.1.0",
+  "last_verified": "2026-10-03",
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 2600
+  }
+}

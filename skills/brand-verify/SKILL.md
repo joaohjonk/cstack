@@ -40,7 +40,7 @@ Approved tokens and rules are the reference. A verifier score is evidence about 
 
 ## Process
 
-1. **Deterministic gates** (each rule id → pass/warn/fail with evidence): raw colors (`tokens lint`), font families and sizes vs type hierarchy (computed styles via `browse tokens`), aspect ratios, logo presence/clear space (official file overlay), required elements (legal lines), banned words, contrast.
+1. **Deterministic gates** (each rule id → pass/warn/fail with evidence): raw colors (`tokens lint`), font families, sizes, measure, leading and fallbacks vs the type system (`cstack type qa`, computed styles via `browse tokens`), aspect ratios, logo presence/clear space (official file overlay), required elements (legal lines), banned words, contrast; per medium: `cstack svg lint` (marks, icons), `cstack mockup verify` (placements), `cstack 3d inspect` (3D budgets), `cstack video qa` (video).
 2. **Verifier**: Taste verify (public URL; score 0-1, fixes worst-first, recommendations) or the local judge on rules marked `check: judge`. Record verdict id.
 3. **Diagnose → fix the minimum** (map verifier fixes such as snap-to-token onto concrete edits; apply deterministic fixes directly).
 4. **Re-verify once.** Still failing → human review with before/after and the remaining findings. Never loop indefinitely; never rationalize a fail.

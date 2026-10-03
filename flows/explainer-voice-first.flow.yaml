@@ -1,0 +1,59 @@
+id: explainer-voice-first
+outcome: an explainer or how-to video built on narration
+aliases:
+- explainer
+- how-to video
+- product explainer
+- tutorial video
+status: researched
+target:
+  description: narration first, one visual style, every on-screen fact sourced, text legible on phones
+  must:
+  - script and narration before visuals
+  - each on-screen fact traced to a source
+  - text deterministic (HTML motion or composited), legible at 375 px wide
+  must_not:
+  - model-drawn text or charts
+  quality_bar: facts check out, the owner approves the narration, and text passes a legibility check on phone size
+when:
+- onboarding, product education, feature launches
+not_when:
+- pure mood (brand-mood-film)
+candidates_considered:
+- name: voice first, then one clip or HTML motion block per ~10 s of narration
+  verdict: chosen
+  why: timing and facts stay controlled
+- name: visuals first, narration fitted later
+  verdict: rejected
+  why: timing fights and re-cuts
+steps:
+- id: script
+  does: script with sources; narration (TTS or real voice-over)
+  kind: research
+  skill: copywriting
+  gate: {type: owner, check: owner approves script and voice}
+  compare_to_target: every claim sourced
+- id: blocks
+  does: split into ~10 s blocks; one style key; clip or HTML motion per block
+  kind: generative
+  est_cost: {amount: 0.10, currency: USD, unit: "per second of generated footage (Gemini Omni Flash, 720p); HTML motion blocks cost nothing"}
+  skill: video-direction
+  gate: {type: auto, check: each block has a visual and a source}
+  compare_to_target: style consistent across blocks
+- id: assemble
+  does: assemble on the voice-over timeline; captions from word timings
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: cstack video qa passes}
+  compare_to_target: legibility at phone size
+cost_ladder: narration and HTML motion are cheap; generated clips only for blocks that need footage; stop after two failed probe rounds on a block and make it motion graphics instead
+failure_modes:
+- unsourced numbers on screen
+- text too small on phones
+evidence:
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: section 4.6}
+last_verified: 2026-10-03
+stale_after_days: 120
+related:
+- skill:video-direction
+- skill:video-assembly

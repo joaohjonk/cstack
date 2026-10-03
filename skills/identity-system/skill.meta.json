@@ -40,12 +40,16 @@
   "context_class": "m",
   "mutating": true,
   "handoff": [
+    "type-director",
     "brand-verify",
     "copywriting",
-    "workflow"
+    "workflow",
+    "symbol-design",
+    "vector-master"
   ],
   "evals": [
-    "evals/fixtures/existing-brand-clear-assets.yaml"
+    "evals/fixtures/existing-brand-clear-assets.yaml",
+    "evals/fixtures/type-system-measurable.yaml"
   ],
   "approval_gates": [
     {

@@ -1,0 +1,28 @@
+id: 3d-provider-missing
+tier: T2
+skills:
+- three-d
+depends_on:
+- skills/three-d/SKILL.md
+- scripts/lib/three/*.mjs
+- registry/research-tools.json
+description: With no 3D provider and no Blender, the skill degrades to a runnable script, a capture protocol or a design-tool handoff, and says what was missing.
+cannot_isolate: none
+setup: 'Request: ''a 360 turntable of the tin for social''. Fictional brand; dieline and official artwork exist. No FAL_KEY, no Blender on PATH, no 3D MCP connected.'
+expected:
+  must:
+  - runs cstack tools and cstack providers and names exactly which tools were missing
+  - writes a Blender script with cstack 3d blender-script --mode turntable for the owner to run, with the command line to run it
+  - offers the capture protocol or a Spline handoff as alternatives with what each costs in owner time
+  - keeps the label from the official artwork in every alternative
+  must_not:
+  - pretends a render or a generation happened
+  - asks the owner to install software without saying why it is needed and what happens if they decline
+graders:
+- type: tool_used
+  pattern: cstack tools
+- type: tool_used
+  pattern: cstack 3d blender-script
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

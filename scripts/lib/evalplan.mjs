@@ -31,7 +31,7 @@ export function changedFiles(since) {
   }
 }
 
-const KNOWN = [/^docs\//, /^README\.md$/, /^CHANGELOG\.md$/, /^LICENSE$/, /^\.gitignore$/, /^examples\//, /^references\//, /^experiments\//, /^state\//, /^registry\/skills-index\.json$/, /^evals\/static\//];
+const KNOWN = [/^docs\//, /^README\.md$/, /^CHANGELOG\.md$/, /^LICENSE$/, /^\.gitignore$/, /^examples\//, /^references\//, /^experiments\//, /^state\//, /^canon\//, /^registry\/skills-index\.json$/, /^registry\/research-tools\.json$/, /^evals\/static\//];
 
 export function evalPlan({ since, files } = {}) {
   const changed = files ?? changedFiles(since) ?? [];
@@ -46,7 +46,7 @@ export function evalPlan({ since, files } = {}) {
   const touchedSkills = new Set(changed.map((f) => f.match(/^skills\/([^/]+)\//)?.[1]).filter(Boolean));
   const touchedProviders = new Set(changed.map((f) => f.match(/^providers\/([^/.]+)/)?.[1]).filter((p) => p && p !== 'local')); // providers/local/* is free, deterministic: T1
   const unknown = changed.filter(
-    (f) => !KNOWN.some((re) => re.test(f)) && !/^(skills|providers|scripts|bin|schemas|tests|workflows|templates|fixtures|evals\/fixtures|\.github)\//.test(f) && f !== 'package.json' && f !== 'setup' && f !== 'package-lock.json' && f !== 'registry/models.json' && f !== 'registry/providers.json',
+    (f) => !KNOWN.some((re) => re.test(f)) && !/^(skills|providers|scripts|bin|schemas|tests|workflows|flows|templates|fixtures|evals\/fixtures|\.github)\//.test(f) && f !== 'package.json' && f !== 'setup' && f !== 'package-lock.json' && f !== 'registry/models.json' && f !== 'registry/providers.json',
   );
   const full = unknown.length > 0 || changed.some((f) => f.toLowerCase() === 'skills/cstack-shared/preamble.md');
   for (const fx of fixtures) {
@@ -64,4 +64,43 @@ export function evalPlan({ since, files } = {}) {
     ...why.map((w) => `why ${w}`),
   ].join('\n');
   return { changed, tiers, why, full, text };
+}
+
+// Fixture format (docs/evals.md): tiers T0|T2|T3 (T1 lives in tests/), graders command|tool_used|regex|llm.
+const GRADERS = { command: ['run', 'expect_exit'], tool_used: ['pattern'], regex: ['pattern'], llm: ['rubric'] };
+
+export function checkFixtures({ skills = null, files = null } = {}) {
+  const errors = [];
+  const warnings = [];
+  let tracked = files;
+  if (!tracked) {
+    try {
+      tracked = execSync(`git -C "${ROOT}" ls-files -co --exclude-standard`, { encoding: 'utf8' }).split('\n').filter(Boolean);
+    } catch {
+      tracked = null;
+    }
+  }
+  for (const fx of loadFixtures()) {
+    const where = fx.file;
+    if (fx.id !== path.basename(fx.file).replace(/\.ya?ml$/, '')) errors.push([where, `id "${fx.id}" must equal the file name`]);
+    if (!['T0', 'T2', 'T3'].includes(fx.tier)) errors.push([where, `tier "${fx.tier}" must be T0, T2 or T3 (T1 lives in tests/)`]);
+    if (!(fx.expected?.must ?? []).length) errors.push([where, 'expected.must is empty']);
+    for (const sk of fx.skills ?? []) if (skills && !skills.includes(sk)) errors.push([where, `unknown skill "${sk}"`]);
+    for (const g of fx.graders ?? []) {
+      const need = GRADERS[g.type];
+      if (!need) {
+        errors.push([where, `grader type "${g.type}" is not one of ${Object.keys(GRADERS).join(', ')}`]);
+        continue;
+      }
+      for (const k of need) if (g[k] == null) errors.push([where, `${g.type} grader needs "${k}"`]);
+      if (g.type === 'regex' || g.type === 'tool_used')
+        try {
+          new RegExp(g.pattern);
+        } catch (e) {
+          errors.push([where, `pattern does not compile in JavaScript: ${e.message}`]);
+        }
+    }
+    if (tracked) for (const d of fx.depends_on ?? []) if (!tracked.some((f) => globToRe(d).test(f))) warnings.push([where, `depends_on "${d}" matches no file`]);
+  }
+  return { errors, warnings };
 }

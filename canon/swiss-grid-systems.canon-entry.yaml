@@ -1,27 +1,63 @@
 id: swiss-grid-systems
-name: Swiss / International Typographic Style and grid systems (Muller-Brockmann)
+name: Swiss / International Typographic Style and grid systems (Müller-Brockmann)
 kind: framework
 domains:
 - typography
 - layout
 - editorial
-mental_model: the grid as an ethical and practical commitment to clarity and order
+- systems
+mental_model: 'the grid as a commitment to clarity and order: a measured field derived from the type, which keeps many layouts consistent while the content changes'
 mechanisms:
-- modular grids with legal column spans
-- objective, flush-left typography
-- asymmetric balance
-- information hierarchy carried by scale and position rather than decoration
+- derive the grid from the type, basing the module on the body text line (size plus leading) so text and grid share one measure
+- pick the number of fields from the density of the content (the method covers 8 to 32 fields, and three-dimensional grids) and treat spans of fields as the only legal sizes for text and images
+- carry hierarchy with size, weight and position instead of ornament, with text set flush left and ragged right
+- use asymmetric balance and active white space as structure, not as leftover space
+- separate the information from the designer's taste so other people can continue the system
+- 'treat the grid as an aid, not a guarantee: it narrows the choices, and quality still comes from judgment and practice'
 representative_works:
-- Josef Muller-Brockmann, Grid Systems in Graphic Design (1981)
+- Josef Müller-Brockmann, Grid Systems in Graphic Design / Rastersysteme für die visuelle Gestaltung (Niggli, 1981; 10th revised ed. 2016)
+- 'Müller-Brockmann, "Grid and Design Philosophy" (excerpt reprinted in Texts on Type, 2001)'
+- Neue Haas Grotesk (1957), renamed Helvetica in 1960
 when_useful:
-- landing pages, decks, packaging back panels, any dense information
+- landing pages, decks, reports, packaging back panels and any dense information
+- templates that many people or agents fill, where the grid turns layout into legal spans
+- responsive systems, with column counts per breakpoint and spacing in multiples of the line height
 when_not_useful:
-- as a historical costume; operationalize the principles, not the posters
+- 'as a historical costume (Helvetica, flush left, red and black): operationalize the principles, not the posters'
+- 'expressive, collage or vernacular identities where breaking order is the message (canon:pentagram)'
+- strict baseline grids on the web, where fonts, zoom and user spacing overrides move baselines; use consistent spacing tokens instead
 tensions:
-- rational order vs. contemporary digital behavior and expressive type
+- 'fixed modules vs. fluid viewports, browser zoom and user text-spacing overrides (canon:web-typography)'
+- 'objective typography carried a cultural position (postwar Swiss modernism, corporate internationalism) that later designers rebelled against (canon:pentagram)'
+- 'one fixed grid vs. a grid built as a programme that serves several column counts (canon:gerstner-designing-programmes)'
+- 'a correct grid does not make a good page; canon:vignelli shares the discipline and still judges meaning and use separately'
+distance_from:
+  editorial: near
+  web-product-ui: near
+  wayfinding: near
+  identity: middle
+  packaging: middle
+  campaign-advertising: middle
+  motion: far
 sources:
 - kind: external_reference
-  ref: Josef Muller-Brockmann, Grid Systems in Graphic Design (1981)
+  ref: https://draw-down.com/products/grid-systems-in-graphic-design
+  quote: 'The grid system is an aid, not a guarantee.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.goodreads.com/work/quotes/341206
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://neugraphic.com/muller-brockmann/muller-brockmann-text2.html
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://openlab.citytech.cuny.edu/langecomd3504fa2019/files/2018/10/Gerstner_DesigningProgrammes.pdf
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Helvetica
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: 'Josef Müller-Brockmann, Grid Systems in Graphic Design (Niggli, 1981)'
 added: '2026-10-03'
-added_by: cstack seed
+added_by: cstack seed; revised by cstack research (typography)
 status: current

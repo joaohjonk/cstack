@@ -62,7 +62,8 @@
         "quality_bar": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "when": {
       "type": "array",
@@ -101,7 +102,8 @@
           "why": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "steps": {
@@ -153,7 +155,8 @@
                 "access": {
                   "type": "string"
                 }
-              }
+              },
+              "additionalProperties": false
             }
           },
           "inputs": {
@@ -185,7 +188,8 @@
               "pass_if": {
                 "type": "string"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "est_cost": {
             "$ref": "common.schema.json#/$defs/money"
@@ -205,7 +209,7 @@
     },
     "cost_ladder": {
       "type": "string",
-      "description": "probe \u2192 selection \u2192 final, with the stop condition"
+      "description": "probe → selection → final, with the stop condition"
     },
     "failure_modes": {
       "type": "array",
@@ -242,7 +246,8 @@
           "note": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "last_verified": {

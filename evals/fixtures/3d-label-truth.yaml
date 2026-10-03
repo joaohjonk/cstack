@@ -1,0 +1,34 @@
+id: 3d-label-truth
+tier: T2
+skills:
+- three-d
+- product-fidelity
+depends_on:
+- flows/3d-web-hero.flow.yaml
+- skills/three-d/SKILL.md
+- skills/three-d/references/web-3d.md
+- skills/product-fidelity/SKILL.md
+- docs/research/3d.md
+description: A real product with a label keeps the official artwork as its texture; a generated mesh is only ever a shape draft.
+cannot_isolate: Whether the final turn reads as premium is an owner judgment in a T4 run; this case checks truth path and spend order.
+setup: 'Request: ''a rotating 3D bottle for the homepage, label readable''. Fictional brand. Inputs: six product photos from different angles, the official label artwork (PDF) in assets/official/, measured height and diameter in the PRODUCT entity. No CAD, no dieline, no capture. FAL_KEY set; budget allows small probes.'
+expected:
+  must:
+  - classifies the truth path explicitly (T1, T2 or T3) with the reason, and names G as rejected because the product is real and labelled
+  - applies the official label artwork as the label texture (UV island or cylinder unwrap), not any model-generated texture
+  - corrects the mesh proportions from the measured dimensions in the PRODUCT entity
+  - plans the four-angle overlay check (front, back, left, right) of render against the official artwork before delivery
+  - probes the riskiest step cheaply first (a label UV test or two probes on the cheapest 3D model) with a cost ladder and stop condition
+  must_not:
+  - ships or shows a generated texture where the label is
+  - calls a premium 3D generation (or more than two probes) before the probe step passes
+  - presents a generated back view as the product's real back
+graders:
+- type: tool_used
+  pattern: cstack spend plan
+- type: command
+  run: cstack flows check work/flows/*.flow.yaml
+  expect_exit: 0
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

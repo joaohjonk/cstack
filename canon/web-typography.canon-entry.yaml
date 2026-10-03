@@ -1,0 +1,88 @@
+id: web-typography
+name: Web typography as flexible typesetting (Tim Brown, Richard Rutter, Jason Santa Maria, Utopia, platform guidance)
+kind: framework
+domains:
+- typography
+- web
+- product UI
+- accessibility
+mental_model: 'on screens the designer suggests and the reader''s device decides: set type as rules (relative units, ranges, fluid scales, fallbacks) that hold at any width, zoom level and user setting'
+mechanisms:
+- write type as instructions rather than fixed values, using relative units (rem, em, ch), minimum and maximum bounds, and the reader's default size as the base
+- set the measure in ch or em (around 66ch for running text) so line length survives font-size changes
+- 'build fluid scales: define a type scale at a small and a large viewport and interpolate with clamp(); keep a rem term in the formula and keep the maximum within 2.5 times the minimum so 200 percent zoom still works'
+- derive a modular scale from meaningful numbers (the body size plus one important dimension) and step off the scale when a size looks better
+- replace several static files with one variable font when the system needs several weights or widths, use optical-size axes so small text is sturdier and large text finer, and make tracking size-specific
+- 'make layouts survive user overrides: line height 1.5 times the size, paragraph spacing 2 times, letter spacing 0.12 times and word spacing 0.16 times, without loss of content'
+- balance headings and avoid runts with text-wrap balance (headings) and pretty (paragraphs), with a plain fallback
+- judge typefaces as rendered in browsers on real devices, with real text and the fallback stack, never from specimens alone
+- keep design and code on one scale (tokens), so the same calculator output feeds design variables and CSS
+representative_works:
+- 'Tim Brown, More Meaningful Typography (A List Apart, 2011) and Flexible Typesetting (A Book Apart, 2018)'
+- 'Richard Rutter, Web Typography (Ampersand Type, 2017) and The Elements of Typographic Style Applied to the Web (webtypography.net)'
+- 'Jason Santa Maria, On Web Typography (A Book Apart, 2014)'
+- 'Utopia fluid type and space calculators (James Gilyead and Trys Mudford; utopia.fyi)'
+- 'Apple WWDC20 session The details of UI typography; web.dev Learn Design: Typography; WCAG 2.2 Understanding 1.4.4, 1.4.8 and 1.4.12'
+when_useful:
+- any web or app type system, design tokens and responsive marketing pages
+- accessibility reviews of type (zoom, spacing overrides, contrast)
+- font performance budgets and loading strategy
+when_not_useful:
+- fixed-format print, packaging and signage, where the designer controls the final size
+- expressive display composition, which still needs hand setting at each breakpoint
+tensions:
+- 'reader control vs. composed typography: fluid rules give up the exact line breaks and rags that print typographers control (canon:bringhurst)'
+- 'modular-scale ratios, the golden ratio included, are tools without aesthetic proof; adjust the extremes by eye'
+- viewport-unit fluid type can break zoom accessibility unless it includes rem and bounded ratios
+- 'variable fonts are smaller only when they replace several static files; one or two static weights can be smaller'
+- 'platform text styles (iOS Dynamic Type, Material type roles) vs. brand type scales: override platform defaults only with a reason'
+distance_from:
+  web-product-ui: near
+  editorial: middle
+  identity: middle
+  motion: middle
+  campaign-advertising: middle
+  packaging: far
+  wayfinding: far
+sources:
+- kind: external_reference
+  ref: https://abookapart.com/products/flexible-typesetting
+  quote: 'We no longer decide; we suggest.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.alistapart.com/article/more-meaningful-typography
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://book.webtypography.net/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://abookapart.com/products/on-web-typography
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://smashingmagazine.com/2021/04/designing-developing-fluid-type-space-scales/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://utopia.fyi/type/calculator/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://smashingmagazine.com/2023/11/addressing-accessibility-concerns-fluid-type
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://web.dev/learn/design/typography
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.w3.org/WAI/WCAG22/Understanding/text-spacing
+  quote: 'Content is not required to use these text spacing values.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://developer.mozilla.org/docs/Web/CSS/text-wrap-style
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://developer.apple.com/videos/play/wwdc2020/10175/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://almanac.httparchive.org/en/2025/fonts
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (typography)
+status: current

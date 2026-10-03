@@ -39,12 +39,13 @@ steps:
   does: dieline, bleed, finishes, barcode, print constraints; checklist
   gate: auto
 - id: renders
-  skill: generate-media
-  does: renders from the dieline art; label art composited, never generated
+  skill: three-d
+  does: 3D packshot renders from the dieline and official label art (flow 3d-packshot); label art never generated
   gate: auto
+  fallback: 'no 3D tools: generate-media plates with the label composited by mockup'
 - id: mockups
-  skill: image-edit
-  does: physical-context mockups
+  skill: mockup
+  does: physical-context mockups composited from the dieline art (per-panel quads, cylinder unwrap), verified by inverse warp
   gate: auto
 - id: verification
   skill: brand-verify

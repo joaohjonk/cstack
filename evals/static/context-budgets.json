@@ -1,13 +1,13 @@
 {
   "tolerance": 0.1,
-  "catalog_ceiling": 3102,
+  "catalog_ceiling": 3836,
   "skills": {
     "brand-import": {
       "ceiling": 1620,
       "set": "2026-10-03"
     },
     "brand-verify": {
-      "ceiling": 1114,
+      "ceiling": 1162,
       "set": "2026-10-03"
     },
     "browse": {
@@ -19,7 +19,7 @@
       "set": "2026-10-03"
     },
     "claims-proof": {
-      "ceiling": 1183,
+      "ceiling": 1214,
       "set": "2026-10-03"
     },
     "competitor-intel": {
@@ -39,7 +39,7 @@
       "set": "2026-10-03"
     },
     "creative-review": {
-      "ceiling": 1274,
+      "ceiling": 1287,
       "set": "2026-10-03"
     },
     "cultural-scan": {
@@ -47,11 +47,11 @@
       "set": "2026-10-03"
     },
     "generate-media": {
-      "ceiling": 1250,
+      "ceiling": 1298,
       "set": "2026-10-03"
     },
     "identity-system": {
-      "ceiling": 1411,
+      "ceiling": 1440,
       "set": "2026-10-03"
     },
     "image-edit": {
@@ -63,7 +63,7 @@
       "set": "2026-10-03"
     },
     "model-router": {
-      "ceiling": 1201,
+      "ceiling": 1255,
       "set": "2026-10-03"
     },
     "office-hours": {
@@ -71,7 +71,7 @@
       "set": "2026-10-03"
     },
     "product-fidelity": {
-      "ceiling": 1266,
+      "ceiling": 1335,
       "set": "2026-10-03"
     },
     "prompt-director": {
@@ -87,11 +87,39 @@
       "set": "2026-10-03"
     },
     "workflow": {
-      "ceiling": 1190,
+      "ceiling": 1241,
       "set": "2026-10-03"
     },
     "flow-research": {
-      "ceiling": 1557,
+      "ceiling": 1524,
+      "set": "2026-10-03"
+    },
+    "mockup": {
+      "ceiling": 1499,
+      "set": "2026-10-03"
+    },
+    "symbol-design": {
+      "ceiling": 1294,
+      "set": "2026-10-03"
+    },
+    "three-d": {
+      "ceiling": 1558,
+      "set": "2026-10-03"
+    },
+    "type-director": {
+      "ceiling": 2040,
+      "set": "2026-10-03"
+    },
+    "vector-master": {
+      "ceiling": 1451,
+      "set": "2026-10-03"
+    },
+    "video-assembly": {
+      "ceiling": 1280,
+      "set": "2026-10-03"
+    },
+    "video-direction": {
+      "ceiling": 1370,
       "set": "2026-10-03"
     }
   },
@@ -109,6 +137,69 @@
       "from": 1330,
       "to": 1337,
       "reason": "names cstack lint shot-dna as the T1 check"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "brand-verify",
+      "from": 1114,
+      "to": 1162,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "claims-proof",
+      "from": 1183,
+      "to": 1214,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "creative-review",
+      "from": 1274,
+      "to": 1287,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "generate-media",
+      "from": 1250,
+      "to": 1298,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "identity-system",
+      "from": 1411,
+      "to": 1440,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "model-router",
+      "from": 1201,
+      "to": 1255,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "product-fidelity",
+      "from": 1266,
+      "to": 1335,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "workflow",
+      "from": 1190,
+      "to": 1241,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
+    },
+    {
+      "date": "2026-10-03",
+      "slug": "catalog",
+      "from": 3102,
+      "to": 3836,
+      "reason": "media expansion: 7 new skills (type, marks, vector, mockup, 3D, video direction and assembly) add 768 catalog tokens, about 110 each, while the per-skill catalog cost fell from 135 to 128 tokens; existing skills gained routing and gate rules for 3D, mockups, video and synthetic presenters"
     }
   ]
 }

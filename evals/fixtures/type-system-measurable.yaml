@@ -1,0 +1,35 @@
+id: type-system-measurable
+tier: T2
+skills:
+- type-director
+- identity-system
+depends_on:
+- flows/type-system.flow.yaml
+- skills/type-director/SKILL.md
+- skills/type-director/references/primer.md
+- skills/identity-system/SKILL.md
+- scripts/lib/type/scale.mjs
+- scripts/lib/type/qa.mjs
+description: A type system is encoded as tokens and checkable rules, and verified on a specimen.
+cannot_isolate: Visual quality of the specimen needs an owner or independent reviewer.
+setup: 'Approved pairing for a fictional brand; build the type system for web (360-1440 px) and packaging fine print.'
+expected:
+  must:
+  - produces a roles table (family, weight, size step, line height, tracking, case, figures, max measure, max lines)
+  - derives the scale with cstack type scale (fluid between two viewports) and adjusts extremes with a stated reason
+  - line height falls and tracking tightens as size rises; all-caps roles get positive tracking
+  - writes DTCG type tokens that pass cstack tokens check and type rules marked check deterministic where cstack type qa measures them
+  - runs cstack type qa on a specimen at 375, 768 and 1440 and fixes every fail before showing it
+  must_not:
+  - more than 8 distinct sizes on one surface without a recorded reason
+  - synthesized bold, italic or small caps
+  - marks the system current before the owner approves it
+graders:
+- type: command
+  run: cstack tokens check
+  expect_exit: 0
+- type: tool_used
+  pattern: cstack type qa
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

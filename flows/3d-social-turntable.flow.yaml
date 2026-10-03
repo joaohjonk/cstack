@@ -1,0 +1,68 @@
+id: 3d-social-turntable
+outcome: a looping 360 turntable of the product for social feeds
+aliases:
+- 360 video
+- product turntable
+- spinning product video
+status: researched
+target:
+  description: a seamless 4-8 second 360 loop in 9:16 and 1:1 with the label readable whenever it faces camera
+  must:
+  - label from official artwork
+  - seamless loop seam
+  - platform specs and safe zones respected
+  must_not:
+  - label drift or geometry melt in any sampled frame
+  quality_bar: frame-sampled label check passes; the loop seam is invisible at playback speed
+when:
+- a social post, ad or product page needs a turning product
+not_when:
+- a narrative film (use video-direction)
+candidates_considered:
+- name: C1 rendered turntable from the truth asset
+  verdict: chosen
+  why: deterministic and label-safe; re-render in any aspect ratio
+- name: C2 image-to-video orbit of an approved still
+  verdict: fallback
+  why: fast when no 3D exists; check every Nth frame and stop after two failed probes
+- name: C3 splat flythrough
+  verdict: fallback
+  why: photoreal scan look; not relightable, label cannot be swapped
+steps:
+- id: truth
+  does: lock the product and truth source; reuse the 3D asset if one exists
+  kind: retrieval
+  skill: product-fidelity
+  gate: {type: auto, check: truth source recorded}
+  compare_to_target: real source behind every face?
+- id: render
+  does: "Blender turntable 360 in 4-8 s, one script per aspect ratio (cstack 3d blender-script --glb <truth.glb> --mode turntable --size 1080x1920, then --size 1080x1080). The loop is seamless: the frame after the last would repeat the first, so first and last frames must differ by one step."
+  kind: deterministic
+  skill: three-d
+  gate: {type: deterministic_check, check: "cstack 3d frames passes on the web conversion (raw PNG renders exceed the web budget; check them with --max-bytes and --max-frames overrides)"}
+  compare_to_target: label legible when facing camera; play the loop twice and watch the seam for a hitch (3d frames reads headers and names, not motion)
+- id: encode
+  does: ffmpeg encode per platform; optional masked background
+  kind: deterministic
+  skill: three-d
+  gate: {type: deterministic_check, check: "duration, size, codec and loudness match platform specs"}
+  compare_to_target: platform preview with safe zones
+- id: review
+  does: creative-review and owner approval
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: owner approves}
+  compare_to_target: against the brief's reference
+cost_ladder: rendered turntable costs no API money; image-to-video only as fallback, two probes on the cheapest suitable video model, stop after two failures
+failure_modes:
+- visible loop seam
+- label smear in generated orbits
+- motion blur hiding the label
+evidence:
+- {ref: docs/research/3d.md, kind: documented, date: 2026-10-03, note: section 8 flow C}
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: label drift over generated clips}
+last_verified: 2026-10-03
+stale_after_days: 120
+related:
+- skill:three-d
+- skill:video-direction

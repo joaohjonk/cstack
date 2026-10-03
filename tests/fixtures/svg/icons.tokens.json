@@ -1,0 +1,18 @@
+{
+  "$description": "Fictional icon grammar for the svg lint tests. Values follow Lucide's published guide (lucide.dev/guide/design/icon-design-guide): 24 canvas, 1 px padding, 2 px stroke, round caps and joins, corner radius 2 (or 1 for small shapes).",
+  "icon": {
+    "canvas": { "$type": "dimension", "$value": { "value": 24, "unit": "px" }, "$description": "square viewBox" },
+    "padding": { "$type": "dimension", "$value": { "value": 1, "unit": "px" }, "$description": "minimum inset of ink, stroke included" },
+    "stroke": {
+      "width": { "$type": "dimension", "$value": { "value": 2, "unit": "px" } },
+      "linecap": { "$type": "strokeStyle", "$value": { "dashArray": [], "lineCap": "round" } },
+      "linejoin": { "$type": "strokeStyle", "$value": "round", "$description": "DTCG has no line-join type; svg lint reads this string" }
+    },
+    "radius": {
+      "$type": "dimension",
+      "default": { "$value": { "value": 2, "unit": "px" }, "$description": "shapes 8 px and larger" },
+      "small": { "$value": { "value": 1, "unit": "px" } }
+    },
+    "gap": { "$type": "dimension", "$value": { "value": 2, "unit": "px" }, "$description": "recorded for designers; not checked by svg lint" }
+  }
+}

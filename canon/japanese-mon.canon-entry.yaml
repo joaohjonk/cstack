@@ -1,0 +1,27 @@
+id: japanese-mon
+name: Japanese mon (family crests)
+kind: framework
+domains:
+- symbols
+- emblems
+mental_model: 'a crest is monochrome and enclosed; families are told apart by small modifications of a shared form'
+mechanisms:
+- design in one colour; colour is not part of the mark
+- enclose the form so it holds together at any size
+- create a family of marks by small, rule-based variation
+representative_works:
+- Japanese family and institutional crests
+when_useful:
+- symbol systems with sub-brands
+- marks that must reproduce in one colour (stamping, embroidery, embossing)
+when_not_useful:
+- marks that depend on colour or gradients
+tensions:
+- 'borrowing a cultural form vs. appropriation: transfer the mechanism, not the look'
+sources:
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Mon_(emblem)
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research
+status: current

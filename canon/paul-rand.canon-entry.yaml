@@ -1,0 +1,30 @@
+id: paul-rand
+name: Paul Rand
+kind: person
+domains:
+- identity
+- logos
+mental_model: 'a mark is a vessel; meaning accrues from the organization it stands for, so simplicity and durability beat explanation'
+mechanisms:
+- reduce to the fewest distinctive forms
+- test the mark in every medium it will live in
+- present one strong answer with its rationale
+representative_works:
+- IBM, Westinghouse and UPS (1961) marks
+- 'Design, Form, and Chaos (book)'
+when_useful:
+- mark exploration and critique
+- resisting literal briefs that want the mark to explain everything
+when_not_useful:
+- brands whose value is complexity or narrative illustration
+tensions:
+- 'one-answer presentation vs. owner sovereignty: in cstack the owner picks between directions'
+distance_from:
+  identity: near
+  packaging: middle
+sources:
+- kind: external_reference
+  ref: 'Paul Rand, Design, Form, and Chaos (book)'
+added: '2026-10-03'
+added_by: cstack research
+status: current

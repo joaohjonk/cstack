@@ -1,0 +1,35 @@
+id: otl-aicher
+name: Otl Aicher
+kind: person
+domains:
+- pictograms
+- identity
+- systems
+mental_model: 'an identity is a rule set (grid, angles, palette) that generates every sign consistently'
+mechanisms:
+- a strict construction grid with a limited set of angles
+- one palette carried across every touchpoint of an event or organisation
+- pictograms designed as a family, not one by one
+representative_works:
+- Munich 1972 Olympic pictograms and identity
+- Lufthansa identity
+- Rotis type family
+when_useful:
+- icon sets
+- event and wayfinding systems
+- turning a mark into a generative system
+when_not_useful:
+- warm, handmade or vernacular brands
+tensions:
+- 'system rigor vs. character'
+distance_from:
+  icon-design: near
+  identity: near
+  hospitality: far
+sources:
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Otl_Aicher
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research
+status: current

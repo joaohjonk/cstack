@@ -53,6 +53,8 @@ A micro-benchmark on this exact task > fresh provider docs > the dated registry 
 - Promote a model on a benchmark for that task only; do not generalize from one job.
 - Aggregator and direct access are different rows when price or parameters differ.
 - If no model passes probes, say so; do not scale a failing choice.
+- A real product with a label never gets a generated texture or label: 3D models are shape drafts, video models start from an approved still.
+- A promotional price past its end date is re-verified before any budget.
 
 ## Outputs, files written, state updated
 

@@ -1,0 +1,26 @@
+{
+  "id": "poster-wall",
+  "base": "base.png",
+  "placements": [
+    {
+      "id": "poster",
+      "kind": "quad",
+      "quad": [[24, 10], [70, 14], [68, 62], [26, 60]],
+      "aspect": 0.75,
+      "fit": "contain",
+      "feather": 0.5,
+      "mask": "mask.png",
+      "displacement": { "map": "displace.png", "strength": 1.5 },
+      "shading": [
+        { "mode": "multiply", "from": "base", "opacity": 0.85 },
+        { "mode": "screen", "map": "glare.png", "opacity": 0.6 }
+      ],
+      "notes": "3:4 portrait poster; a leaf in front of its lower-left corner is masked out"
+    }
+  ],
+  "licence": {
+    "source": "synthetic cstack test fixture (generated pixels, no photograph)",
+    "terms": "CC0-1.0",
+    "client_use_allowed": true
+  }
+}

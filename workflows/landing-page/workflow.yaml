@@ -38,6 +38,11 @@ steps:
   skill: identity-system
   does: components and rules used by this page
   gate: auto
+- id: 3d-hero
+  skill: three-d
+  does: 'only when the brief asks for a rotating or scroll-animated product: run flow 3d-web-hero; deliver GLB or frames, poster and hero spec'
+  gate: owner
+  fallback: 'skip with reason when the hero is a still image'
 - id: build
   does: build with tokens only (host coding tools); no raw values
   gate: auto

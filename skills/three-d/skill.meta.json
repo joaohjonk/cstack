@@ -1,0 +1,123 @@
+{
+  "slug": "three-d",
+  "type": "composite",
+  "summary": "Product and brand 3D that keeps product truth: real vs fake 3D, truth-source geometry, official label texture, web and AR budgets",
+  "tags": [
+    "3d",
+    "web-hero",
+    "turntable",
+    "ar",
+    "packshot",
+    "glb"
+  ],
+  "triggers": [
+    "rotating product",
+    "3d hero",
+    "scroll animation of the product",
+    "3d render",
+    "turntable",
+    "view in ar",
+    "360 product",
+    "rotate on the homepage",
+    "website hero",
+    "spinning product"
+  ],
+  "not_for": [
+    "product-fidelity",
+    "video-direction"
+  ],
+  "required_inputs": [
+    "outcome",
+    "truth source or concept",
+    "target reference"
+  ],
+  "outputs": [
+    "work/3d/"
+  ],
+  "reads": [
+    "brand/brand-world.json",
+    "assets/official/",
+    "registry/models.json"
+  ],
+  "writes": [
+    "work/3d/",
+    "state/cost-ledger.jsonl",
+    "state/lineage.jsonl"
+  ],
+  "cost_class": "medium",
+  "context_class": "m",
+  "mutating": true,
+  "destructive": false,
+  "handoff": [
+    "product-fidelity",
+    "generate-media",
+    "workflow",
+    "brand-verify",
+    "creative-review",
+    "learn"
+  ],
+  "evals": [
+    "evals/fixtures/3d-label-truth.yaml",
+    "evals/fixtures/3d-web-budget.yaml",
+    "evals/fixtures/3d-fake-vs-real.yaml",
+    "evals/fixtures/3d-ar-scale.yaml",
+    "evals/fixtures/3d-provider-missing.yaml",
+    "evals/fixtures/3d-tool-injection.yaml"
+  ],
+  "approval_gates": [
+    {
+      "id": "path-and-spend",
+      "after_step": "classify",
+      "artifact": "work/flows/*.flow.yaml",
+      "never_self_approve": false
+    },
+    {
+      "id": "final-asset",
+      "after_step": "verify",
+      "artifact": "work/3d/*/report.md",
+      "never_self_approve": true
+    }
+  ],
+  "depends_on_fields": [
+    "product_representation",
+    "packaging_rules",
+    "motion"
+  ],
+  "deterministic_steps": [
+    "cstack 3d inspect",
+    "cstack 3d frames",
+    "cstack 3d blender-script",
+    "label overlay check",
+    "browse qa"
+  ],
+  "generative_steps": [
+    "generated shape drafts",
+    "optional background finish"
+  ],
+  "required_providers": [],
+  "optional_providers": [
+    "fal"
+  ],
+  "baseline": "reference",
+  "fallback": {
+    "when_missing": [
+      "truth source",
+      "3d tools",
+      "FAL_KEY"
+    ],
+    "mode": "degraded"
+  },
+  "compatible_hosts": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "gemini-cli",
+    "opencode"
+  ],
+  "version": "0.1.0",
+  "last_verified": "2026-10-03",
+  "status": "beta",
+  "budget": {
+    "skill_md_tokens_max": 3200
+  }
+}

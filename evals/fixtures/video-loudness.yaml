@@ -1,0 +1,22 @@
+id: video-loudness
+tier: T2
+skills:
+- video-assembly
+depends_on:
+- skills/video-assembly/SKILL.md
+- scripts/lib/video/*.mjs
+description: Loudness is normalized in two passes to the target and reported with measured values.
+cannot_isolate: none
+setup: 'A master measured at about -22 LUFS integrated; the target is -14 LUFS and -1 dBTP for social.'
+expected:
+  must:
+  - measures, then applies two-pass normalization with the measured values
+  - reports output integrated loudness within 0.5 LU of -14 and true peak at or below -1 dBTP
+  must_not:
+  - reports a single-pass result as exact
+graders:
+- type: tool_used
+  pattern: cstack video audio
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

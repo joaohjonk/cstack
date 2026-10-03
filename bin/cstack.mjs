@@ -5,7 +5,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, readJSONL, appendJSONL, newId, today, nowISO } from '../scripts/lib/core.mjs';
+import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, readJSONL, appendJSONL, newId, today, nowISO, walk } from '../scripts/lib/core.mjs';
 import { schemaNames, validator, validateTree, validateValue } from '../scripts/lib/schemas.mjs';
 import { listSkills, checkSkill, buildIndex, search, duplicateLines } from '../scripts/lib/skills.mjs';
 import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
@@ -17,13 +17,13 @@ import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, reso
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
-import { listFlows, searchFlows, planFromFlow } from '../scripts/lib/flows.mjs';
+import { listFlows, searchFlows, planFromFlow, checkFlow, checkFlowFile } from '../scripts/lib/flows.mjs';
 import { runMedia, listPending } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
-import { evalPlan } from '../scripts/lib/evalplan.mjs';
+import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts } from '../scripts/lib/hosts.mjs';
@@ -87,10 +87,34 @@ const COMMANDS = {
   'tokens build': 'compile tokens to brand/generated/tokens.css (deterministic)',
   'tokens lint': 'flag raw colors in built files that are not brand tokens: cstack tokens lint <files...> [--allow #fff,#000]',
   browse: 'headless browser for brand work (lazy-loads playwright-core): cstack browse shot|snapshot|tokens|media|qa|pdf <url> [flags] | run <steps.yaml> | engines',
+  'type scale': 'modular or fluid type scale with line-height, tracking, caps tracking, measure: cstack type scale [--base 16] [--ratio 1.25] [--steps -2..6] [--fluid ...] [--json|--tokens|--css]',
+  'type qa': 'rendered-type QA per breakpoint (measure, leading, caps, size, contrast, widows, families, fallbacks): cstack type qa <url> [--breakpoints 375,768,1440] [--families "A,B"] [--max-families 3] [--scale-css tokens.css]; exits 1 on FAIL',
+  'type font': 'read font files (TTF/OTF/TTC/WOFF/WOFF2): names, fsType, metrics, axes, features, coverage, languages: cstack type font <file...> [--languages pt,vi] [--json]',
+  'video probe': 'container, codecs, size, fps, pixel format, aspect, bitrate, audio, rotation, C2PA presence (needs ffmpeg/ffprobe; cstack never installs them): cstack video probe <file> [--json]',
+  'video normalize': 'conform clips before any join (square pixels, fixed fps, yuv420p, H.264): cstack video normalize <in...> [--size 1080x1920] [--fps 30] [--fit pad|crop] --out <dir>',
+  'video cuts': 'scene cuts, frozen and black segments: cstack video cuts <file> [--threshold 0.3] [--json]',
+  'video sheet': 'contact sheet plus first, last and cut-boundary frames for review: cstack video sheet <file> [--frames 12] --out sheet.png',
+  'video assemble': 'trims and planned transitions into a master from an EDL, plus an OpenTimelineIO file for an editor: cstack video assemble <edl.yaml> --out master.mp4',
+  'video reframe': 'derive 9:16, 4:5, 1:1 and 16:9 from one master (letterbox stripped first, focus per clip): cstack video reframe <master> [--to 9:16,4:5] [--focus 0.5 | --edl edl.yaml] --out <dir>',
+  'video captions': 'burn SRT captions inside a platform safe zone: cstack video captions <video> --srt captions.srt [--zone universal|tiktok|reels|shorts] --out <file>',
+  'video safezone': 'overlay a platform safe zone on a frame for review: cstack video safezone <video|png> [--zone reels] [--at seconds] --out overlay.png',
+  'video audio': 'two-pass loudness to -14 LUFS / -1 dBTP, optional music bed under the original audio: cstack video audio <video> [--bed music.wav] [--bed-gap 10] --out <file>',
+  'video qa': 'spec, freezes, black frames, cuts against the beat plan, label drift in a region against the approved still, loudness, duration, safe zone: cstack video qa <video> [--plan beats.yaml] [--product-ref still.png --roi x,y,w,h]; exits 1 on FAIL',
+  'video deliver': 'per-channel H.264 + AAC encodes with faststart and a manifest: cstack video deliver <master> [--channels meta,tiktok,youtube,reels] --out <dir>',
+  'mockup render': 'composite approved art onto a template package (quad, cylinder, mesh; displacement, shading; licence gate): cstack mockup render --template <dir> --art <file.png|svg> --out <file.png> [--placement id] [--force] [--internal]',
+  'mockup verify': 'prove the art survived: inverse-warp each placement to flat art space and diff it (mean, edges, worst-tile SSIM, heatmap): cstack mockup verify --template <dir> --art <file> --render <file.png> [--placement id]; exits 1 on FAIL',
+  'mockup check': 'validate a template package (placements, footprints, layer files, licence): cstack mockup check --template <dir>',
+  'svg lint': 'lint marks and icon sets: structure and security, viewBox, complexity, palette, strokes across a set, grid against an icon grammar: cstack svg lint <file|dir...> [--grammar icons.tokens.json] [--palette ...]; exits 1 on FAIL',
+  'svg reduce': 'does a mark survive small sizes? renders 16-64 px on white, black and one colour, fails where counters close or parts merge (Chromium): cstack svg reduce <file.svg|png> [--sizes 16,24,32,48,64]',
+  'svg kit': 'favicon and app-icon kit from a vector master (svg, ico, apple-touch, 192/512, maskable with the safe zone checked, manifest): cstack svg kit <file.svg> --out dir [--bg #fff] [--name "Brand"]',
+  '3d inspect': 'check a GLB/glTF against a delivery budget: bytes, triangles, textures, real-world size, origin, compression; model text is untrusted: cstack 3d inspect <file> [--budget web-hero|ar|social] [--dims 70x210x70mm]; exits 1 on FAIL',
+  '3d frames': 'check an image-sequence hero: frame count, total and per-frame bytes, one size, no gaps, format: cstack 3d frames <dir> [--max-frames 150] [--max-bytes 8MB]; exits 1 on FAIL',
+  '3d blender-script': 'write a Blender turntable or packshot script the owner runs (no Blender needed here): cstack 3d blender-script --glb <file> --mode turntable|packshot [--size 1080x1920] [--out script.py]',
   'flows list': 'researched best-way-to-an-outcome flows (cstack flows/ + workspace flows/), with staleness',
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage"',
   'flows show': 'print one flow: cstack flows show <id>',
   'flows plan': 'copy a flow into this run\'s plan: cstack flows plan <id> [--target "what as-close-as-possible means"] → work/flows/',
+  'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
   feedback: 'append a human feedback event: cstack feedback --ws <dir> --file event.json',
@@ -150,11 +174,34 @@ function cmdValidate() {
       for (const st of wf.steps ?? []) if (st.skill && !slugs.includes(st.skill)) r.error(rel(p), `step "${st.id}" uses unknown skill "${st.skill}"`);
       if (!slugs.includes(d) && !wf.entry_skill) r.warn(rel(p), 'workflow has no matching playbook skill (entry_skill)');
     }
-  // flows: steps name real skills; stale flows are flagged
-  for (const f of listFlows(ROOT)) {
-    for (const st of f.steps ?? []) if (st.skill && !slugs.includes(st.skill)) r.error(rel(f.file), `step "${st.id}" uses unknown skill "${st.skill}"`);
-    if (f.stale) r.warn(rel(f.file), `flow last verified ${f.last_verified} (${f.age_days} days); re-research it`);
+  // flows: the library passes the same check a run's plan must pass; stale flows are flagged
+  const flows = listFlows(ROOT);
+  for (const f of flows) {
+    const { file, scope, age_days, stale, ...flow } = f;
+    const c = checkFlow(flow, { skills: slugs });
+    for (const e of c.errors) r.error(rel(file), e);
+    for (const w of c.warnings) r.warn(rel(file), w);
+    if (stale) r.warn(rel(file), `flow last verified ${f.last_verified} (${age_days} days); re-research it`);
   }
+  r.note(`${flows.length} flows checked`);
+  // eval fixtures follow the documented format (docs/evals.md) so a runner can execute their graders
+  const fx = checkFixtures({ skills: slugs });
+  for (const [f, e] of fx.errors) r.error(f, e);
+  for (const [f, w] of fx.warnings) r.warn(f, w);
+  // commands named in skills, docs, fixture graders and flow gates exist; a planned one says "planned"
+  const knownCmd = (a, b) => !!(COMMANDS[`${a} ${b}`] || COMMANDS[a] || (!b && Object.keys(COMMANDS).some((k) => k.startsWith(`${a} `))));
+  const refRe = /\bcstack ([a-z0-9][\w-]*)(?: ([a-z][\w-]*))?/g;
+  const checkRefs = (where, text, re) => {
+    for (const m of text.matchAll(re)) if (!knownCmd(m[1], m[2])) r.error(where, `names \`cstack ${m[1]}${m[2] ? ` ${m[2]}` : ''}\`, which is not a command (implement it, fix the name, or say it is planned)`);
+  };
+  const docFiles = [
+    ...walk(path.join(ROOT, 'skills'), (p) => p.endsWith('.md')),
+    ...['README.md', 'AGENTS.md'].map((f) => path.join(ROOT, f)).filter(exists),
+    ...fs.readdirSync(path.join(ROOT, 'docs')).filter((f) => f.endsWith('.md') && !f.startsWith('backlog')).map((f) => path.join(ROOT, 'docs', f)),
+  ];
+  for (const f of docFiles) for (const line of fs.readFileSync(f, 'utf8').split('\n')) if (!/\bplanned\b/i.test(line)) checkRefs(rel(f), line, /`cstack ([a-z0-9][\w-]*)(?: ([a-z][\w-]*))?/g);
+  for (const x of loadFixtures()) for (const g of x.graders ?? []) if (g.type === 'command' && /^cstack /.test(g.run ?? '')) checkRefs(x.file, g.run.split(/\s+/).slice(0, 3).join(' '), refRe);
+  for (const f of flows) for (const st of f.steps ?? []) if (st.gate?.check) checkRefs(rel(f.file), st.gate.check, refRe);
   // research tools name real skills and workflows
   const rt = readJSON(path.join(ROOT, 'registry', 'research-tools.json'));
   const wfNames = exists(path.join(ROOT, 'workflows')) ? fs.readdirSync(path.join(ROOT, 'workflows')) : [];
@@ -540,7 +587,7 @@ function cmdSetup() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 switch (cmd) {
@@ -600,7 +647,7 @@ switch (cmd) {
     if (sub === 'list' || !sub) {
       const fl = listFlows(ws);
       if (args.json) json(fl);
-      else for (const f of fl) console.log(`${f.stale ? 'STALE' : f.status.padEnd(5).slice(0, 5)}  ${f.id.padEnd(30)} ${f.outcome}${f.scope === 'workspace' ? '  (workspace)' : ''}`);
+      else for (const f of fl) console.log(`${(f.stale ? 'STALE' : f.status).padEnd(10)}  ${f.id.padEnd(30)} ${f.outcome}${f.scope === 'workspace' ? '  (workspace)' : ''}`);
     } else if (sub === 'search') {
       const res = searchFlows(ws, args._.join(' ') || die('usage: cstack flows search "<outcome>"'));
       if (args.json) json(res);
@@ -612,8 +659,20 @@ switch (cmd) {
       else console.log(fs.readFileSync(f.file, 'utf8') + (f.stale ? `\n# STALE: last verified ${f.last_verified} (${f.age_days} days); re-verify tools and models before following it\n` : ''));
     } else if (sub === 'plan') {
       const r = planFromFlow(ws, args._[0] ?? die('usage: cstack flows plan <id> [--target "..."]'), { target: args.target });
-      console.log(`plan written: ${rel(r.file)}${r.stale ? `\nwarning: source flow is stale (${r.age_days} days); re-verify tools and models first` : ''}`);
-    } else die('usage: cstack flows list|search|show|plan');
+      const shown = path.relative(process.cwd(), r.file);
+      console.log(`plan written: ${shown}${r.stale ? `\nwarning: source flow is stale (${r.age_days} days); re-verify tools and models first` : ''}\nnext: adjust steps and target to this run, then cstack flows check ${shown}`);
+    } else if (sub === 'check') {
+      if (!args._.length) die('usage: cstack flows check <plan.flow.yaml...>');
+      const slugs = listSkills().map((s) => s.slug);
+      const res = args._.map((f) => checkFlowFile(ws, path.resolve(f), { skills: slugs }));
+      if (args.json) json(res);
+      else for (const x of res) {
+        console.log(`${x.errors.length ? 'FAIL' : 'PASS'}  ${path.relative(process.cwd(), x.file)}`);
+        for (const e of x.errors) console.log(`  error: ${e}`);
+        for (const w of x.warnings) console.log(`  warn:  ${w}`);
+      }
+      if (res.some((x) => x.errors.length)) process.exitCode = 1;
+    } else die('usage: cstack flows list|search|show|plan|check');
     break;
   }
   case 'browse': {
@@ -621,6 +680,43 @@ switch (cmd) {
     const out = await runBrowse(argv[0] ?? 'help', args, ws);
     if (typeof out === 'string') console.log(out);
     else json(out);
+    break;
+  }
+  case 'type': {
+    const { runType } = await import('../scripts/lib/type/cli.mjs');
+    const out = await runType(argv[0] ?? 'help', argv.slice(1), ws);
+    console.log(typeof out === 'string' ? out : out.text);
+    if (out?.ok === false) process.exitCode = 1;
+    break;
+  }
+  case 'video': {
+    const { runVideo } = await import('../scripts/lib/video/cli.mjs');
+    const out = await runVideo(argv[0] ?? 'help', argv.slice(1), ws);
+    console.log(typeof out === 'string' ? out : out.text);
+    if (out?.ok === false) process.exitCode = 1;
+    break;
+  }
+  case 'mockup': {
+    const { runMockup } = await import('../scripts/lib/mockup/cli.mjs');
+    const out = await runMockup(argv[0] ?? 'help', args, ws);
+    if (typeof out === 'string') console.log(out);
+    else json(out);
+    if (out?.ok === false) process.exitCode = 1;
+    break;
+  }
+  case 'svg': {
+    const { runSvg } = await import('../scripts/lib/svg/cli.mjs');
+    const out = await runSvg(argv[0] ?? 'help', argv.slice(1), ws);
+    console.log(typeof out === 'string' ? out : args.json ? JSON.stringify(out.report ?? out, null, 2) : out.text);
+    if (out?.ok === false) process.exitCode = 1;
+    break;
+  }
+  case '3d': {
+    const { runThree } = await import('../scripts/lib/three/cli.mjs');
+    const out = await runThree(argv[0] ?? 'help', args, ws);
+    if (typeof out === 'string') console.log(out);
+    else json(out);
+    if (out?.ok === false) process.exitCode = 1;
     break;
   }
   case 'tools': {

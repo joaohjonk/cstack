@@ -44,6 +44,7 @@ export function ratchet(skills, { accept = [], reason = '' } = {}) {
   }
   for (const k of Object.keys(b.skills)) if (!skills.some((s) => s.slug === k)) delete b.skills[k];
   const cat = catalogTokens(skills);
+  if (b.catalog_ceiling != null && cat > b.catalog_ceiling && accept.includes('catalog')) b.history.push({ date: today(), slug: 'catalog', from: b.catalog_ceiling, to: cat, reason });
   if (b.catalog_ceiling == null || cat < b.catalog_ceiling || accept.includes('catalog')) b.catalog_ceiling = cat;
   writeJSON(BUDGET_FILE, b);
   return b;

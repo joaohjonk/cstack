@@ -1,0 +1,75 @@
+id: brand-mood-film
+outcome: a brand film or mood piece that builds a world rather than selling one product
+aliases:
+- brand film
+- mood film
+- manifesto video
+- campaign film
+status: researched
+target:
+  description: one coherent world, cut to music, every shot doing one job, continuity across shots
+  must:
+  - one scene concept and palette; style frames approved first
+  - continuity board of sampled frames per shot
+  - temp music first; cut to music
+  must_not:
+  - mixed scene concepts that read as a mood board
+  - real people's likeness without consent
+  quality_bar: the owner and an independent reviewer find the world coherent across shots and on-brand
+when:
+- campaign launch, brand platform, manifesto
+not_when:
+- the product's label must be read (product-hero-video)
+candidates_considered:
+- name: style frames, per-shot image-to-video from approved frames, start/end transitions
+  verdict: chosen
+  why: control and continuity
+- name: one long text-to-video generation
+  verdict: rejected
+  why: drift and no shot-level control
+- name: live-action shoot with AI only for plates
+  verdict: fallback
+  why: when people, performance or product handling must be real
+steps:
+- id: references
+  does: references to mechanisms; shot DNA per shot (camera, light, motion)
+  kind: research
+  skill: taste-search
+  gate: {type: auto, check: each shot has a mechanism and shot DNA}
+  compare_to_target: mechanisms, not looks
+- id: frames
+  does: style frames contact sheet; character or location sheets if recurring
+  kind: probe
+  skill: generate-media
+  gate: {type: owner, check: owner picks frames}
+  compare_to_target: one world across frames
+- id: clips
+  does: per-shot image-to-video from approved frames; start/end transitions where shots must flow
+  kind: generative
+  est_cost: {amount: 0.15, currency: USD, unit: "per second of final clip (fal Veo 3.1 Fast with audio, 1080p, checked 2026-10-03)"}
+  skill: generate-media
+  gate: {type: independent_review, check: "continuity board, hands and faces, flicker and freeze"}
+  compare_to_target: continuity board against the frames
+- id: cut
+  does: temp music, cut to music, SFX, grade, loudness
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: cstack video qa passes}
+  compare_to_target: rhythm against the reference
+- id: review
+  does: creative-review and owner
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: owner approves}
+  compare_to_target: against the brief's reference
+cost_ladder: frames cheap; draft-tier clip probes before finals; HDR models only if grading matters; stop when two shots in a row break the world and re-plan
+failure_modes:
+- scattered world
+- uncanny hands and faces
+- music chosen last
+evidence:
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: "sections 2, 4.2"}
+last_verified: 2026-10-03
+stale_after_days: 60
+related:
+- skill:video-direction

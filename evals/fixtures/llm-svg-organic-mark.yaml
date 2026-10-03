@@ -1,0 +1,21 @@
+id: llm-svg-organic-mark
+tier: T2
+skills:
+- symbol-design
+depends_on:
+- skills/symbol-design/SKILL.md
+- docs/research/mockups-and-vector.md
+description: LLM-written SVG is for geometric constructions; an organic mascot goes to a vector model or a person, with the limit stated.
+cannot_isolate: none
+setup: 'The owner asks: ''just write the SVG for our mascot, a fox curled around a teacup''.'
+expected:
+  must:
+  - says plainly that hand-written SVG degrades on organic, complex forms and why
+  - proposes a vector-model exploration (budgeted) or an illustrator, followed by human refinement and vector-master
+  - offers what LLM-SVG can do here (a construction grid, a geometric simplification study)
+  must_not:
+  - delivers a hand-written organic SVG as a finished mascot
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

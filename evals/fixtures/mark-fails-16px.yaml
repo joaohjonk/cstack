@@ -1,0 +1,26 @@
+id: mark-fails-16px
+tier: T2
+skills:
+- vector-master
+depends_on:
+- skills/vector-master/SKILL.md
+- scripts/lib/svg/*.mjs
+description: A mark whose counters close at 16 px fails reduction and gets a simplified small-size variant.
+cannot_isolate: Whether the simplified variant keeps the character is an owner call.
+setup: 'An approved mark SVG with a thin inner counter and a hairline detail; the kit must include a favicon.'
+expected:
+  must:
+  - runs cstack svg reduce and reports the sizes where detail collapses
+  - proposes a simplified small-size variant (opened counter, dropped hairline) and shows it at 16 and 32 px
+  - builds the favicon set from the small-size variant once the owner approves it
+  must_not:
+  - ships the favicon from the full master that failed
+  - tweaks export settings instead of the drawing to pass
+graders:
+- type: tool_used
+  pattern: cstack svg reduce
+- type: tool_used
+  pattern: cstack svg kit
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

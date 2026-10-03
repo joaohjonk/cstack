@@ -1,0 +1,59 @@
+id: 3d-ar-view
+outcome: let customers view the real product in augmented reality from the product page
+aliases:
+- view in ar
+- ar product
+- quick look
+status: researched
+target:
+  description: the product appears at true size on a table or shelf on iOS and Android, label exact
+  must:
+  - real-world scale in metres from measured dimensions; origin at the base centre
+  - GLB for Android/WebXR and USDZ for iOS Quick Look from one source asset
+  - about 4 MB or less per file
+  must_not:
+  - guessed dimensions
+  - generated label texture
+  quality_bar: owner places it next to a known object on a real iOS and a real Android device and the size is right
+when:
+- a product page wants AR
+not_when:
+- no measured dimensions (scale is UNKNOWN; ask first)
+candidates_considered:
+- name: model-viewer with ar-modes webxr scene-viewer quick-look
+  verdict: chosen
+  why: one component, both platforms, poster built in
+- name: platform 3D media (e-commerce platform's native 3D)
+  verdict: fallback
+  why: use when the store platform handles AR natively
+steps:
+- id: dimensions
+  does: read measured dimensions from the PRODUCT entity; if missing record scale UNKNOWN and ask
+  kind: retrieval
+  skill: product-fidelity
+  gate: {type: owner, check: dimensions measured and confirmed}
+  compare_to_target: dimensions match the physical product
+- id: asset
+  does: reuse the web-hero source asset; set metres, origin at base; export GLB and USDZ
+  kind: deterministic
+  skill: three-d
+  gate: {type: deterministic_check, check: cstack 3d inspect --budget ar passes}
+  compare_to_target: bounding box equals measured dimensions within 2 percent
+- id: device
+  does: owner opens it on a real iOS and a real Android device
+  kind: human
+  skill: three-d
+  gate: {type: owner, check: correct size and label on both devices}
+  compare_to_target: next to a known object
+cost_ladder: no API spend; reuse the web-hero asset; stop and ship without AR if scale or label still fails on a device after one fix
+failure_modes:
+- wrong scale (centimetres exported as metres)
+- origin at centre, so the product floats or sinks
+evidence:
+- {ref: docs/research/3d.md, kind: documented, date: 2026-10-03, note: section 8 flow D}
+- {ref: "https://modelviewer.dev/docs/#augmentedreality", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- skill:three-d
+- flow:3d-web-hero

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type faults</title>
+<style>
+  /* Each block below carries one deliberate typographic fault for `cstack type qa`. */
+  @font-face { font-family: "Ghost Sans"; src: url(/fonts/ghost.woff2) format("woff2"); }
+  @font-face { font-family: "Fixture Web"; src: url(/fonts/fixture.ttf) format("truetype"); }
+  body { margin: 0; padding: 16px; font-family: serif; font-size: 16px; line-height: 1.5; color: #1a1a1a; background: #ffffff; }
+  .eyebrow { font-family: sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 0; }
+  h1 { font-size: 48px; line-height: 1.6; margin: 0; }
+  h2 { font-size: 28px; line-height: 1.2; }
+  .wide { max-width: 1300px; }
+  .tight { max-width: 34em; line-height: 1.05; }
+  .faint { color: #aaaaaa; }
+  .ghost { font-family: "Ghost Sans", "No Such Local Face", serif; }
+  .webfont { font-family: "Fixture Web", serif; }
+  .mono { font-family: monospace; }
+  .cursive { font-family: cursive; }
+  .fantasy { font-family: fantasy; }
+  .tiny { font-size: 9px; }
+  .fine { font-size: 11px; }
+  .note { font-size: 14px; }
+  .odd { font-size: 17px; }
+  .lead { font-size: 20px; }
+  .big { font-size: 22px; }
+  .justified { max-width: 30em; text-align: justify; }
+</style>
+</head>
+<body>
+  <p class="eyebrow" id="eyebrow">New collection in stores</p>
+  <h1 id="loose">Loose display heading</h1>
+  <h2 id="widow">Spring collection arrives this<br>week</h2>
+  <p class="wide" id="long">A measure this long makes the eye travel too far from the end of one line to the start of the next, so readers lose their place and skim. Long lines feel efficient on a wide monitor, yet they tire the reader within a paragraph or two. Typographers have kept body text between roughly forty-five and seventy-five characters per line for centuries, and the reason is the same today: comfortable reading depends on a short return sweep. This paragraph stretches across the whole width of a large screen on purpose, so the check can see a measure far beyond that range and report it.</p>
+  <p class="tight" id="tight">Leading this tight makes the ascenders of one line crowd the descenders of the line above, so the paragraph turns into a dark, even block that is hard to enter. Body text usually wants a line-height somewhere around one and a half times its size, a little more for long lines and a little less for short ones.</p>
+  <p class="faint" id="faint">Low contrast copy that is hard to read.</p>
+  <p class="ghost" id="ghost">Set in a web font that never arrives.</p>
+  <p class="webfont" id="webfont">Set in a web font served by the fixture server.</p>
+  <p class="mono" id="mono">Monospace note.</p>
+  <p class="cursive" id="cursive">A cursive aside.</p>
+  <p class="fantasy" id="fantasy">A fantasy aside.</p>
+  <p class="tiny" id="tiny">Terms apply.</p>
+  <p class="fine" id="fine">Fine print in eleven pixels.</p>
+  <p class="note" id="note">A fourteen pixel note.</p>
+  <p class="odd" id="odd">Seventeen pixels, off the scale.</p>
+  <p class="lead" id="lead">A twenty pixel lead.</p>
+  <p class="big" id="big">A twenty-two pixel line.</p>
+  <p class="justified" id="justified">Justified text without hyphenation opens rivers of white space between words, because the browser can only stretch the gaps to fill each line. Turning hyphenation on, or setting the text flush left, keeps the word spacing even and the texture calm.</p>
+</body>
+</html>

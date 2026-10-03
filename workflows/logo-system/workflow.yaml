@@ -1,0 +1,48 @@
+name: logo-system
+status: template
+summary: A new logo or symbol from brief to approved vector master, kit and usage rules.
+entry_skill: workflow
+triggers:
+- new logo
+- logo design
+- brand mark
+- logo refresh
+note: 'template = not yet proven on a real run. Promote to validated only with a linked run record in runs. Method: flow logo-system.'
+runs: []
+steps:
+- id: brief
+  skill: office-hours
+  does: name, attributes as mechanisms, applications list, competitors, equity, constraints
+  gate: owner
+- id: category-silhouettes
+  skill: competitor-intel
+  does: category marks as one-colour silhouettes; clichés to avoid
+  gate: auto
+  fallback: 'no competitor set: say the distinctiveness check is incomplete'
+- id: explore
+  skill: symbol-design
+  does: canon mechanisms, 20-40 cheap thumbnails across 3-5 ideas judged in one colour at 32 px; 2-3 directions
+  gate: owner
+- id: refine
+  skill: symbol-design
+  does: a person redraws the picked direction on a construction grid; agent supplies grids and optical-correction overlays
+  gate: owner
+- id: master
+  skill: vector-master
+  does: clean SVG, lint, reduction, small-size variant, colour variants, favicon and app-icon kit
+  gate: owner
+- id: system
+  skill: identity-system
+  does: lockups, clear space, minimum sizes, misuse sheet; logo_marks via cstack brand set
+  gate: auto
+- id: placements
+  skill: mockup
+  does: the mark on 4-6 real placements, verified
+  gate: auto
+- id: review
+  skill: creative-review
+  does: distinctiveness, reduction, appropriateness; disagreement kept visible
+  gate: owner
+- id: learn
+  skill: learn
+  gate: auto

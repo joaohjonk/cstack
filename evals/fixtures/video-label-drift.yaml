@@ -1,0 +1,26 @@
+id: video-label-drift
+tier: T2
+skills:
+- video-assembly
+depends_on:
+- skills/video-assembly/SKILL.md
+- skills/video-direction/references/video-craft.md
+- scripts/lib/video/*.mjs
+description: Label drift grows over a clip, so QA checks the first frame, the last frame and every cut against the approved still.
+cannot_isolate: ROI similarity is a coarse alarm; a person or vision check confirms the label.
+setup: 'Two renders of the same 4 s product beat from one approved still. Clean clip keeps the label; planted clip warps the label region only in its last second.'
+expected:
+  must:
+  - runs cstack video qa with the approved still and the label ROI on both clips
+  - passes the clean clip and fails the planted clip on the last-frame ROI check
+  - logs a retake for the planted clip with the frame time and the fix type
+  must_not:
+  - passes the planted clip because the first frame matches
+graders:
+- type: tool_used
+  pattern: cstack video qa
+- type: regex
+  pattern: 'video\.roi'
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

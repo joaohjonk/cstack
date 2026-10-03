@@ -1,0 +1,72 @@
+id: bringhurst
+name: The Elements of Typographic Style (Robert Bringhurst)
+kind: book
+domains:
+- typography
+- editorial
+- book design
+mental_model: 'typography exists to honor content: every decision about space, measure, scale and detail serves the reader, and each rule carries its reason'
+mechanisms:
+- 'measure lines in characters, not pixels: about 45 to 75 characters for single-column continuous text, about 66 as the sweet spot, and 40 to 50 per column in multi-column settings'
+- compose with a scale, a modest set of distinct and related sizes chosen before the page
+- letterspace strings of capitals, small caps and long digit strings (about 5 to 10 percent of the type size), and leave lowercase alone unless there is a reason
+- choose leading that suits the face, the size and the measure, and add or remove vertical space in measured intervals
+- set ragged when ragged suits the text and the page; justify only with good hyphenation and a measure wide enough that word spaces do not stretch
+- use titling (lining) figures with full capitals and text figures elsewhere, and spaced small caps for abbreviations in running text
+- 'hyphenate by the conventions of the language: leave at least two letters behind, take at least three forward, and avoid more than three hyphenated lines in a row'
+representative_works:
+- The Elements of Typographic Style (Hartley & Marks, 1992; version 4.0, 2012)
+- The Elements of Typographic Style Applied to the Web (Richard Rutter, webtypography.net), which maps its rule numbers to CSS
+when_useful:
+- continuous reading (articles, reports, books, long product pages, legal text)
+- microtypography reviews (figures, small caps, spacing, hyphenation, quotes and dashes)
+- explaining a default to an owner with the reason behind it
+when_not_useful:
+- display, motion and interface typography, which the book barely covers
+- 'as a source of screen defaults: its numbers were set for print reading (canon:web-typography)'
+- scripts beyond its Latin, Greek and Cyrillic examples
+tensions:
+- 'print-rooted rules vs. screens where the reader controls size, zoom and spacing (canon:web-typography)'
+- 'the 45 to 75 measure is a comfort default: a screen study found 100-character lines were read faster than 25-character lines with equal comprehension, while readers judged about 55 easiest (Dyson and Kipping, 1998)'
+- 'canon:practical-typography sets a wider practical range (45 to 90 characters) for the same goal'
+- 'a much-loved prescriptive voice: a 2013 review of version 4.0 found the web almost absent (no index entries for web fonts, CSS or HTML); use its rules as defaults with reasons, not law'
+- 'the Goudy steal-sheep line it repeats about lowercase is told elsewhere as being about blackletter (canon:spiekermann)'
+distance_from:
+  editorial: near
+  packaging: middle
+  identity: middle
+  web-product-ui: middle
+  wayfinding: far
+  campaign-advertising: far
+  motion: far
+sources:
+- kind: external_reference
+  ref: https://webtypography.net/2.1.2
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://webtypography.net/toc
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://webtypography.net.clagnut.com/2.1.6
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://webtypography.net.clagnut.com/2.1.7
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://webtypography.net/3.1.1
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://typographica.org/typography-books/the-elements-of-typographic-style-4th-edition/
+  quote: 'Typography exists to honor content'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/The_Elements_of_Typographic_Style
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://journals.uc.edu/index.php/vl/article/view/5671
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: 'Robert Bringhurst, The Elements of Typographic Style, version 4.0 (Hartley & Marks, 2012): sections 2.1.2, 2.1.3, 2.1.6, 2.1.7, 2.2.1, 2.2.2, 2.4.1, 2.4.3, 3.1.1, 3.2.1, 3.2.2'
+added: '2026-10-03'
+added_by: cstack research (typography)
+status: current

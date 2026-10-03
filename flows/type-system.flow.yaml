@@ -1,0 +1,104 @@
+id: type-system
+outcome: choose, pair and systematize a brand's typography for web, packaging and social
+aliases:
+- font pairing
+- type system
+- choose typefaces
+- typography refresh
+status: researched
+target:
+  description: a type system that carries the brand voice and reads effortlessly at every real size, in every brand language, encoded so agents apply it consistently
+  must:
+  - each family has a distinct role
+  - passes cstack type qa at 375, 768 and 1440 with no fails
+  - covers every brand language (cstack type font --languages)
+  - licensed for each use (web, app, print and packaging, video, logo)
+  must_not:
+  - near-miss pairings
+  - type drawn by an image model
+  quality_bar: an independent type review finds no fail on the section-18 axes and the owner picks the pairing from specimens
+when:
+- new brand, rebrand or a type system that is missing or inconsistent
+not_when:
+- only a single heading or ad needs setting inside an approved system
+candidates_considered:
+- name: retail families plus a rigorous system
+  summary: longlist retail and open-source families by job spec, pair by role, encode as tokens and rules
+  verdict: chosen
+  why: fastest to a licensed, testable system; most brands at launch
+- name: bespoke typeface
+  summary: commission or adapt a custom family
+  verdict: fallback
+  why: months and significant budget; justified by scale, equity or a gap no retail face fills
+- name: let a model propose fonts from adjectives
+  summary: ask for "clean, modern, premium" pairs
+  verdict: rejected
+  why: returns the category average and near-misses; no job spec, no coverage or licence check
+steps:
+- id: job-spec
+  does: write the job spec per surface (distance, sizes, length, medium, languages, voice, licence, performance, equity)
+  kind: research
+  skill: type-director
+  outputs: [work/type/<date>/job-spec.md]
+  gate: {type: auto, check: "every surface has sizes, languages and licence scope"}
+  compare_to_target: does the spec name what the type must do on each surface?
+- id: longlist
+  does: longlist 6-10 faces from conventions and far references, described by structure; check coverage
+  kind: research
+  skill: type-director
+  tools:
+  - {id: fonts-in-use, why: in-use evidence, access: browser}
+  - {id: foundry-specimens, why: family depth and features, access: browser}
+  - {id: cstack-type-font, why: "coverage, features, licence flags", access: cli}
+  gate: {type: deterministic_check, check: cstack type font --languages shows full coverage for shortlisted faces}
+  compare_to_target: does each candidate serve the job spec at its real sizes?
+- id: pair-specimens
+  does: decide roles, build 2-3 pairings, set specimens with real copy at real sizes on each surface and language
+  kind: deterministic
+  skill: type-director
+  tools:
+  - {id: browse, why: screenshots of HTML specimens at breakpoints, access: cli}
+  gate: {type: owner, check: owner picks a pairing from specimens (pairwise feedback recorded)}
+  compare_to_target: side by side with the brand's gold references and the job spec
+- id: system
+  does: roles table, scale (cstack type scale --fluid), leading and tracking by size, measure, figures, details, fallbacks and loading
+  kind: deterministic
+  skill: type-director
+  gate: {type: deterministic_check, check: cstack tokens check passes on type tokens}
+  compare_to_target: does every role have one clear setting and a reason for any default it breaks?
+- id: verify
+  does: run cstack type qa on the specimen and one real page; fix and re-run
+  kind: deterministic
+  skill: type-director
+  gate: {type: deterministic_check, check: no fail findings at 375/768/1440}
+  compare_to_target: findings list is empty of fails; warns have reasons
+- id: review
+  does: independent type review on the section-18 axes, then owner approval
+  kind: human
+  skill: creative-review
+  gate: {type: independent_review, check: no axis fails; owner approves the system}
+  compare_to_target: reviewer compares against the target and gold references, not against the author's intent
+- id: encode
+  does: tokens, type rules and brand-system typography fields written through cstack brand set
+  kind: deterministic
+  skill: identity-system
+  gate: {type: auto, check: cstack brand check passes}
+  compare_to_target: agents applying the tokens reproduce the specimen
+cost_ladder: free tools first (specimens, type qa, font inspection); licence spend only after the owner picks; no paid model calls needed; stop before any licence purchase until the owner approves real specimens
+failure_modes:
+- choosing by mood words
+- beautiful specimen that breaks on real copy and languages
+- size soup with no clear hierarchy
+- licence scope discovered at launch
+evidence:
+- {ref: "Bringhurst, The Elements of Typographic Style v4.0 (2012), ch. 2, 3, 6", kind: documented, date: 2026-10-03}
+- {ref: "Lupton, Thinking with Type, 2nd ed. (2010)", kind: documented, date: 2026-10-03}
+- {ref: "Gerstner, Designing Programmes (1964)", kind: documented, date: 2026-10-03}
+- {ref: "https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html", kind: documented, date: 2026-10-03}
+- {ref: "https://utopia.fyi", kind: documented, date: 2026-10-03}
+- {ref: docs/research/typography.md, kind: practitioner, date: 2026-10-03, note: studio practice and current tools}
+last_verified: 2026-10-03
+stale_after_days: 180
+related:
+- skill:type-director
+- skill:identity-system

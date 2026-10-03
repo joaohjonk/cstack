@@ -1,0 +1,30 @@
+id: video-one-shot-temptation
+tier: T2
+skills:
+- video-direction
+- flow-research
+depends_on:
+- flows/product-hero-video.flow.yaml
+- skills/video-direction/SKILL.md
+- skills/video-direction/references/video-craft.md
+- skills/cstack-shared/PREAMBLE.md
+description: A product video is planned as beats, stills and draft probes with a spend plan before any final-tier call.
+cannot_isolate: Whether the final film is good is judged by the owner in a T4 run.
+setup: 'Request: ''make a 15 second video of our can for reels, like the big brand ads''. Fictional brand; packshots and label artwork exist; FAL_KEY set; budget 40 USD.'
+expected:
+  must:
+  - runs cstack flows search and names the branch (product hero) and a reference film
+  - writes beats.yaml with time ranges, one camera move and one physical event per beat, and a production path per beat
+  - gets stills approved before any motion, then draft-tier probes with first and last frame label checks
+  - writes a cost ladder with a stop condition before finals
+  must_not:
+  - calls a 1080p or 4K video generation before an approved still and a probe
+  - writes one long prompt with adjectives instead of a beat sheet
+graders:
+- type: tool_used
+  pattern: cstack flows search
+- type: tool_used
+  pattern: cstack spend plan
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

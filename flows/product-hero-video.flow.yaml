@@ -1,0 +1,101 @@
+id: product-hero-video
+outcome: a short product video or ad where the real pack is the hero and the label stays readable
+aliases:
+- product video
+- product ad
+- product reel
+- video of our product
+status: researched
+target:
+  description: 10-20 s, 4-6 beats, one world, the product revealed with intent, label exact in every frame it faces camera
+  must:
+  - stills approved before motion; draft tier before final
+  - label checked at first, last and every cut frame against the artwork
+  - text, captions and logo composited after generation
+  - master survives 9:16, 4:5 and 16:9 crops
+  must_not:
+  - label re-lettered or back panel invented
+  - one long adjective prompt to a premium model
+  quality_bar: side by side with the reference film the owner picks ours for craft, and video qa passes on every delivered file
+when:
+- launch, product page, paid social, retail screens
+not_when:
+- no product in frame (brand-mood-film) or the mark is the subject (logo-sting)
+candidates_considered:
+- name: A timeline prompt with start image and constraints tail
+  summary: one generation with planned hard cuts, product locked to the start image
+  verdict: chosen
+  why: fastest route to multi-shot coherence when the label holds in probes
+- name: B camera-only image-to-video per beat
+  summary: per-beat clips where only the camera moves
+  verdict: chosen
+  why: label-critical beats and extreme motion
+- name: C composite or 3D render
+  summary: real label composited in post or the pack rendered from 3D
+  verdict: fallback
+  why: exactness required, or after two failed probe rounds
+- name: one prompt, premium model, no stills
+  verdict: rejected
+  why: drift and re-lettering; expensive retries
+steps:
+- id: lock
+  does: packshots front, three-quarter and back; label artwork; dimensions
+  kind: retrieval
+  skill: product-fidelity
+  gate: {type: owner, check: owner confirms the reference set}
+  compare_to_target: every view used is real
+- id: beats
+  does: beat sheet with time ranges, one camera move and one physical event per beat, one world, path per beat
+  kind: research
+  skill: video-direction
+  outputs: [work/<slug>/beats.yaml]
+  gate: {type: owner, check: owner approves the beat sheet}
+  compare_to_target: beats mirror the reference film's rhythm
+- id: stills
+  does: one still per beat from real packshots
+  kind: probe
+  skill: generate-media
+  gate: {type: deterministic_check, check: label matches the artwork on every still}
+  compare_to_target: stills side by side with reference frames
+- id: probes
+  does: draft-tier clips, 1-2 per beat
+  kind: probe
+  skill: generate-media
+  gate: {type: deterministic_check, check: "cstack video qa ROI checks pass at first, last and cut frames"}
+  compare_to_target: motion and cut feel against the reference
+- id: finals
+  does: final tier per beat on the chosen path; best of 2-3
+  kind: generative
+  est_cost: {amount: 0.40, currency: USD, unit: "per second per take (fal Veo 3.1 with audio, 1080p); a 15 s cut at two seeds is about USD 14-35"}
+  skill: generate-media
+  gate: {type: owner, check: owner picks takes}
+  compare_to_target: picked takes against the target
+- id: assemble
+  does: cut, sound, loudness, captions and cards, cut-downs
+  kind: deterministic
+  skill: video-assembly
+  gate: {type: deterministic_check, check: cstack video qa passes on master and cut-downs}
+  compare_to_target: full cut against the reference film
+- id: review
+  does: creative-review and owner approval
+  kind: human
+  skill: creative-review
+  gate: {type: independent_review, check: no fail on product truth or claims}
+  compare_to_target: reviewer compares against the reference, not the plan
+cost_ladder: 'stills about $0.07 each; probes at draft tier (about $0.025-0.05/s); finals $14-35 for a 15 s 1080p cut at two seeds; upscale last (about $0.60). Stop: two consecutive probe rounds fail the label gate, then path C.'
+failure_modes:
+- product scale drifting across cuts
+- frozen AI tails
+- generic glossy grade
+- morphs instead of cuts
+evidence:
+- {ref: docs/research/ai-video.md, kind: documented, date: 2026-10-03, note: "sections 0, 2, 4.1, 5"}
+- {ref: "https://fal.ai/models/minimax/h3-max/image-to-video", kind: documented, date: 2026-10-03}
+- {ref: "https://fal.ai/models/fal-ai/veo3.1/image-to-video", kind: documented, date: 2026-10-03}
+last_verified: 2026-10-03
+stale_after_days: 60
+related:
+- skill:video-direction
+- skill:video-assembly
+- workflow:product-video
+- flow:3d-social-turntable

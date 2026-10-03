@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+Method before making, and the media expansion: 3D, mockups, vector and symbols, AI video, typography.
+
+- **Method before making.** Flow schema; `cstack flows list|search|show|plan|check`; preamble section 0.5; `flow-research` skill; 14 researched flows (type system, logo system, icon set, mockup set, 3D web hero, 3D packshot, social turntable, AR view, product hero video, brand mood film, paid-social cut-downs, UGC-style ad, logo sting, voice-first explainer). `flows check` refuses a plan without two compared candidates, a gate on every step, `compare_to_target` on every made thing, a stop condition and a stated target.
+- **Skills:** type-director, symbol-design, vector-master, mockup, three-d, video-direction, video-assembly (30 in all). identity-system, product-fidelity, model-router, generate-media, claims-proof, brand-verify, creative-review and workflow updated for the new media.
+- **Workflows:** logo-system, product-3d, product-video (11 in all); landing-page gains a 3D hero step, packaging gains 3D renders and mockups, paid-social gains video variants.
+- **Craft checkers:** `cstack type scale|qa|font`; `cstack svg lint|reduce|kit`; `cstack mockup render|verify|check`; `cstack 3d inspect|frames|blender-script`; `cstack video probe|normalize|cuts|sheet|assemble|reframe|captions|safezone|audio|qa|deliver` (needs ffmpeg on your machine; cstack never installs it). All are deterministic and never call a model; the ones that write files never overwrite an input and leave a JSON record with hashes; gates exit 1 on FAIL.
+- **Validate:** library flows must pass `flows check`; fixture format is checked; every `cstack` command named in skills, docs, fixture graders and flow gates must exist. The flow schema rejects unknown keys.
+- **Search:** whole-word, stemmed, idf-weighted skill search with a trigger-phrase bonus (`ad` no longer matches `brand`), with routing tests.
+- **Typography:** the type-director primer traces 20 common rules to the reasons behind them and adds verified studio lessons (Vignelli, Gerstner, Pentagram partners, COLLINS, Spiekermann); `docs/research/typography.md` holds the evidence; `cstack type scale --fluid` warns when a step can fail 200% zoom.
+- **Data:** 26 new fixtures (46); 13 new canon entries (25): marks and systems (Isotype, Otl Aicher, Paul Rand, Chermayeff & Geismar & Haviv, Lance Wyman, Japanese mon) and typography (Bringhurst, Gerstner, Spiekermann, Pentagram, COLLINS, Practical Typography, Web Typography), with Thinking with Type, Vignelli and Swiss grid systems upgraded; model registry at 68 entries; research-tool registry at 48 (3D, mockup, vector, video and type tools).
+- **Fixes:** `cstack flows show` and `flows plan` read the subcommand as the id; `flows list` truncated the status column.
+
 ## 0.1.0 (2026-10-03)
 
 First public cut.

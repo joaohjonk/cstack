@@ -113,7 +113,7 @@ Unknown keys fail validation (`additionalProperties: false`).
 `registry/skills-index.json` is generated, so never edit it by hand.
 
 ```bash
-cstack index      # wrote registry/skills-index.json (22 skills)
+cstack index      # wrote registry/skills-index.json (30 skills)
 cstack validate   # fails with "stale; run `cstack index`" if you forgot
 cstack search "glaze swatch photos"     # lexical search over slug, triggers, tags, summary, outputs
 ```

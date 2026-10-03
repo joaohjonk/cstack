@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
+import { validateValue } from './schemas.mjs';
 
 const DAY = 86400000;
 
@@ -66,4 +67,57 @@ export function planFromFlow(ws, id, { target } = {}) {
   fs.mkdirSync(path.dirname(out), { recursive: true });
   writeAtomic(out, YAML.stringify(plan));
   return { file: out, stale, age_days, source_scope: scope };
+}
+
+const MAKES = ['generative', 'probe'];
+
+// A flow is followable only if it compared ways of getting there, gates every step, says how each made
+// thing is judged against the target, and names where spending stops. Pure: no file or network access.
+export function checkFlow(flow, { skills = null } = {}) {
+  const errors = [];
+  const warnings = [];
+  if (!flow || typeof flow !== 'object' || Array.isArray(flow)) return { errors: ['not a flow (expected a YAML or JSON object)'], warnings };
+  const v = validateValue('flow', flow);
+  if (!v.ok) errors.push(`schema: ${v.errors}`);
+  const cands = Array.isArray(flow.candidates_considered) ? flow.candidates_considered : [];
+  if (cands.length < 2) errors.push(`compares ${cands.length} candidate way(s) to the outcome; method before making needs at least 2 (candidates_considered)`);
+  else if (!cands.some((c) => c?.verdict === 'chosen')) errors.push('no candidate has verdict "chosen"');
+  const steps = Array.isArray(flow.steps) ? flow.steps : [];
+  const ids = new Set();
+  for (const st of steps) {
+    const at = `step "${st?.id}"`;
+    if (ids.has(st?.id)) errors.push(`${at}: duplicate step id`);
+    ids.add(st?.id);
+    if (!st?.gate?.type) errors.push(`${at}: no gate (auto, owner, deterministic_check or independent_review)`);
+    else if (st.gate.type === 'deterministic_check' && !st.gate.check) errors.push(`${at}: deterministic_check gate names no check`);
+    if (MAKES.includes(st?.kind) && !st.compare_to_target) errors.push(`${at}: ${st.kind} step never says how its output is compared to the target (compare_to_target)`);
+    if (skills && st?.skill && !skills.includes(st.skill)) errors.push(`${at}: unknown skill "${st.skill}"`);
+    if (st?.kind === 'generative' && st.est_cost == null) warnings.push(`${at}: generative step has no est_cost`);
+  }
+  if (steps.some((s) => MAKES.includes(s?.kind))) {
+    if (!flow.cost_ladder) errors.push('makes things but has no cost_ladder (probe, selection, final, and where it stops)');
+    else if (!/\bstop/i.test(flow.cost_ladder)) warnings.push('cost_ladder names no stop condition');
+  }
+  if (flow.status === 'plan' && String(flow.target?.description ?? '').trim().length < 12) errors.push('plan has no concrete target.description (what "as close as possible" means for this run)');
+  const ev = Array.isArray(flow.evidence) ? flow.evidence : [];
+  if (ev.length && ev.every((e) => e?.kind === 'marketing')) warnings.push('all evidence is marketing; add documented, observed or practitioner evidence');
+  return { errors, warnings };
+}
+
+// `cstack flows check <file...>`: checkFlow plus what needs the library. A plan whose target is still
+// the library flow's own wording has not stated this run's target yet.
+export function checkFlowFile(ws, file, { skills = null } = {}) {
+  let flow;
+  try {
+    flow = readData(file);
+  } catch (e) {
+    return { file, errors: [exists(file) ? `cannot parse: ${e.message}` : 'no such file (no plan written yet?)'], warnings: [] };
+  }
+  const res = checkFlow(flow, { skills });
+  if (flow?.status === 'plan' && flow.target?.description) {
+    const src = (flow.related ?? []).find((r) => String(r).startsWith('flow:'));
+    const lib = src && listFlows(ws).find((f) => f.id === String(src).slice(5));
+    if (lib && lib.target?.description === flow.target.description) res.errors.push(`target.description is still the "${lib.id}" library wording; state this run's target (--target or edit the plan)`);
+  }
+  return { file, ...res };
 }

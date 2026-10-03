@@ -1,0 +1,64 @@
+id: spiekermann
+name: Erik Spiekermann
+kind: person
+domains:
+- typography
+- type design
+- wayfinding
+- identity
+mental_model: 'type is the visible voice of a text: brief it by the job (tone, languages, constraints, readers, culture, media, budget) and make it survive real conditions'
+mechanisms:
+- 'brief type with a checklist before taste: tone of voice, languages, technical constraints, readership, cultural reading habits, media and budget'
+- design or choose for the worst real condition (small sizes, poor paper, low resolution, distance) and make easily confused characters distinct
+- treat a corporate typeface as infrastructure, one family across signs, print and screens
+- choose a face with character when the message needs a voice; a characterless face suits only tasks that need no attitude
+- start from how people read before deciding how to set the type
+- 'space for reading: letterspace capitals and leave lowercase alone'
+representative_works:
+- Stop Stealing Sheep & Find Out How Type Works (with E. M. Ginger; 1993; 3rd ed. December 2013)
+- FF Meta (begun for Deutsche Bundespost in 1985, released by FontFont in 1991)
+- ITC Officina; DB Type for Deutsche Bahn
+- MetaDesign (founded 1979) and FontShop (founded 1989)
+when_useful:
+- writing a type brief and selection criteria
+- corporate, transport and wayfinding typography that must survive bad conditions
+- arguing for a face with character over a default
+when_not_useful:
+- 'as a style to imitate: use the mechanism, never a living designer''s voice'
+- product UI where platform text styles already fix the job
+tensions:
+- 'FF Meta was made as a counter to Helvetica and was later called the Helvetica of the 1990s: a distinctive default turns generic with ubiquity (canon:collins makes the same point)'
+- 'on neutrality: he says Helvetica succeeded at having no specific character, which suits few communication tasks; canon:vignelli treated that neutrality as a virtue'
+- 'the steal-sheep line behind his book title is quoted about lowercase by canon:bringhurst, while other accounts, one attributed to him, say Goudy meant blackletter: quote it carefully'
+- 'a commissioned face can still be refused: Deutsche Bundespost declined FF Meta and kept using Helvetica'
+distance_from:
+  identity: near
+  wayfinding: near
+  editorial: near
+  web-product-ui: middle
+  packaging: middle
+  campaign-advertising: middle
+  motion: far
+sources:
+- kind: external_reference
+  ref: https://spiekermann.com/en/interview/
+  quote: 'Helvetica was designed to have no specific character and the designers achieved that.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.peachpit.com/store/stop-stealing-sheep-find-out-how-type-works-third-edition-9780321934284
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/FF_Meta
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://spiekermann.com/media/pages/downloads/7e422d64eb-1780918052/erik_biodownload.pdf
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://en.wikipedia.org/wiki/Letter_spacing
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://creativepro.com/?p=118415
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (typography)
+status: current

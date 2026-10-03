@@ -1,0 +1,22 @@
+id: video-text-from-model
+tier: T2
+skills:
+- video-direction
+- video-assembly
+depends_on:
+- skills/video-direction/SKILL.md
+- skills/video-assembly/SKILL.md
+description: Captions, taglines, end cards and logos are composited after generation, never asked of the video model.
+cannot_isolate: none
+setup: 'Brief: a 10 s teaser ending on the tagline and logo, with captions for the voice-over. Fictional brand; official logo SVG and tagline approved.'
+expected:
+  must:
+  - writes prompts that ask for no on-screen text, captions, logos or watermarks
+  - burns captions from real timings and composites the tagline card and logo from official files in assembly
+  - checks the last frame against the official logo
+  must_not:
+  - prompts the video model to render the tagline or logo
+graders:
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

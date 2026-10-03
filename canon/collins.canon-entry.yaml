@@ -1,0 +1,83 @@
+id: collins
+name: COLLINS (Brian Collins, Leland Maschmeyer and team)
+kind: studio
+domains:
+- identity
+- brand strategy
+- typography
+- motion
+mental_model: 'a brand is behaviour performed over time: identity as a system with range (colour, type, image treatment, motion) built to flex across product, campaign and culture'
+mechanisms:
+- define the brand as behaviour measured against beliefs, then design assets that perform it consistently
+- design one treatment that makes uncontrolled inputs cohere (a duotone applied to any artist photo) and automate it with a tool so scale does not break it
+- choose type for range (widths, weights, styles, scripts) so one system can carry many moods, and extend scripts with native-speaking type designers
+- make pairing a grammar, setting contrasting type, colour and imagery side by side to express an idea such as collaboration
+- give static elements a signature motion so the identity is recognisable while it moves
+- watch category defaults; a face everyone in the category uses stops signalling anything
+- widen the problem before solving it (problem-seeking before problem-solving)
+- move to a custom typeface when a licensed one limits the voice
+representative_works:
+- Spotify identity (2015, with Spotify's brand team; Circular customised by Lineto)
+- Dropbox identity (2017, with the Dropbox brand studio and partner studios; Sharp Grotesk by Sharp Type)
+- Mailchimp identity (2018, with Mailchimp's in-house team; the custom serif Means by Commercial Type followed)
+- 'Brian Collins, guest post on brand trends for Frontify (undated; retraces the studio''s 2023 review)'
+when_useful:
+- digital product brands whose identity must live in the app, campaigns, motion and partner content
+- systems that must absorb content the brand does not control (user, artist or partner imagery)
+- deciding whether a typeface has enough range (widths, weights, scripts) for a living system
+when_not_useful:
+- heritage or luxury brands whose value is constancy and restraint
+- small teams that cannot govern a high-range system; range without governance becomes noise
+- when the brief needs evidence of usability more than expression
+tensions:
+- 'expression vs. legibility and taste: the 2017 Dropbox colour pairings drew public criticism at launch'
+- 'agency vs. in-house credit: these identities were built with in-house brand teams and several partner studios; never credit one studio for everything'
+- 'range vs. recognition: Spotify later replaced Circular with a custom variable face (Spotify Mix, 2024) made by its in-house team with Dinamo, not by COLLINS'
+- 'on Helvetica: ubiquity makes it invisible (Collins) vs. neutrality as a virtue (canon:vignelli); canon:spiekermann makes a related point'
+- 'behaviour-first range vs. reduction once recognition is earned (canon:pentagram)'
+distance_from:
+  identity: near
+  campaign-advertising: near
+  motion: near
+  web-product-ui: near
+  editorial: middle
+  packaging: middle
+  wayfinding: far
+sources:
+- kind: external_reference
+  ref: https://www.frontify.com/en/blog/brian-collins-on-rocket-ships-helvetica-and-grace-jones
+  quote: 'A brand is a promise performed consistently over time.'
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.wearecollins.com/work/spotify
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://lineto.com/bespoke/spotify
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.designweek.co.uk/spotify-undergoes-colourful-brand-refresh/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.brandknewmag.com/?p=26223
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.wearecollins.com/work/dropbox
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.designweek.co.uk/issues/2-8-october-2017/dropbox-rebrands-show-just-file-storage/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.dezeen.com/2017/10/11/dropbox-rebrand-logo-visual-identity-graphic-design/amp/
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.fontsinuse.com/uses/39539/mailchimp-identity-2018-redesign
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.eyemagazine.com/feature/article/reputations-brian-collins
+  captured_at: '2026-10-03'
+- kind: external_reference
+  ref: https://www.itsnicethat.com/articles/spotify-dinamo-new-typeface-spotify-mix-project-230524
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack research (typography)
+status: current

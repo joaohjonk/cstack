@@ -29,6 +29,11 @@ steps:
   skill: generate-media
   does: controlled variants via prompt-director recipes; one variable per variant
   gate: auto
+- id: video-variants
+  skill: video-direction
+  does: 'when the round includes video: hook variants from one master (hooks x scripts with a stop condition), cut-downs derived in video-assembly, never regenerated'
+  gate: owner
+  fallback: 'skip with reason for a static-only round'
 - id: copy
   skill: copywriting
   gate: auto

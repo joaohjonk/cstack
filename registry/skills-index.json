@@ -1,7 +1,7 @@
 {
   "generated_by": "cstack index",
   "note": "GENERATED from skills/*/skill.meta.json. Do not edit by hand; run `cstack index`.",
-  "count": 23,
+  "count": 30,
   "skills": [
     {
       "slug": "brand-import",
@@ -81,7 +81,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-verify/SKILL.md",
-      "tokens": 1114
+      "tokens": 1162
     },
     {
       "slug": "browse",
@@ -202,7 +202,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/claims-proof/SKILL.md",
-      "tokens": 1183
+      "tokens": 1214
     },
     {
       "slug": "competitor-intel",
@@ -394,14 +394,15 @@
         "copywriting",
         "identity-system",
         "brand-verify",
-        "learn"
+        "learn",
+        "type-director"
       ],
       "cost_class": "low",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-review/SKILL.md",
-      "tokens": 1274
+      "tokens": 1287
     },
     {
       "slug": "cultural-scan",
@@ -482,7 +483,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/flow-research/SKILL.md",
-      "tokens": 1557
+      "tokens": 1524
     },
     {
       "slug": "generate-media",
@@ -526,7 +527,7 @@
         "media provider"
       ],
       "path": "skills/generate-media/SKILL.md",
-      "tokens": 1250
+      "tokens": 1298
     },
     {
       "slug": "identity-system",
@@ -558,16 +559,19 @@
         "work/system/specimen.html"
       ],
       "handoff": [
+        "type-director",
         "brand-verify",
         "copywriting",
-        "workflow"
+        "workflow",
+        "symbol-design",
+        "vector-master"
       ],
       "cost_class": "free",
       "context_class": "m",
       "mutating": true,
       "required_providers": [],
       "path": "skills/identity-system/SKILL.md",
-      "tokens": 1411
+      "tokens": 1440
     },
     {
       "slug": "image-edit",
@@ -650,6 +654,58 @@
       "tokens": 1260
     },
     {
+      "slug": "mockup",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Composite approved art into realistic placements by template math, harmonize light outside the protected region, paste back and verify by inverse warp",
+      "tags": [
+        "mockup",
+        "packaging",
+        "label",
+        "apparel",
+        "signage",
+        "device",
+        "composite",
+        "merch",
+        "tote",
+        "t-shirt",
+        "billboard",
+        "storefront",
+        "can",
+        "bottle"
+      ],
+      "triggers": [
+        "mockup",
+        "mock up",
+        "show the label on",
+        "logo on a",
+        "packaging render",
+        "merch mockup",
+        "device mockup",
+        "ad in the feed"
+      ],
+      "required_inputs": [
+        "approved art",
+        "placement list"
+      ],
+      "outputs": [
+        "work/mockups/"
+      ],
+      "handoff": [
+        "product-fidelity",
+        "image-edit",
+        "three-d",
+        "creative-review",
+        "brand-verify"
+      ],
+      "cost_class": "low",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/mockup/SKILL.md",
+      "tokens": 1499
+    },
+    {
       "slug": "model-router",
       "type": "capability",
       "status": "beta",
@@ -684,7 +740,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/model-router/SKILL.md",
-      "tokens": 1201
+      "tokens": 1255
     },
     {
       "slug": "office-hours",
@@ -760,7 +816,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/product-fidelity/SKILL.md",
-      "tokens": 1266
+      "tokens": 1335
     },
     {
       "slug": "prompt-director",
@@ -839,6 +895,47 @@
       "tokens": 1337
     },
     {
+      "slug": "symbol-design",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Explore and direct marks like an identity studio: brief as mechanisms, category silhouettes, canon, wide cheap exploration judged in one colour at 32 px, construction grids, 2-3 directions",
+      "tags": [
+        "logo",
+        "symbol",
+        "monogram",
+        "mark",
+        "identity"
+      ],
+      "triggers": [
+        "new logo",
+        "logo design",
+        "symbol",
+        "monogram",
+        "brand mark",
+        "refresh the logo",
+        "secondary mark"
+      ],
+      "required_inputs": [
+        "brief",
+        "applications list"
+      ],
+      "outputs": [
+        "work/marks/"
+      ],
+      "handoff": [
+        "vector-master",
+        "identity-system",
+        "creative-review",
+        "competitor-intel"
+      ],
+      "cost_class": "low",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/symbol-design/SKILL.md",
+      "tokens": 1294
+    },
+    {
       "slug": "taste-search",
       "type": "capability",
       "status": "beta",
@@ -878,6 +975,237 @@
       "tokens": 1565
     },
     {
+      "slug": "three-d",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Product and brand 3D that keeps product truth: real vs fake 3D, truth-source geometry, official label texture, web and AR budgets",
+      "tags": [
+        "3d",
+        "web-hero",
+        "turntable",
+        "ar",
+        "packshot",
+        "glb"
+      ],
+      "triggers": [
+        "rotating product",
+        "3d hero",
+        "scroll animation of the product",
+        "3d render",
+        "turntable",
+        "view in ar",
+        "360 product",
+        "rotate on the homepage",
+        "website hero",
+        "spinning product"
+      ],
+      "required_inputs": [
+        "outcome",
+        "truth source or concept",
+        "target reference"
+      ],
+      "outputs": [
+        "work/3d/"
+      ],
+      "handoff": [
+        "product-fidelity",
+        "generate-media",
+        "workflow",
+        "brand-verify",
+        "creative-review",
+        "learn"
+      ],
+      "cost_class": "medium",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/three-d/SKILL.md",
+      "tokens": 1558
+    },
+    {
+      "slug": "type-director",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Choose and pair typefaces for the job, build a measurable type system as tokens and rules, and review typography with checks",
+      "tags": [
+        "typography",
+        "type",
+        "pairing",
+        "type-system",
+        "tokens",
+        "review"
+      ],
+      "triggers": [
+        "choose a typeface",
+        "font pairing",
+        "type system",
+        "type scale",
+        "typography review",
+        "fonts feel wrong",
+        "hierarchy is a mess"
+      ],
+      "required_inputs": [
+        "brief or brand context",
+        "surfaces and languages"
+      ],
+      "outputs": [
+        "work/type/",
+        "brand/tokens/type.tokens.json",
+        "brand/rules/brand-rules.yaml"
+      ],
+      "handoff": [
+        "identity-system",
+        "brand-verify",
+        "creative-review",
+        "copywriting",
+        "workflow",
+        "learn"
+      ],
+      "cost_class": "free",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/type-director/SKILL.md",
+      "tokens": 2040
+    },
+    {
+      "slug": "vector-master",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Clean, lint and export vector masters and kits (variants, lockups, favicon and app icons); vectorize rasters as a last resort; icon-set grammar and consistency",
+      "tags": [
+        "svg",
+        "vector",
+        "logo master",
+        "icons",
+        "favicon",
+        "vectorize"
+      ],
+      "triggers": [
+        "vector master",
+        "clean the svg",
+        "vectorize",
+        "trace the logo",
+        "favicon",
+        "app icon",
+        "icon set",
+        "check this svg"
+      ],
+      "required_inputs": [
+        "svg or raster with provenance"
+      ],
+      "outputs": [
+        "work/marks/",
+        "work/icons/"
+      ],
+      "handoff": [
+        "identity-system",
+        "mockup",
+        "creative-review",
+        "brand-verify"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/vector-master/SKILL.md",
+      "tokens": 1451
+    },
+    {
+      "slug": "video-assembly",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Deterministic edit and finish: normalize, assemble from an EDL, reframe, captions in safe zones, loudness, frame-level QA, per-channel delivery, OTIO handoff",
+      "tags": [
+        "video",
+        "edit",
+        "captions",
+        "loudness",
+        "cut-downs",
+        "qa",
+        "ffmpeg"
+      ],
+      "triggers": [
+        "edit the video",
+        "cut-downs",
+        "reframe for reels",
+        "add captions",
+        "normalize audio",
+        "deliver the video",
+        "qa the video"
+      ],
+      "required_inputs": [
+        "clips",
+        "edit decision list or plan"
+      ],
+      "outputs": [
+        "work/*/edit/"
+      ],
+      "handoff": [
+        "video-direction",
+        "creative-review",
+        "brand-verify",
+        "learn"
+      ],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/video-assembly/SKILL.md",
+      "tokens": 1280
+    },
+    {
+      "slug": "video-direction",
+      "type": "composite",
+      "status": "beta",
+      "summary": "Direct AI and hybrid video: outcome branch, beat sheet, one world, production path per beat, ethics and disclosure gates, stills then probes then finals with a stop condition",
+      "tags": [
+        "video",
+        "film",
+        "ad",
+        "reel",
+        "beat sheet",
+        "image-to-video",
+        "ugc"
+      ],
+      "triggers": [
+        "product video",
+        "brand film",
+        "video ad",
+        "reel",
+        "tiktok",
+        "animate the logo",
+        "explainer video",
+        "ugc ad",
+        "presenter video"
+      ],
+      "required_inputs": [
+        "brief",
+        "channels",
+        "references"
+      ],
+      "outputs": [
+        "work/*/beats.yaml",
+        "work/*/direction.md"
+      ],
+      "handoff": [
+        "prompt-director",
+        "model-router",
+        "generate-media",
+        "product-fidelity",
+        "three-d",
+        "video-assembly",
+        "claims-proof",
+        "creative-review"
+      ],
+      "cost_class": "high",
+      "context_class": "m",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/video-direction/SKILL.md",
+      "tokens": 1370
+    },
+    {
       "slug": "workflow",
       "type": "playbook",
       "status": "beta",
@@ -914,7 +1242,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/workflow/SKILL.md",
-      "tokens": 1231
+      "tokens": 1241
     }
   ]
 }

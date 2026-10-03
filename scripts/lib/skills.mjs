@@ -96,6 +96,7 @@ export function checkSkill(s, report, { allSlugs = [] } = {}) {
     if (s.meta.slug !== s.slug) report.error(mwhere, `slug "${s.meta.slug}" must equal directory "${s.slug}"`);
     for (const h of s.meta.handoff ?? []) if (allSlugs.length && !allSlugs.includes(h)) report.error(mwhere, `handoff to unknown skill "${h}"`);
     if (s.meta.status !== 'stub' && !(s.meta.evals ?? []).length) report.warn(mwhere, 'no evals declared');
+    for (const e of s.meta.evals ?? []) if (!exists(path.join(ROOT, e))) report.error(mwhere, `declared eval "${e}" does not exist`);
   }
   // relative links inside SKILL.md must resolve (relative to the skill dir, or to repo root for `/`-less repo paths)
   for (const m of s.body.matchAll(/\]\(([^)#\s]+)(#[^)]*)?\)/g)) {
@@ -136,22 +137,36 @@ export function buildIndex(skills) {
 }
 
 // Tiny lexical search over the index (no embeddings, no network): good enough to route a request
-// to 1-3 skills without loading every SKILL.md into context.
+// to 1-3 skills without loading every SKILL.md into context. Whole words with a light stem, so "ad"
+// no longer matches "brand"; terms that appear in many skills ("brand") count for less (idf).
+const STOP = new Set(['the', 'a', 'an', 'for', 'of', 'on', 'to', 'and', 'or', 'our', 'we', 'my', 'me', 'it', 'is', 'this', 'that', 'with', 'in', 'at', 'by', 'be', 'can', 'you', 'please', 'need', 'want', 'make', 'some', 'up', 'do', 'how', 'what']);
+const stemWord = (w) => (w.length > 4 ? w.replace(/(ings|ing|ed|es|s)$/, '') : w.replace(/s$/, '')).replace(/e$/, '');
+const wordsOf = (text) => (String(text ?? '').toLowerCase().match(/[a-z0-9]+/g) ?? []).map(stemWord);
+const matches = (term, words) => words.some((w) => w === term || (term.length >= 4 && w.startsWith(term)) || (w.length >= 4 && term.startsWith(w)));
+
 export function search(index, query, k = 5) {
-  const terms = query.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 1);
-  const scored = index.skills.map((s) => {
-    const fields = [
-      [s.slug, 4],
-      [s.triggers.join(' '), 3],
-      [s.tags.join(' '), 2],
-      [s.summary, 1.5],
-      [s.outputs.join(' '), 0.5],
-    ];
+  const terms = [...new Set((String(query).toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((t) => !STOP.has(t)).map(stemWord))].filter((t) => t.length > 1);
+  const docs = index.skills.map((s) => ({
+    s,
+    fields: [
+      [wordsOf(s.slug.replace(/-/g, ' ')), 4],
+      [wordsOf(s.triggers.join(' ')), 3],
+      [wordsOf(s.tags.join(' ')), 2],
+      [wordsOf(s.summary), 1.5],
+      [wordsOf(s.outputs.join(' ')), 0.5],
+    ],
+  }));
+  const n = docs.length;
+  const idf = Object.fromEntries(terms.map((t) => [t, Math.log((n + 1) / (docs.filter((d) => d.fields.some(([w]) => matches(t, w))).length + 0.5))]));
+  const phrase = ` ${(String(query).toLowerCase().match(/[a-z0-9]+/g) ?? []).join(' ')} `;
+  const scored = docs.map(({ s, fields }) => {
     let score = 0;
-    for (const t of terms) for (const [f, w] of fields) if (f.toLowerCase().includes(t)) score += w;
-    return { slug: s.slug, score, summary: s.summary, type: s.type };
+    for (const t of terms) for (const [w, weight] of fields) if (matches(t, w)) score += weight * idf[t];
+    // a whole trigger phrase inside the request is the strongest signal
+    for (const tr of s.triggers) if (tr.includes(' ') && phrase.includes(` ${(tr.toLowerCase().match(/[a-z0-9]+/g) ?? []).join(' ')} `)) score += 6;
+    return { slug: s.slug, score: Math.round(score * 10) / 10, summary: s.summary, type: s.type };
   });
-  return scored.filter((s) => s.score > 0).sort((a, b) => b.score - a.score).slice(0, k);
+  return scored.filter((x) => x.score > 0).sort((a, b) => b.score - a.score || a.slug.localeCompare(b.slug)).slice(0, k);
 }
 
 // Duplicate instruction detection: normalized lines (>= 60 chars) that appear in 2+ skills.

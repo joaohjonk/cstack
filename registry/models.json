@@ -1440,7 +1440,8 @@
         "text-to-image",
         "palette-control",
         "typography",
-        "logo"
+        "logo",
+        "image-to-vector"
       ],
       "known_strengths": [
         "Native SVG output; logos, icons, brand marks, controlled palettes (Higgsfield routes logos here)",
@@ -1470,10 +1471,10 @@
         "last_verified": "2026-10-03"
       },
       "est_unit_cost": {
-        "amount": 0.004,
+        "amount": 0.08,
         "currency": "USD",
-        "per": "operation",
-        "basis": "heuristic: \"crisp_upscale\" from snapshot; verify before budgeting"
+        "per": "image",
+        "basis": "v4.1 vector generation; vectorize is $0.01 and pro vector $0.30"
       },
       "latency_snapshot": null,
       "access": "direct; Higgsfield",
@@ -1671,9 +1672,10 @@
       "provider": "minimax",
       "modality": "video",
       "capabilities": [
-        "text-to-video",
+        "first-last-frame",
         "image-to-video",
-        "reference-to-video"
+        "reference-to-video",
+        "text-to-video"
       ],
       "known_strengths": [
         "#1 on AA image-to-video (Elo 1195, Sep 2026); cheap"
@@ -1684,34 +1686,36 @@
         "image"
       ],
       "max_refs": null,
-      "resolution": null,
+      "resolution": "480p / 768p / 1080p",
       "pricing_snapshot": {
         "value": {
-          "h3_max": 0.05,
-          "h3_max_turbo": 0.025
+          "480p": 0.05,
+          "768p": 0.08,
+          "1080p": 0.16,
+          "turbo_480p": 0.025
         },
-        "unit": "USD per second (fal)",
+        "unit": "USD per second (fal; launch promo ended 2026-09-30)",
         "currency": "USD",
-        "source": "https://fal.ai/pricing",
+        "source": "https://fal.ai/models/minimax/h3-max/image-to-video",
         "last_verified": "2026-10-03"
       },
       "est_unit_cost": {
         "amount": 0.05,
         "currency": "USD",
         "per": "second",
-        "basis": "heuristic: \"h3_max\" from snapshot; verify before budgeting"
+        "basis": "480p probe tier (fal page 2026-10-03); 1080p is $0.16/s"
       },
       "latency_snapshot": null,
       "access": "fal; Runway (h3_max 5–8 credits/s); Higgsfield (minimax_h3_max)",
       "last_verified": "2026-10-03",
       "source": [
-        "https://fal.ai/pricing",
+        "https://fal.ai/models/minimax/h3-max/image-to-video",
         "https://artificialanalysis.ai/video/leaderboard/image-to-video"
       ],
       "benchmark_results": [],
-      "confidence": "medium",
+      "confidence": "high",
       "status": "active",
-      "notes": "AA lists MiniMax H3 as open weights."
+      "notes": "AA lists MiniMax H3 as open weights. The earlier flat $0.05/s was the launch promo and only the 480p price after 2026-09-30. Cheap image-to-video probe tier (turbo 480p $0.025/s)."
     },
     {
       "model_id": "wan3",
@@ -2066,6 +2070,1010 @@
       "confidence": "medium",
       "status": "watch",
       "notes": "From Higgsfield's first-party skills repo (release 0.13.0, 2026-09-26). Price via `higgsfield generate cost` (credits); not fetched."
+    },
+    {
+      "model_id": "fal-ai/hunyuan-3d/v3.1/pro/image-to-3d",
+      "provider": "tencent",
+      "modality": "3d",
+      "capabilities": [
+        "image-to-3d",
+        "multi-view-input",
+        "pbr",
+        "face-count"
+      ],
+      "known_strengths": [
+        "Cheapest capable probe with multi-view input and face-count control"
+      ],
+      "known_weaknesses": [
+        "Generated texture smears labels and fine print; never the truth source for a real product's label",
+        "Back views and scale are guessed unless multi-view input and dimensions are given",
+        "3.1 weights and licence not confirmed for self-hosting"
+      ],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "default": 0.375,
+          "pbr_addon": 0.15,
+          "multiview_addon": 0.15,
+          "face_count_addon": 0.15
+        },
+        "unit": "USD per operation (one generation)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/hunyuan-3d/v3.1/pro/image-to-3d",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.375,
+        "currency": "USD",
+        "per": "operation",
+        "basis": "heuristic: \"default\" from snapshot; verify before budgeting"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/hunyuan-3d/v3.1/pro/image-to-3d",
+        "docs/research/3d.md"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": null
+    },
+    {
+      "model_id": "fal-ai/trellis-2",
+      "provider": "microsoft",
+      "modality": "3d",
+      "capabilities": [
+        "image-to-3d",
+        "pbr"
+      ],
+      "known_strengths": [
+        "Fast, cheap probes; MIT code"
+      ],
+      "known_weaknesses": [
+        "Generated texture smears labels and fine print; never the truth source for a real product's label",
+        "Back views and scale are guessed unless multi-view input and dimensions are given",
+        "Self-hosting pulls a non-commercial dependency (nvdiffrast)"
+      ],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "512p": 0.25,
+          "1024p": 0.3,
+          "1536p": 0.35
+        },
+        "unit": "USD per operation (one generation)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/trellis-2",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.25,
+        "currency": "USD",
+        "per": "operation",
+        "basis": "heuristic: \"512p\" from snapshot; verify before budgeting"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/trellis-2",
+        "docs/research/3d.md"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": null
+    },
+    {
+      "model_id": "fal-ai/hyper3d/rodin/v2.5",
+      "provider": "hyper3d",
+      "modality": "3d",
+      "capabilities": [
+        "image-to-3d",
+        "multi-image-input",
+        "pbr"
+      ],
+      "known_strengths": [
+        "Strong geometry and texture by reputation (marketing + secondary sources)"
+      ],
+      "known_weaknesses": [
+        "Generated texture smears labels and fine print; never the truth source for a real product's label",
+        "Back views and scale are guessed unless multi-view input and dimensions are given",
+        "Premium price; 2-3 min per generation (secondary source)"
+      ],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "default": 0.4,
+          "highpack_addon": 0.8
+        },
+        "unit": "USD per operation (one generation)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/hyper3d/rodin/v2.5",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.4,
+        "currency": "USD",
+        "per": "operation",
+        "basis": "heuristic: \"default\" from snapshot; verify before budgeting"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/hyper3d/rodin/v2.5",
+        "docs/research/3d.md"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": null
+    },
+    {
+      "model_id": "fal-ai/meshy/v7.1/image-to-3d",
+      "provider": "meshy",
+      "modality": "3d",
+      "capabilities": [
+        "image-to-3d",
+        "pbr",
+        "usdz",
+        "remesh",
+        "rig",
+        "animate"
+      ],
+      "known_strengths": [
+        "Widest format coverage including USDZ; remesh and retexture"
+      ],
+      "known_weaknesses": [
+        "Generated texture smears labels and fine print; never the truth source for a real product's label",
+        "Back views and scale are guessed unless multi-view input and dimensions are given",
+        "Most expensive per generation on fal"
+      ],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "untextured": 0.8,
+          "textured": 1.2,
+          "rig_addon": 0.2,
+          "animation_addon": 0.12
+        },
+        "unit": "USD per operation (one generation)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/meshy/v7.1/image-to-3d",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.8,
+        "currency": "USD",
+        "per": "operation",
+        "basis": "heuristic: \"untextured\" from snapshot; verify before budgeting"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/meshy/v7.1/image-to-3d",
+        "docs/research/3d.md"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": null
+    },
+    {
+      "model_id": "fal-ai/tripo3d/h3.1/image-to-3d",
+      "provider": "tripo",
+      "modality": "3d",
+      "capabilities": [
+        "image-to-3d",
+        "multi-view-input",
+        "quad",
+        "face-limit",
+        "pbr",
+        "auto-size"
+      ],
+      "known_strengths": [
+        "Most controllable API: face limit, quad output, separate seeds, real-world auto size"
+      ],
+      "known_weaknesses": [
+        "Generated texture smears labels and fine print; never the truth source for a real product's label",
+        "Back views and scale are guessed unless multi-view input and dimensions are given",
+        "Credits per generation not published on the pages read: estimate after one probe"
+      ],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": null,
+      "est_unit_cost": null,
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/tripo3d/h3.1/image-to-3d/api",
+        "docs/research/3d.md"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "active",
+      "notes": "Priced at $0.01 per credit; credits per generation unverified, so the router treats it as unpriced."
+    },
+    {
+      "model_id": "veo-3.1 (fal)",
+      "provider": "google",
+      "modality": "video",
+      "capabilities": [
+        "text-to-video",
+        "image-to-video",
+        "first-last-frame",
+        "native-audio",
+        "4k"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "text",
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": "720p / 1080p / 4K",
+      "pricing_snapshot": {
+        "value": {
+          "std_silent_1080p": 0.2,
+          "std_audio_1080p": 0.4,
+          "std_silent_4k": 0.4,
+          "std_audio_4k": 0.6,
+          "fast_silent_1080p": 0.1,
+          "fast_audio_1080p": 0.15,
+          "fast_silent_4k": 0.3,
+          "fast_audio_4k": 0.35
+        },
+        "unit": "USD per second",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/veo3.1/image-to-video",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.15,
+        "currency": "USD",
+        "per": "second",
+        "basis": "fast, audio, 1080p (fal page 2026-10-03)"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/veo3.1/image-to-video",
+        "https://fal.ai/models/fal-ai/veo3.1/fast/first-last-frame-to-video"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "Separate row from Vertex because prices differ (fal fast with audio $0.15/s vs Vertex $0.10-0.12)."
+    },
+    {
+      "model_id": "kling-video-v3 (direct)",
+      "provider": "kling",
+      "modality": "video",
+      "capabilities": [
+        "text-to-video",
+        "image-to-video",
+        "first-last-frame",
+        "multi-shot",
+        "elements-reference",
+        "native-audio",
+        "4k"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "text",
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": "3-15 s; std / pro / native 4K up to 60 fps",
+      "pricing_snapshot": {
+        "value": {
+          "std": 0.24,
+          "std_audio": 0.37,
+          "pro": 0.32,
+          "pro_audio": 0.49,
+          "4k": 0.61
+        },
+        "unit": "USD per second (24-61 credits/s at $0.01, via a reseller)",
+        "currency": "USD",
+        "source": "https://apiframe.ai/guides/kling-3-0-guide",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.32,
+        "currency": "USD",
+        "per": "second",
+        "basis": "pro, silent, third-party reseller"
+      },
+      "latency_snapshot": null,
+      "access": "Kling direct / reseller",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://apiframe.ai/guides/kling-3-0-guide"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "watch",
+      "notes": "Released 2026-02-05. Kling's own pricing page is JS-rendered; fal is about 3x cheaper for pro."
+    },
+    {
+      "model_id": "ltx-2-pro",
+      "provider": "lightricks",
+      "modality": "video",
+      "capabilities": [
+        "image-to-video",
+        "text-to-video",
+        "native-audio",
+        "4k",
+        "open-weights"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "text",
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": "1080p / 1440p / 2160p; about 10 s; up to 50 fps",
+      "pricing_snapshot": {
+        "value": {
+          "1080p": 0.06,
+          "1440p": 0.12,
+          "2160p": 0.24
+        },
+        "unit": "USD per second (fal)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/ltx-2/image-to-video",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.06,
+        "currency": "USD",
+        "per": "second",
+        "basis": "1080p (fal page 2026-10-03)"
+      },
+      "latency_snapshot": null,
+      "access": "fal; self-host",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/ltx-2/image-to-video",
+        "https://invideo.io/blog/ltx-ai-video-generator/"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "active",
+      "notes": "LTX-2 Community License: open weights, commercial use with conditions (verify the revenue threshold before self-hosting). LTX-2.3 also on fal. Retake and extend endpoints."
+    },
+    {
+      "model_id": "luma-ray-3.2",
+      "provider": "luma",
+      "modality": "video",
+      "capabilities": [
+        "text-to-video",
+        "image-to-video",
+        "video-edit",
+        "keyframe-extend",
+        "video-reframe",
+        "hdr",
+        "draft-mode"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "text",
+        "image",
+        "video"
+      ],
+      "max_refs": null,
+      "resolution": "360p draft / 540p / 720p / 1080p; 5 or 10 s; HDR + EXR",
+      "pricing_snapshot": {
+        "value": {
+          "generate_min": 0.06,
+          "generate_max": 3.6,
+          "edit_min": 0.54,
+          "edit_max": 12.96,
+          "extend_min": 0.15,
+          "extend_max": 1.2
+        },
+        "unit": "USD per generation (by resolution and duration)",
+        "currency": "USD",
+        "source": "https://docs.agents.lumalabs.ai/guides/pricing/",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": null,
+      "latency_snapshot": null,
+      "access": "Luma API",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://docs.agents.lumalabs.ai/guides/pricing/"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "watch",
+      "notes": "Rates subject to change ahead of GA. The only HDR/EXR export found; 360p draft tier for cheap probes."
+    },
+    {
+      "model_id": "pika-2.2",
+      "provider": "pika",
+      "modality": "video",
+      "capabilities": [
+        "image-to-video"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": "5 s; 720p / 1080p",
+      "pricing_snapshot": {
+        "value": {
+          "720p_5s": 0.2,
+          "1080p_5s": 0.45
+        },
+        "unit": "USD per 5 s video (fal)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/pika/v2.2/image-to-video",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.04,
+        "currency": "USD",
+        "per": "second",
+        "basis": "720p, 5 s clip = $0.20"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/pika/v2.2/image-to-video"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "watch",
+      "notes": "No newer Pika endpoint found."
+    },
+    {
+      "model_id": "kling-ai-avatar-v2-pro",
+      "provider": "kling",
+      "modality": "video",
+      "capabilities": [
+        "audio-to-talking-video",
+        "lip-sync",
+        "avatar"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image",
+        "audio"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": 0.115,
+        "unit": "USD per second",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/kling-video/ai-avatar/v2/pro",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.115,
+        "currency": "USD",
+        "per": "second",
+        "basis": "snapshot list price"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/kling-video/ai-avatar/v2/pro"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "Likeness consent, no testimonials and AI disclosure are gates before use (video-direction)."
+    },
+    {
+      "model_id": "heygen-avatar-iv",
+      "provider": "heygen",
+      "modality": "video",
+      "capabilities": [
+        "avatar",
+        "talking-head",
+        "lip-sync",
+        "video-translation"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "credits_per_second": 0.1,
+          "usd_per_credit": 0.5
+        },
+        "unit": "enterprise API credits",
+        "currency": "USD",
+        "source": "https://developers.heygen.com/docs/enterprise-pricing.md",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.05,
+        "currency": "USD",
+        "per": "second",
+        "basis": "0.1 credit x $0.50 (enterprise)"
+      },
+      "latency_snapshot": null,
+      "access": "HeyGen API; remote MCP (OAuth, plan credits)",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://developers.heygen.com/docs/enterprise-pricing.md",
+        "https://docs.heygen.com/docs/heygen-remote-mcp-server"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "active",
+      "notes": "Self-serve plan pricing differs; the MCP bills plan credits. Same consent and disclosure gates as other avatars."
+    },
+    {
+      "model_id": "mirage-avatar-x",
+      "provider": "captions",
+      "modality": "video",
+      "capabilities": [
+        "avatar",
+        "talking-head",
+        "auto-captions"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "avatar_per_second": 0.15,
+          "captions_per_minute": 0.15
+        },
+        "unit": "USD (avatar rounded up to 6 s)",
+        "currency": "USD",
+        "source": "https://captions.ai/help/docs/api/pricing.md",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.15,
+        "currency": "USD",
+        "per": "second",
+        "basis": "avatar list price"
+      },
+      "latency_snapshot": null,
+      "access": "Captions/Mirage API",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://captions.ai/help/docs/api/pricing.md"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "Same consent and disclosure gates as other avatars."
+    },
+    {
+      "model_id": "sync-lipsync-2-pro / sync-3",
+      "provider": "sync",
+      "modality": "video",
+      "capabilities": [
+        "lip-sync",
+        "video-to-video",
+        "4k"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "video",
+        "audio"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "lipsync_2_min": 0.04,
+          "lipsync_2_max": 0.05,
+          "lipsync_2_pro_min": 0.067,
+          "lipsync_2_pro_max": 0.083,
+          "sync_3_min": 0.107,
+          "sync_3_max": 0.133
+        },
+        "unit": "USD per second at 25 fps",
+        "currency": "USD",
+        "source": "https://sync.so/docs/models",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.083,
+        "currency": "USD",
+        "per": "second",
+        "basis": "lipsync-2-pro upper bound"
+      },
+      "latency_snapshot": null,
+      "access": "sync.so; fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://sync.so/docs/models"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "Re-lip real footage for localisation; the filmed person's consent is required."
+    },
+    {
+      "model_id": "elevenlabs-sound-effects-v2",
+      "provider": "elevenlabs",
+      "modality": "audio",
+      "capabilities": [
+        "text-to-sfx"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "text"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": 0.002,
+        "unit": "USD per second of audio (fal)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/elevenlabs/sound-effects/v2",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.002,
+        "currency": "USD",
+        "per": "second",
+        "basis": "snapshot list price"
+      },
+      "latency_snapshot": null,
+      "access": "fal; ElevenLabs direct",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/elevenlabs/sound-effects/v2"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": null
+    },
+    {
+      "model_id": "topaz-video-upscale",
+      "provider": "topaz",
+      "modality": "video",
+      "capabilities": [
+        "video-upscale",
+        "frame-interpolation"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "video"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "to_720p": 0.01,
+          "to_1080p": 0.02,
+          "above_1080p": 0.08
+        },
+        "unit": "USD per second processed (60 fps doubles)",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/topaz/upscale/video",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.08,
+        "currency": "USD",
+        "per": "second",
+        "basis": "to 4K"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/topaz/upscale/video"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "Approved cut only; re-run fidelity gates after upscaling."
+    },
+    {
+      "model_id": "seedvr2-video-upscale",
+      "provider": "bytedance",
+      "modality": "video",
+      "capabilities": [
+        "video-upscale"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "video"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": 0.001,
+        "unit": "USD per megapixel of output, summed over frames",
+        "currency": "USD",
+        "source": "https://fal.ai/models/fal-ai/seedvr/upscale/video",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.001,
+        "currency": "USD",
+        "per": "megapixel",
+        "basis": "per megapixel-frame"
+      },
+      "latency_snapshot": null,
+      "access": "fal",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://fal.ai/models/fal-ai/seedvr/upscale/video"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "1080p x 121 frames is about $0.25."
+    },
+    {
+      "model_id": "vectorizer-ai",
+      "provider": "vectorizer.ai",
+      "modality": "vector",
+      "capabilities": [
+        "image-to-vector",
+        "vectorize"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "high_volume": 0.05,
+          "low_volume": 0.2
+        },
+        "unit": "USD per image by plan; free test mode",
+        "currency": "USD",
+        "source": "https://vectorizer.ai/pricing",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.2,
+        "currency": "USD",
+        "per": "image",
+        "basis": "entry plan upper bound"
+      },
+      "latency_snapshot": null,
+      "access": "Vectorizer.AI API",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://vectorizer.ai/pricing"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "A trace is provisional until a person cleans it; retrieve an official vector first."
+    },
+    {
+      "model_id": "starvector-8b / starvector-1b",
+      "provider": "open weights",
+      "modality": "vector",
+      "capabilities": [
+        "image-to-vector",
+        "text-to-vector-svg",
+        "open-weights"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image",
+        "text"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": null,
+      "est_unit_cost": null,
+      "latency_snapshot": null,
+      "access": "self-host (GPU)",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://github.com/joanrod/star-vector"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "active",
+      "notes": "Apache-2.0, CVPR 2025. Strong on icons, logotypes and diagrams; its repo says it will not work for natural images or illustrations."
+    },
+    {
+      "model_id": "dynamic-mockups-render",
+      "provider": "dynamic-mockups",
+      "modality": "image",
+      "capabilities": [
+        "template-mockup",
+        "batch"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": 0.051,
+        "unit": "USD per operation (1 credit on Pro, annual)",
+        "currency": "USD",
+        "source": "https://dynamicmockups.com/pricing/",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.051,
+        "currency": "USD",
+        "per": "operation",
+        "basis": "snapshot list price"
+      },
+      "latency_snapshot": null,
+      "access": "Dynamic Mockups API and MCP",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://dynamicmockups.com/pricing/",
+        "https://docs.dynamicmockups.com/ai-assisted-development/mcp"
+      ],
+      "benchmark_results": [],
+      "confidence": "high",
+      "status": "active",
+      "notes": "Deterministic PSD template render. Free tier renders are watermarked. Template licences still apply."
+    },
+    {
+      "model_id": "dynamic-mockups-mockanything",
+      "provider": "dynamic-mockups",
+      "modality": "image",
+      "capabilities": [
+        "generative-mockup"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "credits_min": 5,
+          "credits_max": 15,
+          "usd_per_credit": 0.051
+        },
+        "unit": "credits per render",
+        "currency": "USD",
+        "source": "https://dynamicmockups.com/pricing/",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 0.77,
+        "currency": "USD",
+        "per": "image",
+        "basis": "15 credits x $0.051 upper bound"
+      },
+      "latency_snapshot": null,
+      "access": "Dynamic Mockups API and MCP",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://dynamicmockups.com/pricing/"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "active",
+      "notes": "Generative: verify that art pixels survived (cstack mockup verify)."
+    },
+    {
+      "model_id": "dynamic-mockups-motionmockups",
+      "provider": "dynamic-mockups",
+      "modality": "video",
+      "capabilities": [
+        "motion-mockup"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": {
+        "value": {
+          "credits_min": 40,
+          "credits_max": 160,
+          "usd_per_credit": 0.051
+        },
+        "unit": "credits per render",
+        "currency": "USD",
+        "source": "https://dynamicmockups.com/pricing/",
+        "last_verified": "2026-10-03"
+      },
+      "est_unit_cost": {
+        "amount": 8.16,
+        "currency": "USD",
+        "per": "operation",
+        "basis": "160 credits x $0.051 upper bound"
+      },
+      "latency_snapshot": null,
+      "access": "Dynamic Mockups API and MCP",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://dynamicmockups.com/pricing/"
+      ],
+      "benchmark_results": [],
+      "confidence": "medium",
+      "status": "active",
+      "notes": "Motion mockups for social."
+    },
+    {
+      "model_id": "photoshop-api-smartobject",
+      "provider": "adobe",
+      "modality": "image",
+      "capabilities": [
+        "smart-object-replace",
+        "actions"
+      ],
+      "known_strengths": [],
+      "known_weaknesses": [],
+      "input_types": [
+        "image"
+      ],
+      "max_refs": null,
+      "resolution": null,
+      "pricing_snapshot": null,
+      "est_unit_cost": null,
+      "latency_snapshot": null,
+      "access": "Adobe Firefly Services (enterprise contract)",
+      "last_verified": "2026-10-03",
+      "source": [
+        "https://developer.adobe.com/firefly-services/docs/photoshop/guides/smart_objects_and_the_api"
+      ],
+      "benchmark_results": [],
+      "confidence": "low",
+      "status": "watch",
+      "notes": "Price unverified; async jobs on signed URLs; replacement fits the original bounding box keeping aspect ratio."
     }
   ]
 }
