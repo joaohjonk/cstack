@@ -170,17 +170,21 @@ Six rules hold the whole thing together:
 
 The long version is in [docs/philosophy.md](docs/philosophy.md) and [docs/architecture-one-page.md](docs/architecture-one-page.md).
 
-## One brand, three schools
+## One brand, every touchpoint
 
 <p align="center">
-  <img src="docs/images/three-schools.svg" alt="One brand, three schools. Inspiration, read as mechanism: a grid and one colour, subtraction, depth on screen. Schools: 01 Swiss poster, locked as the default; 02 Material, range for print, objects and spaces; 03 Liquid glass, range for social and product UI. Constant core: Klein blue, the square, the lowercase wordmark." width="100%">
+  <img src="docs/images/brand-map.svg" alt="One brand, every touchpoint. On the left, what a brand keeps in files: reality, positioning, voice, identity, tokens, canon, references, rules, decisions and memory. They merge into one Klein blue square, the brand. On the right, everything made from it: decks, site, product, packaging, campaigns, social, video and 3D, each passing a judgment gate. Every pick, kill and edit runs back into memory." width="100%">
 </p>
 
-This is cstack run on itself. `/creative-direction` starts from the inspiration, read as mechanisms rather than looks: a grid and one colour doing the work, subtraction until light and proportion remain, depth and light as material on a screen. From those it builds distinct schools instead of one safe average, each a complete answer.
+The value of brand work has moved upstream. When making is cheap, what decides the outcome is what goes in: the reality of the product, the position, the voice, the references and why they work, the decisions and the things that were killed. cstack keeps all of it once, as plain files, so a deck, a product screen and a launch film are all made from the same brand and not from someone's memory of it.
 
-Then a person decides. No tool can say which school is better; that is judgment, and it stays with the owner. For cstack the owner chose the Swiss poster: when in doubt, clarity. That school is LOCKED as the default. The other two are kept as range, for the places where they fit better.
+Nothing goes out unchecked. Every output passes judgment by someone other than its maker, and every pick, kill and edit is written back, so the next brief starts from more than the last one did.
 
-What never changes is the core: Klein blue, the square as the one unit of measure, the lowercase wordmark. Everything else may change by place. That is how a brand can move without drifting, and it is the same structure cstack gives every brand it holds.
+<p align="center">
+  <img src="docs/images/workspace.svg" alt="A cstack workspace. On the left, the brand files in git: brand-system.json marked LOCKED, rules and tokens being edited by Claude and Codex, a gold reference a designer is working on, a killed anti-reference, a current brief and the state logs. In the middle, a Klein blue launch poster in preview with cursors for Claude, a designer and the owner. Under it, a review strip: on-brand, correct and culturally alive have passed; the owner's decision is waiting." width="100%">
+</p>
+
+It is one workspace for people and agents. Claude edits the rules, Codex the tokens, a designer a reference, and the owner looks at the poster. Every file says what it is and how settled it is (LOCKED, CURRENT, KILLED), because it lives in git. The review does not ask the maker. And the one thing a file cannot hold, the original idea nobody asked for, still comes from a person who went outside.
 
 ## First ten minutes
 
@@ -280,7 +284,7 @@ Among them:
 
 **In moving image.** Paul Thomas Anderson, Jonathan Glazer, David Lynch, Andrea Arnold, Roy Andersson, Apichatpong Weerasethakul, Martin Scorsese and Gaspar Noé.
 
-**In culture, products and systems.** Ana Andjelic, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
+**In culture, products and systems.** Ana Andjelic, Little Plains and their writing on brand systems for humans and agents, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
 
 **In business.** On and its founders, Phil Knight's *Shoe Dog*, Chip Wilson of lululemon, Hamilton Helmer's *7 Powers*, Andrew Chen, A.G. Lafley and Roger Martin's *Playing to Win*, and Marcus Aurelius's *Meditations*.
 
