@@ -12,12 +12,12 @@ Generative tools made making things cheap. They did not make judgment cheap. Mos
 
 cstack's answer is structure, not longer prompts:
 
-- **A brand is infrastructure, not a PDF.** Brand state lives in versioned files with field-level provenance (who said it, how sure, approved or not).
+- **A brand is a living entity, not a PDF.** Brand state lives in versioned files with field-level provenance (who said it, how sure, approved or not).
 - **Context before generation, retrieval before invention.** References are stored as mechanisms ("what makes this work and how it transfers"), not as looks.
 - **Method before making.** Before an outcome is attempted, the agent finds or researches the best current flow for it (tools, models, practitioner methods), compares candidates, and works step by step against a stated target. Nothing big is one-shot.
 - **Deterministic before generative, cheap before premium.** Tokens, lints and crops before models; probes before finals; a budget and a stop condition before any batch.
 - **Verification is a stage, and the maker never certifies its own work.** Beautiful, on-brand, culturally alive, effective and correct are separate judgments.
-- **The owner's taste is sovereign.** Picks, kills and edits become preference data; repeated evidence becomes durable rules.
+- **The owner's taste is sovereign.** Picks, kills and edits become preference data; repeated evidence becomes durable rules. Don't forget this. Judgement and taste are the most important skill in the age of abundance.
 
 ## Install
 
