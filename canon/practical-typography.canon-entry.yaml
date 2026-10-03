@@ -11,9 +11,9 @@ mechanisms:
 - 'start from ranges: 10 to 12 pt in print or 15 to 25 px on the web, line spacing at 120 to 145 percent of the size, and an average line of 45 to 90 characters including spaces'
 - measure line length as average characters per line (about two to three alphabets), not in inches or pixels
 - 'treat mixing fonts as optional: one font varied by size, weight and style often suffices, a second is usually tolerable, a third rarely; give each font a consistent role and mix only faces that are clearly different'
-- use emphasis sparingly (bold or italic as little as possible and never together, no underlining except links, capitals for less than a line)
+- 'keep emphasis rare and single: one device at a time, underline reserved for links, all caps only for short runs'
 - letterspace capitals and small caps by 5 to 12 percent (letter-spacing 0.05em to 0.12em) and leave lowercase alone
-- separate paragraphs with a first-line indent (one to four times the size) or with space between them (4 to 10 pt), never both; always hyphenate justified text
+- 'mark paragraphs one way, an indent of one to four times the size or 4 to 10 pt of space, not both; justified text needs hyphenation to keep word spaces even'
 representative_works:
 - Butterick's Practical Typography (practicaltypography.com, online book, revised over time)
 - Typography for Lawyers (book and site)

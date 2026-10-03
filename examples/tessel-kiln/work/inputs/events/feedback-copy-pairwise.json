@@ -1,0 +1,12 @@
+{
+  "by": "Founder (fictional)",
+  "brand_id": "tessel-kiln",
+  "type": "pairwise",
+  "artifact_ref": "work/copy/plate-ochre-run",
+  "pair": { "a": "work/copy/plate-ochre-run.draft-a.md", "b": "work/copy/plate-ochre-run.draft-b.md", "winner": "b", "margin": "decisive" },
+  "reason": "B says what it is and how it was made. A could be about any plate from anywhere.",
+  "reason_codes": ["specificity", "banned_language"],
+  "general_principle": "facts in a fixed order beat mood words",
+  "axes": ["brand_fit", "message_clarity"],
+  "context": { "surface": "product page", "scope": "core" }
+}

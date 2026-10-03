@@ -9,6 +9,7 @@ import { schemaNames, validator, validateTree, validateValue } from '../scripts/
 import { listSkills, checkSkill, buildIndex, search, duplicateLines } from '../scripts/lib/skills.mjs';
 import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
 import { compile, diffRecipes } from '../scripts/lib/prompt.mjs';
+import { canonNames } from '../scripts/lib/prompt-names.mjs';
 import { route } from '../scripts/lib/router.mjs';
 import { planBatch, readLedger, spent } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
@@ -335,7 +336,7 @@ function cmdPrompt(sub) {
       if (eq < 1) die(`--set expects slot=value, got "${kv}"`);
       values[String(kv).slice(0, eq)] = String(kv).slice(eq + 1);
     }
-    const res = compile(recipe, { values, seed: args.seed });
+    const res = compile(recipe, { values, seed: args.seed, names: canonNames() });
     if (args.json) json(res);
     else {
       if (res.ok) console.log(res.prompt + '\n');

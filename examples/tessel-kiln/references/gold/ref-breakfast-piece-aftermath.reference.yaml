@@ -1,0 +1,33 @@
+# Described reference: no image stored. The genre is centuries old and public domain.
+id: ref-breakfast-piece-aftermath
+kind: image
+library: gold
+source_domain: painting (17th-century Northern European "breakfast piece" still life)
+distance: middle
+rights:
+  status: inspiration_only
+  notes: underlying genre and works are public domain; nothing is reproduced here, only the mechanism is described
+credit: breakfast-piece still-life genre (public domain); never placed in a generation prompt
+captured_at: "2026-09-22"
+retrieved_via: manual
+transferable_mechanism: >-
+  The meal is shown interrupted, not staged: a cut loaf, a half-peeled lemon, a knife left over the table
+  edge. Evidence of use makes the objects feel owned and time-bound, and the viewer completes the story of
+  who just left the table.
+mechanism_tags: [aftermath, evidence_of_use, interrupted_ritual, restraint]
+transfer: >-
+  Hero table shots for Tessel Kiln show the table a few minutes after the meal: a torn heel of bread, a
+  smear of sauce in the plate well, a spoon resting on a bowl rim. One or two traces, never a mess. This is
+  the mechanism behind photography.approach ("after people have eaten, not before").
+incidental_content: [pewter and silver vessels, oysters, dark painted backgrounds, overhanging tablecloths]
+do_not_copy:
+  - the dark varnished background and old-master colour grade
+  - any specific painting's composition or object arrangement
+  - period props (pewter, roemer glasses, oysters)
+why_it_works: traces of use create narrative and ownership without people in frame
+axes:
+  brand_fit: "high: matches the owner's after-the-meal instruction"
+  novelty: "medium: aftermath tables are known, rare in tableware DTC"
+surfaces: [shop hero, social stills]
+approval: current
+decided_by: Founder (fictional)

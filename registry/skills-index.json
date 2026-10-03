@@ -221,7 +221,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/claims-proof/SKILL.md",
-      "tokens": 1284
+      "tokens": 1258
     },
     {
       "slug": "competitor-intel",
@@ -263,7 +263,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/competitor-intel/SKILL.md",
-      "tokens": 1119
+      "tokens": 1169
     },
     {
       "slug": "copywriting",
@@ -534,7 +534,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/flow-research/SKILL.md",
-      "tokens": 1503
+      "tokens": 1525
     },
     {
       "slug": "generate-media",
@@ -992,7 +992,7 @@
         "playwright-core + chromium"
       ],
       "path": "skills/site-capture/SKILL.md",
-      "tokens": 1105
+      "tokens": 1157
     },
     {
       "slug": "symbol-design",

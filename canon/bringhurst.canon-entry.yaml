@@ -10,10 +10,10 @@ mechanisms:
 - 'measure lines in characters, not pixels: about 45 to 75 characters for single-column continuous text, about 66 as the sweet spot, and 40 to 50 per column in multi-column settings'
 - compose with a scale, a modest set of distinct and related sizes chosen before the page
 - letterspace strings of capitals, small caps and long digit strings (about 5 to 10 percent of the type size), and leave lowercase alone unless there is a reason
-- choose leading that suits the face, the size and the measure, and add or remove vertical space in measured intervals
+- 'let leading follow the face, the size and the measure, and move vertical space in steps of one fixed unit'
 - set ragged when ragged suits the text and the page; justify only with good hyphenation and a measure wide enough that word spaces do not stretch
 - use titling (lining) figures with full capitals and text figures elsewhere, and spaced small caps for abbreviations in running text
-- 'hyphenate by the conventions of the language: leave at least two letters behind, take at least three forward, and avoid more than three hyphenated lines in a row'
+- 'hyphenate by the conventions of the language, with minimums of 2 letters before a break and 3 after, and at most 3 hyphenated lines running'
 representative_works:
 - The Elements of Typographic Style (Hartley & Marks, 1992; version 4.0, 2012)
 - The Elements of Typographic Style Applied to the Web (Richard Rutter, webtypography.net), which maps its rule numbers to CSS

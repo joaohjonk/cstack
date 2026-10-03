@@ -4,7 +4,7 @@
 // Changes: download through a fresh cookie-less request context; manifest adds page_url, sha256, alt, sizes and
 // `reference_only: true` (third-party media is never generation input); size cap; final-URL re-check.
 import { checkNavigation, isMetadataHost } from './url-guard.mjs';
-import { redactUrl } from './safety.mjs';
+import { redactUrl, isLocalHost } from './safety.mjs';
 
 export const MAX_DOWNLOADS = 50;
 export const MAX_BYTES = 25 * 1024 * 1024;
@@ -102,7 +102,7 @@ export async function downloadMedia(pw, run, pageUrl, items, { ws } = {}) {
         files.push({ ...rec, error: e.message.split('\n')[0] });
         failed++;
       }
-      await new Promise((r) => setTimeout(r, 100));
+      await new Promise((r) => setTimeout(r, isLocalHost(new URL(pageUrl).hostname) ? 100 : 1000)); // human pace on sites we do not own
     }
   } finally {
     await req.dispose();

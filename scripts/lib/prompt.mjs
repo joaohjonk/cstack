@@ -1,6 +1,7 @@
 // Prompt Slots compiler: one stable template, named slots, deterministic variant pools.
 // Fails loudly on missing required slots, undeclared placeholders and unused values (wiring bugs).
 import { hashValue, sha256 } from './core.mjs';
+import { styleLeaks } from './prompt-names.mjs';
 
 const PLACEHOLDER = /(?<!\{)\{([a-z][a-z0-9_]*)\}(?!\})/g;
 
@@ -16,6 +17,7 @@ export function seededIndex(seed, slot, n) {
 
 /**
  * compile(recipe, {values, variant_index, seed}) -> {prompt, slot_values, hash, errors}
+ * opts.names: names that must never reach a prompt (canonNames()); style phrases ("in the style of") always fail.
  * Precedence for each slot: explicit value > variant_index > seed-derived variant > (required ? error : empty).
  */
 export function compile(recipe, opts = {}) {
@@ -70,6 +72,8 @@ export function compile(recipe, opts = {}) {
     .replace(/[ \t]{2,}/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  for (const leak of styleLeaks(prompt, opts.names)) errors.push(`prompt ${leak}`);
 
   const slot_values = Object.fromEntries(Object.entries(resolved).map(([k, v]) => [k, v.value]));
   const hash = hashValue({ template, slot_values, target_model: recipe.target_model ?? null, parameters: recipe.parameters ?? {} });

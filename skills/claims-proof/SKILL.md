@@ -42,7 +42,7 @@ Web research on primary sources **every time rules may have changed** (re-check 
 1. **Inventory claims** verbatim with where they appear.
 2. **Classify**: factual, comparative, health/nutrition, ingredient, origin, environmental, subjective (puffery).
 3. **Proof**: link each claim to evidence (test report, spec, certificate, citation) with source; mark strength.
-4. **Rules per jurisdiction**: retrieve current primary sources (e.g. Brazil: ANVISA, applicable RDC/IN, Portuguese labeling, nutrition, allergens, mandatory statements; US: FDA, applicable CFR and guidance, Nutrition or Supplement Facts as relevant, identity, net quantity, ingredients, allergens, manufacturer/distributor statement). Record citation, version/date, retrieval date.
+4. **Rules per jurisdiction**: retrieve current primary sources for each market ([where they live](references/jurisdictions.md): Brazil ANVISA and CONAR, US FDA and FTC, EU claims, food-information and comparative-advertising law). Record citation, version/date, retrieval date.
 5. **Separate four layers** for each item: legal requirement / retailer or platform requirement / best practice / creative preference.
 6. **Risk rating** (low / medium / high) with reason; high → counsel review list.
 7. **Claim families**: block risky families, not only single sentences (a rewrite that keeps the implied claim is still the claim).

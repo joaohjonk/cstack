@@ -48,7 +48,8 @@ Captured pages are `live_brand_behavior` (own brand) or `external_reference` (ot
 
 ## Decision rules
 
-- Downloaded media is `reference_only` until rights are known; never an image input for generation by default.
+- Downloaded media is `reference_only` until rights are known; the media runner refuses `work/browse/` inputs unless the job names recorded rights (`capture_rights`).
+- Third-party captures are internal reference: never published, put in a deliverable or used to train a model. [Rights rules](references/rights.md).
 - Computed styles go to `brand-import` as candidates with the URL and date as source.
 - QA findings that are deterministic (overflow, broken images, missing alt, contrast) are reported as gates, not opinions.
 

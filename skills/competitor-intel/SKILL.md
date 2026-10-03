@@ -28,7 +28,7 @@ The goal is not to copy competitors; it is to see the category's conventions cle
 
 ## Missing-input behavior
 
-- No paid intelligence tools: public pages via `site-capture` (PDPs, ad libraries, social profiles, retail listings) with screenshots; mark sales/performance estimates UNKNOWN rather than guessing.
+- No paid intelligence tools: the competitor's own site and PDPs via `site-capture` with screenshots. Ad libraries, social profiles and marketplace listings (Meta, TikTok, Instagram, X, Amazon) by human browsing or the platform's approved API only, because their terms bar automated collection; the owner pastes links and screenshots. Mark sales/performance estimates UNKNOWN rather than guessing.
 - Authenticated or private material (paid newsletters, logged-in dashboards, emails) only if the owner provides it or grants permission.
 
 ## Source precedence

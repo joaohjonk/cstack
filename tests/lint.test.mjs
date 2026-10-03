@@ -49,7 +49,7 @@ test('lint: a LIGHT_* recipe id covers terse text but not adjective prose; empty
 
 test('lint: repo records are found and clean; test fixtures are skipped by the tree walk', () => {
   const files = findShotDNAFiles(ROOT).map((f) => path.relative(ROOT, f));
-  assert.ok(files.includes('examples/lumen-field/references/dna/shot-autumn-hero-aftermath.shot-dna.yaml'));
+  assert.ok(files.includes('examples/tessel-kiln/references/dna/shot-autumn-hero-aftermath.shot-dna.yaml'));
   assert.ok(!files.some((f) => f.startsWith('tests/')));
   assert.deepEqual(lintShotDNATree(ROOT), []);
   const good = readData(path.join(ROOT, 'tests', 'fixtures', 'shot-dna', 'counter-flash.shot-dna.yaml'));

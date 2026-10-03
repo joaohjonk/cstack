@@ -1,4 +1,4 @@
-// The fictional example workspace (examples/lumen-field) must stay valid: it is the demo, the docs and a fixture.
+// The fictional example workspace (examples/tessel-kiln) must stay valid: it is the demo, the docs and a fixture.
 // Read-only: every command here only reads the example (tokens are rebuilt into a temp file, not in place).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,7 +11,7 @@ import { buildCSS } from '../scripts/lib/tokens.mjs';
 import { tmpDir } from './tmp.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const WS = path.join(ROOT, 'examples', 'lumen-field');
+const WS = path.join(ROOT, 'examples', 'tessel-kiln');
 const cli = (...args) => spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), ...args], { cwd: ROOT, encoding: 'utf8' });
 
 test('example: brand check passes with an open conflict surfaced', () => {
@@ -27,7 +27,7 @@ test('example: tokens check passes and the built CSS is up to date', () => {
   assert.match(r.stdout, /tokens; PASS/);
   const out = path.join(tmpDir('cstack-ex-'), 'tokens.css');
   buildCSS(WS, { out });
-  assert.equal(fs.readFileSync(out, 'utf8'), fs.readFileSync(path.join(WS, 'brand', 'generated', 'tokens.css'), 'utf8'), 'run: cstack tokens build --ws examples/lumen-field');
+  assert.equal(fs.readFileSync(out, 'utf8'), fs.readFileSync(path.join(WS, 'brand', 'generated', 'tokens.css'), 'utf8'), 'run: cstack tokens build --ws examples/tessel-kiln');
 });
 
 test('example: every prompt recipe compiles', () => {
