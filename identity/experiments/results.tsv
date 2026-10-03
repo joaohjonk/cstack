@@ -1,0 +1,1 @@
+run_id	timestamp	hypothesis	changed_variable	baseline	candidate	provider	model	seed_or_index	cost	latency	primary_score	guardrails	human_pref	decision	notes
