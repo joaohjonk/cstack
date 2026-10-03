@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. Taste, made repeatable. Before use: step outside. A row of white squares, one outlined and turned. A giant white lowercase cstack with a square full stop sits on the bottom edge." width="100%">
+  <img src="docs/images/cstack-hero.svg" alt="A Klein blue Swiss poster. Taste, made repeatable. Before use: step outside. A row of twelve square positions runs across the grid; a figure made of squares stands on three of them with a fourth limb reaching for the next, its square head turned to the viewer. A giant white lowercase cstack with a square full stop sits on the bottom edge." width="100%">
 </p>
 
 # cstack

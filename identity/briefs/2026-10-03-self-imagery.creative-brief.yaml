@@ -1,0 +1,103 @@
+# Written with /brief on cstack's own workspace. The owner asked for no approvals in this run:
+# every forcing question was answered with the most restrained option and is listed under open_questions.
+id: 2026-10-03-self-imagery
+brand_id: cstack
+date: 2026-10-03
+requested_artifact: an evolved identity and diagrams for every public part of cstack, clear but more inspiring
+recommended_artifact: one small graphic device added to the existing system (the field and the figure), applied to the hero and to one docs diagram of the public studio; the drift and nine-stop figures stay as they are
+reframe: >-
+  "More inspiring" is diagnosed, not expanded into adjectives. The current figures are correct and calm but
+  only ever show order: a grid, a row of identical squares, a line. Nothing in them is alive, so the system
+  reads as a filing cabinet. The missing ingredient is play: a figure caught mid-move on a field of choices.
+  The fix is one new device in the existing vocabulary, not a new palette, a mascot or a gallery.
+job_of_the_piece: >-
+  A designer, art director or founder who lands on the repo should feel in two seconds that discipline here is
+  what makes play possible, and should be able to read what cstack is made of without a legend.
+mode: brand_building
+audience:
+  who: people with taste who judge a tool by how its own home looks (designers, art directors, founders who direct their brand)
+  think: this system is strict, and the strictness is for something
+  feel: a small, deadpan smile; the calm of a studio where someone is trying a move
+  do: read on to the quick start
+product_truth:
+  - cstack is a set of public positions (skills, workflows, flows, checkers, canon, a brand workspace) that a job combines; no job uses all of them
+  - every cstack figure is regenerated from the identity tokens by identity/work/figures/make-figures.py
+  - the square is cstack's one unit of measure (brand/brand-system.json#graphic_devices.square)
+tension: >-
+  The category sells endless generation; cstack sells restraint. Restraint looks joyless unless it is shown
+  as the floor you play on.
+conventions:
+  - convention: AI tools show sparkles, gradients, glowing orbs and robots
+    move: ignore
+    why: none of it says what the tool is made of
+  - convention: design-system diagrams are boxes and arrows
+    move: invert
+    why: the parts are drawn as a field of positions and a job as a figure standing on a few of them
+  - convention: Swiss poster, one colour, flush-left grid
+    move: use
+    why: locked (R-LAYOUT-01, R-COLOR-01) and the owner's first choice when clarity is needed
+permission: >-
+  cstack can be funny about its own discipline because the discipline is real and checked: every figure passes
+  the legibility gate it ships.
+inevitability_test: >-
+  Remove the wordmark and the image still could only be cstack's: the same square is the unit, the position,
+  the figure's body and the full stop.
+inputs:
+  - item: "Owner's request: use cstack to evolve its own branding and diagrams; clear, but a little more inspiring; Swiss poster register kept; a photograph of a dog playing a floor game of coloured dots as the mood"
+    class: CAMPAIGN_DIRECTION
+    source: { kind: user_instruction, ref: "project thread \"cstack self-imagery\"", captured_at: "2026-10-03", by: JJ }
+  - item: "The photograph and the game mat are other people's work: internal reference only, never reproduced, traced or used as generation input; no dots in rows of four colours, no dog"
+    class: HARD_CONSTRAINT
+    source: { kind: approved_brand_state, ref: "skills/site-capture/references/rights.md", captured_at: "2026-10-03", by: legal check }
+  - item: "What transfers from the reference, by mechanism: play stands in for creativity; a field of positions stands in for possibilities; one living figure mid-move in a calm, empty studio; deadpan good humour, nothing winks"
+    class: REFERENCE_MECHANISM
+  - item: Klein blue #002FA7 is the one colour on a warm white ground
+    class: HARD_CONSTRAINT
+    source: { kind: approved_brand_state, ref: "identity/brand/brand-system.json#color.accent" }
+  - item: Every text run reads at 11 px when the figure renders 324 px wide
+    class: HARD_CONSTRAINT
+    source: { kind: approved_brand_state, ref: "identity/brand/rules/brand-rules.yaml#R-TYPE-02" }
+  - item: Fewer images beat more; the owner dropped explanatory figures and a three-schools panel today
+    class: HARD_CONSTRAINT
+    source: { kind: user_instruction, ref: "identity/brand/brand-system.json#layout.simplicity" }
+  - item: The nine-stop line is the figure the owner likes most
+    class: SOFT_CONSTRAINT
+    source: { kind: user_instruction, ref: "identity/brand/brand-system.json#graphic_devices.transit_line" }
+  - item: How the figure moves, what it stands on, how the public parts are drawn
+    class: OPEN_CREATIVE_SPACE
+scope: core
+surfaces:
+  - README hero (docs/images/cstack-hero.svg), shown 100% wide at 830 px and 324 px
+  - docs/architecture-one-page.md, the public parts of cstack
+deliverables:
+  - "graphic device: the field and the figure, written into brand-system.json and brand-rules.yaml"
+  - docs/images/cstack-hero.svg redrawn
+  - docs/images/the-field.svg, new, for the docs
+  - territories, verify and review notes in identity/work/
+success_criteria:
+  - axis: message_clarity
+    criterion: a reader names what the field diagram shows (the public parts by stage, and a job using a few) from the figure and its caption alone
+  - axis: brand_fit
+    criterion: R-COLOR-01, R-TYPE-01, R-TYPE-02, R-MARK-01, R-LAYOUT-01 and R-NAMES-01 pass on every changed figure
+  - axis: product_truth
+    criterion: the squares in the field match the real skill counts per stage in README's studio table; no invented part
+  - axis: novelty
+    criterion: no element of the reference photograph or the game mat is recognisable (no circles in coloured rows, no dog, no mat)
+  - axis: beauty
+    criterion: the hero still reads first as a Swiss poster; the figure is small and the wordmark stays dominant
+open_questions:
+  - question: Add a second colour to carry play?
+    default: No. Play comes from form and rhythm; Klein blue stays the one colour (most restrained).
+    owner: JJ
+  - question: Put the new diagram in the README?
+    default: No. The README keeps its three figures; the field diagram lives in docs/architecture-one-page.md (most restrained).
+    owner: JJ
+  - question: Redraw the drift and nine-stop figures?
+    default: No. They are clear and liked; only the hero and a docs diagram change.
+    owner: JJ
+handoff:
+  - creative-direction
+  - identity-system
+  - vector-master
+  - brand-verify
+  - creative-review
