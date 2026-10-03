@@ -6,6 +6,7 @@ aliases:
 - scroll animation of the product
 - 360 product on the homepage
 - spinning product website
+- looping product video in the hero
 status: researched
 target:
   description: the real product turns or opens in the hero with studio-quality light, the label readable at every angle, and the page as fast as a static hero
@@ -26,6 +27,10 @@ not_when:
 - a looping social video (use 3d-social-turntable)
 - AR on the product page only (use 3d-ar-view)
 candidates_considered:
+- name: A0 pre-rendered looping video
+  summary: a short seamless loop rendered offline from the truth asset (Blender turntable), muted autoplay video with a poster
+  verdict: chosen
+  why: when nobody needs to interact; the cheapest exact route, label pixel-true at every frame; what a 'rotating product' hero often is on inspection
 - name: A1 real-time GLB (three.js/R3F or model-viewer)
   summary: compressed GLB from the truth asset, scroll or drag bound, poster first
   verdict: chosen
@@ -63,7 +68,7 @@ steps:
   compare_to_target: is every visible face backed by a real source?
   fallback: no truth source for a labelled product means stop and ask; never route to a generated texture
 - id: branch
-  does: choose A1, A2 or A3 from interaction, reuse and quality needs; write the cost ladder
+  does: inspect how the reference is actually built (a looping video, a frame sequence or live WebGL) and ask the owner which applies - a looping render (A0, cheap and exact, no interaction) or live three.js / model-viewer (A1, interactive and heavier, label verified at several angles); then A2 or A3 only when the motion needs them; write the cost ladder
   kind: research
   skill: three-d
   gate: {type: owner, check: owner approves branch and spend}
@@ -105,6 +110,7 @@ failure_modes:
 - no poster, blank hero on slow networks
 evidence:
 - {ref: docs/research/3d.md, kind: documented, date: 2026-10-03, note: "sections 4, 5 and 8 (flow A)"}
+- {ref: "field observation: a public DTC food brand's homepage, inspected from the owner's device", kind: observed, date: 2026-10-03, note: "the 'rotating 3D product' was a pre-rendered looping video, not live WebGL"}
 - {ref: "https://modelviewer.dev/docs/", kind: documented, date: 2026-10-03}
 - {ref: "https://gltf-transform.dev/cli", kind: documented, date: 2026-10-03}
 - {ref: "https://fal.ai/models?categories=image-to-3d", kind: documented, date: 2026-10-03, note: 3D model prices}

@@ -29,7 +29,7 @@ steps:
   does: functional -> formal -> cultural-quality -> distant references; Refero/Mobbin/Ecomm.Design when available
   gate: auto
 - id: architecture
-  does: 'page architecture: sections, order, objections, evidence, CTA'
+  does: 'page architecture: sections, order, objections, evidence, CTA. Product page (PDP) options: a buy-box ladder priced per serving or unit, a subscription interval picker, a comparison table against the category''s usual alternative (every row through claims-proof), a sticky add-to-cart bar'
   gate: auto
 - id: copy
   skill: copywriting

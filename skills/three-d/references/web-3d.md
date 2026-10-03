@@ -41,6 +41,14 @@ Loaded on demand by `/three-d`. Sources and dates: `docs/research/3d.md` (sectio
 - Lighting: a CC0 HDRI or a procedural room environment; keep the environment lighter than the model.
 - Check with `browse qa` at 375/768/1440 and a performance run before calling it done.
 
+## Supporting motion (named options, each needs reduced-motion and a poster state)
+
+- **Looping render hero**: a seamless offline turntable as muted autoplay video; often what a "3D product" hero really is.
+- **Particle logo**: a 2D canvas samples the SVG mark into dots of about 3 px that assemble, twinkle and scatter from the cursor; the SVG is the fallback.
+- **Sticky scroll-highlight list** beside a sticky product photo: each item highlights as it passes the photo.
+- **Review marquee**: a slow horizontal loop of short quotes; pauses on hover and under reduced motion.
+- **Hero card with progress bars**: a few product facts drawn as bars that fill once on view (facts go through claims-proof).
+
 ## Capture protocol (when the owner scans the real product)
 
 Even, diffuse light; matte surroundings; 40–200 photos around the object at two or three heights on a turntable; include the base; avoid reflective and transparent parts or treat them separately; export USDZ or GLB from the capture app into `assets/capture/`.
