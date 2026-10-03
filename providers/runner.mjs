@@ -37,24 +37,62 @@ export function listPending(ws) {
 export function registryPrice(req, models = loadModels()) {
   for (const m of models) {
     const r = (m.routes ?? []).find((x) => x.provider === req.provider && x.endpoint_id === req.model);
-    if (r) return { model: m, unit: r.price ?? null, basis: `${r.provider} route ${r.endpoint_id} (verified ${r.last_verified})` };
+    if (r) return { model: m, unit: r.price ?? null, route: true, basis: `${r.provider} route ${r.endpoint_id} (verified ${r.last_verified})` };
   }
   const m = models.find((x) => x.model_id === req.model || x.provider_model_id === req.model);
   if (!m) return { model: null, unit: null, basis: 'not in registry/models.json' };
   if (req.provider && m.provider !== req.provider) {
     const r = (m.routes ?? []).find((x) => x.provider === req.provider);
-    return r ? { model: m, unit: r.price ?? null, basis: `${r.provider} route ${r.endpoint_id}`, endpoint_id: r.endpoint_id } : { model: m, unit: null, basis: `${m.model_id} has a ${m.provider} price but no ${req.provider} route; add one to registry/models.json or pass estimated_cost` };
+    return r ? { model: m, unit: r.price ?? null, route: true, basis: `${r.provider} route ${r.endpoint_id}`, endpoint_id: r.endpoint_id } : { model: m, unit: null, basis: `${m.model_id} has a ${m.provider} price but no ${req.provider} route; add one to registry/models.json or pass estimated_cost` };
   }
   return { model: m, unit: m.est_unit_cost ?? null, basis: 'registry est_unit_cost' };
 }
 
+// fal's image_size names; a megapixel is 2^20 pixels, as fal counts it (1920x1080 = 1.98, billed as 2)
+const NAMED_SIZES = { square_hd: [1024, 1024], square: [512, 512], portrait_4_3: [768, 1024], portrait_16_9: [576, 1024], landscape_4_3: [1024, 768], landscape_16_9: [1024, 576] };
+const MP = 2 ** 20;
+const CAP_MP = 4; // the FLUX.2 limit; an input whose size cannot be read is counted at it
+
+// Megapixels billed per output image, with what had to be assumed. Every image (each input, each output) is rounded up
+// on its own, which is never less than rounding the sum, so a host that does not state its rounding is not underestimated.
+function megapixels(req, u) {
+  const p = req.inputs?.params ?? {};
+  const notes = [];
+  const inputs = (u.counts === 'input_and_output' ? req.inputs?.images ?? [] : []).map((f) => {
+    try {
+      const { width, height } = imageSize(f);
+      if (width && height) return Math.ceil((width * height) / MP);
+    } catch {}
+    notes.push(`input ${f} counted at ${CAP_MP} MP`);
+    return CAP_MP;
+  });
+  let size = typeof p.image_size === 'string' ? NAMED_SIZES[p.image_size] : p.image_size?.width ? [p.image_size.width, p.image_size.height] : p.width && p.height ? [p.width, p.height] : null;
+  let out;
+  if (size) out = Math.ceil((size[0] * size[1]) / MP);
+  else if (p.image_size === 'auto' && inputs.length) out = Math.max(...inputs);
+  else {
+    out = 1;
+    notes.push(p.image_size ? `image_size ${JSON.stringify(p.image_size)} read as 1 MP` : 'no output size given, 1 MP assumed (fal default landscape_4_3)');
+  }
+  return { mp: out + inputs.reduce((a, b) => a + b, 0), notes };
+}
+
 export function estimateFromRegistry(req, models = loadModels()) {
-  const u = registryPrice(req, models).unit;
+  const price = registryPrice(req, models);
+  const u = price.unit;
   if (!u?.amount) return null;
   const p = req.inputs?.params ?? {};
-  const qty = u.per === 'image' ? p.num_images ?? p.n ?? 1 : u.per === 'second' ? p.duration ?? p.seconds ?? null : u.per === 'operation' ? 1 : null;
+  const images = Number(p.num_images ?? p.n ?? 1);
+  // megapixel pricing comes only from a dated host route; a maker's per-megapixel est_unit_cost is a heuristic and stays unpriced
+  if (u.per === 'megapixel') {
+    if (!price.route) return null;
+    const { mp, notes } = megapixels(req, u);
+    const each = u.first_amount != null ? u.first_amount + u.amount * (mp - 1) : u.amount * mp;
+    return { amount: Math.round(each * images * 10000) / 10000, currency: u.currency ?? 'USD', basis: `${price.basis}, ${mp} MP x ${images} image(s), rounded up${notes.length ? `; ${notes.join('; ')}` : ''}` };
+  }
+  const qty = u.per === 'image' ? images : u.per === 'second' ? p.duration ?? p.seconds ?? null : u.per === 'operation' ? 1 : null;
   if (qty == null) return null;
-  return { amount: Math.round(u.amount * Number(qty) * 10000) / 10000, currency: u.currency ?? 'USD', basis: `${registryPrice(req, models).basis}, per ${u.per}` };
+  return { amount: Math.round(u.amount * Number(qty) * 10000) / 10000, currency: u.currency ?? 'USD', basis: `${price.basis}, per ${u.per}` };
 }
 
 function loadModels() {

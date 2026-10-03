@@ -676,7 +676,25 @@
       "benchmark_results": [],
       "confidence": "high",
       "status": "active",
-      "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre."
+      "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre.",
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "fal-ai/flux-2-pro",
+          "price": {
+            "amount": 0.015,
+            "first_amount": 0.03,
+            "currency": "USD",
+            "per": "megapixel",
+            "counts": "input_and_output",
+            "rounding": "up",
+            "basis": "0.03 for the first output megapixel, then 0.015 per extra megapixel of input plus output (1024x1024 = 0.03; 1920x1080 = 0.045)"
+          },
+          "source": "https://fal.ai/models/fal-ai/flux-2-pro",
+          "last_verified": "2026-10-03",
+          "notes": null
+        }
+      ]
     },
     {
       "model_id": "flux-2-max",
@@ -723,7 +741,25 @@
       "benchmark_results": [],
       "confidence": "high",
       "status": "active",
-      "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre."
+      "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre.",
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "fal-ai/flux-2-max",
+          "price": {
+            "amount": 0.03,
+            "first_amount": 0.07,
+            "currency": "USD",
+            "per": "megapixel",
+            "counts": "input_and_output",
+            "rounding": "not_stated",
+            "basis": "0.07 for the first megapixel processed, then 0.03 per extra megapixel"
+          },
+          "source": "https://fal.ai/models/fal-ai/flux-2-max",
+          "last_verified": "2026-10-03",
+          "notes": "fal does not state rounding or whether input counts; estimated conservatively (input counted, each image rounded up)"
+        }
+      ]
     },
     {
       "model_id": "flux-2-flex",
@@ -770,7 +806,24 @@
       "benchmark_results": [],
       "confidence": "high",
       "status": "active",
-      "notes": null
+      "notes": null,
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "fal-ai/flux-2-flex",
+          "price": {
+            "amount": 0.05,
+            "currency": "USD",
+            "per": "megapixel",
+            "counts": "input_and_output",
+            "rounding": "up",
+            "basis": "0.05 per megapixel of input plus output (1024x1024 = 0.05; 1920x1080 = 0.10)"
+          },
+          "source": "https://fal.ai/models/fal-ai/flux-2-flex",
+          "last_verified": "2026-10-03",
+          "notes": null
+        }
+      ]
     },
     {
       "model_id": "flux-2-klein-4b",
@@ -823,7 +876,24 @@
       "benchmark_results": [],
       "confidence": "medium",
       "status": "active",
-      "notes": null
+      "notes": null,
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "fal-ai/flux-2/klein/4b",
+          "price": {
+            "amount": 0.005,
+            "currency": "USD",
+            "per": "megapixel",
+            "counts": "input_and_output",
+            "rounding": "not_stated",
+            "basis": "0.005 per megapixel"
+          },
+          "source": "https://fal.ai/models/fal-ai/flux-2/klein/4b",
+          "last_verified": "2026-10-03",
+          "notes": "fal does not state rounding or whether input counts; estimated conservatively (input counted, each image rounded up)"
+        }
+      ]
     },
     {
       "model_id": "flux-2-klein-9b",
@@ -876,7 +946,24 @@
       "benchmark_results": [],
       "confidence": "medium",
       "status": "active",
-      "notes": null
+      "notes": null,
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "fal-ai/flux-2/klein/9b",
+          "price": {
+            "amount": 0.006,
+            "currency": "USD",
+            "per": "megapixel",
+            "counts": "input_and_output",
+            "rounding": "not_stated",
+            "basis": "0.006 per megapixel"
+          },
+          "source": "https://fal.ai/models/fal-ai/flux-2/klein/9b",
+          "last_verified": "2026-10-03",
+          "notes": "fal does not state rounding or whether input counts; estimated conservatively (input counted, each image rounded up)"
+        }
+      ]
     },
     {
       "model_id": "flux-kontext-pro",
