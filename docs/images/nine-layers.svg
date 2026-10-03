@@ -3,8 +3,8 @@
 <rect width="1200" height="728" fill="#F6F4EF"/>
 <text x="96" y="88" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="34" letter-spacing="-1" fill="#151515">One line, nine stops</text>
 <text x="96" y="118" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" fill="#8C8A85">From the world inward, and back out. Every decision feeds back.</text>
-<path d="M300 562 L230 492 L230 352 L300 282" fill="none" stroke="#D7261E" stroke-width="8" stroke-linejoin="round" opacity="0.35"/>
-<line x1="300" y1="170" x2="300" y2="618" stroke="#D7261E" stroke-width="8"/>
+<path d="M300 562 L230 492 L230 352 L300 282" fill="none" stroke="#002FA7" stroke-width="8" stroke-linejoin="round" opacity="0.35"/>
+<line x1="300" y1="170" x2="300" y2="618" stroke="#002FA7" stroke-width="8"/>
 <circle cx="300" cy="170" r="10" fill="#F6F4EF" stroke="#151515" stroke-width="3"/>
 <text x="96" y="175" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#8C8A85">01</text>
 <text x="336" y="177" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" fill="#151515">Reality</text>
@@ -37,9 +37,9 @@
 <text x="96" y="567" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#8C8A85">08</text>
 <text x="336" y="569" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" fill="#151515">Memory</text>
 <text x="560" y="568" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#8C8A85">Every correction is written down</text>
-<circle cx="300" cy="618" r="13" fill="#D7261E" stroke="#D7261E" stroke-width="3"/>
+<circle cx="300" cy="618" r="13" fill="#002FA7" stroke="#002FA7" stroke-width="3"/>
 <text x="96" y="623" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#8C8A85">09</text>
 <text x="336" y="625" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" fill="#151515">Compounding taste</text>
 <text x="560" y="624" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" fill="#8C8A85">The next brief starts smarter than the last</text>
-<text x="212" y="422" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#D7261E" transform="rotate(-90 212 422)">feeds back</text>
+<text x="212" y="422" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#002FA7" transform="rotate(-90 212 422)">feeds back</text>
 </svg>

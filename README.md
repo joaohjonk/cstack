@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="cstack. Ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical, in cstack red." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical, in Klein blue." width="100%">
 </p>
 
 # cstack

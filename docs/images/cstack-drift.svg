@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" role="img" aria-labelledby="t d">
-<title id="t">cstack</title><desc id="d">Ten squares asked for by prompt drift in size, angle and position. Below them, ten squares made from a brand kept in files sit identical on a strict grid, in cstack red.</desc>
+<title id="t">cstack</title><desc id="d">Ten squares asked for by prompt drift in size, angle and position. Below them, ten squares made from a brand kept in files sit identical on a strict grid, in cstack blue.</desc>
 <rect width="1200" height="640" fill="#F6F4EF"/>
 <text x="92" y="152" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="104" letter-spacing="-5" fill="#151515">cstack</text>
-<rect x="390" y="130" width="20" height="20" fill="#D7261E"/>
+<rect x="390" y="130" width="20" height="20" fill="#002FA7"/>
 <text x="96" y="196" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="20" fill="#8C8A85">Taste, made repeatable.</text>
 <text x="96" y="278" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#8C8A85">Asked for ten times</text>
 <rect x="96.0" y="300.0" width="56.0" height="56.0" fill="none" stroke="#151515" stroke-width="1.25" transform="rotate(0 124 328)"/>
@@ -16,16 +16,16 @@
 <rect x="941.3" y="317.0" width="45.9" height="45.9" fill="none" stroke="#151515" stroke-width="1.25" transform="rotate(-31 964.2222222222222 340)"/>
 <rect x="1039.0" y="286.0" width="66.1" height="66.1" fill="none" stroke="#151515" stroke-width="1.25" transform="rotate(38 1072 319)"/>
 <text x="96" y="418" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#151515">Kept in files, made ten times</text>
-<rect x="96.0" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="201.8" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="307.6" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="413.3" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="519.1" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="624.9" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="730.7" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="836.4" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="942.2" y="440" width="56" height="56" fill="#D7261E"/>
-<rect x="1048.0" y="440" width="56" height="56" fill="#D7261E"/>
+<rect x="96.0" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="201.8" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="307.6" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="413.3" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="519.1" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="624.9" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="730.7" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="836.4" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="942.2" y="440" width="56" height="56" fill="#002FA7"/>
+<rect x="1048.0" y="440" width="56" height="56" fill="#002FA7"/>
 <line x1="96" y1="560" x2="1104" y2="560" stroke="#151515" stroke-width="1"/>
 <text x="96" y="588" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#8C8A85">1</text>
 <text x="1104" y="588" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#8C8A85">10,000</text>
