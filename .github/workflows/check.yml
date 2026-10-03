@@ -1,5 +1,6 @@
-# cstack CI: T0 static checks + T1 tests on Node 20 and 22. No secrets, no paid calls, no browser download.
-# Browser tests skip with a reason when Chromium is absent (playwright-core is an optional dependency).
+# cstack CI: T0 static checks + T1 tests on Node 20 and 22. No secrets, no paid calls.
+# CI installs ffmpeg and the Chromium that matches playwright-core, then fails if any test skipped:
+# locally those tests skip with a reason when the tools are absent; in CI a skip would hide a regression.
 name: check
 
 on:
@@ -22,12 +23,13 @@ jobs:
         node: [20, 22]
     env:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.pw-browsers
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # evals plan diffs against the PR base
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -35,8 +37,23 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Check (validate + budgets + tests)
-        run: npm run check
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg
+
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: .pw-browsers
+          key: chromium-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Chromium for playwright-core
+        run: npx --no-install playwright-core install chromium
+
+      - name: Check (validate + budgets + tests), no skipped tests
+        run: |
+          set -o pipefail
+          npm run check 2>&1 | tee check.log
+          grep -q '^# skipped 0$' check.log || { echo "::error::tests were skipped in CI"; grep -B2 '# SKIP' check.log; exit 1; }
 
       - name: Setup script smoke test (dry run)
         run: CSTACK_SETUP_DRY_RUN=1 ./setup
