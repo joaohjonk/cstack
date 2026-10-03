@@ -11,7 +11,7 @@ The New York subway still reads as one system half a century later. The reason i
 Generative AI made making cheap. It did not make judgment cheap. Ask a model for your brand a hundred times and you get a hundred cousins: the orange slides toward pink, the type drifts, the product grows a cap it never had, the copy reaches for the word the founder banned last spring. No single image is wrong. The set is.
 
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Taste, made repeatable. A Klein blue sign reads: Before use, step outside. Below, ten squares made from prompts drift in size and angle; on a Klein blue band, ten squares made from a brand kept in files stay identical." width="100%">
 </p>
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
@@ -156,7 +156,7 @@ Each skill has a fixed contract (inputs, what to do when an input is missing, pr
 ## How it thinks
 
 <p align="center">
-  <img src="docs/images/nine-layers.svg" alt="The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
+  <img src="docs/images/nine-layers.svg" alt="One line, nine stops. The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
 </p>
 
 Six rules hold the whole thing together:
@@ -173,7 +173,7 @@ The long version is in [docs/philosophy.md](docs/philosophy.md) and [docs/archit
 ## One brand, three schools
 
 <p align="center">
-  <img src="docs/images/three-schools.svg" alt="One brand, three schools. Inspiration: Vignelli and Müller-Brockmann, Pawson and Ando, digital interface culture. Schools: 01 Swiss poster, locked as the default; 02 Material, range for print, objects and spaces; 03 Liquid glass, range for social and product UI. Constant core: Klein blue, the square, the lowercase wordmark." width="100%">
+  <img src="docs/images/three-schools.svg" alt="One brand, three schools. Inspiration, read as mechanism: a grid and one colour, subtraction, depth on screen. Schools: 01 Swiss poster, locked as the default; 02 Material, range for print, objects and spaces; 03 Liquid glass, range for social and product UI. Constant core: Klein blue, the square, the lowercase wordmark." width="100%">
 </p>
 
 This is cstack run on itself. `/creative-direction` starts from the inspiration, read as mechanisms rather than looks: a grid and one colour doing the work, subtraction until light and proportion remain, depth and light as material on a screen. From those it builds distinct schools instead of one safe average, each a complete answer.
