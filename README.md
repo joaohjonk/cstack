@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="Ten tiles of a mark asked for by prompt drift in colour, size and angle; ten tiles made from a brand kept in files stay identical." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="cstack. Ten squares asked for by prompt drift in size and angle; ten squares made from a brand kept in files stay identical, in cstack red." width="100%">
 </p>
 
 # cstack
@@ -52,7 +52,7 @@ Or do it yourself:
 ```bash
 git clone --depth 1 https://github.com/joaohjonk/cstack.git ~/cstack
 cd ~/cstack && ./setup               # installs the npm dependencies, then links the skills into .agents/skills and .claude/skills
-alias cstack="node ~/cstack/bin/cstack.mjs"
+alias cstack="node ~/cstack/bin/cstack.mjs"   # setup prints this line; add it to your shell profile
 cstack help
 ```
 
@@ -152,7 +152,7 @@ Each skill has a fixed contract (inputs, what to do when an input is missing, pr
 ## How it thinks
 
 <p align="center">
-  <img src="docs/images/nine-layers.svg" alt="Nine stacked layers from Reality, Culture, Canon and References through System, Generation, Judgment and Memory to Compounding taste, with an arrow from Memory back to Canon." width="100%">
+  <img src="docs/images/nine-layers.svg" alt="The nine layers drawn as one transit line: Reality, Culture, Canon, References, System, Generation, Judgment, Memory, Compounding taste, with a branch from Memory back to Canon." width="100%">
 </p>
 
 Six rules hold the whole thing together:
@@ -192,7 +192,7 @@ A step-by-step walkthrough with no spend is in [docs/quickstart.md](docs/quickst
 
 ## Workflows
 
-`/workflow <name>` runs a whole job as a resumable plan with owner gates and a tracker in `work/plans/`:
+`/workflow <name>` runs a whole job as a resumable plan with owner gates and a tracker in `work/plans/`. `cstack workflow list` shows them all:
 
 `create-brand` · `import-brand` · `campaign` · `product-photoshoot` · `paid-social` · `landing-page` · `packaging` · `deck` · `product-3d` · `product-video` · `logo-system`
 
@@ -211,7 +211,7 @@ cstack taste search "a ritual that feels choreographed"    # Taste Labs, when TA
 cstack route --modality image --needs image-edit,text-rendering
 cstack prompt compile recipes/hero.recipe.yaml --seed 7
 cstack spend plan batch.json --stop "2 of 4 probes fail fidelity"
-cstack generate --file request.json --dry-run
+cstack generate --file request.json --dry-run             # then --confirm to approve a call above your confirm_over
 cstack browse qa http://localhost:4173                     # overflow, alt text, contrast at 375/768/1440
 cstack tokens check && cstack tokens build
 cstack type qa http://localhost:4173                       # measure, leading, caps, contrast, fallbacks
@@ -242,80 +242,41 @@ None is required; every one has a fallback. Tools whose terms bar automated agen
 
 v0.1, beta. The skills, workflows, flows, checkers and schemas exist and pass their static checks and tests. What has not happened yet is said plainly in [docs/retro.md](docs/retro.md): no model-backed eval runner, no real brand run (that happens in each brand's private repo), checker thresholds not yet calibrated against an owner's verdicts. Workflows stay `template` and flows stay `researched` until a real run proves them. The next steps are in [docs/backlog-v0.2.md](docs/backlog-v0.2.md).
 
-## Thank you
+## Acknowledgements
 
-cstack is a machine for remembering what other people figured out. None of it is ours alone. These are the people and studios whose methods we tried to understand, and what we took from each. We took mechanisms, never voices: no name ever goes into a generation prompt, and no one listed here endorses this project.
+cstack is open source, but its point of view did not appear from nowhere.
 
-Where a person has a [canon](canon/) entry, the full reasoning lives there, with when the lesson helps, when it misleads, and its counterweight. The rest are lenses the method draws on that do not yet have an entry of their own.
+It is built from years of looking, making, collecting, arguing, building brands, breaking things, and learning from people whose work changed the way I see. Some are canonical. Some run small studios. Some make buildings, books, clothes, photographs or films. Some happen to ride bikes, surf, ski or play football beautifully.
 
-### Architects and spatial thinkers
+**Thank you, personally,** to Danil; to Stefano, my partner; to Fred Peclat of Atelier Peclat; to Airon Martin of Misci; and to all the marketers, brand builders and growth people I have worked with over the years. Some of this started in conversations with you.
 
-| | What cstack took |
-|---|---|
-| **John Pawson** | Subtraction as the method. Keep removing until only proportion, light and material are left; the detail that disappears is the hardest one. It is the question `/creative-review` asks of every layout: what here has not earned its place? |
-| **Tadao Ando** | Light as the event in a still space, one material carried with total consistency, and procession: the route to a thing is part of the thing. A brand is experienced in sequence, so cstack plans campaigns and pages as sequences. [canon](canon/tadao-ando.canon-entry.yaml) |
-| **David Chipperfield** | Continuity over novelty. The Neues Museum kept its scars and built carefully around them. cstack does the same with a brand: import what was decided, keep official assets untouched, repair one region rather than regenerate the whole. |
-| **Isay Weinfeld** | Rigour with warmth and a little wit. Modernism that is not cold, and the surprise placed where you do not expect it. A counterweight in the canon to reduction for its own sake. |
-| **Dieter Rams** | Less, but better: every element earns its place through use. And the reminder, kept next to him, that restraint is a choice and not a law. [canon](canon/rams.canon-entry.yaml) |
+A word on the names. I mention them because at some point I consumed, saw, or only briefly saw some of their work, and I think it changed me a little. This is a list of debts of attention, not of sources: nothing here is copied, and most of these people have no idea cstack exists.
 
-### Brand builders, creative directors and culture
+Among them:
 
-| | What cstack took |
-|---|---|
-| **Ana Andjelic** | Brands as cultural actors. A brand world is made of beliefs, symbols, rituals, objects and places, and a cultural asset works only if people can decode it, repeat it, carry it, add to it and organize around it. Build a few strong primitives that generate hundreds of expressions. `/cultural-scan` scores exactly that. [canon](canon/cultural-capital-strategy.canon-entry.yaml) |
-| **Jonathan Anderson** | Worldbuilding through objects and collaboration. A brand becomes a world when the things it makes, the craftspeople it champions and the artists it works with all say the same thing in different materials. It is why cstack keeps a brand world of entities, not just a palette. |
-| **David Ogilvy** | Research before persuasion. The consumer is not a moron, specific facts sell, and the headline does most of the work. `/copywriting` and `/claims-proof` start from evidence. [canon](canon/ogilvy.canon-entry.yaml) |
-| **The D&AD tradition** | Work judged by peers who make work, for craft and for the idea at once. `/creative-review` is a crit, not a score: separate lenses, separate people, disagreement left on the table. |
-| **LoveFrom** | Care in the parts nobody will see. cstack checks favicons, fallbacks, safe zones and loudness for the same reason. |
+**In Brazil.** Atelier Peclat and Fred Peclat, Lígia Casas, PORTO ROCHA and Felipe Rocha and Leo Porto, REBU and Fernando Andreazi and Pedro Mattos, HardCuore and Breno Pineschi and Rafael Cazes, Louise Winkler Freshel / ouieieee, Polar and Lais Ikoma, Ronaldo Vidal, Ralph Mayer, and Sweety & Co.
 
-### Identity, type and the systems that made them repeatable
+**In graphic design and creative practice.** Massimo Vignelli, Mirko Borsche / Bureau Borsche, OK-RM (Oliver Knight and Rory McGrath), Experimental Jetset, Irma Boom, PLAYLAB, INC. (Archie Lee Coates IV and Jeff Franklin), COLLINS and Koto.
 
-| | What cstack took |
-|---|---|
-| **Massimo Vignelli** | Reduction and systems: few typefaces, few sizes, one grid, applied with discipline and judged by meaning, structure and use. And the idea at the heart of cstack: don't only design the artifacts, design the machine that makes them. [canon](canon/vignelli.canon-entry.yaml) |
-| **Otl Aicher** | An identity as a rule set (grid, angles, palette) that generates every sign consistently. [canon](canon/otl-aicher.canon-entry.yaml) |
-| **Karl Gerstner** | Design the programme, not the solution: named parameters, a table of options to search, a grid that serves many layouts. It is how `/creative-direction` explores. [canon](canon/gerstner-designing-programmes.canon-entry.yaml) |
-| **Josef Müller-Brockmann** | The grid derived from the type, as a commitment to clarity that holds while the content changes. [canon](canon/swiss-grid-systems.canon-entry.yaml) |
-| **Ellen Lupton** | Letter, text and grid as three scales that must agree, taught as rules with reasons so they can be broken on purpose. *Thinking with Type* is the spine of `/type-director`. [canon](canon/thinking-with-type.canon-entry.yaml) |
-| **Robert Bringhurst** | Typography exists to honour content; every rule of measure, scale and spacing carries its reason. [canon](canon/bringhurst.canon-entry.yaml) |
-| **Matthew Butterick** | Body text first: four decisions decide most of reading, so fix them with numbers before anything decorative. `cstack type qa` measures them. [canon](canon/practical-typography.canon-entry.yaml) |
-| **Erik Spiekermann** | Brief type by the job (languages, readers, media, budget) and choose faces that survive real conditions. [canon](canon/spiekermann.canon-entry.yaml) |
-| **Tim Brown, Richard Rutter, Jason Santa Maria and Utopia** | On screens the designer suggests and the reader's device decides: type as rules that hold at any width, zoom and setting. [canon](canon/web-typography.canon-entry.yaml) |
-| **Pentagram: Paula Scher and Michael Bierut** | Two durable modes: type as a loud vernacular voice that becomes the identity, and a simple mark in a flexible system that earns meaning through use. [canon](canon/pentagram.canon-entry.yaml) |
-| **COLLINS** | A brand is behaviour performed over time: identity with range in type, image and motion, built to flex. [canon](canon/collins.canon-entry.yaml) |
-| **Bureau Borsche** | Identity as behaviour and motion rather than a static sheet. |
-| **DIA** | Type that moves as a system. Motion is a brand token in cstack (duration, easing, sequence), not decoration. |
-| **OK-RM** | Editorial structure as identity, where the system grows out of the content. |
-| **Irma Boom** | The publication is an object: format, edge, paper and weight carry the idea. [canon](canon/irma-boom.canon-entry.yaml) |
-| **Paul Rand** | A mark is a vessel; meaning accrues from the organization behind it, so simplicity and durability beat explanation. [canon](canon/paul-rand.canon-entry.yaml) |
-| **Chermayeff & Geismar & Haviv** | A good mark is simple, appropriate and distinctive, and proves itself across hundreds of applications. `/symbol-design` tests at 32 px for that reason. [canon](canon/chermayeff-geismar-haviv.canon-entry.yaml) |
-| **Lance Wyman** | A logo is one part of a programme; icons can carry a city or an event across languages. [canon](canon/lance-wyman.canon-entry.yaml) |
-| **Otto Neurath, Marie Neurath and Gerd Arntz (Isotype)** | A picture language is a system: standardized signs, quantity by repetition, and an editor who turns data into image. [canon](canon/isotype.canon-entry.yaml) |
-| **The makers of Japanese mon** | A crest is monochrome and enclosed, and families are told apart by small changes to a shared form. The best lesson in symbol systems we know. [canon](canon/japanese-mon.canon-entry.yaml) |
+**In architecture, objects and space.** Peter Zumthor, Pierre Yovanovitch, Carlo Scarpa, David Chipperfield, John Pawson, Tadao Ando, Isay Weinfeld, Álvaro Siza, Eduardo Souto de Moura, Aires Mateus, Bijoy Jain / Studio Mumbai, Anne Holtrop, Formafantasma, Faye Toogood, Michael Anastassiades, Charlotte Perriand and Isamu Noguchi.
 
-### Perception, research and making
+**In fashion and worldbuilding.** Jonathan Anderson, Miuccia Prada, AMO and Rem Koolhaas, Rei Kawakubo, Martin Margiela, Virgil Abloh, Grace Wales Bonner, Simon Porte Jacquemus and George Heaton.
 
-| | What cstack took |
-|---|---|
-| **Josef Albers** | Perception is relational: a colour means something only next to its neighbours. So cstack judges in context and by comparison, never in isolation. [canon](canon/albers.canon-entry.yaml) |
-| **Formafantasma** | Research and material intelligence as the design act. Know where the material comes from before you shape it; it is why `/product-fidelity` locks what the product is really made of. |
-| **Sarnoff Mednick and Arthur Koestler** | Good ideas often join things that are not normally linked. It is why every reference search mixes near, middle and far. [canon](canon/associative-creativity.canon-entry.yaml) |
-| **Charlie Munger** | A latticework of mental models instead of a list of heroes. The shape of the whole canon. |
-| **Bret Victor and Dynamicland** | Interfaces as thinking environments: make the system visible and directly manipulable. `cstack brand check` shows what is known, unknown and in conflict instead of hiding it in a prompt. [canon](canon/bret-victor.canon-entry.yaml) |
-| **Ink & Switch** | Local-first: your work lives in files you own. Every brand in cstack is a git repo on its owner's machine. |
-| **Andrew Chen** | Growth starts with the smallest network that can sustain itself; density beats reach. [canon](canon/cold-start-networks.canon-entry.yaml) |
+**In art and image-making.** Josef Albers, Mark Rothko, Constantin Brancusi, Donald Judd, Wolfgang Tillmans, Olafur Eliasson, James Turrell, David Hockney, Pierre Huyghe, Coco Capitán, Klaus Kremmerz, María Jesús Contreras and Annie Choi.
 
-### The builders cstack stands on
+**In moving image.** Paul Thomas Anderson, Jonathan Glazer, David Lynch, Andrea Arnold, Roy Andersson, Apichatpong Weerasethakul, Martin Scorsese and Gaspar Noé.
 
-| | What cstack took |
-|---|---|
-| **Garry Tan and gstack** | The shape of the whole thing: specialists as slash commands, `/office-hours` before anything, plain Markdown, one-line install, a README that tells you what each skill does. cstack's browser is ported from gstack's under MIT ([NOTICE.md](NOTICE.md)). |
-| **Andrej Karpathy** | autoresearch: a frozen test, one variable, keep or discard, a budget and a log of every attempt, failures included. That is `/creative-autoresearch`. ([notes](docs/research/karpathy-patterns.md)) |
-| **Taste Labs** | Extract, search, verify: context, creation, verification, correction. And the line we kept: tools provide capability; skills provide judgment. ([notes](docs/research/taste-labs.md)) |
-| **The teams whose public repos and products we studied** | Higgsfield, Gooseworks, Bloom, Ad Army, Superside, Rampstack, Wondel and the Lenny skills among them. What we learned and where we disagreed is in [docs/research](docs/research/). |
-| **Two working notes on taste** | *Encoding Design Taste for AI-Driven Design Systems* and *Taste / Associative Distance / AI*, the maintainer's own notes and the intellectual floor of this repo: encode taste at the lowest reliable level, treat taste as the objective function and distance as the search radius, and run observe, compare, articulate, decide, encode until it compounds. ([summary](docs/research/taste-influences.md)) |
+**In culture, products and systems.** Ana Andjelic, Hans Ulrich Obrist, Jony Ive, Dieter Rams, Walt Disney, Herb Ryman and the generations of Imagineers, and Andrej Karpathy.
 
-If we have your method wrong, or you would rather not be here, open an issue and we will fix it.
+**At the table.** Some of the biggest jumps in thinking came from outside design entirely. A meal at TUJU or at El Celler de Can Roca changes what you believe an experience can be. Winemakers like Charles Lachaux at Domaine Arnoux-Lachaux and Stella di Campalto take craft and care to a level that is almost devotional. This is an ode to them: unrelated to brand work, and impossible to forget.
+
+**At home.** Chico da Silva, Bertô, Carlos Motta, Paulo Monteiro da Silva, Rochegaussen and Fred Peclat made a few things I have the privilege to look at every day.
+
+**In motion.** And people whose medium is not normally filed under design: Candide Thovex, Craig Anderson, Rob Machado, Mikey February, Tadej Pogačar, Roger Federer, Carlos Alcaraz, Ronaldinho and Mat Fraser. They are reminders that taste can live in a line, a decision, an economy of movement, an unexpected attack, or thousands of repetitions that eventually look effortless.
+
+These people did not build cstack, and their inclusion implies no affiliation or endorsement. Their public work simply helped build the taste, the questions and the ways of working behind it. The goal of cstack is not to imitate any of them. It is to make the things they taught me easier to remember, and harder to reduce to a prompt.
+
+For the longer notes on what the method learned from each, with links to the [canon](canon/), see [docs/lineage.md](docs/lineage.md). If I have described your work wrongly, or you would rather not be named, open an issue and I will change it.
 
 ## Docs
 
