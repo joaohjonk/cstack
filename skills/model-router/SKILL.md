@@ -34,7 +34,7 @@ A micro-benchmark on this exact task > fresh provider docs > the dated registry 
 
 ## Tools / providers
 
-`cstack route --modality <family> --needs a,b [--task t] [--max-cost n] [--providers fal,...] [--tier draft]` (flagship models lead by default; `--tier draft` for probes), `cstack providers`, web docs for verification, `generate-media` for probes.
+`cstack route --modality <family> --needs a,b [--task t] [--max-cost n] [--providers fal,...] [--tier draft]` (flagship models lead by default; `--tier draft` for probes; each candidate lists the endpoint id per host to put in the request), `cstack providers`, web docs for verification, `generate-media` for probes.
 
 ## Process
 

@@ -12,7 +12,7 @@ const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000)
  * tier: 'draft' ranks cheap probe models first; otherwise flagship models lead (registry `tier`, the maker's positioning).
  * modality is the output family (image|video|vector|...); needs are capability strings (image-edit, multi-image-reference, ...).
  * max_cost compares against est_unit_cost.amount (per image / per second), never a token price.
- * Returns {candidates:[{model_id, provider, score, matched, missing, stale, cost, why}], chain:[model_id], warnings}
+ * Returns {candidates:[{model_id, provider, score, matched, missing, stale, cost, endpoints:[{provider, endpoint_id, priced?}], why}], chain:[model_id], warnings}
  */
 export function route(registry, req) {
   const now = req.today ?? today();
@@ -55,7 +55,12 @@ export function route(registry, req) {
       cost == null ? 'no unit price: estimate before a batch' : null,
       overBudget ? `snapshot price ${cost} over max ${req.max_cost}` : null,
     ].filter(Boolean);
-    return { model_id: m.model_id, provider: m.provider, score, matched, missing, stale, cost, why: why.join('; ') };
+    // the ids a request actually takes: the maker's own id, and each host route (only the hosts asked for, when given)
+    const endpoints = [
+      ...(m.provider_model_id ? [{ provider: m.provider, endpoint_id: m.provider_model_id }] : []),
+      ...(m.routes ?? []).map((r) => ({ provider: r.provider, endpoint_id: r.endpoint_id, priced: !!r.price })),
+    ].filter((e) => !req.providers_available || req.providers_available.includes(e.provider));
+    return { model_id: m.model_id, provider: m.provider, score, matched, missing, stale, cost, endpoints, why: why.join('; ') };
   });
   candidates.sort((a, b) => b.score - a.score || (a.cost ?? Infinity) - (b.cost ?? Infinity));
   const viable = candidates.filter((c) => c.score > -50);

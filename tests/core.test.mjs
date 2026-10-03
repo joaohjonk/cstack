@@ -343,3 +343,11 @@ test('reference storage: a linked-only mood reference needs a uri and keeps no f
   assert.equal(validateValue('reference', { ...base, storage: 'link_only', uri: 'https://example.com/photo', local_path: 'references/x.jpg' }).ok, false, 'link_only keeps no file');
   assert.ok(validateValue('reference', { ...base, storage: 'link_only', uri: 'https://example.com/photo', local_path: '' }).ok);
 });
+
+test('router: candidates carry the endpoint ids a request takes, per host (field test F19)', () => {
+  const reg = { models: [{ model_id: 'best', provider: 'maker', provider_model_id: 'maker-best-1', modality: 'image', tier: 'flagship', last_verified: '2026-10-03', status: 'active', routes: [{ provider: 'fal', endpoint_id: 'fal-ai/best', price: { amount: 0.03, currency: 'USD', per: 'image' } }, { provider: 'other', endpoint_id: 'other/best' }] }] };
+  assert.deepEqual(route(reg, { modality: 'image', providers_available: ['fal'], today: '2026-10-03' }).candidates[0].endpoints, [{ provider: 'fal', endpoint_id: 'fal-ai/best', priced: true }]);
+  assert.equal(route(reg, { modality: 'image', today: '2026-10-03' }).candidates[0].endpoints.length, 3);
+  const r = spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), 'route', '--modality', 'image', '--providers', 'fal'], { encoding: 'utf8' });
+  assert.match(r.stdout, /^\s+fal: fal-ai\/flux-2-pro$/m);
+});

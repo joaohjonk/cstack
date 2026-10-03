@@ -383,7 +383,11 @@ function cmdRoute() {
   if (!req.modality) die('usage: cstack route --modality <m> [--needs a,b] [--task t] [--max-cost n] [--providers fal,openai]');
   const res = route(reg, req);
   if (args.json) return json(res);
-  for (const c of res.candidates) console.log(`${String(c.score).padStart(4)}  ${c.model_id.padEnd(34)} ${c.provider.padEnd(12)} ${c.why}`);
+  for (const c of res.candidates) {
+    console.log(`${String(c.score).padStart(4)}  ${c.model_id.padEnd(34)} ${c.provider.padEnd(12)} ${c.why}`);
+    // the id to put in a request's "model", per provider; an unpriced host route is refused until it has a price
+    for (const e of c.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}${e.priced === false ? '  (no price yet: calls are refused as unpriced)' : ''}`);
+  }
   console.log(`\nfallback chain: ${res.chain.join(' → ') || '(none)'}`);
   for (const w of res.warnings) console.log(`WARN ${w}`);
   console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
