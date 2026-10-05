@@ -65,7 +65,7 @@ steps:
   gate: {type: deterministic_check, check: the sheet exists and shows every frame numbered}
   compare_to_target: the frames side by side
 - id: pick
-  does: the owner clicks one to three winners and ticks why each won; cstack sheet import records them as approvals with reason codes and the frame's region
+  does: "the frames are counted first by what the brief asked to vary (cstack spread --by flavour,mood, F93) and an over-represented value is remade before the sheet goes out; then the owner clicks one to three winners and ticks why each won; cstack sheet import records them as approvals with reason codes and the frame's region"
   kind: human
   skill: creative-review
   gate: {type: owner, check: "cstack sheet import appended one to three winners for this sheet"}
