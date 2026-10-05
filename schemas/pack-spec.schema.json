@@ -89,7 +89,7 @@
     },
     "material": {
       "type": "string",
-      "description": "the base material and its colour where no ink covers it (bare aluminium, white PE, kraft); a tinted base film (cream PE) goes here so a render's film colour can be checked"
+      "description": "the base material and its colour where no ink covers it (bare aluminium, white PE, kraft); a tinted base film goes here so a render's film colour can be checked"
     },
     "source": {
       "type": "object",
