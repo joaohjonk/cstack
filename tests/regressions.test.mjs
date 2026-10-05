@@ -122,3 +122,35 @@ test('F32: brand init creates references/inspiration/ for the inspiration librar
   initBrand(ws, { name: 'Inspo Test' });
   for (const lib of ['gold', 'anti', 'inspiration']) assert.ok(fs.statSync(path.join(ws, 'references', lib)).isDirectory(), lib);
 });
+
+test('F37: an approved founder brief re-gates after an edit or a reopen until it is approved again', async () => {
+  const { approveBrief, reopenBrief, briefApproved } = await import('../scripts/lib/brief.mjs');
+  const file = path.join(tmpDir('cstack-f37-'), 'founding.founder-brief.yaml');
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'tea you can carry' }, customer: { who: 'w', evidence: 'told' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  fs.writeFileSync(file, '# founder brief\n' + YAML.stringify(brief));
+  const read = () => YAML.parse(fs.readFileSync(file, 'utf8'));
+  assert.equal(briefApproved(read()), false);
+  approveBrief(file, { by: 'Founder', date: '2026-10-05' });
+  assert.equal(briefApproved(read()), true);
+  assert.match(fs.readFileSync(file, 'utf8'), /^# founder brief/, 'comments survive');
+  // the pivot written into the brief: the fingerprint no longer matches
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('tea you can carry', 'a healthier soda'));
+  assert.equal(briefApproved(read()), false);
+  approveBrief(file, { by: 'Founder' });
+  assert.equal(briefApproved(read()), true);
+  // the pivot said only in conversation: reopen
+  reopenBrief(file, { reason: 'founder pivoted to a mass-market soda', date: '2026-10-06' });
+  const b = read();
+  assert.equal(briefApproved(b), false);
+  assert.equal(b.owner_approval.status, 'reopened');
+  assert.deepEqual(b.amendments.map((a) => [a.reason, a.previous.status]), [['founder pivoted to a mass-market soda', 'owner_approved']]);
+  assert.throws(() => reopenBrief(file, {}), /--reason/);
+  assert.throws(() => approveBrief(file, {}), /--by/);
+});
+
+test('F39: the founder brief holds price position, the anchor brand, trend horizon, cohorts and round conflicts', async () => {
+  const { validateValue } = await import('../scripts/lib/schemas.mjs');
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', interview: { rounds: 3, conflicts: [{ about: 'price', earlier: 'round 1: premium niche', later: 'round 3: mass hype at a premium price', kept: 'later' }] }, why_it_exists: { reason: 'r' }, customer: { who: 'w', evidence: 'told', cohorts: ['Gen Z, 16 to 24'] }, market: { price_position: 'masstige', price_note: 'mass hype at a premium price', anchor: 'a healthier version of a mass iced tea', trend_horizon: 'flavours rotate each season; the brand holds for years' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
+  assert.equal(validateValue('founder-brief', { ...brief, market: { price_position: 'cheap' } }).ok, false);
+});

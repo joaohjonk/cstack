@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
+import { shown } from '../core.mjs';
 import { loadEngine, launch, withPage, gotoGuarded, findGstackBrowse, probeGstack } from './launch.mjs';
 import { validateUrl, checkNavigation } from './url-guard.mjs';
 import { checkRobots } from './robots.mjs';
@@ -169,7 +170,7 @@ export async function runBrowse(sub, args, ws = process.cwd()) {
       const bps = parseBreakpoints(a.breakpoints);
       const run = await pageRun(sub, a, ws, async ({ page, run }) => ({ shots: await shoot(page, run, { breakpoints: bps, full: !!a.full }) }), { viewport: viewportFor(bps[0]) });
       const copied = a.out && a.out !== true ? copyShots(run, a.out, ws) : [];
-      return report(run, ws, a, [`shots: ${run.record.result.shots.map((s) => `${s.breakpoint}px ${s.width}x${s.height}${s.preview ? ' +preview' : ''}`).join(', ')}`, ...copied.map((c) => `copied: ${path.relative(ws, c) || c}`)]);
+      return report(run, ws, a, [`shots: ${run.record.result.shots.map((s) => `${s.breakpoint}px ${s.width}x${s.height}${s.preview ? ' +preview' : ''}`).join(', ')}`, ...copied.map((c) => `copied: ${shown(c)}`)]);
     }
     case 'snapshot': {
       const opts = { interactive: !!a.interactive, compact: !!a.compact, depth: a.depth ? parseInt(a.depth, 10) : undefined, selector: typeof a.selector === 'string' ? a.selector : undefined };

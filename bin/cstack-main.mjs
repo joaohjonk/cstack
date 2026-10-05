@@ -19,6 +19,7 @@ import { buildGuide } from '../scripts/lib/guide.mjs';
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
+import { approveBrief, reopenBrief } from '../scripts/lib/brief.mjs';
 import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
 import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
@@ -166,6 +167,8 @@ const COMMANDS = {
   'learn candidates': 'learnings eligible for promotion (repeated evidence or strong human correction)',
   'learn promote': 'promote a learning: cstack learn promote <id> --to <target> --by <name> --ws <dir>',
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
+  'brief approve': "record the founder's yes to a founder brief, with a fingerprint the make gate checks: cstack brief approve <briefs/x.founder-brief.yaml> --by <founder>",
+  'brief reopen': 'take an approved founder brief back after a pivot, so make re-gates until it is approved again: cstack brief reopen <file> --reason "<what changed>" [--by <name>]',
   'sheet make': 'contact sheet for stills: cstack sheet make <images|folders...> --out work/sheets/a.html [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
   'sheet import': 'blind picks from a sheet into feedback pairs: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
   'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
@@ -749,6 +752,24 @@ function cmdImage(sub) {
 }
 
 // docs/sheets.md: contact sheets for stills and blind pairwise picks
+function cmdBrief(sub) {
+  const file = args._[0];
+  if (!['approve', 'reopen'].includes(sub) || !file) die('usage: cstack brief approve <file> --by <founder> | cstack brief reopen <file> --reason "<what changed>"');
+  const p = path.resolve(file);
+  if (!fs.existsSync(p)) die(`no such brief: ${shown(p)}`);
+  try {
+    if (sub === 'approve') {
+      const b = approveBrief(p, { by: args.by });
+      console.log(`approved ${shown(p)} by ${b.owner_approval.by} on ${b.owner_approval.date} (${b.owner_approval.fingerprint.slice(0, 19)}...); any later edit needs a new approval before make`);
+    } else {
+      const b = reopenBrief(p, { reason: args.reason, by: args.by });
+      console.log(`reopened ${shown(p)}: ${b.amendments.at(-1).reason}. flows gate --stage make now refuses until the founder approves it again (cstack brief approve)`);
+    }
+  } catch (e) {
+    die(e.message);
+  }
+}
+
 async function cmdSheet(sub) {
   if (sub === 'make') {
     const r = makeSheet({ inputs: args._, out: args.out, title: args.title, cols: args.cols, blind: !!args.blind, seed: args.seed, force: !!args.force });
@@ -941,7 +962,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1123,7 +1144,7 @@ switch (cmd) {
     else {
       for (const t of res) {
         const mark = t.usable ? 'YES' : t.available ? 'NO ' : ' - ';
-        const why = t.usable ? t.signals.join('; ') : t.available ? `connected (${t.signals.join('; ')}), but ${t.agent_use}; fallback: ${t.fallback ?? 'none'}` : `fallback: ${t.fallback ?? 'none'}`;
+        const why = t.usable ? `${t.signals.join('; ')}${t.agent_use ? `; ${t.agent_use}` : ''}` : t.available ? `connected (${t.signals.join('; ')}), but ${t.agent_use}; fallback: ${t.fallback ?? 'none'}` : `fallback: ${t.fallback ?? 'none'}`;
         console.log(`${mark}  ${t.name.padEnd(26)} ${why}${t.cli_adapter ? `  [cstack CLI: ${t.cli_adapter}]` : ''}`);
       }
       if (!mcp.length) console.log('\nnote: MCP servers visible to the agent were not passed (--mcp); MCP-only tools may be under-reported.');
@@ -1162,6 +1183,9 @@ switch (cmd) {
     break;
   case 'evals':
     await cmdEvals(argv[0]);
+    break;
+  case 'brief':
+    cmdBrief(argv[0]);
     break;
   case 'sheet':
     await cmdSheet(argv[0]);

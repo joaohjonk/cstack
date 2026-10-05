@@ -42,6 +42,40 @@
         "notes_ref": {
           "type": "string",
           "description": "transcript or notes, workspace-relative"
+        },
+        "conflicts": {
+          "type": "array",
+          "description": "where a later round contradicts an earlier one, and which answer the brief keeps",
+          "items": {
+            "type": "object",
+            "required": [
+              "about",
+              "earlier",
+              "later"
+            ],
+            "properties": {
+              "about": {
+                "type": "string"
+              },
+              "earlier": {
+                "type": "string",
+                "description": "the earlier answer, with its round"
+              },
+              "later": {
+                "type": "string",
+                "description": "the later answer, with its round"
+              },
+              "kept": {
+                "enum": [
+                  "earlier",
+                  "later",
+                  "both",
+                  "open"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "additionalProperties": false
@@ -107,6 +141,13 @@
             "assumed",
             "unknown"
           ]
+        },
+        "cohorts": {
+          "type": "array",
+          "description": "the groups inside the customer the founder names (an age cohort, a scene, a store's regulars), each a short line",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "additionalProperties": false
@@ -146,6 +187,35 @@
             "type": "string"
           },
           "description": "what the product will never be or contain"
+        }
+      },
+      "additionalProperties": false
+    },
+    "market": {
+      "type": "object",
+      "description": "where the brand sits in its market, in the founder's words",
+      "properties": {
+        "price_position": {
+          "enum": [
+            "value",
+            "mass",
+            "masstige",
+            "premium",
+            "luxury"
+          ],
+          "description": "the price the founder wants to be read at"
+        },
+        "price_note": {
+          "type": "string",
+          "description": "the founder's own words on price, e.g. mass hype at a premium price"
+        },
+        "anchor": {
+          "type": "string",
+          "description": "the 'better X' brand the founder measures against, as the founder says it"
+        },
+        "trend_horizon": {
+          "type": "string",
+          "description": "how long the bet must hold: this season's flavour, a few years, a generation"
         }
       },
       "additionalProperties": false
@@ -281,6 +351,45 @@
         "type": "string"
       }
     },
+    "amendments": {
+      "type": "array",
+      "description": "each time an approved brief was reopened (`cstack brief reopen`): when, why, and the approval it replaced",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "reason"
+        ],
+        "properties": {
+          "date": {
+            "$ref": "common.schema.json#/$defs/date"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          },
+          "previous": {
+            "type": "object",
+            "description": "the approval this reopen replaced",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "by": {
+                "type": "string"
+              },
+              "date": {
+                "$ref": "common.schema.json#/$defs/date"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "owner_approval": {
       "type": "object",
       "description": "the founder's yes to this brief; research, references and territories wait for it",
@@ -291,7 +400,8 @@
         "status": {
           "enum": [
             "draft",
-            "owner_approved"
+            "owner_approved",
+            "reopened"
           ]
         },
         "by": {
@@ -299,6 +409,11 @@
         },
         "date": {
           "$ref": "common.schema.json#/$defs/date"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "written by `cstack brief approve`: the content the founder said yes to; the make gate refuses the brief once it no longer matches"
         }
       },
       "additionalProperties": false
