@@ -185,7 +185,7 @@ function envFor(prep, extra = {}) {
 }
 
 // Graders, deterministic first. Each returns {type, result: pass|fail|pending, evidence}.
-export function gradeRun(fx, { transcript, commands = [], calls = [], wsDir, judgeText, prep }) {
+export function gradeRun(fx, { transcript, commands = [], calls = [], wsDir, judgeText, prep, judgeError = null }) {
   const results = [];
   const graders = [...(fx.graders ?? [])].sort((a, b) => (a.type === 'llm') - (b.type === 'llm'));
   for (const g of graders) {
@@ -216,7 +216,7 @@ export function gradeRun(fx, { transcript, commands = [], calls = [], wsDir, jud
       results.push({ type: g.type, run: g.run, result: r.status === want ? 'pass' : 'fail', evidence: `exit ${r.status ?? r.error}, expected ${want}${tail ? `: ${tail}` : ''}` });
     } else if (g.type === 'llm') {
       if (judgeText == null) {
-        results.push({ type: g.type, result: 'pending', evidence: 'no judge: pass --judge "<command>" or grade by hand' });
+        results.push({ type: g.type, result: 'pending', evidence: judgeError ? `the judge call failed: ${judgeError}` : 'no judge: pass --judge "<command>" or grade by hand' });
         continue;
       }
       const v = parseVerdict(judgeText);
@@ -255,8 +255,9 @@ export async function runFixture(fx, opts) {
       }
       const { text, commands } = normalizeTranscript(raw ?? '');
       let judgeText = readIf(f.judge);
-      if (judgeText == null && opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm')) judgeText = await callJudge(fx, text, f, opts);
-      out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: f.ws, judgeText }) });
+      let judgeError = null;
+      if (judgeText == null && opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm')) ({ text: judgeText, error: judgeError } = await callJudge(fx, text, f, opts));
+      out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: f.ws, judgeText, judgeError }) });
       continue;
     }
     for (const k of ['transcript', 'calls', 'judge', 'judgePrompt']) fs.rmSync(f[k], { force: true });
@@ -272,24 +273,35 @@ export async function runFixture(fx, opts) {
     if (needsAgent) {
       const res = await opts.guard('eval_agent', () => {
         const r = runCommand(opts.agent, { cwd: prep.dir, env: envFor(prep), input: prompt, timeout_s: opts.timeout_s ?? DEFAULT_TIMEOUT_S });
-        if (r.error || r.status !== 0) throw new Error(`agent ${r.error ?? `exit ${r.status}`}: ${r.stderr.trim().slice(0, 300)}`);
+        if (r.error || r.status !== 0) throw new Error(`agent ${r.error ?? `exit ${r.status}`}: ${outputTail(r)}`);
         return { output_ids: [path.basename(f.transcript)], raw: r.stdout };
       });
       if (res.blocked || res.failed) {
-        out.runs.push({ ...run, result: 'error', graders: [], evidence: res.problems?.join('; ') ?? res.row?.error ?? 'agent call failed' });
-        // a budget refusal will not change on the next run: stop the whole suite
-        if (res.blocked) {
+        const why = res.problems?.join('; ') ?? res.row?.error ?? res.error ?? 'agent call failed';
+        out.runs.push({ ...run, result: 'error', graders: [], evidence: why });
+        // a budget refusal or a usage limit will not change on the next run, and an agent that fails twice running with
+        // nothing to say will not either (F49: a limited run marked 23 fixtures ERROR in 4 minutes): stop the whole suite
+        const state = opts.state ?? (opts.state = {});
+        state.failures = (state.failures ?? 0) + 1;
+        if (res.blocked || isLimit(why) || state.failures >= 2) {
           out.aborted = true;
+          out.stop_reason = res.blocked ? 'budget' : isLimit(why) ? 'usage limit' : 'the agent failed twice running';
           break;
         }
         continue;
       }
+      if (opts.state) opts.state.failures = 0;
       writeAtomic(f.transcript, res.raw);
       ({ text, commands } = normalizeTranscript(res.raw));
     }
     if (exists(prep.log)) fs.copyFileSync(prep.log, f.calls);
-    const judgeText = opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm') && needsAgent ? await callJudge(fx, text, f, opts) : null;
-    out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: prep.dir, judgeText, prep }) });
+    const judged = opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm') && needsAgent ? await callJudge(fx, text, f, opts) : null;
+    out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: prep.dir, judgeText: judged?.text ?? null, judgeError: judged?.error ?? null, prep }) });
+    if (judged?.error && isLimit(judged.error)) {
+      out.aborted = true;
+      out.stop_reason = 'usage limit (judge)';
+      break;
+    }
   }
   const tally = (k) => out.runs.filter((r) => r.result === k).length;
   out.passed = tally('pass');
@@ -306,13 +318,19 @@ async function callJudge(fx, transcript, f, opts) {
   writeAtomic(f.judgePrompt, prompt + '\n');
   const res = await opts.guard('eval_judge', () => {
     const r = runCommand(opts.judge, { cwd: opts.out, env: process.env, input: prompt, timeout_s: opts.timeout_s ?? DEFAULT_TIMEOUT_S });
-    if (r.error || r.status !== 0) throw new Error(`judge ${r.error ?? `exit ${r.status}`}: ${r.stderr.trim().slice(0, 300)}`);
+    if (r.error || r.status !== 0) throw new Error(`judge ${r.error ?? `exit ${r.status}`}: ${outputTail(r)}`);
     return { output_ids: [path.basename(f.judge)], raw: r.stdout };
   });
-  if (res.blocked || res.failed) return null;
+  if (res.blocked || res.failed) return { text: null, error: res.problems?.join('; ') ?? res.row?.error ?? res.error ?? 'judge call failed' };
   writeAtomic(f.judge, res.raw);
-  return res.raw;
+  return { text: res.raw, error: null };
 }
+
+// what a failed call said, from either stream (a usage limit can arrive on stdout)
+const outputTail = (r) => [r.stderr, r.stdout].map((x) => String(x ?? '').trim()).filter(Boolean).join(' | ').slice(-300) || 'no output';
+
+/** A subscription or API limit: retrying the next fixture will fail the same way. */
+export const isLimit = (msg) => /usage (limit|credits)|out of (usage )?credits|rate.?limit|quota|\b429\b|too many requests|credit balance/i.test(String(msg ?? ''));
 
 // One eval record (schemas/eval.schema.json) per run: graders become gates; the decision follows the gates.
 // The judge is always a separate process that sees only the case and the transcript, so it is separate from the author.

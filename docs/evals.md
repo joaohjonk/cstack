@@ -37,6 +37,8 @@ For each run of each fixture the runner:
 3. Grades, deterministic first. `regex` reads the transcript. `tool_used` reads the calls the agent actually made (the PATH log, and the trace when there is one); with neither, it falls back to the transcript text and says so. `command` runs in the case's workspace after the agent. `llm` sends the case, `must` / `must_not`, the rubric and the numbered transcript to the `--judge` command, a separate process that never saw the agent's context, and reads back `{"verdict", "must", "must_not", "reason"}`; a PASS that marks an item failed counts as FAIL, and a reply with no verdict leaves the run pending.
 4. Writes `prompt.txt`, `transcript.txt`, `calls.log`, `judge-prompt.txt` and `judge.txt` next to the workspace, and `summary.json` for the whole run.
 
+The suite stops, and prints the fixture ids left to resume with, when the spend gate refuses a call, when an agent or judge reports a usage or rate limit, or when the agent fails twice running. `summary.json` and the `--record` rows are written after each fixture, so a stopped run keeps what it graded. A judge call that fails leaves its run pending with the failure as evidence.
+
 A run is `pass` when every grader passes, `fail` when any fails, `pending` when a grader could not decide (no judge, no verdict). The command exits 1 on any failed fixture or failed call; `--strict` also fails on pending.
 
 | Flag | Does |

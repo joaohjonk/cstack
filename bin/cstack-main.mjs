@@ -834,11 +834,27 @@ async function cmdEvalsRun() {
       fn,
     );
   const results = [];
+  const state = {};
+  let recorded = 0;
+  // the summary and the records grow as the suite goes, so a killed or limited run keeps what it graded (F51)
+  const summarize = () => ({ date: today(), mode, out, agent: agent?.join(' ') ?? null, judge: judge?.join(' ') ?? null, fixtures: results.length, of: fixtures.length, pass: results.filter((r) => r.result === 'pass').length, fail: results.filter((r) => r.result === 'fail').length, results: results.map(({ runs, ...x }) => ({ ...x, runs: runs.map(({ files, ...y }) => y) })) });
+  const record = (r) => {
+    for (const rec of evalRecords(r, { judge: judge && cmdLabel(judge), date: today() })) {
+      rec.id = newId('EV');
+      const v = validateValue('eval', rec);
+      if (!v.ok) die(`invalid eval record for ${r.id}: ${v.errors}`);
+      appendJSONL(path.join(ws, 'state', 'evals.jsonl'), rec);
+      recorded++;
+    }
+  };
   for (const fx of fixtures) {
-    const r = await runFixture(fx, { out, mode, runs: args.runs, agent, judge, guard, timeout_s: args.timeout ? Number(args.timeout) : undefined });
+    const r = await runFixture(fx, { out, mode, runs: args.runs, agent, judge, guard, state, timeout_s: args.timeout ? Number(args.timeout) : undefined });
     results.push(r);
+    if (args.record && mode !== 'dry') record(r);
+    if (mode !== 'recorded') writeJSON(path.join(out, 'summary.json'), summarize());
     if (r.aborted) {
-      if (!args.json) console.log(`STOPPED  ${fx.id}: ${r.runs.at(-1).evidence}`);
+      const left = fixtures.slice(fixtures.indexOf(fx)).map((x) => x.id);
+      if (!args.json) console.log(`STOPPED  ${fx.id} (${r.stop_reason ?? 'refused'}): ${r.runs.at(-1)?.evidence ?? ''}\nresume with the same command and these ${left.length} fixture id(s): ${left.join(' ')}`);
       break;
     }
     if (!args.json) {
@@ -849,20 +865,8 @@ async function cmdEvalsRun() {
       }
     }
   }
-  const summary = { date: today(), mode, out, agent: agent?.join(' ') ?? null, judge: judge?.join(' ') ?? null, fixtures: results.length, pass: results.filter((r) => r.result === 'pass').length, fail: results.filter((r) => r.result === 'fail').length, results: results.map(({ runs, ...x }) => ({ ...x, runs: runs.map(({ files, ...y }) => y) })) };
-  if (mode !== 'recorded') writeJSON(path.join(out, 'summary.json'), summary);
-  if (args.record && mode !== 'dry') {
-    let n = 0;
-    for (const r of results)
-      for (const rec of evalRecords(r, { judge: judge && cmdLabel(judge), date: today() })) {
-        rec.id = newId('EV');
-        const v = validateValue('eval', rec);
-        if (!v.ok) die(`invalid eval record for ${r.id}: ${v.errors}`);
-        appendJSONL(path.join(ws, 'state', 'evals.jsonl'), rec);
-        n++;
-      }
-    if (!args.json) console.log(`recorded ${n} eval record(s) in ${shown(path.join(ws, 'state', 'evals.jsonl'))}`);
-  }
+  const summary = summarize();
+  if (args.record && mode !== 'dry' && !args.json) console.log(`recorded ${recorded} eval record(s) in ${shown(path.join(ws, 'state', 'evals.jsonl'))}`);
   if (args.json) json(summary);
   else if (mode === 'dry') console.log(`${summary.fixtures} fixture(s) prepared, nothing called (dry run); prompts and workspaces in ${shown(out)}`);
   else console.log(`${summary.pass}/${summary.fixtures} fixtures pass (${mode}); runs in ${shown(out)}`);
