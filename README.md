@@ -134,6 +134,14 @@ Claude: You struck "curated" and "elevate". The interview says "never say
 
 You asked for three photos. The agent noticed you needed one hero and one proof, refused to guess a colour the brand had not settled, kept the real product real, and asked before spending a cent. That is not a prompt box. That is a studio that remembers.
 
+## Made with cstack
+
+<p align="center">
+  <img src="docs/showcase/nevada/can-lineup.jpg" alt="Five tall Nevada cans in a row, drops 01 to 04 and the plain drop 00, each wrapped in one big screen-printed picture." width="100%">
+</p>
+
+**Nevada. Never too sweet.** A fictional sparkling iced tea, built from zero in one day: a founder interview before any image, references the founder reacted to, three territories, a blind contact sheet the founder called "kinda ok", flat wraps with real type, then the cans. The founder's verdict went from "kinda ok" to "all real cool", and every mistake cstack made on the way became a finding. [The whole run, step by step](docs/showcase/nevada.md).
+
 ## The studio
 
 cstack is a process, not a pile of prompts. The skills run in the order good brand work runs:
