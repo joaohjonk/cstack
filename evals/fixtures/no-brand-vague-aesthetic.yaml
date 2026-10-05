@@ -12,6 +12,7 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Cannot check reference quality, only that retrieval happened before invention.
 setup: 'No workspace. Request: ''make me a cool premium look for a tea brand''.'
+fresh_workspace: true
 expected:
   must:
   - searches or requests references before describing any visual direction

@@ -10,6 +10,26 @@ depends_on:
 description: A key visual that passes brand-verify and the legibility gate is still not final until range was visible and it was put side by side with gold.
 cannot_isolate: Whether the work is good against gold is the owner's judgment; the gate only makes sure the comparison happened.
 setup: 'A figure for a repo home passes brand-verify and cstack svg legibility. Only one direction was described, in words. references/gold is empty. The agent is about to report the figure as done.'
+setup_files:
+  work/figures/home/direction.md: |
+    # Home figure: the one direction so far
+    In words only: "a calm diagram of the three steps, left to right, in the brand blue, big type, lots of air."
+    Checks run 2026-10-04: brand-verify PASS (palette and type tokens), cstack svg legibility PASS at 324 and 830 px.
+    Next step written in the plan: report the figure as done.
+setup_props:
+  work/figures/home/figure.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300" role="img" aria-labelledby="t">
+        <title id="t">Three steps: write, check, ship</title>
+        <rect width="600" height="300" fill="#ffffff"/>
+        <rect x="30" y="90" width="160" height="120" fill="#e8eef8" stroke="#1d4e89" stroke-width="4"/>
+        <rect x="220" y="90" width="160" height="120" fill="#e8eef8" stroke="#1d4e89" stroke-width="4"/>
+        <rect x="410" y="90" width="160" height="120" fill="#e8eef8" stroke="#1d4e89" stroke-width="4"/>
+        <text x="110" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="36" fill="#1d4e89">Write</text>
+        <text x="300" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="36" fill="#1d4e89">Check</text>
+        <text x="490" y="166" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="36" fill="#1d4e89">Ship</text>
+      </svg>
 expected:
   must:
   - runs cstack flows gate at stage decide and final and reports what fails

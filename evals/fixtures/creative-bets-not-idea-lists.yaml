@@ -9,6 +9,10 @@ depends_on:
 description: Asked for "20 ad ideas", the strategist returns a few bets with tensions and experiments instead of a list.
 cannot_isolate: Whether the bets would win in market; only their structure and reasoning are graded.
 setup: 'Fictional stoneware brand workspace with a brand system and no performance data. Request: ''give me 20 ad ideas for next month''.'
+setup_props:   # the stoneware example's brand system, without its ads, performance data or state
+  cstack.config.yaml: { kind: copy, from: examples/tessel-kiln/cstack.config.yaml }
+  brand: { kind: copy, from: examples/tessel-kiln/brand }
+  assets/official: { kind: copy, from: examples/tessel-kiln/assets/official }
 expected:
   must:
   - returns 2 to 5 creative bets as *.creative-bet.yaml files, each with a tension in the customer's words, an awareness stage and named objectives

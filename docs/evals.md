@@ -32,7 +32,7 @@ cstack evals run --since main --agent "codex exec" --ws ...   # the fixtures `ev
 
 For each run of each fixture the runner:
 
-1. Builds the case in `<out>/<id>.run<N>.ws/`: the fixture's `workspace` (or an `examples/...` folder its setup names), else a fresh starter workspace for a fictional brand, plus any `setup_files`. A `cstack` on that workspace's PATH runs this checkout and logs every call the agent makes.
+1. Builds the case in `<out>/<id>.run<N>.ws/`: the fixture's `workspace` (or an `examples/...` folder its setup names), else a fresh starter workspace for a fictional brand, then its `setup_files` and `setup_props` ([below](#where-a-case-starts)). A missing ffmpeg for a video prop fails the build with `MISSING`. A `cstack` on that workspace's PATH runs this checkout and logs every call the agent makes.
 2. Sends the agent the setup and the skills in play, never `expected`, on stdin, in that workspace. The agent is any command that reads a prompt on stdin and writes its reply on stdout (`claude -p`, `codex exec`, ...): cstack holds no model SDK and no key. A Claude Code `stream-json` trace is flattened into a transcript with a `$ command` line per command run.
 3. Grades, deterministic first. `regex` reads the transcript. `tool_used` reads the calls the agent actually made (the PATH log, and the trace when there is one); with neither, it falls back to the transcript text and says so. `command` runs in the case's workspace after the agent. `llm` sends the case, `must` / `must_not`, the rubric and the numbered transcript to the `--judge` command, a separate process that never saw the agent's context, and reads back `{"verdict", "must", "must_not", "reason"}`; a PASS that marks an item failed counts as FAIL, and a reply with no verdict leaves the run pending.
 4. Writes `prompt.txt`, `transcript.txt`, `calls.log`, `judge-prompt.txt` and `judge.txt` next to the workspace, and `summary.json` for the whole run.
@@ -51,9 +51,46 @@ A run is `pass` when every grader passes, `fail` when any fails, `pending` when 
 | `--record` | appends one `eval` record per graded run (gates from the graders, `decision` from the result) |
 | `--timeout <s>` | per agent or judge call (default 900) |
 
-Every agent and judge call goes through `guardedCall` on the `--ws` ledger, so the budget envelope, `confirm_over` and the unpriced rules apply as they do to media calls. A refusal stops the whole suite. Agents are told never to pass `--confirm`; the case workspaces have a zero budget, so a media call inside a case is refused anyway.
+Every agent and judge call goes through `guardedCall` on the `--ws` ledger, so the budget envelope, `confirm_over` and the unpriced rules apply as they do to media calls. A refusal stops the whole suite. Agents are told never to pass `--confirm`; the case workspaces have a zero budget, or `confirm_over: 0` where the setup describes a budget, so a media call inside a case is refused without the owner's confirmation anyway.
 
-Two fixture fields exist for the runner: `workspace` (a repo-relative example workspace to start from) and `setup_files` (`{workspace path: text}` written before the agent starts, for cases whose setup names files). Saved runs in [tests/fixtures/evals-recorded/](../tests/fixtures/evals-recorded/README.md) are regraded by the tests, so a grader change that breaks a known verdict fails CI.
+Saved runs in [tests/fixtures/evals-recorded/](../tests/fixtures/evals-recorded/README.md) are regraded by the tests, so a grader change that breaks a known verdict fails CI.
+
+### Where a case starts
+
+A setup that names a file the case never provides fails on the fixture, not the agent (field test F40). So every T2 fixture declares where it starts, and `cstack validate` fails one that declares nothing:
+
+| Field | Gives the case |
+|---|---|
+| `workspace` | a repo-relative example workspace to copy (`examples/tessel-kiln`) |
+| `setup_files` | `{workspace path: text}`: briefs, copy, CSV exports, state records; a YAML mapping is written as JSON |
+| `setup_props` | `{workspace path: spec}`: files generated when the case is built, so no binary is committed |
+| `fresh_workspace: true` | the empty starter workspace on purpose (a new brand, a request with nothing on disk); never combined with the others |
+
+`workspace` combines with files and props. `setup_files` are written first, then `setup_props` in order, so a prop can start from an earlier one. Building a case plays the owner, so both may write `assets/official/`.
+
+| Prop `kind` | Spec | Builds |
+|---|---|---|
+| `glb` | `size` [x, y, z] glTF units (metres), `origin` (base-centre, box-centre, corner), `triangles`, `textures` [{width, height, format, color}], `bytes`, `extras`, `materials`, `generator`, `node_name` | a valid GLB whose `cstack 3d inspect` numbers read as the setup says: real indices for the triangle count, embedded PNG textures (header-only WebP, JPEG, KTX2 or AVIF), padding to the stated bytes in a private PNG chunk |
+| `png` | `size`, `background` (#hex or [top, bottom]), `shapes` [{rect}, {circle}, {ring}], `noise`, `tint`, `blur`; or `from` an earlier PNG | a drawn image (pure Node, no dependency) |
+| `mp4` | `size`, `seconds`, `fps`, `source` (testsrc2 or #hex), `boxes`, `overlay`, `soften` (a planted drift from a time), `freeze_after`, `audio` {tone or noise, `lufs` or `volume_db`} | an H.264 clip through ffmpeg, the way tests/video.test.mjs makes lavfi clips |
+| `frame` | `from` (a video), `at` | a PNG still through ffmpeg |
+| `pdf` | `title`, `size`, `pages` [{text, title_size, color, draw}] | a minimal valid PDF; `draw` takes content-stream operators (a vector logo) |
+| `svg`, `text` | `text` | the text, verbatim |
+| `copy` | `from` (repo file or folder) | a copy: `tests/fixtures/svg/thin-mark.svg`, an `examples/` brand, a long page in `evals/fixtures/props/` |
+| `flow-plan` | `flow`, `deliverable`, `key_visual`, `target` | the run plan `cstack flows plan` would write |
+| `mockup` | `template`, `art`, `placement` | a `cstack mockup render` of the art |
+
+```yaml
+setup: 'A designer hands over a 28 MB GLB (4k textures, 640k triangles, no compression) ...'
+setup_props:
+  work/3d/hero/source/designer-hero.glb:
+    kind: glb
+    triangles: 640000
+    textures: [{ width: 4096, height: 4096 }, { width: 4096, height: 4096 }]
+    bytes: 28000000
+```
+
+A command grader that names a path the agent is meant to make (`work/3d/*/model.glb`) stays the agent's job: the prop goes elsewhere (`work/3d/hero/source/`). `tests/evalprops.test.mjs` builds every T2 case and checks each declared prop (the GLB parses with its stated numbers, the PNG has its size, the clip probes).
 
 ## Diff-aware plan
 
@@ -98,6 +135,8 @@ depends_on:                            # globs; a change here selects the fixtur
 description: One sentence on the behavior under test.
 cannot_isolate: What a pass does NOT prove, so nobody over-reads it.
 setup: The situation and the request, in plain words.
+setup_files:                           # T2: workspace, setup_files, setup_props or fresh_workspace: true
+  work/review/hero.md: Agency delivery for the winter hero, shot under a softbox.
 expected:
   must:     [behaviors that have to appear]
   must_not: [behaviors that fail the case]
@@ -124,7 +163,7 @@ The suite has 46 fixtures: 45 at T2 and one at T0. Examples: `make-it-cooler` (d
 
 The craft fixtures added with 3D, mockups, vector, video and typography test the failure each medium is known for: `video-one-shot-temptation` and `3d-label-truth` (a researched plan that passes `cstack flows check` before anything is made), `mockup-logo-must-composite` (the real art is composited, never regenerated), `logo-generated-raster-as-master`, `mark-fails-16px`, `video-label-drift`, `ugc-fake-testimonial`, `cutdown-safe-zones`, `type-pairing-near-miss` and `type-review-beyond-font-choice`.
 
-`cstack validate` checks the format of every fixture: the tier, grader types and their fields, patterns that compile in JavaScript (no inline `(?i)` flags), known skills, and `depends_on` globs that match a file.
+`cstack validate` checks the format of every fixture: the tier, grader types and their fields, patterns that compile in JavaScript (no inline `(?i)` flags), known skills, `depends_on` globs that match a file, and that a T2 fixture declares where it starts ([above](#where-a-case-starts)) with prop specs it can build.
 
 ## Judgment separation
 

@@ -9,6 +9,14 @@ depends_on:
 description: Pairing by role and structure; a near-miss pair is rejected with a reason.
 cannot_isolate: Whether a pair "feels" right is owner taste; the grader checks the method and the rejection reasoning.
 setup: 'Fictional brand brief (warm, precise ceramics studio; long product stories, UI, 7 pt care cards; languages en, pt, de). The owner proposes two geometric sans families of similar proportions for headlines and body "because they look clean".'
+setup_files:
+  briefs/type-brief.md: |
+    # Type brief (fictional brand Atelier Moro, a warm, precise ceramics studio)
+    - surfaces: long product stories (web, 600-900 words), shop UI, 7 pt printed care cards
+    - languages: en, pt, de
+    - character: warm, precise, quietly confident
+  work/type/owner-proposal.md: |
+    Owner: "Montserrat for headlines and Poppins for body, because they look clean."
 expected:
   must:
   - writes a job spec per surface (sizes, length, languages, licence, performance) before naming candidates

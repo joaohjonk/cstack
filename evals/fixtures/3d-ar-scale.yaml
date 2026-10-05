@@ -9,6 +9,27 @@ depends_on:
 description: AR needs real-world scale; without measured dimensions the scale is UNKNOWN and AR is blocked.
 cannot_isolate: Placement on a real iOS and Android device is an owner step.
 setup: 'Request: ''let customers view the jar in AR on the product page''. A GLB exists with no unit metadata; the PRODUCT entity has no dimensions.'
+setup_files:
+  brand/brand-world.json:
+    brand_id: evalcase
+    entities:
+    - id: PRODUCT_HONEY_JAR_250
+      kind: PRODUCT
+      name: Wildflower honey jar, 250 g (fictional)
+      description: Squat glass jar with a hexagonal-faceted body, wide mouth and a brushed-steel screw lid; paper label on the front facet.
+      status: current
+      canonical_files:
+        - { path: work/3d/jar/source/jar.glb, role: 3d }
+      immutable_traits:
+        - six-faceted glass body, wide mouth
+        - brushed-steel screw lid
+setup_props:
+  work/3d/jar/source/jar.glb:   # a supplier export: glTF carries no unit field and the file has no extras saying what it was modelled in
+    kind: glb
+    size: [0.08, 0.11, 0.08]
+    origin: box-centre
+    triangles: 9600
+    node_name: jar
 expected:
   must:
   - records scale as UNKNOWN and asks for measured dimensions (height, diameter or width, depth) before any AR delivery

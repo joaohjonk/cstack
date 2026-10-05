@@ -10,6 +10,23 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Does not judge the repaired hand's quality.
 setup: An approved frame where only the left hand is malformed.
+setup_files:
+  state/approvals.jsonl: |
+    {"id":"FB-20261003-frame4","date":"2026-10-03","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/out/campaign/frame-04.png","reason":"approved frame, except the left hand"}
+  state/feedback.jsonl: |
+    {"id":"FB-20261004-hand","date":"2026-10-04","by":"owner","brand_id":"evalcase","type":"region_critique","artifact_ref":"work/out/campaign/frame-04.png","region":{"x":180,"y":700,"w":200,"h":220,"unit":"px"},"reason":"the left hand is malformed (six fingers, fused knuckles); everything else stays exactly as approved"}
+setup_props:
+  work/out/campaign/frame-04.png:
+    kind: png
+    size: 1024x1280
+    background: ['#e7dccb', '#bfae94']
+    noise: 8
+    shapes:
+      - { rect: [380, 300, 260, 700], color: '#3e4a5c' }
+      - { circle: [510, 230, 110], color: '#c99a78' }
+      - { rect: [220, 720, 170, 180], color: '#c99a78' }
+      - { rect: [640, 720, 150, 160], color: '#c99a78' }
+      - { rect: [600, 760, 120, 140], color: '#f4f1ea' }
 expected:
   must:
   - crops and edits the region, pastes back, verifies outside-region pixels unchanged

@@ -9,6 +9,18 @@ depends_on:
 description: An expert credibility partner is not cut for low ROAS; acquisition creators are judged on CPA. Field lesson from founders and operators interviewed on the Open Residency podcast.
 cannot_isolate: The long-term trust effect itself.
 setup: 'Ads export where three ads tagged talent_role "credibility partner" (a ceramics conservator) have a CPA twice the account median. Owner: ''cut the conservator, her ads do not pay back''.'
+workspace: examples/tessel-kiln
+setup_files:
+  work/ads/2026-10-meta-export.csv: |
+    Ad ID,Ad name,Reporting starts,Reporting ends,Amount spent (GBP),Impressions,Link clicks,Purchases,Purchases conversion value,3-second video plays,ThruPlays,Frequency,format,talent,talent_role,hook_tactic,mechanic,angle,visual_world
+    TK-E01,potter: one kiln load then gone,2026-10-01,2026-10-28,600.00,46000,740,32,1980.00,15333,5111,1.8,creator to camera,the potter,acquisition creator,result first,ritual,"one kiln load, then gone",brand world: north window
+    TK-E02,potter: speckle is not a flaw,2026-10-01,2026-10-28,420.00,33000,500,22,1290.00,11000,3666,1.8,creator to camera,the potter,acquisition creator,myth to correct,reveal,what the glaze is made of,brand world: north window
+    TK-E03,still: table after a meal,2026-10-01,2026-10-28,300.00,30000,390,15,860.00,10000,3333,1.8,static,none,none,aftermath,contrast,the table after a meal,brand world: north window
+    TK-E04,demo: dishwasher 200 cycles,2026-10-01,2026-10-28,360.00,31000,450,19,1100.00,10333,3444,1.8,demo,the potter,acquisition creator,proof first,demonstration,made for daily use,brand world: north window
+    TK-E05,creator: first home kitchen,2026-10-01,2026-10-28,380.00,35000,520,20,1150.00,11666,3888,1.8,creator to camera,guest creator,acquisition creator,confession,ritual,made for daily use,"platform default: phone, ring light, captions"
+    TK-E06,conservator: how a glaze ages,2026-10-01,2026-10-28,400.00,30000,300,10,590.00,10000,3333,1.8,expert talk,the conservator,credibility partner,expert reveal,reveal,what the glaze is made of,brand world: north window
+    TK-E07,conservator: mending a chip,2026-10-01,2026-10-28,380.00,28000,280,10,580.00,9333,3111,1.8,expert talk,the conservator,credibility partner,how-to,demonstration,made for daily use,brand world: north window
+    TK-E08,conservator: why the foot ring stays raw,2026-10-01,2026-10-28,360.00,26000,260,9,520.00,8666,2888,1.8,expert talk,the conservator,credibility partner,expert reveal,reveal,what the glaze is made of,brand world: north window
 expected:
   must:
   - notes that the report leaves credibility-partner ads out of every read and says why

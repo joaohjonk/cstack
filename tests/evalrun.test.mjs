@@ -54,18 +54,20 @@ test('evals run: tool_used checks commands that ran, and says so when it can onl
   assert.equal(text.result, 'pending', 'an llm grader without a judge leaves the run pending');
 });
 
-test('evals run: the workspace shim logs agent calls and runs this checkout', () => {
+test('evals run: the workspace shim logs agent calls and runs this checkout', async () => {
   const dir = path.join(tmpDir('cstack-evws-'), 'ws');
-  const prep = prepareWorkspace(fx('creative-winner-invariant'), dir);
+  const prep = await prepareWorkspace(fx('creative-winner-invariant'), dir);
   assert.equal(prep.base, 'examples/tessel-kiln', 'the example named in the setup is the starting workspace');
   const env = { ...process.env, PATH: `${prep.bin}${path.delimiter}${process.env.PATH}` };
   assert.equal(spawnSync('cstack', ['help'], { cwd: dir, env }).status, 0);
   spawnSync('cstack', ['help'], { cwd: dir, env: { ...env, CSTACK_EVAL_GRADER: '1' } });
   assert.deepEqual(fs.readFileSync(prep.log, 'utf8').trim().split('\n'), ['cstack help']);
-  const fresh = prepareWorkspace({ id: 'x', setup: 'no example', setup_files: { 'work/post.md': 'approved post' } }, path.join(path.dirname(dir), 'fresh'));
+  const fresh = await prepareWorkspace({ id: 'x', setup: 'no example', setup_files: { 'work/post.md': 'approved post' } }, path.join(path.dirname(dir), 'fresh'));
   assert.equal(fresh.base, 'templates/brand-workspace');
   assert.equal(fs.readFileSync(path.join(fresh.dir, 'work', 'post.md'), 'utf8'), 'approved post');
-  assert.throws(() => prepareWorkspace({ id: 'x', setup_files: { '../out.md': 'x' } }, path.join(path.dirname(dir), 'bad')), /leaves the workspace/);
+  await assert.rejects(prepareWorkspace({ id: 'x', setup_files: { '../out.md': 'x' } }, path.join(path.dirname(dir), 'bad')), /leaves the workspace/);
+  const empty = await prepareWorkspace({ id: 'x', setup: 'like examples/tessel-kiln', fresh_workspace: true }, path.join(path.dirname(dir), 'empty'));
+  assert.equal(empty.base, 'templates/brand-workspace', 'fresh_workspace never infers an example from the setup');
 });
 
 test('evals run: the agent prompt never shows the expected behaviour', () => {

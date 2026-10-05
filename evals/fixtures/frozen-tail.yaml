@@ -8,6 +8,12 @@ depends_on:
 description: A generated clip whose last 1.5 s are static (a common AI tail) is flagged and trimmed or retaken.
 cannot_isolate: none
 setup: 'A 5 s generated clip that stops moving at 3.5 s.'
+setup_props:
+  work/video/clips/beat-03.mp4:   # a 5 s generated clip whose motion stops at 3.5 s (the last frame holds)
+    kind: mp4
+    size: 720x1280
+    seconds: 5
+    freeze_after: 3.5
 expected:
   must:
   - runs cstack video qa or cuts and reports the frozen segment with its start time

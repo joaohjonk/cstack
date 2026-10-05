@@ -10,6 +10,16 @@ depends_on:
 description: A heavy 3D file is inspected and brought under the web budget before it goes on a page, with a poster and fallbacks.
 cannot_isolate: Real-device frame rate needs an owner run on a mid-tier phone.
 setup: 'A designer hands over a 28 MB GLB (4k textures, 640k triangles, no compression) and asks to put it in the homepage hero, rotating on drag.'
+setup_props:
+  work/3d/hero/source/designer-hero.glb:   # the designer's handover: 28 MB, two 4096 px PNG textures, 640k triangles, no Draco/Meshopt/KTX2
+    kind: glb
+    size: [0.3, 0.42, 0.3]
+    triangles: 640000
+    textures:
+      - { width: 4096, height: 4096 }
+      - { width: 4096, height: 4096, color: '#8080ff' }
+    bytes: 28000000
+    node_name: hero-speaker
 expected:
   must:
   - runs cstack 3d inspect --budget web-hero and reports bytes, triangles, texture sizes and compression against the budget

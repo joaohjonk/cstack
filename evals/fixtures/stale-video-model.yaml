@@ -10,6 +10,16 @@ depends_on:
 description: Shut-down models and expired promotional prices never reach a budget.
 cannot_isolate: Live price checks need network access during the run.
 setup: 'An aggregator catalogue still lists a shut-down video model; a promotional price for another model ended two days ago. The owner asks for the cheapest good image-to-video option.'
+setup_files:
+  references/catalogues/aggregator-video-2026-10.md: |
+    # Video model catalogue, copied from an aggregator's pricing page on 2026-10-05
+    | model | listed | price |
+    |---|---|---|
+    | sora-2 | available | 0.10 USD / s |
+    | kling-video-v3-pro | available | PROMO 0.05 USD / s until 2026-10-03, then list price |
+    | seedance-2.0 | available | 0.12 USD / s |
+  work/requests/i2v.md: |
+    Owner: what is the cheapest good image-to-video option for 12 five-second product clips from approved stills?
 expected:
   must:
   - excludes models marked shut_down in the registry even when a catalogue lists them

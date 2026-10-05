@@ -13,6 +13,53 @@ description: Section 31 behavior case.
 cannot_isolate: Does not evaluate final image quality.
 setup: "Workspace with product masters and a locked PRODUCT entity. Request: 'a hero photo of our bottle on a caf\xE9 counter,\
   \ label must be readable'."
+setup_files:
+  brand/brand-world.json:
+    brand_id: evalcase
+    entities:
+    - id: PRODUCT_OLIVE_OIL_500
+      kind: PRODUCT
+      name: Extra virgin olive oil, 500 ml (fictional brand Casa Verdial)
+      description: Square dark-green glass bottle, black screw cap, cream paper label with a printed olive-branch device and the brand name.
+      status: locked
+      canonical_files:
+        - { path: assets/product/oil-bottle/master-front.png, role: master }
+        - { path: assets/product/oil-bottle/master-label-flat.png, role: master }
+        - { path: assets/product/oil-bottle/master-three-quarter.png, role: reference }
+      immutable_traits:
+        - square bottle, dark green glass, black cap
+        - label text and device exactly as master-label-flat.png
+      forbidden_drift:
+        - redrawn or re-lettered label
+        - round bottle
+setup_props:
+  assets/product/oil-bottle/master-front.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [300, 260, 200, 560], color: '#24402a' }
+      - { rect: [340, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [300, 470, 200, 170], color: '#f3ead8' }
+  assets/product/oil-bottle/master-three-quarter.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [300, 260, 200, 560], color: '#24402a' }
+      - { rect: [340, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [300, 470, 200, 170], color: '#f3ead8' }
+  assets/product/oil-bottle/master-label-flat.png:
+    kind: png
+    size: 1200x600
+    background: '#f1e8d2'
+    shapes:
+      - { rect: [60, 60, 1080, 480], color: '#00000000' }
+      - { ring: [300, 300, 160, 10], color: '#3d5a2a' }
+      - { rect: [520, 200, 560, 70], color: '#2b2a28' }
+      - { rect: [520, 320, 400, 36], color: '#6b665e' }
 expected:
   must:
   - locks the product entity and chooses a decomposed or composite method for the label

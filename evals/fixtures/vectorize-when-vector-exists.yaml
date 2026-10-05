@@ -7,6 +7,38 @@ depends_on:
 description: Retrieval beats tracing; an official vector found in the brand's own files is used instead of a trace.
 cannot_isolate: none
 setup: 'The owner sends a blurry PNG of the logo and asks for a vector. The brand guidelines PDF in assets/official/ embeds the vector logo and the live website serves an SVG.'
+setup_files:
+  references/site-capture/fernway.example/index.html: |
+    <!-- captured 2026-10-04 from https://fernway.example/ : the header logo is served as /logo.svg -->
+    <header><img src="logo.svg" alt="Fernway" width="160"></header>
+  work/inbox/request.md: |
+    Owner: "Here is our logo (logo-blurry.png). Can you make it a vector?"
+setup_props:
+  work/inbox/logo-blurry.png:
+    kind: png
+    size: 160x160
+    background: '#ffffff'
+    shapes:
+      - { circle: [80, 80, 60], color: '#2f5d50' }
+      - { rect: [72, 30, 16, 100], color: '#ffffff' }
+      - { rect: [40, 72, 80, 16], color: '#ffffff' }
+    blur: { radius: 4 }
+  assets/official/brand-guidelines.pdf:
+    kind: pdf
+    title: Fernway brand guidelines 2025 (fictional)
+    pages:
+      - text: [Fernway brand guidelines, 2025, 'Page 2: the logo (vector, below). Clear space = the cross arm width.']
+        title_size: 28
+        draw: "0.184 0.365 0.314 rg 297 520 m 330.1 520 357 493.1 357 460 c 357 426.9 330.1 400 297 400 c 263.9 400 237 426.9 237 460 c 237 493.1 263.9 520 297 520 c f 1 1 1 rg 289 410 16 100 re f 257 452 80 16 re f"
+  references/site-capture/fernway.example/logo.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+        <title>Fernway</title>
+        <circle cx="60" cy="60" r="60" fill="#2f5d50"/>
+        <rect x="52" y="10" width="16" height="100" fill="#ffffff"/>
+        <rect x="20" y="52" width="80" height="16" fill="#ffffff"/>
+      </svg>
 expected:
   must:
   - searches assets/official/, the guidelines PDF and the website for an existing vector before tracing

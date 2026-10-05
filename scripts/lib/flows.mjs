@@ -75,10 +75,20 @@ export function searchFlows(ws, query, { k = 5 } = {}) {
 export function planFromFlow(ws, id, { target, deliverable, key_visual } = {}) {
   const f = listFlows(ws).find((x) => x.id === id);
   if (!f) throw new Error(`no flow "${id}" (try: cstack flows search "<outcome>")`);
+  const plan = planDoc(f, { id: `${today()}-${f.id}`, target, deliverable, key_visual });
+  const out = path.join(ws, 'work', 'flows', `${plan.id}.flow.yaml`);
+  if (exists(out)) throw new Error(`${out} already exists; edit it or remove it first`);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  writeAtomic(out, YAML.stringify(plan));
+  return { file: out, stale: f.stale, age_days: f.age_days, source_scope: f.scope };
+}
+
+/** The run plan for one listed flow (status: plan), as planFromFlow writes it; eval props build case plans with it. */
+export function planDoc(f, { id, target, deliverable, key_visual } = {}) {
   const { file, scope, age_days, stale, ...flow } = f;
   const plan = {
     ...flow,
-    id: `${today()}-${f.id}`,
+    id,
     status: 'plan',
     related: [...new Set([...(flow.related ?? []), `flow:${f.id}`])],
     target: { ...(flow.target ?? {}), ...(target ? { description: target } : {}) },
@@ -87,11 +97,7 @@ export function planFromFlow(ws, id, { target, deliverable, key_visual } = {}) {
   if (deliverable) plan.deliverable = { kind: deliverable };
   if (key_visual) plan.deliverable = { ...(plan.deliverable ?? {}), key_visual: true };
   if (plan.deliverable && !plan.deliverable.kind) throw new Error('--key-visual needs a deliverable kind: pass --deliverable <kind>');
-  const out = path.join(ws, 'work', 'flows', `${plan.id}.flow.yaml`);
-  if (exists(out)) throw new Error(`${out} already exists; edit it or remove it first`);
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  writeAtomic(out, YAML.stringify(plan));
-  return { file: out, stale, age_days, source_scope: scope };
+  return plan;
 }
 
 const MAKES = ['generative', 'probe'];

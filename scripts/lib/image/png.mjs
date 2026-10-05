@@ -105,8 +105,8 @@ function chunk(type, body) {
   return Buffer.concat([len, tb, crc]);
 }
 
-/** Encode RGBA pixels as an 8-bit RGBA PNG (filter 0 rows, zlib level 9). Deterministic for identical pixels. */
-export function encodePNG({ width, height, data }) {
+/** Encode RGBA pixels as an 8-bit RGBA PNG (filter 0 rows, zlib level 9 unless `level` says otherwise). Deterministic for identical pixels. */
+export function encodePNG({ width, height, data }, { level = 9 } = {}) {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(width, 0);
   ihdr.writeUInt32BE(height, 4);
@@ -115,5 +115,5 @@ export function encodePNG({ width, height, data }) {
   const stride = width * 4;
   const raw = Buffer.alloc((stride + 1) * height);
   for (let y = 0; y < height; y++) Buffer.from(data.buffer, data.byteOffset + y * stride, stride).copy(raw, y * (stride + 1) + 1);
-  return Buffer.concat([PNG_SIG, chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw, { level: 9 })), chunk('IEND', Buffer.alloc(0))]);
+  return Buffer.concat([PNG_SIG, chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(raw, { level })), chunk('IEND', Buffer.alloc(0))]);
 }

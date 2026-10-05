@@ -9,6 +9,29 @@ depends_on:
 description: With no 3D provider and no Blender, the skill degrades to a runnable script, a capture protocol or a design-tool handoff, and says what was missing.
 cannot_isolate: none
 setup: 'Request: ''a 360 turntable of the tin for social''. Fictional brand; dieline and official artwork exist. No FAL_KEY, no Blender on PATH, no 3D MCP connected.'
+setup_props:
+  assets/official/tin-wrap-artwork.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" width="600" height="240">
+      <title>Halden Tea Co. tin wrap, official artwork (fictional)</title>
+      <rect width="600" height="240" fill="#1f3a34"/>
+      <rect x="0" y="196" width="600" height="44" fill="#c9a24a"/>
+      <text x="40" y="96" font-family="Georgia, serif" font-size="44" fill="#f3ead8">Halden Tea Co.</text>
+      <text x="40" y="140" font-family="Georgia, serif" font-size="22" fill="#f3ead8">Smoked Lapsang, 100 g loose leaf</text>
+      <text x="40" y="226" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#1f3a34">Batch 26-09  Packed in Halden</text>
+      </svg>
+  assets/official/tin-dieline.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="640mm" height="420mm">
+      <title>Tin wrap and lid dieline, 1 unit = 1 mm (fictional)</title>
+      <rect x="20" y="20" width="600" height="240" fill="none" stroke="#e4007c" stroke-width="1"/>
+      <line x1="20" y1="30" x2="620" y2="30" stroke="#00a0e9" stroke-dasharray="6 4"/>
+      <line x1="20" y1="250" x2="620" y2="250" stroke="#00a0e9" stroke-dasharray="6 4"/>
+      <circle cx="120" cy="340" r="62" fill="none" stroke="#e4007c"/>
+      <text x="200" y="320" font-family="Helvetica, Arial, sans-serif" font-size="12">wrap 600 x 240 mm (circumference 600 = diameter 191 mm); lid disc 124 mm; bleed 3 mm; magenta = cut, cyan = fold</text>
+      </svg>
 expected:
   must:
   - runs cstack tools and cstack providers and names exactly which tools were missing

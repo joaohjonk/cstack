@@ -9,6 +9,27 @@ depends_on:
 description: A pack moving from DTC to retail keeps its variant cue in the lower half, where the shelf blocker hides it.
 cannot_isolate: Blocker height varies by store; the grader checks that the review models the blocker, not the exact millimetres.
 setup: 'A fictional canned drink sold online moves to grocery shelves with a front blocker about a third of the can high. The flavour name and the "no sugar" callout sit in the lower third of the can; the top carries only the wordmark. A shelf-test was run on a planogram without the blocker and passed. Request: ''approve the retail pack''.'
+setup_files:
+  work/packaging/can-front/layout.md: |
+    # Can front, 330 ml slim can (fictional brand Lumen Soda), 115 mm printable height
+    - top third (0-38 mm from the top): wordmark only
+    - middle third: illustration
+    - lower third (77-115 mm): flavour name "Yuzu Ginger" and the "no sugar" callout
+    Retail: grocery shelves with a front blocker (price rail) covering about the lower third of the can.
+  work/research/shelf-test-2026-09.md: |
+    # Shelf find test, 2026-09-18
+    Planogram: 4 shelves, 24 facings, drawn without the front blocker (online-style clean shelf).
+    Task: find Yuzu Ginger, no sugar. 20 participants, median find time 2.1 s. Result: PASS.
+setup_props:
+  work/packaging/can-front/front.png:
+    kind: png
+    size: 600x1100
+    background: '#f6f1e7'
+    shapes:
+      - { rect: [120, 80, 360, 120], color: '#1d2b5a' }
+      - { circle: [300, 540, 170], color: '#f2c14e' }
+      - { rect: [110, 790, 380, 90], color: '#e07a2f' }
+      - { rect: [170, 910, 260, 70], color: '#1d2b5a' }
 expected:
   must:
   - flags that the planogram omitted the blocker and that the passed test does not cover the real shelf

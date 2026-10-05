@@ -8,6 +8,14 @@ depends_on:
 description: In pairwise mode, a variant that wins on clicks from the wrong audience does not win.
 cannot_isolate: The grader cannot check audience data quality, only that the review asks who the winner won.
 setup: 'Two thumbnail and title variants for a Tessel Kiln video on glaze testing. A has 2.1x the click-through of B, but its viewers are mostly outside the brand''s audience (short watch time, few saves, comments about an unrelated meme); B''s viewers are potters who watch to the end and save. Request: ''which one do we keep?''.'
+workspace: examples/tessel-kiln
+setup_files:
+  work/video/glaze-testing/thumbnail-test.csv: |
+    variant,title,impressions,ctr,avg_view_duration_s,avg_percent_viewed,saves,subscribers_gained,top_comment_themes
+    A,"You won't believe what happens in our kiln",48000,0.084,41,9%,12,3,"meme reference; 'clickbait'; unrelated jokes"
+    B,"Testing 40 glaze tiles for the autumn batch",47500,0.040,388,71%,214,61,"cone 6 questions; 'which feldspar?'; asking for the recipe"
+  work/video/glaze-testing/README.md: |
+    Thumbnail and title test on the glaze-testing video, 14 days, equal traffic split. The owner asks: which one do we keep?
 expected:
   must:
   - checks who each variant won, not only how many

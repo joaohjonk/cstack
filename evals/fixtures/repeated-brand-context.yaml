@@ -10,6 +10,30 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Token accounting is approximate (chars/4).
 setup: Twenty small tasks in sequence on one workspace.
+workspace: examples/tessel-kiln
+setup_files:
+  work/tasks/queue.md: |
+    # Twenty small tasks for today, in order (owner)
+    1. Alt text for the Ochre Run dinner plate photo.
+    2. A 12-word caption for the kiln-loading story.
+    3. Rename the autumn bowls in the shop list to the house style.
+    4. A two-line reply to a customer asking if the plates are dishwasher safe.
+    5. Subject line for the batch-drop email.
+    6. Preheader for the same email.
+    7. Three hashtags, or a reason not to use any.
+    8. A one-sentence care note for the swing tag.
+    9. Check the product card CSS uses only brand colours.
+    10. A 40-word product description for the side plate.
+    11. Headline for the autumn landing page.
+    12. Button label for the batch waitlist.
+    13. An out-of-stock message.
+    14. A thank-you line for the packing slip.
+    15. Rewrite the about-page first sentence in the brand voice.
+    16. A caption for the glaze test tiles post.
+    17. Name the next glaze run from the palette notes.
+    18. A short answer to "is the speckle a flaw?".
+    19. A tooltip for the batch counter.
+    20. A one-line summary of today's work for the owner.
 expected:
   must:
   - uses cstack brand context (compact, hashed) and reuses it

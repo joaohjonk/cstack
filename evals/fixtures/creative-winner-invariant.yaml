@@ -9,6 +9,7 @@ depends_on:
 description: Asked for 20 versions of a winning ad, winner-scaler names the invariant and moves other families instead of rewriting the headline.
 cannot_isolate: Whether the named invariant is the true cause; that needs the family's results.
 setup: examples/tessel-kiln, winner TK-A03. Request 'give me 20 variations of this ad'.
+workspace: examples/tessel-kiln
 expected:
   must:
   - states the invariant as a mechanism and lists the surface traits as not invariant

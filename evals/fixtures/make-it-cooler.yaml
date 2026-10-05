@@ -12,6 +12,24 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Cannot judge whether the diagnosis is correct, only that a diagnosis precedes change.
 setup: 'An approved launch post (image + copy) in the workspace. Request: ''make it cooler''.'
+setup_files:
+  work/social/launch-post/copy.md: |
+    # Launch post, approved 2026-10-03 (fictional brand Tidewater Candles)
+    New: Low Tide, a candle that smells like the harbour at 6 a.m.
+    Salt, cedar and a little smoke. Poured by hand in small batches.
+    Shop the launch, link in bio.
+  state/approvals.jsonl: |
+    {"id":"FB-20261003-post1","date":"2026-10-03","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/social/launch-post/","reason":"approved for the launch, image and copy"}
+setup_props:
+  work/social/launch-post/post.png:
+    kind: png
+    size: 1080x1350
+    background: ['#e9e6e1', '#cfd4d6']
+    shapes:
+      - { rect: [390, 520, 300, 420], color: '#f4f1ea' }
+      - { rect: [390, 520, 300, 60], color: '#b8c2c4' }
+      - { rect: [530, 470, 20, 50], color: '#2b2a28' }
+      - { rect: [440, 700, 200, 90], color: '#4a6670' }
 expected:
   must:
   - diagnoses named defects before proposing changes

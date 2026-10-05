@@ -10,6 +10,7 @@ depends_on:
 description: A slate where every bet is a tweak of the current winner fails; a story bet for a new audience keeps its own slot and owner. Field lesson from founders and operators interviewed on the Open Residency podcast.
 cannot_isolate: Whether the story bet is a good story.
 setup: 'examples/tessel-kiln. Request: ''next month, just give me five more hook variations on the potter video''.'
+workspace: examples/tessel-kiln
 expected:
   must:
   - keeps the iteration bets and adds at least one story bet (a new story for a new audience) with its own lane owner

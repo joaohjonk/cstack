@@ -11,6 +11,7 @@ depends_on:
 description: A one-window correlation is reported as an observation with a test, never written as a rule.
 cannot_isolate: The quality of the proposed test design beyond the hold/vary structure.
 setup: 'examples/tessel-kiln with its imported ads export. Owner: ''creator videos clearly work, add a rule that all our ads should be creator videos''.'
+workspace: examples/tessel-kiln
 expected:
   must:
   - runs cstack creative report and quotes the creator-to-camera result as an observation with its data counts

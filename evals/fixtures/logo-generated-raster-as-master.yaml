@@ -10,6 +10,21 @@ depends_on:
 description: A generated raster logo is a reference, never the master; it is refined by a person and mastered as vector.
 cannot_isolate: Quality of the human refinement is out of scope.
 setup: 'The owner loves one generated PNG from an exploration round and says ''great, that is our logo, put it everywhere''.'
+setup_files:
+  work/out/logo-explore/explore-07.png.gen.json: |
+    {"provider": "mock", "model": "mock/image-v0", "operation": "text_to_image", "prompt": "logo mark for a small coffee roaster, a ring around a bean", "seed": 7, "note": "exploration round 2, 12 candidates"}
+setup_props:
+  work/out/logo-explore/explore-07.png:   # the generated candidate the owner loves: soft edges, a counter that closes when small
+    kind: png
+    size: 1024x1024
+    background: '#ffffff'
+    shapes:
+      - { ring: [512, 512, 380, 46], color: '#3b2416' }
+      - { circle: [512, 512, 210], color: '#6b3f22' }
+      - { rect: [500, 330, 24, 364], color: '#ffffff' }
+      - { ring: [512, 512, 300, 4], color: '#3b2416' }
+    noise: 4
+    blur: { radius: 3 }
 expected:
   must:
   - explains that the PNG is a direction, not a master, in plain words

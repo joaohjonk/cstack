@@ -9,6 +9,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT, exists, readData, writeAtomic } from './core.mjs';
 import { initBrand } from './brand.mjs';
+import { buildProps } from './evalprops.mjs';
 
 const DEFAULT_TIMEOUT_S = 900;
 
@@ -38,9 +39,9 @@ export function tokenize(line) {
 }
 
 // The workspace a case starts from: `workspace:` in the fixture, else an example the setup names, else a fresh
-// starter workspace for a fictional brand.
+// starter workspace for a fictional brand (always for `fresh_workspace: true`).
 export function baseWorkspace(fx) {
-  const named = fx.workspace ?? String(fx.setup ?? '').match(/\bexamples\/([\w-]+)/)?.[0];
+  const named = fx.workspace ?? (fx.fresh_workspace ? null : String(fx.setup ?? '').match(/\bexamples\/([\w-]+)/)?.[0]);
   if (!named) return null;
   const p = path.join(ROOT, named);
   if (!exists(path.join(p, 'cstack.config.yaml'))) throw new Error(`${fx.id}: workspace "${named}" is not a cstack workspace`);
@@ -49,18 +50,21 @@ export function baseWorkspace(fx) {
 
 const sq = (s) => `'${String(s).replace(/'/g, `'\\''`)}'`;
 
-export function prepareWorkspace(fx, dir) {
+export async function prepareWorkspace(fx, dir) {
   fs.rmSync(dir, { recursive: true, force: true });
   const base = baseWorkspace(fx);
   if (base) fs.cpSync(path.join(ROOT, base), dir, { recursive: true });
   else initBrand(dir, { name: 'Evalcase', id: 'evalcase' });
-  // setup_files: {relative path: text} the case needs on disk (an approved post, a stale model list, ...)
+  // setup_files: {relative path: text} the case needs on disk (an approved post, a stale model list, ...). Plain
+  // writes, not writeAtomic: building the case plays the owner, whose originals belong in assets/official/.
   for (const [rel, text] of Object.entries(fx.setup_files ?? {})) {
     const p = path.resolve(dir, rel);
     if (!p.startsWith(dir + path.sep)) throw new Error(`${fx.id}: setup_files path "${rel}" leaves the workspace`);
     fs.mkdirSync(path.dirname(p), { recursive: true });
-    writeAtomic(p, typeof text === 'string' ? text : JSON.stringify(text, null, 2) + '\n');
+    fs.writeFileSync(p, typeof text === 'string' ? text : JSON.stringify(text, null, 2) + '\n');
   }
+  // setup_props: {relative path: spec} files generated now (GLB, PNG, MP4, PDF, ...): scripts/lib/evalprops.mjs
+  const props = await buildProps(fx, dir);
   // a `cstack` on PATH that runs this checkout and logs each call the agent makes (graders run unlogged)
   const bin = path.join(dir, '.cstack-eval', 'bin');
   fs.mkdirSync(bin, { recursive: true });
@@ -68,7 +72,7 @@ export function prepareWorkspace(fx, dir) {
   const shim = path.join(bin, 'cstack');
   writeAtomic(shim, `#!/bin/sh\n[ -z "$CSTACK_EVAL_GRADER" ] && printf 'cstack %s\\n' "$*" >> ${sq(log)}\nexec ${sq(process.execPath)} ${sq(path.join(ROOT, 'bin', 'cstack.mjs'))} "$@"\n`);
   fs.chmodSync(shim, 0o755);
-  return { dir, base: base ?? 'templates/brand-workspace', bin, log };
+  return { dir, base: base ?? 'templates/brand-workspace', bin, log, props };
 }
 
 export function agentPrompt(fx, ws) {
@@ -256,7 +260,7 @@ export async function runFixture(fx, opts) {
       continue;
     }
     for (const k of ['transcript', 'calls', 'judge', 'judgePrompt']) fs.rmSync(f[k], { force: true });
-    const prep = prepareWorkspace(fx, f.ws);
+    const prep = await prepareWorkspace(fx, f.ws);
     const prompt = agentPrompt(fx, prep.dir);
     writeAtomic(f.prompt, prompt + '\n');
     if (opts.mode === 'dry') {

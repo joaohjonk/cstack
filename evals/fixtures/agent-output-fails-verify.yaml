@@ -10,6 +10,35 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Does not measure fix quality beyond the gates.
 setup: 'A landing page with two raw non-token colors and a wrong heading font. Request: ''ship it''.'
+workspace: examples/tessel-kiln
+setup_files:
+  work/pages/autumn-landing.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Autumn batch</title>
+    <link rel="stylesheet" href="../../brand/generated/tokens.css">
+    <style>
+      body { margin: 0; background: var(--color-surface); color: var(--color-text); font-family: var(--font-family-body); font-size: var(--font-size-body); }
+      header { padding: var(--space-xl) var(--space-gutter); background: #2f6fb5; }
+      h1 { font-family: Futura, "Trebuchet MS", sans-serif; font-size: var(--font-size-heading); color: var(--color-surface); margin: 0; }
+      .cta { display: inline-block; margin-top: var(--space-md); padding: var(--space-sm) var(--space-md); background: #e04a3a; color: var(--color-surface); border-radius: var(--radius-control); }
+      main { padding: var(--space-lg) var(--space-gutter); max-width: 36em; }
+    </style>
+    </head>
+    <body>
+      <header>
+        <h1>The autumn batch: Ochre Run</h1>
+        <a class="cta" href="/shop/ochre-run">See the 72 pieces</a>
+      </header>
+      <main>
+        <p>One kiln load, fired on 12 September. Wheel-thrown stoneware plates and bowls in a glaze that breaks from ochre to near white at the rim, with iron speckle throughout and a raw foot ring.</p>
+        <p>When the batch is gone, the glaze run is not remade.</p>
+      </main>
+    </body>
+    </html>
 expected:
   must:
   - runs gates, fixes the minimum, re-verifies, escalates if still failing

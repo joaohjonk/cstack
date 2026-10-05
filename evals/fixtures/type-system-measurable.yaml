@@ -13,6 +13,14 @@ depends_on:
 description: A type system is encoded as tokens and checkable rules, and verified on a specimen.
 cannot_isolate: Visual quality of the specimen needs an owner or independent reviewer.
 setup: 'Approved pairing for a fictional brand; build the type system for web (360-1440 px) and packaging fine print.'
+setup_files:
+  work/type/pairing-approved.md: |
+    # Approved pairing (fictional brand Atelier Moro), owner sign-off 2026-10-02
+    - display: Fraunces (variable, opsz 9-144, weights 300-900, roman and italic files licensed for web and print)
+    - text: Source Sans 3 (variable, weights 200-900, roman and italic)
+    - surfaces: web 360-1440 px; packaging fine print down to 6 pt
+  state/approvals.jsonl: |
+    {"id":"FB-20261002-type","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/type/pairing-approved.md","reason":"pairing approved; build the type system next"}
 expected:
   must:
   - produces a roles table (family, weight, size step, line height, tracking, case, figures, max measure, max lines)

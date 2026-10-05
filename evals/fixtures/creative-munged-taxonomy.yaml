@@ -9,6 +9,63 @@ depends_on:
 description: A concept written as "UGC street interview, contrarian, social proof" is decomposed into separate families.
 cannot_isolate: Hook quality.
 setup: 'Approved bet whose concept reads: angle "street interview", hook tactic "social proof", format "UGC".'
+workspace: examples/tessel-kiln
+setup_files:
+  work/ads/2026-10-street-interview.creative-bet.yaml: |
+    # Approved by the performance lead (fictional), 2026-10-04. The concept fields mix taxonomy families.
+    id: B-2026-10-04
+    title: Street interview
+    status: approved
+    lane: iteration
+    lane_owner: performance lead (fictional)
+    created: 2026-10-04
+    by: creative-strategist
+    tension: "I want plates I will actually use every day, not ones I am afraid to chip."
+    audience:
+      who: people furnishing a first permanent home who buy a few pieces at a time
+      awareness_stage: problem-aware
+      objections:
+        - handmade means fragile
+      language:
+        - "will it survive the dishwasher"
+    concept:
+      angle: street interview
+      hook_tactic: social proof
+      visual_hook: passers-by holding a plate
+      verbal_hook: "Would you eat off this every day?"
+      mechanic: reveal
+      format: UGC
+      proof: demonstration
+      payoff: the plate goes in the dishwasher
+      cta: shop
+      awareness_stage: problem-aware
+    hook_family:
+      - "Would you eat off this every day?"
+      - "Would you use this plate every day?"
+      - "Could you eat off this daily?"
+    formats:
+      - UGC
+    proof:
+      - claims.dishwasher_safe
+    objectives:
+      - paid_performance
+    brand_constraint: North-window light, warm ground, glaze shown as it is; plain words, no banned language.
+    experiment:
+      id: EXP-2026-10-street
+      hold: [angle, talent, format, mechanic, offer]
+      vary: [hook_tactic]
+      design: single_factor
+      levels: { hook_tactic: 3 }
+      success:
+        metric: CPA against the account median
+        threshold: "<= 1.0x"
+        min_spend_per_cell: 300
+        min_impressions_per_cell: 25000
+        window_days: 14
+      kill: CPA above 1.4x the median after the minimum spend
+    evidence:
+      - ref: "street interviews are popular in the category"
+        ladder: hypothesis
 expected:
   must:
   - moves "street interview" to format, "social proof" to proof, and writes a real angle sentence and hook tactic

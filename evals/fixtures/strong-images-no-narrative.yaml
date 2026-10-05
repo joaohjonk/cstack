@@ -8,6 +8,75 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Role labels are subjective; the grader checks for role-level critique, not for specific cuts.
 setup: 'Eight approved, individually strong images with no sequence. Request: ''are we ready to launch this campaign?''.'
+setup_files:
+  work/campaign/autumn/README.md: |
+    Eight approved images for the autumn campaign, no order decided. Owner asks: are we ready to launch?
+  state/approvals.jsonl: |
+    {"id":"FB-20261002-img1","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/01.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img2","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/02.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img3","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/03.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img4","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/04.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img5","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/05.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img6","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/06.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img7","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/07.png","reason":"strong on its own"}
+    {"id":"FB-20261002-img8","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/campaign/autumn/08.png","reason":"strong on its own"}
+setup_props:
+  work/campaign/autumn/01.png:
+    kind: png
+    size: 1080x1350
+    background: ['#c98a3e', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [540, 700, 300], color: '#f3ead8' }
+  work/campaign/autumn/02.png:
+    kind: png
+    size: 1080x1350
+    background: ['#c98a3e', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [560, 690, 310], color: '#f3ead8' }
+  work/campaign/autumn/03.png:
+    kind: png
+    size: 1080x1350
+    background: ['#7a8c6e', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [400, 800, 220], color: '#efe6d2' }
+  work/campaign/autumn/04.png:
+    kind: png
+    size: 1080x1350
+    background: ['#9c5b3b', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [700, 600, 260], color: '#e9d8c0' }
+  work/campaign/autumn/05.png:
+    kind: png
+    size: 1080x1350
+    background: ['#c98a3e', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [530, 710, 295], color: '#f3ead8' }
+  work/campaign/autumn/06.png:
+    kind: png
+    size: 1080x1350
+    background: ['#5d6e7e', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [540, 500, 180], color: '#dfe5ec' }
+  work/campaign/autumn/07.png:
+    kind: png
+    size: 1080x1350
+    background: ['#8a6a48', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [300, 900, 200], color: '#f4efe6' }
+  work/campaign/autumn/08.png:
+    kind: png
+    size: 1080x1350
+    background: ['#b9b3a8', '#2b2a28']
+    noise: 6
+    shapes:
+      - { circle: [540, 675, 120], color: '#23211e' }
 expected:
   must:
   - critiques roles and sequence, names redundant frames and missing roles

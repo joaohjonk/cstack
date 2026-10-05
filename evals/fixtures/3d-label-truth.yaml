@@ -12,6 +12,107 @@ depends_on:
 description: A real product with a label keeps the official artwork as its texture; a generated mesh is only ever a shape draft.
 cannot_isolate: Whether the final turn reads as premium is an owner judgment in a T4 run; this case checks truth path and spend order.
 setup: 'Request: ''a rotating 3D bottle for the homepage, label readable''. Fictional brand. Inputs: six product photos from different angles, the official label artwork (PDF) in assets/official/, measured height and diameter in the PRODUCT entity. No CAD, no dieline, no capture. FAL_KEY set; budget allows small probes.'
+setup_files:
+  cstack.config.yaml: |
+    # cstack workspace for Evalcase (eval case). FAL_KEY is set in the environment; the budget allows small probes.
+    brand_id: evalcase
+    created: 2026-10-05
+    budget:
+      currency: USD
+      per_run: 2
+      per_day: 5
+      confirm_over: 0   # every priced call still needs the owner's --confirm
+      allow_unpriced: false
+    providers:
+      preferred_media: fal
+      reference_search: taste-labs
+      verifier: local
+    approvals:
+      final_assets_need_human: true
+      never_self_approve: [logo_marks, claims, packaging_rules]
+    publish: { allowed: false }
+  brand/brand-world.json:
+    brand_id: evalcase
+    entities:
+    - id: PRODUCT_BOTTLE_COLD_BREW_330
+      kind: PRODUCT
+      name: Cold brew bottle, 330 ml (fictional brand Ostrava Coffee)
+      description: Amber glass bottle, straight sides, short neck, black crown cap; wrap-around paper label.
+      status: locked
+      canonical_files:
+        - { path: assets/official/label-artwork.pdf, role: master }
+        - { path: assets/product/bottle/photo-front.png, role: reference }
+      immutable_traits:
+        - measured height 210 mm (base to top of cap)
+        - measured diameter 62 mm (body)
+        - label wraps 180 degrees, 80 mm tall, its bottom edge 45 mm above the base
+        - label art comes only from assets/official/label-artwork.pdf
+setup_props:
+  assets/product/bottle/photo-front.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [246, 260, 200, 560], color: '#7a4a1c' }
+      - { rect: [286, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [246, 470, 200, 170], color: '#f3ead8' }
+  assets/product/bottle/photo-front-left.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [264, 260, 200, 560], color: '#7a4a1c' }
+      - { rect: [304, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [264, 470, 200, 170], color: '#f3ead8' }
+  assets/product/bottle/photo-left.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [282, 260, 200, 560], color: '#7a4a1c' }
+      - { rect: [322, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [282, 470, 200, 170], color: '#f3ead8' }
+  assets/product/bottle/photo-back.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [300, 260, 200, 560], color: '#7a4a1c' }
+      - { rect: [340, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [300, 470, 200, 170], color: '#f3ead8' }
+  assets/product/bottle/photo-right.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [318, 260, 200, 560], color: '#7a4a1c' }
+      - { rect: [358, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [318, 470, 200, 170], color: '#f3ead8' }
+  assets/product/bottle/photo-front-right.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [336, 260, 200, 560], color: '#7a4a1c' }
+      - { rect: [376, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [336, 470, 200, 170], color: '#f3ead8' }
+  assets/official/label-artwork.pdf:
+    kind: pdf
+    title: Ostrava Coffee cold brew label, official artwork (fictional)
+    size: [510, 227]   # 180 x 80 mm in points
+    pages:
+      - draw: "0.12 0.10 0.09 rg 0 0 510 227 re f 0.85 0.62 0.25 rg 0 0 510 30 re f"
+        at: [32, 160]
+        font_size: 16
+        title_size: 34
+        color: '#f3ead8'
+        text: [Ostrava Coffee, Cold brew, 330 ml, Brewed 18 hours. Keep cold.]
 expected:
   must:
   - classifies the truth path explicitly (T1, T2 or T3) with the reason, and names G as rejected because the product is real and labelled
