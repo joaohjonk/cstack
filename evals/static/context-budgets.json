@@ -35,12 +35,12 @@
       "set": "2026-10-03"
     },
     "creative-direction": {
-      "ceiling": 1168,
-      "set": "2026-10-03"
+      "ceiling": 1290,
+      "set": "2026-10-05"
     },
     "creative-review": {
-      "ceiling": 1273,
-      "set": "2026-10-03"
+      "ceiling": 1414,
+      "set": "2026-10-05"
     },
     "cultural-scan": {
       "ceiling": 1338,
@@ -245,6 +245,20 @@
       "from": 1509,
       "to": 1751,
       "reason": "founding mode for a brand from zero (field test F23, F24): the mode switch, its output and its failure mode belong in the body; the interview itself lives in references/founding.md"
+    },
+    {
+      "date": "2026-10-05",
+      "slug": "creative-review",
+      "from": 1273,
+      "to": 1414,
+      "reason": "corpus-first (F33) and prompt review before paid generation (F68) are one line each; detail lives in references/prompt-review.md"
+    },
+    {
+      "date": "2026-10-05",
+      "slug": "creative-direction",
+      "from": 1168,
+      "to": 1290,
+      "reason": "territories declare composite elements (F69)"
     }
   ]
 }

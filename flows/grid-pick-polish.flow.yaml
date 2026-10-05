@@ -45,6 +45,12 @@ steps:
   skill: prompt-director
   gate: {type: auto, check: "cstack prompt compile passes; the compiled prompt names what is fixed and what varies; no names, no style-of, no lettering"}
   compare_to_target: would two frames from this grid differ only in what `varies` names?
+- id: prompt-review
+  does: creative-review reads every compiled prompt before anything is paid for, against the anchor and the fixed and varying slots; a prompt that names nothing the territory decided, or contradicts a slot (cstack prompt compile warns), is rewritten first
+  kind: research
+  skill: creative-review
+  gate: {type: independent_review, check: "every prompt traced to a territory decision and a reacted reference; no WARN from cstack prompt compile left unexplained"}
+  compare_to_target: would these prompts make the idea, or only the styling?
 - id: grid
   does: one grid image per idea on the best reachable model for the step (cstack route --modality image), at most two rounds
   kind: generative

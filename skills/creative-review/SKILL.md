@@ -38,7 +38,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 
 ## Process
 
-0. **Gate**: `cstack flows gate <plan> --stage final` before visual work is called final.
+0. **Corpus, then gate**: owner feedback and gold/anti first ([corpus](references/prompt-review.md)); `cstack flows gate <plan> --stage final` before calling visual work final.
 1. **Gates first** (cheap → expensive): schema/size audits, `brand-verify`, `product-fidelity`, compliance flags, `cstack svg legibility` on figures at the widths they are shown. Any hard fail → decision `fix` with the failing gate; skip aesthetics.
 2. **Pick lenses** relevant to the artifact (not all eleven every time): STRATEGIST (right problem?), BRAND DIRECTOR (is this ours?), ART DIRECTOR (coherent, specific visual idea?), PHOTOGRAPHER (intentional photograph? lens, light, contact, materials), TYPE DIRECTOR (type doing real work? the review axes in the type-director primer, with `cstack type qa` evidence), EDITOR (what to remove?), CULTURE (belongs in the world now?), COPY (sharp, ownable?), COMMERCE (helps someone understand and buy?), PRODUCTION (can it ship?), COMPLIANCE (anything risky or false?).
 3. **Each lens independently**: verdict, 1-3 evidence points tied to the artifact, the one change it would make.
@@ -46,7 +46,8 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 5. **Disagreements stay visible**. The orchestrator writes an explicit tradeoff ("keeping the harsher light: brand director and photographer outweigh commerce's concern; mitigated by a clearer PDP crop").
 6. **Decision**: promote / fix (with the minimum fix and owner of the fix) / reject / human review.
 7. **Pairwise mode**: A vs B per lens, then overall with reasons; ask the owner when lenses split. Wrong-audience winners lose.
-8. **Page mode** (a repo home, landing page, guide, long post): add INFORMATION ARCHITECTURE to EDITOR and judge the read with measured evidence (length, where the first action sits, repetition, figure legibility). Steps: [references/page-mode.md](references/page-mode.md).
+8. **Prompt review** before paid generation ([prompts](references/prompt-review.md)).
+9. **Page mode** (home, landing page, guide, long post): add INFORMATION ARCHITECTURE to EDITOR; measure the read ([references/page-mode.md](references/page-mode.md)).
 
 ## Decision rules
 

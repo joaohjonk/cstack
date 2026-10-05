@@ -52,6 +52,12 @@ steps:
   skill: taste-search
   gate: {type: auto, check: references carry transferable_mechanism and rights}
   compare_to_target: mechanisms, not looks
+- id: prompt-review
+  does: creative-review reads every compiled prompt before anything is paid for, against the territory and the references the founder kept or killed; a prompt that names nothing the territory decided, or contradicts a slot (cstack prompt compile warns), is rewritten first
+  kind: research
+  skill: creative-review
+  gate: {type: independent_review, check: "every prompt traced to a territory decision and a reacted reference; no WARN from cstack prompt compile left unexplained"}
+  compare_to_target: would these prompts make the idea, or only the styling?
 - id: probes
   does: four draft probes per territory on each of two models (cstack route --modality image --tier draft), same size and count for all
   kind: generative

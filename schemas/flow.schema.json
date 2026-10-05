@@ -348,6 +348,13 @@
               "rejected",
               "runner_up"
             ]
+          },
+          "composite": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "elements the territory depends on that are set after generation, never drawn by a model (a price, a drop number, the wordmark); probes leave room for them and a composite step sets them (F69)"
           }
         }
       }
@@ -377,11 +384,12 @@
     },
     "requires": {
       "type": "array",
-      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet the owner has reacted to, recorded in state/feedback.jsonl)",
+      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet or board the owner has reacted to, recorded in state/feedback.jsonl), product_truth (an owner-confirmed photo or official asset of the real product, library own_asset)",
       "items": {
         "enum": [
           "founder_brief",
-          "reference_reactions"
+          "reference_reactions",
+          "product_truth"
         ]
       },
       "uniqueItems": true
@@ -400,7 +408,8 @@
           "requires": {
             "enum": [
               "founder_brief",
-              "reference_reactions"
+              "reference_reactions",
+              "product_truth"
             ]
           },
           "owner_approved": {

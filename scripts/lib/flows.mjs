@@ -191,6 +191,7 @@ export function goldRefs(ws) {
 const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
   reference_reactions: 'no reference packet or board the owner has reacted to (work/references/*-packet.md or a cstack sheet board, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search), then let them keep or kill each one on a board (cstack sheet board references/ --out work/sheets/refs.html, then cstack sheet import)',
+  product_truth: 'no owner-confirmed product-truth reference (a *.reference.yaml with library own_asset and approval locked or current: the owner\'s own photo or an official asset): a product or food close-up drawn from research images can show someone else\'s product (F71); ask the owner for one photo of the real product, record it, and keep research images labelled "real product" at approval inferred until the owner confirms them',
 };
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
@@ -224,6 +225,27 @@ function requirementMet(ws, req) {
       try {
         const b = readData(path.join(dir, f));
         return briefApproved(b);
+      } catch {
+        return false;
+      }
+    });
+  }
+  if (req === 'product_truth') {
+    const dir = path.join(ws, 'references');
+    if (!exists(dir)) return false;
+    const recs = [];
+    const walkRefs = (d) => {
+      for (const f of fs.readdirSync(d)) {
+        const p = path.join(d, f);
+        if (fs.statSync(p).isDirectory()) walkRefs(p);
+        else if (/\.reference\.ya?ml$/.test(f)) recs.push(p);
+      }
+    };
+    walkRefs(dir);
+    return recs.some((p) => {
+      try {
+        const r = readData(p);
+        return r?.library === 'own_asset' && ['locked', 'current'].includes(r?.approval);
       } catch {
         return false;
       }
@@ -307,6 +329,13 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   // F67: a stop rule that runs `cstack image text` needs tesseract or a judge command; say so before making, not mid-batch
   if (at === 0 && (flow.steps ?? []).some((s) => /cstack image text/.test(String(s.gate?.check ?? ''))) && !onPath('tesseract'))
     warnings.push('make: a stop rule runs cstack image text, and tesseract is not on PATH here; install it (brew install tesseract; cstack never installs it) or pass --engine judge --judge "<agent cmd>" each time, or the check refuses');
+  // F68: compiled prompts are cheap to review and expensive to discover wrong after a paid batch
+  if (at === 0 && generative) {
+    const steps = flow.steps ?? [];
+    const firstGen = steps.findIndex((s) => s.kind === 'generative' && MEDIA_SKILLS.has(s.skill));
+    const reviewed = steps.slice(0, firstGen < 0 ? steps.length : firstGen).some((s) => /prompt/i.test(`${s.id} ${s.does}`) && (s.skill === 'creative-review' || s.gate?.type === 'independent_review'));
+    if (firstGen >= 0 && !reviewed) warnings.push('make: no prompt review before the first paid generation; have creative-review read the compiled prompts against the territory and the references the founder reacted to before spending (a prompt-review step)');
+  }
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
   if (at === 0) for (const e of requirementGaps(ws, flow)) (e.waived ? warnings : errors).push(e.message);
   if (at >= 1 && VISUAL.has(d.kind)) {
@@ -314,6 +343,10 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);
     for (const x of t) if (!inWs(x.probe_sheet)) errors.push(`decide: territory "${x.name}" has no probe sheet at ${x.probe_sheet}; a direction described only in words is not a visible option`);
     if (t.length === 2) warnings.push('decide: two territories; creative-direction asks for three that differ in idea, not styling');
+    // F69: a territory that depends on a price, a number or the wordmark needs them set after generation, not dropped
+    const needs = [...new Set(t.flatMap((x) => x.composite ?? []))];
+    const composites = (flow.steps ?? []).some((s) => s.skill === 'vector-master' || /\bcomposit(e|ed|es|ing)\b/i.test(`${s.id} ${s.does}`));
+    if (needs.length && !composites) errors.push(`decide: territories depend on ${needs.join(', ')}, set after generation, and the plan has no composite step (vector-master) to set them; add one, so the no-lettering rule does not strip what the idea needs`);
   }
   if (at >= 2 && VISUAL.has(d.kind)) {
     const gold = goldRefs(ws);

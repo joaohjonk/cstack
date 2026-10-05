@@ -97,7 +97,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-import/SKILL.md",
-      "tokens": 1654
+      "tokens": 1698
     },
     {
       "slug": "brand-verify",
@@ -453,7 +453,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-direction/SKILL.md",
-      "tokens": 1283
+      "tokens": 1290
     },
     {
       "slug": "creative-intelligence",
@@ -554,7 +554,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/creative-review/SKILL.md",
-      "tokens": 1397
+      "tokens": 1414
     },
     {
       "slug": "creative-strategist",
@@ -1106,7 +1106,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/product-fidelity/SKILL.md",
-      "tokens": 1316
+      "tokens": 1404
     },
     {
       "slug": "prompt-director",
@@ -1321,7 +1321,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/taste-search/SKILL.md",
-      "tokens": 1616
+      "tokens": 1658
     },
     {
       "slug": "three-d",

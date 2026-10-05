@@ -325,3 +325,48 @@ test('flows: phase budgets are checked against est_cost and the run budget; a te
     process.env.PATH = PATH;
   }
 });
+
+test('flows gate: a product close-up needs an owner-confirmed product-truth reference (F71)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f71-');
+  const { file } = planFromFlow(w, 'product-hero-video', { target: 'a six second product film for a tall can' });
+  const gate = () => gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 5, per_day: 10 } }).errors.join('\n');
+  assert.match(gate(), /no owner-confirmed product-truth reference/);
+  const ref = (approval) => `id: ref-can\nkind: image\nlibrary: own_asset\nrights:\n  status: owned\ntransferable_mechanism: the real can, front, daylight\napproval: ${approval}\n`;
+  fs.mkdirSync(path.join(w, 'references', 'own'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'references', 'own', 'can.reference.yaml'), ref('inferred'));
+  assert.match(gate(), /product-truth/, 'research labelled "real product" is a candidate until the owner confirms');
+  fs.writeFileSync(path.join(w, 'references', 'own', 'can.reference.yaml'), ref('locked'));
+  assert.doesNotMatch(gate(), /product-truth/);
+});
+
+test('flows gate: no prompt review before paid generation warns; territories that need composited elements need a composite step (F68, F69)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f68-');
+  const { file } = planFromFlow(w, 'grid-pick-polish', { target: 'flavour pictures for a tall can, four frames each' });
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const run = (stage) => gateFlow(w, file, { stage, providers: fal, budget: { per_run: 2, per_day: 5 } });
+  assert.doesNotMatch(run('make').warnings.join('\n'), /no prompt review/, 'the library flow reviews prompts before the grid');
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  const noReview = { ...plan, steps: plan.steps.filter((s) => s.id !== 'prompt-review') };
+  fs.writeFileSync(file, YAML.stringify(noReview));
+  assert.match(run('make').warnings.join('\n'), /no prompt review before the first paid generation/);
+  fs.mkdirSync(path.join(w, 'work', 'sheets'), { recursive: true });
+  for (const n of ['a', 'b', 'c']) fs.writeFileSync(path.join(w, 'work', 'sheets', `${n}.png`), 'x');
+  const territories = [{ name: 'Tall Poster', probe_sheet: 'work/sheets/a.png', composite: ['the price', 'drop number'] }, { name: 'Loud', probe_sheet: 'work/sheets/b.png' }, { name: 'Drop', probe_sheet: 'work/sheets/c.png' }];
+  fs.writeFileSync(file, YAML.stringify({ ...noReview, territories }));
+  assert.ok(validateValue('flow', YAML.parse(fs.readFileSync(file, 'utf8'))).ok);
+  assert.match(run('decide').errors.join('\n'), /territories depend on the price, drop number, set after generation, and the plan has no composite step/);
+  fs.writeFileSync(file, YAML.stringify({ ...noReview, territories, steps: [...noReview.steps, { id: 'composite', does: 'set the price and drop number in the brand type over each final', kind: 'deterministic', skill: 'vector-master', gate: { type: 'deterministic_check', check: 'cstack svg legibility' } }] }));
+  assert.doesNotMatch(run('decide').errors.join('\n'), /composite step/);
+});
+
+test('prompt compile warns when slots contradict each other, and only then (F70)', async () => {
+  const { compile } = await import('../scripts/lib/prompt.mjs');
+  const r = compile({ template: '{subject}. {light}. {rules}', slots: { subject: {}, light: {}, rules: {} }, values: { subject: 'a tall can with the price printed on the side, close-up', light: 'night street, wide shot', rules: 'no lettering, no logos' } });
+  assert.ok(r.ok, 'warnings never fail a compile');
+  assert.equal(r.warnings.length, 2);
+  assert.match(r.warnings[0], /slot "rules" asks for no lettering and slot "subject" asks for text or a mark/);
+  assert.match(r.warnings[1], /close-up.*wide frame/);
+  assert.deepEqual(compile({ template: '{a}. {b}', slots: { a: {}, b: {} }, values: { a: 'no logos or text', b: 'soft window light, studio' } }).warnings, []);
+});

@@ -64,6 +64,7 @@ Route by job (detect first with `cstack tools`; never assume access):
 ## Decision rules
 
 - Reject references with no articulable mechanism (moodboard mimicry).
+- An image found in research that seems to show the brand's own product is recorded with `approval: inferred`, never as product truth, until the owner confirms it (F71).
 - Ten references from one category = reference monoculture: widen before presenting.
 - Rights `unknown` references are inspiration only and never used as image inputs.
 

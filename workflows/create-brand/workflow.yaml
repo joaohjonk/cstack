@@ -49,10 +49,13 @@ steps:
 - id: references
   skill: taste-search
   does: 'the founder''s own inspirations first, then research (owner exports from tools like Cosmos, the web, real shelves);
-    a packet brought back to the founder ("a bit of this, a bit of that"), their reactions recorded as feedback'
+    a board brought back to the founder ("a bit of this, a bit of that": cstack sheet board, keep or kill per card),
+    their reactions recorded as feedback. The founder drops their own pictures into references/inspiration/ in the
+    workspace on their computer; say that path to them, since an agent on another machine cannot see their files'
   outputs:
   - references/
   - work/references/*-packet.md
+  - work/sheets/*.html
   - state/feedback.jsonl
   gate: owner
   fallback: local canon + public web

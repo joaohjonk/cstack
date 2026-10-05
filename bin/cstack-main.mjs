@@ -386,6 +386,7 @@ function cmdPrompt(sub) {
     else {
       if (res.ok) console.log(res.prompt + '\n');
       for (const e of res.errors) console.log(`FAIL ${e}`);
+      for (const w of res.warnings ?? []) console.log(`WARN ${w}`);
       console.log(`hash ${res.hash.slice(0, 16)}  ${res.ok ? 'OK' : 'FAILED'}`);
     }
     process.exit(res.ok ? 0 : 1);
