@@ -1,0 +1,5 @@
+I read the approved post before touching it.
+Defect 1: the headline restates the product name and says nothing about the moment.
+Defect 2: the crop cuts the cup's handle, so the product reads as generic.
+Proposed change, one at a time: recrop to keep the handle; leave the copy until we see the new crop.
+Handing back: the two defects and the single recrop for your yes.

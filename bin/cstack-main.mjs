@@ -3,6 +3,7 @@
 // unless it says otherwise.
 import path from 'node:path';
 import fs from 'node:fs';
+import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, shown, readJSONL, appendJSONL, newId, today, nowISO, walk } from '../scripts/lib/core.mjs';
 import { schemaNames, validator, validateTree, validateValue } from '../scripts/lib/schemas.mjs';
@@ -25,6 +26,7 @@ import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
+import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -36,7 +38,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze']);
+const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -159,6 +161,7 @@ const COMMANDS = {
   'learn candidates': 'learnings eligible for promotion (repeated evidence or strong human correction)',
   'learn promote': 'promote a learning: cstack learn promote <id> --to <target> --by <name> --ws <dir>',
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
+  'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
   setup: 'install skills into agent hosts: cstack setup [--host default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro] [--target <project>] [--copy] [--dry-run]   |   --refresh: relink every install this checkout made (cstack update runs it)',
   update: 'update this cstack checkout (fast-forward only; never stashes or resets), reinstall dependencies if they changed, relink every host it was installed into, show what is new: cstack update [--dry-run]   |   --check [--force]: one line when an update exists (skills run this)   |   --snooze   |   --auto on|off   |   --checks on|off',
 };
@@ -692,11 +695,76 @@ function cmdTokens(sub) {
   die('usage: cstack tokens check|build|lint');
 }
 
-function cmdEvals(sub) {
-  if (sub !== 'plan') die('usage: cstack evals plan [--since ref] [--files a,b]');
+async function cmdEvals(sub) {
+  if (sub === 'run') return cmdEvalsRun();
+  if (sub !== 'plan') die('usage: cstack evals plan [--since ref] [--files a,b] | cstack evals run <id...> --dry-run|--agent "<cmd>"|--recorded <dir>');
   const p = evalPlan({ since: args.since, files: args.files ? String(args.files).split(',') : undefined });
   if (args.json) return json(p);
   console.log(p.text);
+}
+
+// docs/evals.md#running-fixtures. Live calls go through guardedCall on the --ws ledger, like any model call.
+async function cmdEvalsRun() {
+  if (args.agent === true || args.judge === true || args.recorded === true || args.out === true) die('--agent, --judge, --recorded and --out need a value');
+  if (args['dry-run'] && args.recorded) die('pass --dry-run or --recorded <dir>, not both');
+  const plan = args.since ? evalPlan({ since: args.since }) : null;
+  const planned = plan ? [...plan.tiers.T2, ...plan.tiers.T3.filter((x) => !x.startsWith('provider smoke'))] : null;
+  const fixtures = selectFixtures(loadFixtures(), { ids: args._, everything: !!args.all, planned, tier: args.tier });
+  if (!fixtures.length) return console.log('no fixtures selected');
+  const mode = args['dry-run'] ? 'dry' : args.recorded ? 'recorded' : 'live';
+  // T0 cases are deterministic and run without an agent; anything else needs one
+  if (mode === 'live' && !args.agent && fixtures.some((f) => f.tier !== 'T0')) die('live runs need --agent "<cmd>" (for example --agent "claude -p --output-format stream-json --verbose"); or pass --dry-run, or --recorded <dir>');
+  const out = path.resolve(mode === 'recorded' ? args.recorded : args.out ?? path.join(fs.realpathSync(os.tmpdir()), `cstack-evals-${nowISO().replace(/[:.]/g, '-')}`));
+  if (mode === 'recorded' && !exists(out)) die(`--recorded ${out}: no such folder`);
+  fs.mkdirSync(out, { recursive: true });
+  const agent = args.agent ? tokenize(args.agent) : null;
+  const judge = args.judge ? tokenize(args.judge) : null;
+  const cost = args['cost-per-call'] !== undefined ? Number(args['cost-per-call']) : null;
+  if (cost != null && !(cost >= 0)) die('--cost-per-call must be a number of USD, 0 or more');
+  const callsModel = (mode === 'live' && agent) || (mode !== 'dry' && judge);
+  if (callsModel && !loadBudget(ws)) die(`${ws} has no budget envelope (cstack.config.yaml budget:); model calls are booked in a workspace ledger. Pass --ws <workspace>, or cstack brand init one`);
+  const session = newId('EVS');
+  const cmdLabel = (argv) => [path.basename(argv[0]), ...argv.slice(1)].join(' ').slice(0, 80);
+  const guard = (operation, fn) =>
+    guardedCall(
+      ws,
+      { provider: 'agent-cli', model: cmdLabel(operation === 'eval_judge' ? judge : agent), operation, params: { session, n: newId('C') }, estimated_cost: cost == null ? null : { amount: cost, currency: 'USD', basis: 'owner-stated per call' }, unpriced_reason: 'agent CLI cost unknown; pass --cost-per-call', confirm_unpriced: !!args['confirm-unpriced'], confirmed: !!args.confirm, skill: 'evals', max_retries: 0 },
+      fn,
+    );
+  const results = [];
+  for (const fx of fixtures) {
+    const r = await runFixture(fx, { out, mode, runs: args.runs, agent, judge, guard, timeout_s: args.timeout ? Number(args.timeout) : undefined });
+    results.push(r);
+    if (r.aborted) {
+      if (!args.json) console.log(`STOPPED  ${fx.id}: ${r.runs.at(-1).evidence}`);
+      break;
+    }
+    if (!args.json) {
+      console.log(`${r.result.toUpperCase().padEnd(8)} ${fx.id}  ${r.passed}/${r.runs.length} pass${r.failed ? `, ${r.failed} fail` : ''}${r.pending ? `, ${r.pending} pending` : ''}`);
+      for (const run of r.runs) {
+        if (run.evidence) console.log(`  run ${run.run}: ${run.evidence}`);
+        for (const g of run.graders ?? []) if (g.result !== 'pass') console.log(`  run ${run.run} ${g.type} ${g.result}: ${g.pattern ?? g.run ?? ''}${g.pattern || g.run ? ' — ' : ''}${g.evidence}`);
+      }
+    }
+  }
+  const summary = { date: today(), mode, out, agent: agent?.join(' ') ?? null, judge: judge?.join(' ') ?? null, fixtures: results.length, pass: results.filter((r) => r.result === 'pass').length, fail: results.filter((r) => r.result === 'fail').length, results: results.map(({ runs, ...x }) => ({ ...x, runs: runs.map(({ files, ...y }) => y) })) };
+  if (mode !== 'recorded') writeJSON(path.join(out, 'summary.json'), summary);
+  if (args.record && mode !== 'dry') {
+    let n = 0;
+    for (const r of results)
+      for (const rec of evalRecords(r, { judge: judge && cmdLabel(judge), date: today() })) {
+        rec.id = newId('EV');
+        const v = validateValue('eval', rec);
+        if (!v.ok) die(`invalid eval record for ${r.id}: ${v.errors}`);
+        appendJSONL(path.join(ws, 'state', 'evals.jsonl'), rec);
+        n++;
+      }
+    if (!args.json) console.log(`recorded ${n} eval record(s) in ${shown(path.join(ws, 'state', 'evals.jsonl'))}`);
+  }
+  if (args.json) json(summary);
+  else if (mode === 'dry') console.log(`${summary.fixtures} fixture(s) prepared, nothing called (dry run); prompts and workspaces in ${shown(out)}`);
+  else console.log(`${summary.pass}/${summary.fixtures} fixtures pass (${mode}); runs in ${shown(out)}`);
+  if (summary.fail || results.some((r) => r.aborted || r.runs.some((x) => x.result === 'error')) || (args.strict && results.some((r) => r.result !== 'pass'))) process.exit(1);
 }
 
 function cmdLint(sub) {
@@ -1008,7 +1076,7 @@ switch (cmd) {
     cmdBrand(argv[0]);
     break;
   case 'evals':
-    cmdEvals(argv[0]);
+    await cmdEvals(argv[0]);
     break;
   case 'setup':
     cmdSetup();

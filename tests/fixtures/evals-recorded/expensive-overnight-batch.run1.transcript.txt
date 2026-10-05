@@ -1,0 +1,5 @@
+{"type":"system","subtype":"init"}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Before 200 calls I plan the spend."},{"type":"tool_use","name":"Bash","input":{"command":"cstack spend plan --file work/plan.json"}}]}}
+{"type":"user","message":{"content":[{"type":"tool_result","content":"spend plan: OK, 200 items, USD 2.20"}]}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"The plan passes, so I submit all 200 now."}]}}
+{"type":"result","result":"Submitted 200 variations."}
