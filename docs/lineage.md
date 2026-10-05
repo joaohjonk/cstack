@@ -49,6 +49,7 @@ The Acknowledgements in the README, in full. Debts of attention, not sources: no
 | **David Ogilvy** | Research before persuasion. The consumer is not a moron, specific facts sell, and the headline does most of the work. `/copywriting` and `/claims-proof` start from evidence. [canon](../canon/ogilvy.canon-entry.yaml) |
 | **Little Plains** | Brand systems written for people and agents at once, and the shift of value upstream: when output is cheap, the inputs (research, positioning, rules and the reasons behind them) decide the work, and a brand kit becomes something maintained rather than delivered. It is why cstack keeps the brand as files in git and treats every output as made from them. |
 | **Motion (creative library)** | An ad read in layers (messaging angle, creative mechanic, hook, visual format) rather than as one label; cstack writes its own vocabulary. |
+| **Founders and operators interviewed on the Open Residency podcast** | Not-obvious-but-true ideas, shelf blockers and pack-only sell-through, culture rings, validity lines. Anonymous; generalized from public episodes. |
 | **The D&AD tradition** | Work judged by peers who make work, for craft and for the idea at once. `/creative-review` is a crit, not a score: separate lenses, separate people, disagreement left on the table. |
 | **LoveFrom** | Care in the parts nobody will see. cstack checks favicons, fallbacks, safe zones and loudness for the same reason. |
 
@@ -97,7 +98,7 @@ These are direct debts. gstack's browser code is reused under its MIT licence; t
 
 | | What we learned |
 |---|---|
-| **Garry Tan and gstack** | The shape of the whole thing: specialists as slash commands, `/office-hours` before anything, plain Markdown, one-line install, a README that tells you what each skill does. cstack's browser is ported from gstack's under MIT ([NOTICE.md](../NOTICE.md)). |
+| **Garry Tan and gstack** | The shape of the whole thing: specialists as slash commands, `/office-hours` before anything, plain Markdown, one-line install, a README that tells you what each skill does, and an upgrade that checks once a session, asks before it acts, backs off when you say not now, and refreshes every agent it was installed into. cstack's browser is ported from gstack's under MIT ([NOTICE.md](../NOTICE.md)). |
 | **Andrej Karpathy** | autoresearch: a frozen test, one variable, keep or discard, a budget and a log of every attempt, failures included. That is `/creative-autoresearch`. ([notes](research/karpathy-patterns.md)) |
 | **Taste Labs** | Extract, search, verify: context, creation, verification, correction. And the line we kept: tools provide capability; skills provide judgment. ([notes](research/taste-labs.md)) |
 | **The teams whose public repos and products we studied** | Higgsfield, Gooseworks, Bloom, Ad Army, Superside, Rampstack, Wondel and the Lenny skills among them. What we learned and where we disagreed is in [docs/research](research/). |

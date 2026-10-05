@@ -18,9 +18,11 @@ alias cstack="node ~/cstack/bin/cstack.mjs"
 cstack help
 ```
 
-`setup` never overwrites a skill folder it did not create. Other hosts: `cstack setup --host all`, or one of `agents | claude-code | codex | cursor | gemini-cli | opencode`. Add `--target <project>` to install into a project instead of your home directory, `--copy` to copy instead of symlink, `--dry-run` to preview. See [skill-authoring.md](skill-authoring.md#host-install).
+`setup` never overwrites a skill folder it did not create. Other hosts: `cstack setup --host auto` (adds Copilot CLI, Factory and Kiro when they are on your machine), `--host all`, or one of `agents | claude-code | codex | cursor | gemini-cli | opencode | copilot | factory | kiro`. Add `--target <project>` to install into a project instead of your home directory, `--copy` to copy instead of symlink, `--dry-run` to preview. See [skill-authoring.md](skill-authoring.md#host-install).
 
 `playwright-core` is an optional dependency, used only by `cstack browse`.
+
+To update later, run `/cstack-update` in your agent or `cstack update`: it fast-forwards the checkout (never discarding your changes), reinstalls dependencies when they changed, relinks every host you installed into and shows what is new. Skills check for updates once a session; `cstack update --auto on` updates without asking, `--checks off` stops the checks.
 
 ## 2. Create a workspace (1 min)
 

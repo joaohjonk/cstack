@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # cstack setup: install dependencies and link skills into your agent host(s).
 #   ./setup                 default hosts (see registry/hosts.json)
-#   ./setup claude-code     one host: default|agents|claude-code|codex|cursor|gemini-cli|opencode|all
+#   ./setup claude-code     one host: default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro
 #   ./setup --host claude-code   the same, flag form (also --host=claude-code)
 # Safe to re-run (idempotent). CSTACK_SETUP_DRY_RUN=1 ./setup shows what it would link.
 # Never installs system software, never asks for or stores keys, makes no paid calls.
