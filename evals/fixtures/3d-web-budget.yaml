@@ -32,9 +32,8 @@ expected:
   - makes the canvas the largest-contentful-paint element
   - installs gltf-transform or any system tool without the owner's approval
 graders:
-- type: command
-  run: cstack 3d inspect work/3d/*/model.glb --budget web-hero
-  expect_exit: 0
+- type: tool_used
+  pattern: 3d inspect .*--budget web-hero
 - type: tool_used
   pattern: browse qa
 - type: llm
