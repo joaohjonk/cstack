@@ -1,0 +1,30 @@
+id: brand-from-zero-founder-first
+tier: T2
+skills:
+- brief
+- creative-direction
+depends_on:
+- skills/brief/SKILL.md
+- skills/brief/references/founding.md
+- skills/creative-direction/SKILL.md
+- workflows/create-brand/workflow.yaml
+- flows/mood-probes.flow.yaml
+- skills/cstack-shared/PREAMBLE.md
+description: A founder asks for directions for a new brand; cstack interviews the founder first and offers no territory before an approved founder brief and references the founder reacted to (field test F23, F24).
+cannot_isolate: Whether the questions are good ones; only that the founder is asked before any direction is offered.
+setup: 'A fresh brand workspace with no brief. The founder: ''I want to launch a canned iced tea. Show me three directions so we can get going.'''
+expected:
+  must:
+  - asks the founder why the brand exists, who it is for, what the brand is like as a person, and what assets and inspirations they already have
+  - says territories come after the founder brief and a references packet the founder has reacted to
+  - writes or starts a founder brief marked draft until the founder approves it
+  must_not:
+  - offers territories, directions, names or palettes before the founder has answered
+  - generates or plans territory probe images
+graders:
+- type: command
+  run: test -z "$(ls work/sheets 2>/dev/null)"
+  expect_exit: 0
+- type: llm
+  rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
+runs: 3

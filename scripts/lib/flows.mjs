@@ -156,7 +156,7 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
 }
 
 // flows gate: the run's plan read at three moments, so quality is not left to compliance checks alone.
-//   make    the plan passes flows check, states its deliverable, and imagery that needs generation has a usable media
+//   make    the plan passes flows check, meets its `requires` (or records the owner's waiver), states its deliverable, and imagery that needs generation has a usable media
 //           provider here (or the owner's recorded yes to a substitute): missing capability never degrades silently
 //   decide  + at least two territories, each made visible as a probe contact sheet that exists
 //   final   + references/gold is not empty, and the work has been put side by side with at least one gold reference
@@ -176,6 +176,54 @@ export function goldRefs(ws) {
       return f.replace(/\.reference\.yaml$/, '');
     }
   });
+}
+
+const REQUIRE_TEXT = {
+  founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml with owner_approval.status: owner_approved): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
+  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on a references/ or work/references/ item in state/feedback.jsonl): bring the founder references first (taste-search) and record what they say',
+};
+
+// Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
+// reported as a warning that names the waiver, never dropped silently.
+export function requirementGaps(ws, flow) {
+  const out = [];
+  for (const req of flow.requires ?? []) {
+    if (requirementMet(ws, req)) continue;
+    const w = (flow.waivers ?? []).find((x) => x.requires === req && x.owner_approved);
+    out.push(w ? { requires: req, waived: true, message: `make: going ahead without ${req.replace('_', ' ')} (owner waived it ${w.owner_approved}: ${w.why}); say so wherever the work is shown` } : { requires: req, waived: false, message: `make: ${REQUIRE_TEXT[req] ?? req}; or record the owner's waiver in the plan (waivers: [{requires: ${req}, owner_approved: <date>, why}])` });
+  }
+  return out;
+}
+
+function requirementMet(ws, req) {
+  if (req === 'founder_brief') {
+    const dir = path.join(ws, 'briefs');
+    if (!exists(dir)) return false;
+    return fs.readdirSync(dir).filter((f) => /\.founder-brief\.(ya?ml|json)$/.test(f)).some((f) => {
+      try {
+        const b = readData(path.join(dir, f));
+        return b?.owner_approval?.status === 'owner_approved' && validateValue('founder-brief', b).ok;
+      } catch {
+        return false;
+      }
+    });
+  }
+  if (req === 'reference_reactions') {
+    const dir = path.join(ws, 'work', 'references');
+    const packet = exists(dir) && fs.readdirSync(dir).some((f) => f.endsWith('-packet.md'));
+    const fb = path.join(ws, 'state', 'feedback.jsonl');
+    if (!packet || !exists(fb)) return false;
+    const kinds = new Set(['approve', 'reject', 'gold', 'anti', 'pairwise', 'comment']);
+    return fs.readFileSync(fb, 'utf8').split('\n').some((l) => {
+      try {
+        const e = JSON.parse(l);
+        return kinds.has(e.type) && /^(work\/)?references\//.test(String(e.artifact_ref ?? ''));
+      } catch {
+        return false;
+      }
+    });
+  }
+  return false;
 }
 
 /** gateFlow(ws, file, {stage, providers: availability() rows, skills, budget: the workspace budget (undefined = not checked)}) -> {file, stage, errors, warnings} */
@@ -215,6 +263,8 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
       errors.push(`needs generation, and the budget here is ${budget ? `per_run ${budget.per_run ?? 0}, per_day ${budget.per_day ?? 0}` : 'not set'}: ask the owner for a budget (cstack.config.yaml budget:) before making it; a free substitute needs their yes, recorded as deliverable.substitute`);
     if (!usable.length && d.substitute?.owner_approved) warnings.push(`making it as ${d.substitute.to} instead of generating it (owner approved ${d.substitute.owner_approved}); say so wherever the work is shown`);
   }
+  // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
+  if (at === 0) for (const e of requirementGaps(ws, flow)) (e.waived ? warnings : errors).push(e.message);
   if (at >= 1 && VISUAL.has(d.kind)) {
     const t = flow.territories ?? [];
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);

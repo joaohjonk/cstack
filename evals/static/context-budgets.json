@@ -67,8 +67,8 @@
       "set": "2026-10-03"
     },
     "brief": {
-      "ceiling": 1509,
-      "set": "2026-10-03"
+      "ceiling": 1751,
+      "set": "2026-10-05"
     },
     "product-fidelity": {
       "ceiling": 1316,
@@ -238,6 +238,13 @@
       "from": 4366,
       "to": 4493,
       "reason": "new skill cstack-update (install and update surface)"
+    },
+    {
+      "date": "2026-10-05",
+      "slug": "brief",
+      "from": 1509,
+      "to": 1751,
+      "reason": "founding mode for a brand from zero (field test F23, F24): the mode switch, its output and its failure mode belong in the body; the interview itself lives in references/founding.md"
     }
   ]
 }

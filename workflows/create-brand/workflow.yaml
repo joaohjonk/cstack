@@ -1,8 +1,9 @@
 name: create-brand
 status: template
-summary: 'Build a new brand from zero: problem, strategy, culture, references, territories, system, world, applications, verification.'
+summary: 'Build a new brand from zero, founder first: interview the founder, customer and category, strategy, culture, references the founder reacts to, territories, craft, consistency, then the brand''s world.'
 entry_skill: workflow
 methods:
+- mood-probes
 - logo-system
 - type-system
 - icon-set
@@ -14,13 +15,22 @@ triggers:
 note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs.
 runs: []
 steps:
+- id: founder-interview
+  skill: brief
+  does: 'founding mode: interview the founder as a studio takes a brief (why the brand exists, the founder''s story and conviction,
+    the customer, the brand as a person, assets and inspirations in hand) before any research, reference or territory'
+  outputs:
+  - briefs/*.founder-brief.yaml
+  gate: owner
 - id: brief
   skill: brief
+  does: the identity brief, written from the approved founder brief
   outputs:
   - briefs/*.creative-brief.yaml
   gate: owner
-- id: category-research
+- id: customer-and-category
   skill: competitor-intel
+  does: 'customer first: who they are, where they meet the category (real shelves, feeds, counters), then the category map'
   outputs:
   - work/competitors/*-category-map.md
   gate: auto
@@ -38,24 +48,31 @@ steps:
   gate: auto
 - id: references
   skill: taste-search
+  does: 'the founder''s own inspirations first, then research (owner exports from tools like Cosmos, the web, real shelves);
+    a packet brought back to the founder ("a bit of this, a bit of that"), their reactions recorded as feedback'
   outputs:
   - references/
   - work/references/*-packet.md
+  - state/feedback.jsonl
   gate: owner
   fallback: local canon + public web
 - id: territories
   skill: creative-direction
-  does: identity, verbal and art-direction territories
+  does: identity, verbal and art-direction territories from the founder brief and the reactions, made visible with the mood-probes
+    flow (its make gate needs both)
   outputs:
   - work/direction/*-territories.md
+  - work/sheets/
   gate: auto
 - id: selection
-  does: owner selects one territory (pairwise feedback recorded)
+  does: the founder picks pairs on a blind sheet (cstack sheet), then chooses one territory, or a merge critiqued again
   outputs:
   - state/feedback.jsonl
   gate: owner
 - id: systemization
   skill: identity-system
+  does: 'craft: name, mark, type and colour from the chosen territory, held to the proven rules (grid, hierarchy, legibility)
+    and looped with the founder until they believe it is right; the result is the base of consistency'
   outputs:
   - brand/tokens/
   - brand/rules/brand-rules.yaml
@@ -67,7 +84,7 @@ steps:
   - work/copy/*.md
   gate: auto
 - id: brand-world
-  does: first entities (products, packaging, light, surfaces, cast) in brand-world.json
+  does: 'the identity extended into its world: products, packaging, photography, light, materials, surfaces, cast, in brand-world.json'
   outputs:
   - brand/brand-world.json
   gate: auto

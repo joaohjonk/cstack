@@ -209,7 +209,7 @@
     },
     "cost_ladder": {
       "type": "string",
-      "description": "probe → selection → final, with the stop condition"
+      "description": "probe \u2192 selection \u2192 final, with the stop condition"
     },
     "failure_modes": {
       "type": "array",
@@ -369,6 +369,45 @@
             "type": "string"
           }
         }
+      }
+    },
+    "requires": {
+      "type": "array",
+      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet the owner has reacted to, recorded in state/feedback.jsonl)",
+      "items": {
+        "enum": [
+          "founder_brief",
+          "reference_reactions"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "waivers": {
+      "type": "array",
+      "description": "the owner's recorded choice to go ahead without a requirement",
+      "items": {
+        "type": "object",
+        "required": [
+          "requires",
+          "owner_approved",
+          "why"
+        ],
+        "properties": {
+          "requires": {
+            "enum": [
+              "founder_brief",
+              "reference_reactions"
+            ]
+          },
+          "owner_approved": {
+            "type": "string",
+            "description": "date of the owner's yes"
+          },
+          "why": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     }
   },

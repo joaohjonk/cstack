@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/founder-brief.schema.json",
+  "title": "Founder brief",
+  "description": "Output of /brief in founding mode, for a brand from zero: the founder interviewed the way a good studio takes a brief, before research, references or territories. Every answer is the founder's own words or marked UNKNOWN; nothing is invented.",
+  "type": "object",
+  "required": [
+    "id",
+    "brand_id",
+    "date",
+    "why_it_exists",
+    "customer",
+    "brand_as_person",
+    "assets_and_inspirations",
+    "owner_approval"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "brand_id": {
+      "type": "string"
+    },
+    "date": {
+      "$ref": "common.schema.json#/$defs/date"
+    },
+    "interview": {
+      "type": "object",
+      "properties": {
+        "by": {
+          "type": "string",
+          "description": "who asked"
+        },
+        "founder": {
+          "type": "string",
+          "description": "who answered"
+        },
+        "rounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "notes_ref": {
+          "type": "string",
+          "description": "transcript or notes, workspace-relative"
+        }
+      },
+      "additionalProperties": false
+    },
+    "why_it_exists": {
+      "type": "object",
+      "required": [
+        "reason"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "why this brand should exist, in the founder's words"
+        },
+        "origin": {
+          "type": "string",
+          "description": "the founder's story, instinct or problem behind it"
+        },
+        "problem": {
+          "type": "string",
+          "description": "the problem it solves in the world, if any"
+        },
+        "cultural_space": {
+          "type": "string",
+          "description": "the cultural space it steps into"
+        },
+        "conviction": {
+          "type": "string",
+          "description": "what the founder believes the world will want more of"
+        }
+      },
+      "additionalProperties": false
+    },
+    "customer": {
+      "type": "object",
+      "description": "customer first: who it is for, as the founder knows them",
+      "required": [
+        "who",
+        "evidence"
+      ],
+      "properties": {
+        "who": {
+          "type": "string"
+        },
+        "moment": {
+          "type": "string",
+          "description": "when and where they meet the product"
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "enum": [
+            "observed",
+            "told",
+            "assumed",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "brand_as_person": {
+      "type": "object",
+      "description": "a brand acts like a person: a name, a look, places, the company it keeps",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "a name, or the naming brief"
+        },
+        "personality": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "looks_like": {
+          "type": "string",
+          "description": "colour, mark, type and material cues the founder already sees"
+        },
+        "sounds_like": {
+          "type": "string"
+        },
+        "hangs_out": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "company_it_keeps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "brands, people or places it sits next to"
+          }
+        },
+        "sold_at": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "never": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "what it would never do or look like"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "assets_and_inspirations": {
+      "type": "object",
+      "description": "what the founder brings: assets in hand, and inspirations to bring back to them as references",
+      "properties": {
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "what"
+            ],
+            "properties": {
+              "what": {
+                "type": "string"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "keep",
+                  "open",
+                  "drop"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "inspirations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "ref",
+              "what_draws_them"
+            ],
+            "properties": {
+              "ref": {
+                "type": "string",
+                "description": "a brand, object, place, school or work, by name or link"
+              },
+              "kind": {
+                "enum": [
+                  "brand",
+                  "packaging",
+                  "object",
+                  "place",
+                  "culture",
+                  "design_school",
+                  "person_public",
+                  "other"
+                ]
+              },
+              "what_draws_them": {
+                "type": "string",
+                "description": "the mechanism the founder likes, not the look"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owner_approval": {
+      "type": "object",
+      "description": "the founder's yes to this brief; research, references and territories wait for it",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "owner_approved"
+          ]
+        },
+        "by": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "common.schema.json#/$defs/date"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
