@@ -33,7 +33,7 @@ cstack trial import ~/trials/acme-r1 ~/Downloads/acme-r1-attribution.taps.json ~
 - **Isolation.** A brand team's workspace holds `cstack.config.yaml`, `brand/`, `assets/`, `references/`, `recipes/` and
   `briefs/`. It never holds `state/`, `work/`, `.env` files or keys. The control workspace holds a budget and
   `trial/brand.md`.
-- **Roles.** Strategist, art director, copywriter, producer, makers and reviewer each run as their own agent session,
+- **Roles.** Strategist, art director, challenger (argues for a braver version), the art director again as decider, copywriter, producer, makers and reviewer each run as their own agent session,
   in that order. Each one hands its work on in a file under `trial/`, and every transcript is kept. A stopped run
   (for example at a usage limit) resumes from the next role that has not run.
 - **Blind.** The sheets show shuffled codes only; `score/key.json` maps them back. Tap before reading the reviews.

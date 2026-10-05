@@ -1,0 +1,17 @@
+id: website-launch
+title: The launch page and its first email
+asker: the founder, before the site goes live
+deadline: the site launches on Monday
+situation: >-
+  The brand's site launches next week. It needs the top of the home page, one product section that sells a single
+  product, and the welcome email new subscribers receive. The developer builds from what the team hands over.
+constraint: the same system has to work as a page someone scrolls on a phone and as an email that renders without web fonts
+applications:
+  - {id: home-hero, kind: page, what: "the home page hero at desktop and phone width"}
+  - {id: product-section, kind: page, what: "one product section: picture, name, price, the one reason to buy, add to cart"}
+  - {id: welcome-email, kind: vector, what: "the welcome email's header and first block", size: 600 px wide}
+success:
+  - the hero says what the brand is in one line a stranger understands
+  - the product section reads at phone width without zooming
+  - the email still looks like the brand with system fonts
+flows: [grid-pick-polish]

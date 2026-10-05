@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
-import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
+import { ROOT, exists, readData, writeAtomic, today, walk } from './core.mjs';
 import { validateValue } from './schemas.mjs';
 import { briefApproved, feedbackMark } from './brief.mjs';
 import { onPath } from './tools.mjs';
@@ -354,6 +354,9 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);
     for (const x of t) if (!inWs(x.probe_sheet)) errors.push(`decide: territory "${x.name}" has no probe sheet at ${x.probe_sheet}; a direction described only in words is not a visible option`);
     if (t.length === 2) warnings.push('decide: two territories; creative-direction asks for three that differ in idea, not styling');
+    // F87: founder first, not founder only; a decision taken without cstack arguing for something better is taken alone
+    const memos = walk(path.join(ws, 'work'), (f) => /challenge[^/\\]*\.md$/i.test(path.basename(f)));
+    if (!memos.length) warnings.push('decide: no challenge memo in work/ (work/direction/<date>-challenge.md): before the owner decides, creative-review argues for a braver version and asks about price, claim and positioning (creative-review references/challenge.md)');
     // F69: a territory that depends on a price, a number or the wordmark needs them set after generation, not dropped
     const needs = [...new Set(t.flatMap((x) => x.composite ?? []))];
     const composites = (flow.steps ?? []).some((s) => s.skill === 'vector-master' || /\bcomposit(e|ed|es|ing)\b/i.test(`${s.id} ${s.does}`));

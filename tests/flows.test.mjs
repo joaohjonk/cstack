@@ -384,3 +384,22 @@ test('flows gate: a pack target on a picture flow points at concept-wrap; concep
   assert.equal(checkFlowFile(w, wrap.file).errors.length, 0);
   assert.doesNotMatch(gateFlow(w, wrap.file, opts).warnings.join('\n'), /the target is a pack/);
 });
+
+test('founder first, not founder only: decide warns without a challenge memo; create-brand goes downstream (F87, F88)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f87-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territories for a new tea brand, made visible' });
+  fs.mkdirSync(path.join(w, 'work', 'sheets'), { recursive: true });
+  for (const n of ['a', 'b', 'c']) fs.writeFileSync(path.join(w, 'work', 'sheets', `${n}.png`), 'x');
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, YAML.stringify({ ...plan, territories: ['a', 'b', 'c'].map((n) => ({ name: n, probe_sheet: `work/sheets/${n}.png` })) }));
+  const run = () => gateFlow(w, file, { stage: 'decide', providers: [], budget: null });
+  assert.match(run().warnings.join('\n'), /no challenge memo/);
+  fs.mkdirSync(path.join(w, 'work', 'direction'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'work', 'direction', '2026-10-05-challenge.md'), '# challenge\n');
+  assert.doesNotMatch(run().warnings.join('\n'), /no challenge memo/);
+  const wf = YAML.parse(fs.readFileSync(path.join(ROOT, 'workflows', 'create-brand', 'workflow.yaml'), 'utf8'));
+  const ids = wf.steps.map((s) => s.id);
+  for (const id of ['challenge-strategy', 'challenge-territories', 'packaging', 'photoshoot', 'ads', 'launch-page', 'replicability']) assert.ok(ids.includes(id), id);
+  assert.ok(ids.indexOf('challenge-strategy') < ids.indexOf('territories') && ids.indexOf('packaging') > ids.indexOf('systemization'));
+});

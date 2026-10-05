@@ -48,6 +48,7 @@ Run lenses **in a context that did not author the work**: a subagent or a differ
 7. **Pairwise mode**: A vs B per lens, then overall with reasons; ask the owner when lenses split. Wrong-audience winners lose.
 8. **Prompt review** before paid generation ([prompts](references/prompt-review.md)).
 9. **Page mode** (home, landing page, guide, long post): add INFORMATION ARCHITECTURE to EDITOR; measure the read ([references/page-mode.md](references/page-mode.md)).
+10. **Push**: end with the braver version and one question each on price, claim and positioning ([challenge](references/challenge.md)). Matching the owner's taste is not a pass (F87).
 
 ## Decision rules
 

@@ -1,0 +1,18 @@
+id: launch-campaign
+title: Launch ads and the photoshoot behind them
+asker: the head of growth, with a paid social budget approved
+deadline: ads live in ten days
+situation: >-
+  The brand launches in a new channel and growth has a modest paid social budget for the first month. They need a
+  small family of ads that can be tested against each other, and the photoshoot plan that will feed them, built on the
+  real pack.
+constraint: a family that tests one variable at a time and still reads as one brand, shot on the real pack rather than a redrawn one
+applications:
+  - {id: shot-list, kind: copy, what: "the photoshoot plan: shot roles, Shot DNA per frame, props, light and the real pack's truth"}
+  - {id: hero-shot, kind: picture, what: "the hero frame of the shoot, the real pack in a life", size: "4:5", pictures: 4}
+  - {id: ad-family, kind: picture, what: "three static ads that differ in one variable (hook, offer or frame), same system", size: 1080 x 1350, pictures: 4}
+success:
+  - each ad names the variable it tests
+  - the pack in every frame matches the pack spec
+  - the three ads are obviously one brand at thumbnail size
+flows: [grid-pick-polish, paid-social-cutdowns]

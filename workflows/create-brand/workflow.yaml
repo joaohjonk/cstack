@@ -1,9 +1,12 @@
 name: create-brand
 status: template
-summary: 'Build a new brand from zero, founder first: interview the founder, customer and category, strategy, culture, references the founder reacts to, territories, craft, consistency, then the brand''s world.'
+summary: 'Build a new brand from zero, founder first but not founder only: interview the founder, customer and category, strategy with a challenge, culture, references the founder reacts to, territories plus one cstack argues for, craft, then downstream: packs, a photoshoot, ads and a launch page, and a replicability trial.'
 entry_skill: workflow
 methods:
 - mood-probes
+- concept-wrap
+- grid-pick-polish
+- paid-social-cutdowns
 - logo-system
 - type-system
 - icon-set
@@ -41,6 +44,13 @@ steps:
   outputs:
   - brand/brand-system.json
   gate: owner
+- id: challenge-strategy
+  skill: creative-review
+  does: 'founder first, not founder only (F87): a challenge memo against the positioning before anything is made: the safe choice, the braver version, and one question each on price, claim and positioning (creative-review references/challenge.md); the founder answers in their words'
+  outputs:
+  - work/direction/*-challenge.md
+  - state/feedback.jsonl
+  gate: owner
 - id: culture
   skill: cultural-scan
   outputs:
@@ -67,6 +77,13 @@ steps:
   - work/direction/*-territories.md
   - work/sheets/
   gate: auto
+- id: challenge-territories
+  skill: creative-strategist
+  does: 'cstack argues for one territory the founder did not ask for, made visible beside theirs with the same probes and budget, and says what it would risk; it competes on the blind sheet, never replaces the founder''s'
+  outputs:
+  - work/direction/*-challenge.md
+  - work/sheets/
+  gate: auto
 - id: selection
   does: the founder picks pairs on a blind sheet (cstack sheet), then chooses one territory, or a merge critiqued again
   outputs:
@@ -91,12 +108,36 @@ steps:
   outputs:
   - brand/brand-world.json
   gate: auto
-- id: applications
-  skill: workflow
-  does: 2-3 key applications (e.g. landing page hero, pack front, launch post) via the matching workflows at probe depth
+- id: packaging
+  skill: identity-system
+  does: 'downstream starts at the pack (F88): an approved pack spec from the dieline or print file, then flat wraps with the brand line and every on-pack element in real type (flow concept-wrap), on a template or true 3D pack, measured with cstack pack check; multipacks and a retail display when the brand sells in stores'
   outputs:
-  - work/
-  gate: auto
+  - work/pack/
+  gate: owner
+- id: photoshoot
+  skill: campaign-sequence
+  does: 'a photoshoot on the real packs: shot roles, Shot DNA per frame, product truth from the pack spec and owner photos (workflow product-photoshoot); generated plates only around the real pack, labelled illustrative when the pack is redrawn'
+  outputs:
+  - work/shoot/
+  gate: owner
+- id: ads
+  skill: asset-factory
+  does: 'a launch ad family from the photoshoot and the line: static ads at the channels'' sizes, one UGC storyboard and a cutdown plan (workflow growth-creative, flow paid-social-cutdowns), each with a bet and a cell'
+  outputs:
+  - work/ads/
+  gate: owner
+- id: launch-page
+  skill: workflow
+  does: 'a launch page from the same system (workflow landing-page), checked at desktop and phone width'
+  outputs:
+  - work/site/
+  gate: owner
+- id: replicability
+  skill: workflow
+  does: 'prove the system carries the brand without its makers: a brand trial (workflow brand-trial, cstack trial) where agent teams with only the brand files answer simulated problems, attributed blind against a control team'
+  outputs:
+  - work/trials/
+  gate: owner
 - id: verification
   skill: brand-verify
   outputs:
