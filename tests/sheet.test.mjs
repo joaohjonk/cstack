@@ -110,3 +110,69 @@ test('sheet: renders to PNG and the pick mode records a pair in the browser', as
     await browser.close();
   }
 });
+
+test('sheet --grid: each grid image offers its frames; winners import as approvals with why and the frame region (F63)', () => {
+  const ws = tmpDir('cstack-sheet-');
+  const files = probes(path.join(ws, 'work', 'grids'), ['g1.png', 'g2.png']);
+  assert.throws(() => makeSheet({ inputs: files, out: path.join(ws, 'x.html'), grid: '3by3' }), /COLSxROWS/);
+  const r = makeSheet({ inputs: files, out: path.join(ws, 'work', 'sheets', 'grid.html'), blind: true, seed: 5, grid: '3x3' });
+  assert.equal(r.cells, 18);
+  const html = fs.readFileSync(r.html, 'utf8');
+  assert.match(html, /data-unit="A#9"/);
+  assert.match(html, /How to pick/);
+  const picksFile = path.join(ws, 'picks.json');
+  fs.writeFileSync(picksFile, JSON.stringify({ sheet: 'grid', blind: true, grid: { cols: 3, rows: 3 }, winners: [{ code: 'B#5', reason_codes: ['composition', 'product read'], reason: 'the can reads first', at: '2026-10-05T16:00:00Z' }], picks: [{ a: 'A#1', b: 'B#5', winner: 'b', margin: 'clear' }] }));
+  const recs = importPicks({ picksFile, sheet: r.html, by: 'Owner', ws });
+  for (const rec of recs) assert.ok(validateValue('feedback-event', rec).ok, JSON.stringify(rec));
+  const [win, pair] = recs;
+  const key = JSON.parse(fs.readFileSync(r.key, 'utf8'));
+  assert.equal(win.type, 'approve');
+  assert.equal(win.artifact_ref, `work/grids/${path.basename(key.items[1].src)}`);
+  assert.deepEqual(win.region, { x: 0.333333, y: 0.333333, w: 0.333333, h: 0.333333, unit: 'fraction' });
+  assert.deepEqual(win.reason_codes, ['composition', 'product read']);
+  assert.equal(win.context.scope, 'blind winner pick');
+  assert.equal(pair.pair.b, `work/grids/${path.basename(key.items[1].src)}#5`);
+  fs.writeFileSync(picksFile, JSON.stringify({ sheet: 'grid', winners: [{ code: 'A#10' }] }));
+  assert.throws(() => importPicks({ picksFile, sheet: r.html, by: 'Owner', ws }), /"A#10", which is not on the sheet/);
+  fs.writeFileSync(picksFile, JSON.stringify({ sheet: 'grid', winners: ['A#1', 'A#2', 'A#3', 'A#4'].map((code) => ({ code })) }));
+  assert.throws(() => importPicks({ picksFile, sheet: r.html, by: 'Owner', ws }), /one to three/);
+});
+
+test('sheet make and open print where the page is and how to pick (F62)', () => {
+  const ws = tmpDir('cstack-sheet-');
+  probes(path.join(ws, 'p'), ['1.png', '2.png']);
+  const out = path.join(ws, 's.html');
+  const made = cli(['sheet', 'make', path.join(ws, 'p'), '--out', out]);
+  assert.equal(made.status, 0, made.stderr);
+  assert.match(made.stdout, /file:\/\/\S+s\.html/);
+  assert.match(made.stdout, /click up to three winners/);
+  const opened = cli(['sheet', 'open', out, '--print-only']);
+  assert.equal(opened.status, 0, opened.stderr);
+  assert.match(opened.stdout, /Download picks\.json/);
+  assert.notEqual(cli(['sheet', 'open', path.join(ws, 'nope.html'), '--print-only']).status, 0);
+});
+
+test('sheet: a click on a grid frame picks it as a winner, with its reasons, in the browser', async () => {
+  const ws = tmpDir('cstack-sheet-');
+  probes(path.join(ws, 'p'), ['1.png', '2.png']);
+  const r = makeSheet({ inputs: [path.join(ws, 'p')], out: path.join(ws, 'gsheet.html'), blind: true, seed: 2, grid: '2x2' });
+  const { loadEngine, launch } = await import('../scripts/lib/browser/launch.mjs');
+  const browser = await launch(await loadEngine());
+  try {
+    const page = await browser.newPage();
+    await page.goto(`file://${r.html}`);
+    await page.click('[data-unit="B#3"]');
+    await page.check('#wlist input[type=checkbox] >> nth=0');
+    await page.fill('#wlist input[type=text]', 'calm');
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('cstack-picks:gsheet:winners') || '[]'));
+    assert.equal(stored.length, 1);
+    assert.equal(stored[0].code, 'B#3');
+    assert.deepEqual(stored[0].reason_codes, ['composition']);
+    assert.equal(stored[0].reason, 'calm');
+    assert.match(await page.textContent('#wcount'), /1 of 3/);
+    await page.click('#toggle');
+    assert.match(await page.textContent('#lc'), /^[AB]#[1-4]$/);
+  } finally {
+    await browser.close();
+  }
+});

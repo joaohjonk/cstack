@@ -1148,7 +1148,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/prompt-director/SKILL.md",
-      "tokens": 1268
+      "tokens": 1304
     },
     {
       "slug": "shot-dna",
