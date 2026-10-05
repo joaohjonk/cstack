@@ -147,7 +147,7 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
     res.errors.push(`a run plan under work/flows/ must have status: plan (found ${flow?.status ?? 'none'})${twin ? `; it is an unchanged copy of the "${twin.id}" library flow: start it with cstack flows plan ${twin.id} --target "..."` : ''}`);
   }
   if (flow?.status === 'plan') {
-    const src = (flow.related ?? []).find((r) => String(r).startsWith('flow:'));
+    const src = sourceFlowRef(flow);
     const lib = src && listFlows(ws).find((f) => f.id === String(src).slice(5));
     if (lib && flow.target?.description && lib.target?.description === flow.target.description) res.errors.push(`target.description is still the "${lib.id}" library wording; state this run's target (--target or edit the plan)`);
     if (lib && same(lib.steps, flow.steps) && same(lib.target?.must, flow.target?.must)) res.warnings.push(`steps and target.must are unchanged from "${lib.id}": confirm they fit this run, or edit them (budget, sizes, owner checkpoints)`);
@@ -185,9 +185,17 @@ const REQUIRE_TEXT = {
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
 // reported as a warning that names the waiver, never dropped silently.
+// The library flow a plan was made from: flows plan appends `flow:<id>` last, after the flow's own related flows.
+function sourceFlowRef(flow) {
+  return (flow.related ?? []).filter((r) => String(r).startsWith('flow:')).at(-1);
+}
+
 export function requirementGaps(ws, flow) {
   const out = [];
-  for (const req of flow.requires ?? []) {
+  // a plan made before its library flow gained a requirement still owes it (F26): the library's requires count too
+  const src = sourceFlowRef(flow);
+  const lib = src ? listFlows(ws).find((f) => f.id === String(src).slice(5)) : null;
+  for (const req of new Set([...(flow.requires ?? []), ...(lib?.requires ?? [])])) {
     if (requirementMet(ws, req)) continue;
     const w = (flow.waivers ?? []).find((x) => x.requires === req && x.owner_approved);
     out.push(w ? { requires: req, waived: true, message: `make: going ahead without ${req.replace('_', ' ')} (owner waived it ${w.owner_approved}: ${w.why}); say so wherever the work is shown` } : { requires: req, waived: false, message: `make: ${REQUIRE_TEXT[req] ?? req}; or record the owner's waiver in the plan (waivers: [{requires: ${req}, owner_approved: <date>, why}])` });

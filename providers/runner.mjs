@@ -264,6 +264,6 @@ export async function runMedia(ws, req, opts = {}) {
       outputs.push(path.relative(ws, file));
     }
     fs.rmSync(pendingPath, { force: true });
-    return { output_ids: outputs, actual_cost: result.cost ?? null };
+    return { output_ids: outputs, actual_cost: result.cost ?? null, request_ids: job.job_id ? [String(job.job_id)] : [] };
   });
 }

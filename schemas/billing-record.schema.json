@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/billing-record.schema.json",
+  "title": "Billed cost",
+  "description": "What a provider says it billed for one request, fetched after the fact by `cstack spend reconcile`; one line per request in state/billing.jsonl. The ledger's estimate is never rewritten.",
+  "type": "object",
+  "required": [
+    "ts",
+    "provider",
+    "request_id",
+    "status"
+  ],
+  "properties": {
+    "ts": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "billed",
+        "not_found",
+        "error"
+      ],
+      "description": "not_found: the provider has no billing event for it yet (billing can lag); error: the lookup failed"
+    },
+    "billed": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "estimated": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/money"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "basis": {
+      "type": "string",
+      "description": "which provider field the amount came from"
+    },
+    "source": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

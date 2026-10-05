@@ -28,6 +28,7 @@ import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
 import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
 import { makeSheet, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
+import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -103,7 +104,8 @@ const COMMANDS = {
   'prompt diff': 'component-level diff of two recipes: cstack prompt diff a.yaml b.yaml',
   route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
-  'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]',
+  'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]; with billed amounts, estimate vs billed',
+  'spend reconcile': 'fetch what the provider billed for each paid request: cstack spend reconcile --provider fal --ws <dir> [--since YYYY-MM-DD] [--dry-run] (needs FAL_ADMIN_KEY or FAL_KEY)',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
@@ -401,7 +403,22 @@ function cmdRoute() {
   console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
 }
 
-function cmdSpend(sub) {
+async function cmdSpend(sub) {
+  if (sub === 'reconcile') {
+    const provider = args.provider && args.provider !== true ? String(args.provider) : die('--provider required (fal)');
+    if (provider !== 'fal') die(`spend reconcile knows fal only; ${provider} has no billing lookup yet`);
+    const { falBilling } = await import('../providers/fal.mjs');
+    const r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => falBilling(id) });
+    if (args.json) return json({ ...r, check: billedVsEstimated(ws, { provider }) });
+    if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s); nothing fetched`);
+    const by = (k) => r.rows.filter((x) => x.status === k).length;
+    console.log(`asked ${provider} about ${r.asked} request(s): ${by('billed')} billed, ${by('not_found')} not billed yet, ${by('error')} failed`);
+    for (const x of r.rows.filter((y) => y.status === 'error')) console.log(`  ${x.request_id}: ${x.error}`);
+    const c = billedVsEstimated(ws, { provider });
+    if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
+    if (by('error')) process.exit(1);
+    return;
+  }
   if (sub === 'plan') {
     const items = readData(path.resolve(args._[0] ?? die('usage: cstack spend plan <items.json> --stop "..."')));
     // items without est are priced the way `generate` prices a call: from the registry, through the host's route
@@ -427,12 +444,14 @@ function cmdSpend(sub) {
       else if (r.status === 'dry_run') by[k].dry++;
     }
     const cur = args.currency ?? 'USD';
-    if (args.json) return json({ by, spent: spent(rows, { currency: cur, since: args.since }) });
+    if (args.json) return json({ by, spent: spent(rows, { currency: cur, since: args.since }), billed_vs_estimated: billedVsEstimated(ws, { since: args.since }) });
     for (const [k, v] of Object.entries(by)) console.log(`${k.padEnd(40)} calls ${v.calls}  ok ${v.ok}  failed ${v.failed}  dedup ${v.dedup}  dry ${v.dry}`);
-    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''}`);
+    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''} (cstack's estimates)`);
+    const c = billedVsEstimated(ws, { since: args.since });
+    if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} reconciled request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
     return;
   }
-  die('usage: cstack spend plan|summary');
+  die('usage: cstack spend plan|summary|reconcile');
 }
 
 function cmdLineage() {
@@ -945,7 +964,7 @@ switch (cmd) {
     cmdRoute();
     break;
   case 'spend':
-    cmdSpend(argv[0]);
+    await cmdSpend(argv[0]);
     break;
   case 'lineage':
     cmdLineage();

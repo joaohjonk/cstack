@@ -229,3 +229,15 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   assert.deepEqual(waived.errors, []);
   assert.match(waived.warnings.join('\n'), /going ahead without founder brief \(owner waived it 2026-10-05: owner said just go\)/);
 });
+
+test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f26-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territory probes for a brand with no type or colour yet' });
+  const { requires, ...old } = YAML.parse(fs.readFileSync(file, 'utf8'));
+  assert.deepEqual(requires, ['founder_brief', 'reference_reactions']);
+  fs.writeFileSync(file, YAML.stringify(old));
+  const errs = gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } }).errors.join('\n');
+  assert.match(errs, /founder brief/);
+  assert.match(errs, /reference packet/);
+});

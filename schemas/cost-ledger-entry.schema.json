@@ -106,6 +106,13 @@
     "charged": {
       "type": "boolean",
       "description": "false when the provider refused the request at submit (a 4xx such as an unknown endpoint), so it never ran and counts nothing against the budget"
+    },
+    "provider_request_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "the provider's own request ids, so `cstack spend reconcile` can fetch what was billed"
     }
   },
   "additionalProperties": true

@@ -71,6 +71,10 @@
         "conviction": {
           "type": "string",
           "description": "what the founder believes the world will want more of"
+        },
+        "ambition": {
+          "type": "string",
+          "description": "the boundary the founder wants to push, and how design should make the customer's experience better"
         }
       },
       "additionalProperties": false
@@ -127,6 +131,10 @@
         },
         "sounds_like": {
           "type": "string"
+        },
+        "talks_to_customer": {
+          "type": "string",
+          "description": "how the brand speaks to its customer, and where"
         },
         "hangs_out": {
           "type": "array",

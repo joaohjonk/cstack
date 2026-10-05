@@ -58,7 +58,7 @@ The production ladder in the [shared preamble](../skills/cstack-shared/PREAMBLE.
 ```text
 run_id, ts, provider, model, operation, input_hashes, prompt_recipe_hash, idempotency_key,
 cache_status (hit|miss|n/a), estimated_cost, actual_cost_if_available, latency_ms, output_ids,
-retry_count, status, experiment_id, skill, error
+retry_count, status, experiment_id, skill, error, provider_request_ids
 status ∈ dry_run | queued | ok | failed_transient | failed_policy | failed_other | deduplicated | budget_blocked
 ```
 
@@ -67,7 +67,14 @@ cstack spend summary                  # per provider/model: calls, ok, failed, d
 cstack spend summary --since 2026-10-01 --currency USD --json
 ```
 
-`actual_cost_if_available` stays null when a provider bills asynchronously (fal). Reconcile it from billing later and never infer it from balance deltas. Rows tagged with `experiment_id` let `/creative-autoresearch` total an experiment's spend.
+`actual_cost_if_available` stays null when a provider bills asynchronously (fal). The ledger keeps fal's request id on each ok row (`provider_request_ids`), and `cstack spend reconcile` asks fal what it billed for each one later. Billing is never inferred from balance deltas.
+
+```bash
+cstack spend reconcile --provider fal --dry-run   # how many requests would be looked up
+cstack spend reconcile --provider fal             # needs FAL_ADMIN_KEY (fal's billing events take an admin key), else FAL_KEY
+```
+
+Each answer goes to `state/billing.jsonl` (schema `billing-record`): `billed`, the ledger's `estimated`, and the fal field the amount came from (`basis`). Requests fal has not billed yet are recorded as `not_found` and asked again next time. `reconcile` and `spend summary` then print billed against estimated over the reconciled requests, and whether the gap is within 25%. The ledger itself is never rewritten. fal's billing-event fields are read defensively (`cost_total`, else `cost_estimate_nano_usd`, else subtotal minus discount), and the first real run confirms which field fal sends. Rows tagged with `experiment_id` let `/creative-autoresearch` total an experiment's spend.
 
 ## Context budgets
 
