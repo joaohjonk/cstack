@@ -27,7 +27,8 @@ import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
-import { installHosts } from '../scripts/lib/hosts.mjs';
+import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
+import { checkForUpdate, runUpdate, snooze, setConfig, readConfig, recordInstall, installsToRefresh, stateDir } from '../scripts/lib/update.mjs';
 import { checkLinks } from '../scripts/lib/links.mjs';
 import { report as creativeReport, checkBet, checkFamily, checkPlan, readPerformance, families as taxFamilies } from '../scripts/lib/creative.mjs';
 import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
@@ -35,7 +36,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write']);
+const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -158,7 +159,8 @@ const COMMANDS = {
   'learn candidates': 'learnings eligible for promotion (repeated evidence or strong human correction)',
   'learn promote': 'promote a learning: cstack learn promote <id> --to <target> --by <name> --ws <dir>',
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
-  setup: 'install skills into agent hosts: cstack setup [--host default|agents|claude-code|codex|cursor|gemini-cli|opencode|all] [--target <project>] [--copy] [--dry-run]',
+  setup: 'install skills into agent hosts: cstack setup [--host default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro] [--target <project>] [--copy] [--dry-run]   |   --refresh: relink every install this checkout made (cstack update runs it)',
+  update: 'update this cstack checkout (fast-forward only; never stashes or resets), reinstall dependencies if they changed, relink every host it was installed into, show what is new: cstack update [--dry-run]   |   --check [--force]: one line when an update exists (skills run this)   |   --snooze   |   --auto on|off   |   --checks on|off',
 };
 
 function help() {
@@ -739,13 +741,54 @@ function routes() {
 }
 
 function cmdSetup() {
-  let res;
-  try {
-    res = installHosts({ host: args.host ?? 'default', target: args.target ? path.resolve(args.target) : undefined, copy: !!args.copy, dryRun: !!args['dry-run'] });
-  } catch (e) {
-    die(`setup: ${e.message}`);
+  const dryRun = !!args['dry-run'];
+  const target = args.target ? path.resolve(args.target) : undefined;
+  // --refresh: the installs this checkout made (recorded, or found at user scope); none found → the default hosts
+  const jobs = args.refresh ? installsToRefresh({ hosts: loadHosts() }) : [{ host: args.host ?? 'default', target, copy: !!args.copy }];
+  if (args.refresh && !jobs.length) jobs.push({ host: 'default', copy: false });
+  for (const j of jobs) {
+    let res;
+    try {
+      res = installHosts({ ...j, dryRun });
+    } catch (e) {
+      die(`setup: ${e.message}`);
+    }
+    for (const l of res) console.log(l);
+    if (!dryRun) {
+      try {
+        for (const h of hostIds(j.host)) recordInstall({ host: h, target: j.target, copy: j.copy });
+      } catch (e) {
+        console.log(`note: could not record this install in ${shown(stateDir())} (${e.message}); cstack update will look for it in your home folder instead`);
+      }
+    }
   }
-  for (const l of res) console.log(l);
+}
+
+function cmdUpdate() {
+  const onOff = (flag) => {
+    const v = String(args[flag]);
+    if (!['on', 'off'].includes(v)) die(`update: --${flag} takes on or off`);
+    return v === 'on';
+  };
+  if (args.auto !== undefined || args.checks !== undefined) {
+    if (args.auto !== undefined) setConfig('auto_update', onOff('auto'));
+    if (args.checks !== undefined) setConfig('update_check', onOff('checks'));
+    const c = readConfig();
+    console.log(`update checks ${c.update_check ? 'on' : 'off'}, automatic updates ${c.auto_update ? 'on' : 'off'} (${shown(path.join(stateDir(), 'config.json'))})`);
+    return;
+  }
+  if (args.snooze) {
+    const r = snooze();
+    console.log(r.snoozed ? `update reminder snoozed for ${r.hours === 168 ? 'a week' : `${r.hours} hours`}` : 'no pending update to snooze');
+    return;
+  }
+  if (args.check) {
+    for (const l of checkForUpdate({ force: !!args.force })) console.log(l);
+    return;
+  }
+  const r = runUpdate({ dryRun: !!args['dry-run'] });
+  for (const l of r.lines) console.log(l);
+  if (!r.ok) process.exit(1);
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
@@ -969,6 +1012,10 @@ switch (cmd) {
     break;
   case 'setup':
     cmdSetup();
+    break;
+  case 'update':
+  case 'upgrade':
+    cmdUpdate();
     break;
   case 'lint':
     cmdLint(argv[0]);

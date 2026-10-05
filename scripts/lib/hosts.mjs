@@ -14,7 +14,7 @@ export function defaultHosts() {
   return readJSON(path.join(ROOT, 'registry', 'hosts.json')).default ?? ['agents', 'claude-code'];
 }
 
-// host: 'default' (agents + claude-code), 'all', or one id. Directories that resolve to the same path are installed once.
+// host: 'default' (agents + claude-code), 'auto', 'all', or one id. Directories that resolve to the same path are installed once.
 const MARK = '.cstack-installed';
 
 // Ours = a copy carrying the marker, or a symlink into this checkout's skills/. Another toolkit's
@@ -49,9 +49,18 @@ function isLink(p) {
   try { return fs.lstatSync(p).isSymbolicLink(); } catch { return false; }
 }
 
+// 'auto': the default hosts plus every host whose detect folder (~/.copilot, ~/.kiro, ...) exists in this home.
+export function hostIds(host = 'default', home = os.homedir()) {
+  const hosts = loadHosts();
+  if (host === 'default') return defaultHosts();
+  if (host === 'all') return hosts.map((h) => h.id);
+  if (host === 'auto') return [...defaultHosts(), ...hosts.filter((h) => h.detect && exists(path.join(home, h.detect))).map((h) => h.id)];
+  return [host];
+}
+
 export function installHosts({ host = 'default', target, copy = false, dryRun = false } = {}) {
   const hosts = loadHosts();
-  const ids = host === 'default' ? defaultHosts() : host === 'all' ? hosts.map((h) => h.id) : [host];
+  const ids = hostIds(host);
   const seen = new Set();
   const chosen = hosts.filter((h) => ids.includes(h.id)).filter((h) => {
     const k = target ? h.project_dir : h.user_dir;

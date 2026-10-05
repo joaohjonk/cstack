@@ -97,7 +97,7 @@ These are direct debts. gstack's browser code is reused under its MIT licence; t
 
 | | What we learned |
 |---|---|
-| **Garry Tan and gstack** | The shape of the whole thing: specialists as slash commands, `/office-hours` before anything, plain Markdown, one-line install, a README that tells you what each skill does. cstack's browser is ported from gstack's under MIT ([NOTICE.md](../NOTICE.md)). |
+| **Garry Tan and gstack** | The shape of the whole thing: specialists as slash commands, `/office-hours` before anything, plain Markdown, one-line install, a README that tells you what each skill does, and an upgrade that checks once a session, asks before it acts, backs off when you say not now, and refreshes every agent it was installed into. cstack's browser is ported from gstack's under MIT ([NOTICE.md](../NOTICE.md)). |
 | **Andrej Karpathy** | autoresearch: a frozen test, one variable, keep or discard, a budget and a log of every attempt, failures included. That is `/creative-autoresearch`. ([notes](research/karpathy-patterns.md)) |
 | **Taste Labs** | Extract, search, verify: context, creation, verification, correction. And the line we kept: tools provide capability; skills provide judgment. ([notes](research/taste-labs.md)) |
 | **The teams whose public repos and products we studied** | Higgsfield, Gooseworks, Bloom, Ad Army, Superside, Rampstack, Wondel and the Lenny skills among them. What we learned and where we disagreed is in [docs/research](research/). |

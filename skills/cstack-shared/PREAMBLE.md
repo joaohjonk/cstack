@@ -4,6 +4,7 @@ Every cstack skill follows these rules. Skills reference this file instead of co
 
 ## 0. Start of every run (30 seconds, no spend)
 
+0. Once per session: `cstack update --check` (silent unless there is news, never blocks the task). `UPDATE_AVAILABLE` or `JUST_UPDATED` → follow [/cstack-update](../cstack-update/SKILL.md), then carry on.
 1. Find the workspace: `--ws`, `$CSTACK_WORKSPACE`, or the current folder with `cstack.config.yaml`. No workspace and the task needs brand truth → offer `cstack brand init` (new) or `/brand-import` (existing). Never invent brand facts to fill the gap.
 2. `cstack brand check` → note open conflicts, unknowns, % inferred.
 3. `cstack providers` and `cstack tools` → which media providers, research tools and MCP servers are actually usable here. Plan around what exists; name what is missing once.
