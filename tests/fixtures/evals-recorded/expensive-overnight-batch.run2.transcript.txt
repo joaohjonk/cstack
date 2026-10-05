@@ -1,0 +1,1 @@
+I would start with a baseline and three probes, then run cstack spend plan with a stop condition before anything else.

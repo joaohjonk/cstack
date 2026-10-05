@@ -196,3 +196,48 @@ test('flows plan carries the library deliverable, so a fresh plan can pass the m
   const over = planFromFlow(w, 'type-system', { target: 'a type system for a ceramics studio', deliverable: 'page', key_visual: true });
   assert.deepEqual(YAML.parse(fs.readFileSync(over.file, 'utf8')).deliverable, { kind: 'page', key_visual: true });
 });
+
+test('flows gate: territory probes for a brand from zero wait for the founder brief and reference reactions (F23)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f23-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const budget = { per_run: 1, per_day: 2 };
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territory probes for a canned iced tea with no type or colour yet' });
+  const gate = () => gateFlow(w, file, { providers: fal, budget });
+  // the R3 run: no brief, no references, and the gate passed
+  const cold = gate().errors.join('\n');
+  assert.match(cold, /no owner-approved founder brief.*founding mode/);
+  assert.match(cold, /no reference packet the owner has reacted to/);
+  const brief = { id: 'FB-ostrel', brand_id: 'evalcase', date: '2026-10-05', why_it_exists: { reason: 'tea that tastes of the second steep' }, customer: { who: 'people who drink tea at their desk', evidence: 'told' }, brand_as_person: { name: 'UNKNOWN' }, assets_and_inspirations: { inspirations: [{ ref: 'vintage tea tins', what_draws_them: 'one colour, one mark, the leaf named plainly' }] }, owner_approval: { status: 'draft' } };
+  fs.mkdirSync(path.join(w, 'briefs'), { recursive: true });
+  const bf = path.join(w, 'briefs', '2026-10-05-founding.founder-brief.yaml');
+  fs.writeFileSync(bf, YAML.stringify(brief));
+  assert.match(gate().errors.join('\n'), /no owner-approved founder brief/, 'a draft is not the founder’s yes');
+  fs.writeFileSync(bf, YAML.stringify({ ...brief, owner_approval: { status: 'owner_approved', by: 'Founder', date: '2026-10-05' } }));
+  assert.doesNotMatch(gate().errors.join('\n'), /founder brief/);
+  fs.mkdirSync(path.join(w, 'work', 'references'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'work', 'references', '2026-10-05-tea-packet.md'), '# packet\n');
+  assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/, 'a packet nobody reacted to is not enough');
+  fs.mkdirSync(path.join(w, 'state'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'state', 'feedback.jsonl'), JSON.stringify({ id: 'FB-1', date: '2026-10-05', by: 'Founder', type: 'gold', artifact_ref: 'references/inspiration/ref-tea-tin.reference.yaml' }) + '\n');
+  assert.deepEqual(gate().errors, []);
+  // an owner who chooses to skip a step records it, and the warning travels with the work
+  fs.rmSync(bf);
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, YAML.stringify({ ...plan, waivers: [{ requires: 'founder_brief', owner_approved: '2026-10-05', why: 'owner said just go' }] }));
+  const waived = gate();
+  assert.deepEqual(waived.errors, []);
+  assert.match(waived.warnings.join('\n'), /going ahead without founder brief \(owner waived it 2026-10-05: owner said just go\)/);
+});
+
+test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f26-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territory probes for a brand with no type or colour yet' });
+  const { requires, ...old } = YAML.parse(fs.readFileSync(file, 'utf8'));
+  assert.deepEqual(requires, ['founder_brief', 'reference_reactions']);
+  fs.writeFileSync(file, YAML.stringify(old));
+  const errs = gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } }).errors.join('\n');
+  assert.match(errs, /founder brief/);
+  assert.match(errs, /reference packet/);
+});

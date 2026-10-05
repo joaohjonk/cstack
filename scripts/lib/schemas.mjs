@@ -20,6 +20,7 @@ export const JSONL = {
   'approvals.jsonl': 'feedback-event',
   'feedback.jsonl': 'feedback-event',
   'cost-ledger.jsonl': 'cost-ledger-entry',
+  'billing.jsonl': 'billing-record',
   'failures.jsonl': 'failure-event',
   'evals.jsonl': 'eval',
   'lineage.jsonl': 'artifact-lineage',

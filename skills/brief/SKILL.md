@@ -13,6 +13,7 @@ The most important skill in cstack. It decides what is worth making before money
 - Any new creative request, before production.
 - The ask is an adjective ("cooler", "more premium", "pop more") or a format ("we need a TikTok") without a job.
 - The owner is unsure whether the brief, the channel or the artifact is right.
+- A brand from zero: **founding mode**. Interview the founder before any research, reference or territory ([founding.md](references/founding.md)).
 
 ## When not to use
 
@@ -29,7 +30,7 @@ The most important skill in cstack. It decides what is worth making before money
 ## Missing-input behavior
 
 - No brand workspace: run on the request alone, mark every brand fact UNKNOWN, recommend `brand-import` or the `create-brand` workflow, and still produce the brief.
-- Ask **at most three** forcing questions, and only those whose answer changes the work. Everything else gets a stated default ("Assuming conversion is secondary; say if not").
+- Request mode: ask **at most three** forcing questions, and only those whose answer changes the work. Founding mode interviews in rounds until the founder brief is complete or marked UNKNOWN. Everything else gets a stated default ("Assuming conversion is secondary; say if not").
 - Never block on a question the brand state already answers.
 
 ## Source precedence
@@ -68,6 +69,7 @@ None paid. Read-only CLI: `cstack brand context`, `cstack search`, `cstack linea
 
 ## Outputs, files written, state updated
 
+- Founding mode first writes `briefs/<YYYY-MM-DD>-founding.founder-brief.yaml` (schema `founder-brief`), and waits for the founder's yes.
 - `briefs/<YYYY-MM-DD>-<slug>.creative-brief.yaml` (validated by `cstack validate`/`brand check`): requested vs recommended artifact, job, mode, audience, product truth, tension, conventions, permission, inevitability test, inputs (classified), constraints, success criteria, open questions, handoff.
 - A five-line summary for the owner: the reframe, the recommendation, the questions (max three), the defaults assumed.
 - State: none, unless the owner corrects a brand fact during the session (then `cstack brand set` with `user_instruction`).
@@ -83,7 +85,8 @@ None paid. Read-only CLI: `cstack brand context`, `cstack search`, `cstack linea
 
 ## Failure modes
 
-- Asking ten questions: interrogation theatre instead of help. Cap at three.
+- Asking ten questions about a request: interrogation theatre. Cap at three (founding mode excepted).
+- Offering a new brand directions before the founder was asked why it exists.
 - Rubber-stamping the requested artifact.
 - Writing a brief full of adjectives ("bold, premium, modern") with no product truth or tension.
 - Inventing audience facts; write UNKNOWN.

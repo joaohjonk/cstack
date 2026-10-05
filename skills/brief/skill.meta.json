@@ -12,12 +12,15 @@
     "brief",
     "make it cooler",
     "is this the right artifact",
-    "what should we make"
+    "what should we make",
+    "new brand from zero",
+    "founder interview"
   ],
   "required_inputs": [
     "owner request"
   ],
   "outputs": [
+    "briefs/*.founder-brief.yaml",
     "briefs/*.creative-brief.yaml"
   ],
   "cost_class": "free",

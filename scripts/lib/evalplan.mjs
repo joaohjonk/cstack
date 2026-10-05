@@ -105,6 +105,11 @@ export function checkFixtures({ skills = null, files = null } = {}) {
           errors.push([where, `pattern does not compile in JavaScript: ${e.message}`]);
         }
     }
+    if (fx.workspace != null && !exists(path.join(ROOT, String(fx.workspace), 'cstack.config.yaml'))) errors.push([where, `workspace "${fx.workspace}" is not a cstack workspace in this repo`]);
+    if (fx.setup_files != null) {
+      if (typeof fx.setup_files !== 'object' || Array.isArray(fx.setup_files)) errors.push([where, 'setup_files must map workspace-relative paths to file text']);
+      else for (const k of Object.keys(fx.setup_files)) if (path.isAbsolute(k) || k.split(/[\\/]/).includes('..')) errors.push([where, `setup_files path "${k}" must stay inside the workspace`]);
+    }
     if (tracked) for (const d of fx.depends_on ?? []) if (!tracked.some((f) => globToRe(d).test(f))) warnings.push([where, `depends_on "${d}" matches no file`]);
   }
   return { errors, warnings };

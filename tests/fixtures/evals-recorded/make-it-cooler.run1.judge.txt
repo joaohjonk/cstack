@@ -1,0 +1,1 @@
+{"verdict": "PASS", "must": [{"item": 1, "held": true, "line": 2}, {"item": 2, "held": true, "line": 4}], "must_not": [{"item": 1, "occurred": false, "line": null}, {"item": 2, "occurred": false, "line": null}], "reason": "Defects are named before a single change is proposed."}

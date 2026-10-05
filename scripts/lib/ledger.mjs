@@ -174,7 +174,7 @@ export async function guardedCall(ws, spec, fn) {
     const t0 = Date.now();
     try {
       const res = await fn();
-      const row = { ...base, ts: nowISO(), status: 'ok', output_ids: res.output_ids ?? [], retry_count: attempt, cache_status: res.cache_status ?? 'miss', actual_cost_if_available: res.actual_cost ?? null, latency_ms: Date.now() - t0 };
+      const row = { ...base, ts: nowISO(), status: 'ok', output_ids: res.output_ids ?? [], retry_count: attempt, cache_status: res.cache_status ?? 'miss', actual_cost_if_available: res.actual_cost ?? null, latency_ms: Date.now() - t0, ...(res.request_ids?.length ? { provider_request_ids: res.request_ids } : {}) };
       appendJSONL(ledgerPath(ws), row);
       return { row, ...res };
     } catch (err) {

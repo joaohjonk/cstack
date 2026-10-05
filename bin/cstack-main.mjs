@@ -3,6 +3,7 @@
 // unless it says otherwise.
 import path from 'node:path';
 import fs from 'node:fs';
+import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, shown, readJSONL, appendJSONL, newId, today, nowISO, walk } from '../scripts/lib/core.mjs';
 import { schemaNames, validator, validateTree, validateValue } from '../scripts/lib/schemas.mjs';
@@ -25,6 +26,10 @@ import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
+import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
+import { makeSheet, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
+import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
+import { checkText } from '../scripts/lib/textcheck.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -36,7 +41,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze']);
+const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -100,13 +105,15 @@ const COMMANDS = {
   'prompt diff': 'component-level diff of two recipes: cstack prompt diff a.yaml b.yaml',
   route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
-  'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]',
+  'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]; with billed amounts, estimate vs billed',
+  'spend reconcile': 'fetch what a provider billed for each paid request: cstack spend reconcile --provider <id> --ws <dir> [--since YYYY-MM-DD] [--dry-run] (adapters with a billing lookup: fal, which needs FAL_ADMIN_KEY or FAL_KEY)',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
   providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json. Pass --mcp "Server,…" (or CSTACK_MCP_SERVERS) to add agent_mcp, the same answer `cstack tools` gives',
   'lint shot-dna': 'warn when Shot DNA lighting is adjectives, not a recipe: cstack lint shot-dna <file...> (no file: every *.shot-dna.* in the repo)',
   'edit paste': 'paste a patch onto a base with a feathered edge, writing a new file: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] [--region x,y,w,h] --out c.png',
+  'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--json] (exit 1 when any image shows text)',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
   taste: 'Taste Labs capability: cstack taste search "intent" [--k 6] | extract <url> | verify --reference <url> --candidate <url>',
   failure: 'append a failure event: cstack failure --file event.json',
@@ -159,6 +166,9 @@ const COMMANDS = {
   'learn candidates': 'learnings eligible for promotion (repeated evidence or strong human correction)',
   'learn promote': 'promote a learning: cstack learn promote <id> --to <target> --by <name> --ws <dir>',
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
+  'sheet make': 'contact sheet for stills: cstack sheet make <images|folders...> --out work/sheets/a.html [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
+  'sheet import': 'blind picks from a sheet into feedback pairs: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
+  'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
   setup: 'install skills into agent hosts: cstack setup [--host default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro] [--target <project>] [--copy] [--dry-run]   |   --refresh: relink every install this checkout made (cstack update runs it)',
   update: 'update this cstack checkout (fast-forward only; never stashes or resets), reinstall dependencies if they changed, relink every host it was installed into, show what is new: cstack update [--dry-run]   |   --check [--force]: one line when an update exists (skills run this)   |   --snooze   |   --auto on|off   |   --checks on|off',
 };
@@ -395,7 +405,23 @@ function cmdRoute() {
   console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
 }
 
-function cmdSpend(sub) {
+async function cmdSpend(sub) {
+  if (sub === 'reconcile') {
+    const provider = args.provider && args.provider !== true ? String(args.provider) : die('--provider required (any adapter with a billing lookup; fal today)');
+    // provider-neutral: any adapter that exports billing(request_id) can be reconciled; the others say so
+    const adapter = getProvider(provider);
+    if (typeof adapter.billing !== 'function') die(`${provider} has no billing lookup yet, so its rows keep cstack's estimate only; add billing(request_id) to its adapter to reconcile it`);
+    const r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => adapter.billing(id) });
+    if (args.json) return json({ ...r, check: billedVsEstimated(ws, { provider }) });
+    if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s); nothing fetched`);
+    const by = (k) => r.rows.filter((x) => x.status === k).length;
+    console.log(`asked ${provider} about ${r.asked} request(s): ${by('billed')} billed, ${by('not_found')} not billed yet, ${by('error')} failed`);
+    for (const x of r.rows.filter((y) => y.status === 'error')) console.log(`  ${x.request_id}: ${x.error}`);
+    const c = billedVsEstimated(ws, { provider });
+    if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
+    if (by('error')) process.exit(1);
+    return;
+  }
   if (sub === 'plan') {
     const items = readData(path.resolve(args._[0] ?? die('usage: cstack spend plan <items.json> --stop "..."')));
     // items without est are priced the way `generate` prices a call: from the registry, through the host's route
@@ -421,12 +447,14 @@ function cmdSpend(sub) {
       else if (r.status === 'dry_run') by[k].dry++;
     }
     const cur = args.currency ?? 'USD';
-    if (args.json) return json({ by, spent: spent(rows, { currency: cur, since: args.since }) });
+    if (args.json) return json({ by, spent: spent(rows, { currency: cur, since: args.since }), billed_vs_estimated: billedVsEstimated(ws, { since: args.since }) });
     for (const [k, v] of Object.entries(by)) console.log(`${k.padEnd(40)} calls ${v.calls}  ok ${v.ok}  failed ${v.failed}  dedup ${v.dedup}  dry ${v.dry}`);
-    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''}`);
+    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''} (cstack's estimates)`);
+    const c = billedVsEstimated(ws, { since: args.since });
+    if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} reconciled request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
     return;
   }
-  die('usage: cstack spend plan|summary');
+  die('usage: cstack spend plan|summary|reconcile');
 }
 
 function cmdLineage() {
@@ -692,11 +720,126 @@ function cmdTokens(sub) {
   die('usage: cstack tokens check|build|lint');
 }
 
-function cmdEvals(sub) {
-  if (sub !== 'plan') die('usage: cstack evals plan [--since ref] [--files a,b]');
+async function cmdEvals(sub) {
+  if (sub === 'run') return cmdEvalsRun();
+  if (sub !== 'plan') die('usage: cstack evals plan [--since ref] [--files a,b] | cstack evals run <id...> --dry-run|--agent "<cmd>"|--recorded <dir>');
   const p = evalPlan({ since: args.since, files: args.files ? String(args.files).split(',') : undefined });
   if (args.json) return json(p);
   console.log(p.text);
+}
+
+// cstack image text (field test F20): a per-image gate a flow's stop rule can run after each generation
+function cmdImage(sub) {
+  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"]');
+  if (args.judge === true) die('--judge needs a command');
+  const r = checkText(args._, { engine: args.engine ?? 'auto', judge: args.judge ? tokenize(args.judge) : null });
+  if (args.json) json(r);
+  else {
+    for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(5)} ${shown(i.file)}  ${i.evidence}`);
+    const bad = r.images.filter((i) => i.result !== 'pass').length;
+    console.log(`image text (${r.engine}${r.thresholds ? ', thresholds uncalibrated' : ''}): ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length})`}`);
+  }
+  if (!r.ok) process.exit(1);
+}
+
+// docs/sheets.md: contact sheets for stills and blind pairwise picks
+async function cmdSheet(sub) {
+  if (sub === 'make') {
+    const r = makeSheet({ inputs: args._, out: args.out, title: args.title, cols: args.cols, blind: !!args.blind, seed: args.seed, force: !!args.force });
+    if (args.png) r.png = await renderPNG(r.html, r.html.replace(/\.html$/, '.png'), { force: !!args.force });
+    if (args.json) return json(r);
+    console.log(`wrote ${shown(r.html)} (${r.count} images${r.blind ? `, blind, seed ${r.seed}` : ''})`);
+    if (r.png) console.log(`wrote ${shown(r.png)}`);
+    if (r.blind) console.log(`key in ${shown(r.key)}: do not open it before the picks are in`);
+    console.log('open the sheet, press "Pick pairs", then: cstack sheet import <downloaded picks.json> --sheet <this sheet> --by <name>');
+    return;
+  }
+  if (sub === 'import') {
+    if (!args._[0] || !args.sheet || args.sheet === true) die('usage: cstack sheet import <picks.json> --sheet <sheet.html> --by <name> [--ws dir]');
+    requireWs();
+    const brand = (() => {
+      try {
+        return readData(path.join(ws, 'cstack.config.yaml'))?.brand_id;
+      } catch {
+        return undefined;
+      }
+    })();
+    const recs = importPicks({ picksFile: args._[0], sheet: args.sheet, by: args.by, brand_id: brand ? String(brand) : undefined, ws });
+    for (const rec of recs) {
+      const v = validateValue('feedback-event', rec);
+      if (!v.ok) die(`invalid feedback-event: ${v.errors}`);
+    }
+    for (const rec of recs) appendJSONL(path.join(ws, 'state', 'feedback.jsonl'), rec);
+    if (args.json) return json(recs);
+    const w = recs.filter((r) => ['a', 'b'].includes(r.pair.winner)).length;
+    console.log(`appended ${recs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
+    return;
+  }
+  die('usage: cstack sheet make|import');
+}
+
+// docs/evals.md#running-fixtures. Live calls go through guardedCall on the --ws ledger, like any model call.
+async function cmdEvalsRun() {
+  if (args.agent === true || args.judge === true || args.recorded === true || args.out === true) die('--agent, --judge, --recorded and --out need a value');
+  if (args['dry-run'] && args.recorded) die('pass --dry-run or --recorded <dir>, not both');
+  const plan = args.since ? evalPlan({ since: args.since }) : null;
+  const planned = plan ? [...plan.tiers.T2, ...plan.tiers.T3.filter((x) => !x.startsWith('provider smoke'))] : null;
+  const fixtures = selectFixtures(loadFixtures(), { ids: args._, everything: !!args.all, planned, tier: args.tier });
+  if (!fixtures.length) return console.log('no fixtures selected');
+  const mode = args['dry-run'] ? 'dry' : args.recorded ? 'recorded' : 'live';
+  // T0 cases are deterministic and run without an agent; anything else needs one
+  if (mode === 'live' && !args.agent && fixtures.some((f) => f.tier !== 'T0')) die('live runs need --agent "<cmd>" (for example --agent "claude -p --output-format stream-json --verbose"); or pass --dry-run, or --recorded <dir>');
+  const out = path.resolve(mode === 'recorded' ? args.recorded : args.out ?? path.join(fs.realpathSync(os.tmpdir()), `cstack-evals-${nowISO().replace(/[:.]/g, '-')}`));
+  if (mode === 'recorded' && !exists(out)) die(`--recorded ${out}: no such folder`);
+  fs.mkdirSync(out, { recursive: true });
+  const agent = args.agent ? tokenize(args.agent) : null;
+  const judge = args.judge ? tokenize(args.judge) : null;
+  const cost = args['cost-per-call'] !== undefined ? Number(args['cost-per-call']) : null;
+  if (cost != null && !(cost >= 0)) die('--cost-per-call must be a number of USD, 0 or more');
+  const callsModel = (mode === 'live' && agent) || (mode !== 'dry' && judge);
+  if (callsModel && !loadBudget(ws)) die(`${ws} has no budget envelope (cstack.config.yaml budget:); model calls are booked in a workspace ledger. Pass --ws <workspace>, or cstack brand init one`);
+  const session = newId('EVS');
+  const cmdLabel = (argv) => [path.basename(argv[0]), ...argv.slice(1)].join(' ').slice(0, 80);
+  const guard = (operation, fn) =>
+    guardedCall(
+      ws,
+      { provider: 'agent-cli', model: cmdLabel(operation === 'eval_judge' ? judge : agent), operation, params: { session, n: newId('C') }, estimated_cost: cost == null ? null : { amount: cost, currency: 'USD', basis: 'owner-stated per call' }, unpriced_reason: 'agent CLI cost unknown; pass --cost-per-call', confirm_unpriced: !!args['confirm-unpriced'], confirmed: !!args.confirm, skill: 'evals', max_retries: 0 },
+      fn,
+    );
+  const results = [];
+  for (const fx of fixtures) {
+    const r = await runFixture(fx, { out, mode, runs: args.runs, agent, judge, guard, timeout_s: args.timeout ? Number(args.timeout) : undefined });
+    results.push(r);
+    if (r.aborted) {
+      if (!args.json) console.log(`STOPPED  ${fx.id}: ${r.runs.at(-1).evidence}`);
+      break;
+    }
+    if (!args.json) {
+      console.log(`${r.result.toUpperCase().padEnd(8)} ${fx.id}  ${r.passed}/${r.runs.length} pass${r.failed ? `, ${r.failed} fail` : ''}${r.pending ? `, ${r.pending} pending` : ''}`);
+      for (const run of r.runs) {
+        if (run.evidence) console.log(`  run ${run.run}: ${run.evidence}`);
+        for (const g of run.graders ?? []) if (g.result !== 'pass') console.log(`  run ${run.run} ${g.type} ${g.result}: ${g.pattern ?? g.run ?? ''}${g.pattern || g.run ? ' — ' : ''}${g.evidence}`);
+      }
+    }
+  }
+  const summary = { date: today(), mode, out, agent: agent?.join(' ') ?? null, judge: judge?.join(' ') ?? null, fixtures: results.length, pass: results.filter((r) => r.result === 'pass').length, fail: results.filter((r) => r.result === 'fail').length, results: results.map(({ runs, ...x }) => ({ ...x, runs: runs.map(({ files, ...y }) => y) })) };
+  if (mode !== 'recorded') writeJSON(path.join(out, 'summary.json'), summary);
+  if (args.record && mode !== 'dry') {
+    let n = 0;
+    for (const r of results)
+      for (const rec of evalRecords(r, { judge: judge && cmdLabel(judge), date: today() })) {
+        rec.id = newId('EV');
+        const v = validateValue('eval', rec);
+        if (!v.ok) die(`invalid eval record for ${r.id}: ${v.errors}`);
+        appendJSONL(path.join(ws, 'state', 'evals.jsonl'), rec);
+        n++;
+      }
+    if (!args.json) console.log(`recorded ${n} eval record(s) in ${shown(path.join(ws, 'state', 'evals.jsonl'))}`);
+  }
+  if (args.json) json(summary);
+  else if (mode === 'dry') console.log(`${summary.fixtures} fixture(s) prepared, nothing called (dry run); prompts and workspaces in ${shown(out)}`);
+  else console.log(`${summary.pass}/${summary.fixtures} fixtures pass (${mode}); runs in ${shown(out)}`);
+  if (summary.fail || results.some((r) => r.aborted || r.runs.some((x) => x.result === 'error')) || (args.strict && results.some((r) => r.result !== 'pass'))) process.exit(1);
 }
 
 function cmdLint(sub) {
@@ -792,7 +935,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -838,7 +981,7 @@ switch (cmd) {
     cmdRoute();
     break;
   case 'spend':
-    cmdSpend(argv[0]);
+    await cmdSpend(argv[0]);
     break;
   case 'lineage':
     cmdLineage();
@@ -1008,7 +1151,13 @@ switch (cmd) {
     cmdBrand(argv[0]);
     break;
   case 'evals':
-    cmdEvals(argv[0]);
+    await cmdEvals(argv[0]);
+    break;
+  case 'sheet':
+    await cmdSheet(argv[0]);
+    break;
+  case 'image':
+    cmdImage(argv[0]);
     break;
   case 'setup':
     cmdSetup();

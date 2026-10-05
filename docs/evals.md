@@ -17,7 +17,43 @@ npm run check          # T0 + T1: validate, budget --check, node --test
 cstack health          # per-skill validity, budget, fixture count, cost class, staleness, known failures
 ```
 
-No harness runs T2 fixtures yet (`cstack evals run` is (planned, backlog #1); see [backlog-v0.2.md](backlog-v0.2.md)). Until then a person or an agent follows the fixture and records the result with `cstack eval --file`.
+`cstack evals run` runs T2 fixtures ([below](#running-fixtures)). A person can still follow a fixture by hand and record the result with `cstack eval --file`.
+
+## Running fixtures
+
+```bash
+cstack evals run make-it-cooler --dry-run                     # build the case and write the prompt; calls nothing
+cstack evals run --all --ws ~/brands/evals --cost-per-call 0 \
+  --agent "claude -p --output-format stream-json --verbose" \
+  --judge "claude -p" --out runs/2026-10-05 --record          # live: 3 runs per fixture, graded, recorded
+cstack evals run --all --recorded runs/2026-10-05             # regrade a saved run; calls nothing
+cstack evals run --since main --agent "codex exec" --ws ...   # the fixtures `evals plan` selects
+```
+
+For each run of each fixture the runner:
+
+1. Builds the case in `<out>/<id>.run<N>.ws/`: the fixture's `workspace` (or an `examples/...` folder its setup names), else a fresh starter workspace for a fictional brand, plus any `setup_files`. A `cstack` on that workspace's PATH runs this checkout and logs every call the agent makes.
+2. Sends the agent the setup and the skills in play, never `expected`, on stdin, in that workspace. The agent is any command that reads a prompt on stdin and writes its reply on stdout (`claude -p`, `codex exec`, ...): cstack holds no model SDK and no key. A Claude Code `stream-json` trace is flattened into a transcript with a `$ command` line per command run.
+3. Grades, deterministic first. `regex` reads the transcript. `tool_used` reads the calls the agent actually made (the PATH log, and the trace when there is one); with neither, it falls back to the transcript text and says so. `command` runs in the case's workspace after the agent. `llm` sends the case, `must` / `must_not`, the rubric and the numbered transcript to the `--judge` command, a separate process that never saw the agent's context, and reads back `{"verdict", "must", "must_not", "reason"}`; a PASS that marks an item failed counts as FAIL, and a reply with no verdict leaves the run pending.
+4. Writes `prompt.txt`, `transcript.txt`, `calls.log`, `judge-prompt.txt` and `judge.txt` next to the workspace, and `summary.json` for the whole run.
+
+A run is `pass` when every grader passes, `fail` when any fails, `pending` when a grader could not decide (no judge, no verdict). The command exits 1 on any failed fixture or failed call; `--strict` also fails on pending.
+
+| Flag | Does |
+|---|---|
+| `<id...>`, `--all`, `--since <ref>`, `--tier T0\|T2` | which fixtures; `--all` leaves out T3, which runs only when named |
+| `--dry-run` / `--agent "<cmd>"` / `--recorded <dir>` | the mode; T0 fixtures run their commands without an agent |
+| `--judge "<cmd>"` | grades `llm` graders; without it they stay pending for a person |
+| `--runs N` | overrides the fixture's `runs` |
+| `--out <dir>` | where runs go (default: a new folder in the system temp dir) |
+| `--ws <dir>` | the workspace whose ledger books each agent and judge call and whose `state/evals.jsonl` takes records |
+| `--cost-per-call <USD>` | the owner's estimate per call; `0` for an agent on a flat subscription. Without it calls are unpriced and follow the usual unpriced rules (`--confirm-unpriced`) |
+| `--record` | appends one `eval` record per graded run (gates from the graders, `decision` from the result) |
+| `--timeout <s>` | per agent or judge call (default 900) |
+
+Every agent and judge call goes through `guardedCall` on the `--ws` ledger, so the budget envelope, `confirm_over` and the unpriced rules apply as they do to media calls. A refusal stops the whole suite. Agents are told never to pass `--confirm`; the case workspaces have a zero budget, so a media call inside a case is refused anyway.
+
+Two fixture fields exist for the runner: `workspace` (a repo-relative example workspace to start from) and `setup_files` (`{workspace path: text}` written before the agent starts, for cases whose setup names files). Saved runs in [tests/fixtures/evals-recorded/](../tests/fixtures/evals-recorded/README.md) are regraded by the tests, so a grader change that breaks a known verdict fails CI.
 
 ## Diff-aware plan
 
@@ -99,7 +135,7 @@ These rules are in the shared preamble, the `creative-review` and `brand-verify`
 3. **Judgments stay plural.** The axes are beauty, brand_fit, cultural_vitality, message_clarity, craft, product_truth, commercial_usefulness, novelty and correctness. Each is scored 0–2 or `null` with evidence and an anchor, and they are never summed. A composite exists only if a workflow declares one, and hard gates still block it.
 4. **Judge against a baseline**: brief, reference, incumbent or last approved. Say which in `baseline`.
 5. **An AI judge is never the owner.** A verifier score is evidence about rules and adherence, not taste certification. Owner decisions (approve, reject, gold, anti, pairwise with a reason) go to `cstack feedback` and outrank any judge. When they disagree, the disagreement is logged as a learning candidate, not argued away (fixture `ai-judge-not-owner`).
-6. **Calibrate before trusting.** A taste judge is usable only after it agrees with the owner's own pairwise picks. Pairwise capture is the default so that calibration becomes possible.
+6. **Calibrate before trusting.** A taste judge is usable only after it agrees with the owner's own pairwise picks. Pairwise capture is the default so that calibration becomes possible. Blind pairs come from contact sheets ([sheets.md](sheets.md)).
 
 ## Records
 

@@ -89,4 +89,42 @@ export const fal = {
     fs.writeFileSync(file, Buffer.from(await res.arrayBuffer()));
   },
   estimate: () => null, // use registry pricing_snapshot; null means "unpriced", never guessed
+  billing: falBilling,
 };
+
+// What fal billed for one request, from its Platform API (GET https://api.fal.ai/v1/models/billing-events, filtered
+// by request_id; needs an admin key: FAL_ADMIN_KEY, else FAL_KEY). fal bills asynchronously, so a fresh request
+// may have no event yet. Field names are read defensively and the one used is reported as `basis`.
+const BILLING_URL = 'https://api.fal.ai/v1/models/billing-events';
+export async function falBilling(requestId, { fetchImpl = fetch, env = process.env } = {}) {
+  const key = env.FAL_ADMIN_KEY ?? env.FAL_KEY;
+  if (!key) throw new Error('FAL_ADMIN_KEY (or FAL_KEY) is not set; fal billing events need an admin key');
+  const url = `${BILLING_URL}?request_id=${encodeURIComponent(requestId)}`;
+  const res = await fetchImpl(url, { headers: { Authorization: `Key ${key}`, Accept: 'application/json' } });
+  const text = await res.text();
+  const clean = (t) => String(t).replaceAll(key, '<key>');
+  if (!res.ok) throw new Error(clean(`fal billing HTTP ${res.status}: ${text.slice(0, 300)}`));
+  return parseFalBilling(text ? JSON.parse(text) : {}, requestId);
+}
+
+export function parseFalBilling(body, requestId) {
+  const list = Array.isArray(body) ? body : body.billing_events ?? body.events ?? body.items ?? body.data ?? [];
+  const mine = list.filter((e) => String(e?.request_id ?? e?.requestId ?? '') === String(requestId));
+  if (!mine.length) return { status: 'not_found' };
+  let amount = 0;
+  let basis = null;
+  for (const e of mine) {
+    if (Number.isFinite(Number(e.cost_total))) {
+      amount += Number(e.cost_total);
+      basis = 'cost_total';
+    } else if (Number.isFinite(Number(e.cost_estimate_nano_usd))) {
+      amount += Number(e.cost_estimate_nano_usd) / 1e9;
+      basis = 'cost_estimate_nano_usd';
+    } else if (Number.isFinite(Number(e.cost_subtotal))) {
+      amount += Number(e.cost_subtotal) - (Number(e.cost_discount) || 0);
+      basis = 'cost_subtotal - cost_discount';
+    } else return { status: 'error', error: `billing event for ${requestId} carries no cost field (keys: ${Object.keys(e).join(', ')})` };
+  }
+  const currency = String(mine[0].currency ?? 'USD').toUpperCase();
+  return { status: 'billed', billed: { amount: Math.round(amount * 1e6) / 1e6, currency }, basis: `fal billing-events ${basis}${mine.length > 1 ? ` (${mine.length} events)` : ''}` };
+}

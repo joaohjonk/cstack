@@ -158,12 +158,15 @@
         "brief",
         "make it cooler",
         "is this the right artifact",
-        "what should we make"
+        "what should we make",
+        "new brand from zero",
+        "founder interview"
       ],
       "required_inputs": [
         "owner request"
       ],
       "outputs": [
+        "briefs/*.founder-brief.yaml",
         "briefs/*.creative-brief.yaml"
       ],
       "handoff": [
@@ -175,6 +178,7 @@
         "claims-proof"
       ],
       "evals": [
+        "evals/fixtures/brand-from-zero-founder-first.yaml",
         "evals/fixtures/existing-brand-clear-assets.yaml",
         "evals/fixtures/make-it-cooler.yaml",
         "evals/fixtures/no-brand-vague-aesthetic.yaml",
@@ -185,7 +189,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brief/SKILL.md",
-      "tokens": 1628
+      "tokens": 1751
     },
     {
       "slug": "campaign-sequence",
@@ -439,6 +443,7 @@
       ],
       "evals": [
         "evals/fixtures/beautiful-but-off-brand.yaml",
+        "evals/fixtures/brand-from-zero-founder-first.yaml",
         "evals/fixtures/make-it-cooler.yaml",
         "evals/fixtures/no-brand-vague-aesthetic.yaml",
         "evals/fixtures/obvious-first-idea.yaml"
