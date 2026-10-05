@@ -10,10 +10,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mock } from './mock.mjs';
 import { fal } from './fal.mjs';
+import { openaiImage } from './openai-image.mjs';
 import { tasteLabs } from './taste-labs.mjs';
 import { stubs } from './stubs.mjs';
 
-const ADAPTERS = { mock, fal, 'taste-labs': tasteLabs, ...stubs };
+const ADAPTERS = { mock, fal, 'openai-image': openaiImage, 'taste-labs': tasteLabs, ...stubs };
 export const REGISTRY_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'registry', 'providers.json');
 const KINDS = ['media', 'research', 'local'];
 const STATUSES = ['live', 'stub', 'mock'];

@@ -11,7 +11,7 @@ import { listSkills, checkSkill, buildIndex, search, duplicateLines } from '../s
 import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
 import { compile, diffRecipes } from '../scripts/lib/prompt.mjs';
 import { canonNames } from '../scripts/lib/prompt-names.mjs';
-import { route } from '../scripts/lib/router.mjs';
+import { route, leaderboardWarning } from '../scripts/lib/router.mjs';
 import { planBatch, readLedger, spent, loadBudget } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
 import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, taskContext, resolveConflict } from '../scripts/lib/brand.mjs';
@@ -21,7 +21,7 @@ import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
 import { approveBrief, reopenBrief } from '../scripts/lib/brief.mjs';
 import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
-import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
+import { runMedia, listPending, priceRequest, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
@@ -414,16 +414,25 @@ function cmdRoute() {
   };
   if (args.tier && !['draft', 'final'].includes(args.tier)) die('--tier must be draft (probes) or final');
   if (!req.modality) die('usage: cstack route --modality <m> [--needs a,b] [--task t] [--max-cost n] [--providers fal,openai]');
+  // which adapters exist here and which keys are missing (names only), so the best model's gaps can be named
+  req.adapters = Object.fromEntries(availability(process.env).map((a) => [a.id, { status: a.status, missing_env: a.missing_env }]));
   const res = route(reg, req);
   if (args.json) return json(res);
+  const b = res.best_now;
+  if (b) {
+    console.log(`best now: ${b.model_id} (#${b.rank} ${b.leaderboard}, as of ${b.as_of}${b.fresh ? '' : ', STALE'})`);
+    for (const e of b.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}  ${e.reachable ? 'reachable' : 'NOT reachable'}${e.needs.length ? `; needs ${e.needs.join('; ')}` : ''}`);
+    if (!b.endpoints.length) console.log(`${' '.repeat(6)}no route in the registry: add one (maker API or host) before it can be called`);
+    console.log('');
+  }
   for (const c of res.candidates) {
     console.log(`${String(c.score).padStart(4)}  ${c.model_id.padEnd(34)} ${c.provider.padEnd(12)} ${c.why}`);
     // the id to put in a request's "model", per provider; an unpriced host route is refused until it has a price
-    for (const e of c.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}${e.priced === false ? '  (no price yet: calls are refused as unpriced)' : ''}`);
+    for (const e of c.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}${e.priced === false ? '  (no price yet: ask the owner, then --confirm-unpriced)' : e.token_priced ? '  (token-priced: give token_estimate, or ask the owner, then --confirm-unpriced)' : ''}`);
   }
   console.log(`\nfallback chain: ${res.chain.join(' → ') || '(none)'}`);
   for (const w of res.warnings) console.log(`WARN ${w}`);
-  console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
+  console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs, leaderboard rank and as_of for important batches)`);
 }
 
 async function cmdSpend(sub) {
@@ -447,9 +456,9 @@ async function cmdSpend(sub) {
     const items = readData(path.resolve(args._[0] ?? die('usage: cstack spend plan <items.json> --stop "..."')));
     // items without est are priced the way `generate` prices a call: from the registry, through the host's route
     const price = (i) => {
-      const req = { provider: i.provider, model: i.model, inputs: i.inputs ?? { params: i.params ?? {}, images: i.images } };
-      const est = estimateFromRegistry(req);
-      return est ? { est } : { reason: `${i.provider}/${i.model}: ${registryPrice(req).basis}` };
+      const req = { provider: i.provider, model: i.model, inputs: i.inputs ?? { params: i.params ?? {}, images: i.images }, token_estimate: i.token_estimate };
+      const { estimate, reason } = priceRequest(req);
+      return estimate ? { est: estimate } : { reason: `${i.provider}/${i.model}: ${reason}` };
     };
     const res = planBatch(ws, items, { stop_condition: args.stop, price });
     json(res);
@@ -655,6 +664,10 @@ async function cmdGenerate() {
   if (args['dry-run']) req.dry_run = true;
   if (args['confirm-unpriced']) req.confirm_unpriced = true;
   if (args.confirm) req.confirmed = true;
+  // before a paid image run: say so when the "best model now" data is old or missing (field test F55)
+  const model = registryPrice(req).model;
+  const stale = model?.modality === 'image' ? leaderboardWarning(readJSON(path.join(ROOT, 'registry', 'models.json')), 'image') : null;
+  if (stale) console.error(`WARN ${stale}`);
   const res = await runMedia(ws, req);
   if (args.json) return json(res);
   if (res.would_block) die(`dry run (${req.provider}/${req.model}): a real call would be blocked by budget: ${res.problems.join('; ')}; nothing was paid`);

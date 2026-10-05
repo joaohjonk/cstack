@@ -86,12 +86,70 @@ function megapixels(req, u) {
   return { mp: out + inputs.reduce((a, b) => a + b, 0), notes };
 }
 
+// The output size a request names, as [w, h]: fal's image_size (named or {width, height}), width/height, or "WxH" size.
+function outputSize(p) {
+  if (typeof p.image_size === 'string') return NAMED_SIZES[p.image_size] ?? (/^\d+x\d+$/.test(p.image_size) ? p.image_size.split('x').map(Number) : null);
+  if (p.image_size?.width) return [p.image_size.width, p.image_size.height];
+  if (p.width && p.height) return [p.width, p.height];
+  if (typeof p.size === 'string' && /^\d+x\d+$/.test(p.size)) return p.size.split('x').map(Number);
+  return null;
+}
+
+// Token kinds a per-token estimate needs from req.token_estimate: prompt text and output image always, input image when
+// the request carries images. output_text counts when given; cached prices are never assumed (uncached is the bound).
+function tokenKinds(req, u) {
+  const priced = (k) => u.per_token?.[k] != null;
+  const required = ['input_text', 'output_image', ...((req.inputs?.images ?? []).length ? ['input_image'] : [])].filter(priced);
+  const optional = ['output_text'].filter((k) => priced(k) && Number.isFinite(Number(req.token_estimate?.[k])));
+  return { required, used: [...required, ...optional] };
+}
+
+// Why a priced route still gives no estimate for this request (a quality or size the price was not verified at, or
+// token counts nobody can know before the call); null when it can be estimated.
+function priceGap(req, u) {
+  const p = req.inputs?.params ?? {};
+  if (u.per === 'token') {
+    const missing = tokenKinds(req, u).required.filter((k) => !Number.isFinite(Number(req.token_estimate?.[k])));
+    return missing.length ? `token-priced route: no token_estimate for ${missing.join(', ')} (output image tokens are not known before the call); pass estimated_cost or confirm it as unpriced` : null;
+  }
+  if (u.by_quality) {
+    const qp = u.quality_param ?? 'quality';
+    if (!(p[qp] in u.by_quality)) return `priced by ${qp} (${Object.keys(u.by_quality).join('|')}) and the request names ${p[qp] == null ? 'none' : `"${p[qp]}"`}`;
+    const size = outputSize(p);
+    if (!size) return `no output size given; the price is verified only at ${(u.sizes ?? []).join(', ') || 'no size'}`;
+    if (u.sizes && !u.sizes.includes(`${size[0]}x${size[1]}`)) return `${size[0]}x${size[1]} has no verified price (verified only at ${u.sizes.join(', ')})`;
+  }
+  return null;
+}
+
+/** {estimate, reason}: the registry estimate for a request, or null and why it has none. */
+export function priceRequest(req, models = loadModels()) {
+  const price = registryPrice(req, models);
+  const u = price.unit;
+  if (!u) return { estimate: null, reason: price.basis };
+  const gap = priceGap(req, u);
+  if (gap) return { estimate: null, reason: `${price.basis}: ${gap}` };
+  const estimate = estimateFromRegistry(req, models);
+  return { estimate, reason: estimate ? null : price.basis };
+}
+
 export function estimateFromRegistry(req, models = loadModels()) {
   const price = registryPrice(req, models);
   const u = price.unit;
-  if (!u?.amount) return null;
+  if (!u || priceGap(req, u)) return null;
   const p = req.inputs?.params ?? {};
   const images = Number(p.num_images ?? p.n ?? 1);
+  if (u.per === 'token') {
+    // per 1M tokens of each priced kind, from the request's own token_estimate
+    const kinds = tokenKinds(req, u).used;
+    const amount = kinds.reduce((s, k) => s + (u.per_token[k] * Number(req.token_estimate[k])) / 1e6, 0);
+    return { amount: Math.round(amount * 10000) / 10000, currency: u.currency ?? 'USD', basis: `${price.basis}, per 1M tokens from the request's token_estimate (${kinds.map((k) => `${k} ${req.token_estimate[k]}`).join(', ')}; uncached)` };
+  }
+  if (u.by_quality) {
+    const q = p[u.quality_param ?? 'quality'];
+    return { amount: Math.round(u.by_quality[q] * images * 10000) / 10000, currency: u.currency ?? 'USD', basis: `${price.basis}, ${q} quality at ${outputSize(p).join('x')} x ${images} image(s)` };
+  }
+  if (!u.amount) return null;
   // megapixel pricing comes only from a dated host route; a maker's per-megapixel est_unit_cost is a heuristic and stays unpriced
   if (u.per === 'megapixel') {
     if (!price.route) return null;
@@ -167,7 +225,7 @@ export async function runMedia(ws, req, opts = {}) {
     params: req.inputs?.params ?? {},
     prompt_hash: req.inputs?.prompt ? hashValue(req.inputs.prompt) : '',
     estimated_cost: req.estimated_cost ?? provider.estimate?.(req) ?? estimateFromRegistry(req),
-    unpriced_reason: req.estimated_cost ?? provider.estimate?.(req) ? undefined : registryPrice(req).basis,
+    unpriced_reason: req.estimated_cost ?? provider.estimate?.(req) ? undefined : priceRequest(req).reason ?? undefined,
     skill: req.skill,
     experiment_id: req.experiment_id,
     dry_run: opts.dry_run ?? req.dry_run,

@@ -5,6 +5,9 @@
 // Verify current details in fal docs before relying on new parameters (registry `last_verified`).
 import fs from 'node:fs';
 import path from 'node:path';
+import { notSent, neverSent } from './errors.mjs';
+
+export { notSent, neverSent }; // shared with the other HTTP adapters (providers/errors.mjs)
 
 const KEY = () => process.env.FAL_KEY;
 const scrub = (s) => (KEY() ? String(s).replaceAll(KEY(), '<key>') : String(s));
@@ -12,18 +15,6 @@ const scrub = (s) => (KEY() ? String(s).replaceAll(KEY(), '<key>') : String(s));
 // FAL_KEY goes only to fal's queue host. status_url/response_url come from a response and are persisted in an
 // editable pending-job file, so they are checked before every authenticated request.
 const FAL_ORIGINS = new Set(['https://queue.fal.run']);
-// A request that never left this machine costs nothing (F46: five calls that failed before reaching fal were booked as
-// charged). Connection refusals, DNS failures, TLS failures and a malformed key header all fail before fal sees the
-// request; a reset or timeout after sending might have been accepted, so those stay booked.
-const NEVER_SENT = /^(ENOTFOUND|EAI_AGAIN|ECONNREFUSED|EHOSTUNREACH|ENETUNREACH|UND_ERR_CONNECT_TIMEOUT|ERR_INVALID_CHAR|ERR_INVALID_HTTP_TOKEN|CERT_|ERR_TLS_CERT|DEPTH_ZERO_SELF_SIGNED_CERT|SELF_SIGNED_CERT_IN_CHAIN|UNABLE_TO_)/;
-export function notSent(err) {
-  err.not_submitted = true;
-  return err;
-}
-export function neverSent(err) {
-  const code = String(err?.cause?.code ?? err?.code ?? '');
-  return NEVER_SENT.test(code) || /invalid header value|Headers\.(append|set)|is not a legal HTTP header value/i.test(String(err?.message ?? '') + String(err?.cause?.message ?? ''));
-}
 
 function falUrl(url) {
   let u;

@@ -34,12 +34,12 @@ A micro-benchmark on this exact task > fresh provider docs > the dated registry 
 
 ## Tools / providers
 
-`cstack route --modality <family> --needs a,b [--task t] [--max-cost n] [--providers fal,...] [--tier draft]` (flagship models lead by default; `--tier draft` for probes; each candidate lists the endpoint id per host to put in the request), `cstack providers`, web docs for verification, `generate-media` for probes.
+`cstack route --modality <family> --needs a,b [--task t] [--max-cost n] [--providers fal,...] [--tier draft]` (a fresh leaderboard rank leads, then tier; `best now` names the #1 and what it needs; `--tier draft` for probes; each candidate lists the endpoint id per host to put in the request), `cstack providers`, web docs for verification, `generate-media` for probes.
 
 ## Process
 
 1. **Shortlist** with `cstack route`; read the warnings (stale entries, close scores, missing unit price).
-2. **Verify** the top 2-3 when the job matters: model id, status (`active | watch | deprecated | shut_down`), price unit, reference limits, resolution, async/webhook semantics. Update the registry entry with source and date.
+2. **Verify** the top 2-3 when the job matters: leaderboard rank and `as_of` on the live board (always when `cstack route` warns), model id, status (`active | watch | deprecated | shut_down`), price unit, reference limits, resolution, async/webhook semantics. Update the registry entry with source and date.
 3. **Micro-benchmark** when the top candidates are close or the task is new: same product, same references, same target, 2-4 probes per model at draft tier, scored on product fidelity, art direction, material behavior, typography if relevant, editability. Pairwise against each other; owner breaks ties on taste.
 4. **Decide**: winner for this task only, fallback chain (2-3), reason. Record `benchmark_results` (task, date, result, experiment id) on the entries.
 5. **Hand off** the choice to `prompt-director` (recompile for the target syntax) and `generate-media`.

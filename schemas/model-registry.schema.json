@@ -253,13 +253,13 @@
                     "null"
                   ],
                   "required": [
-                    "amount",
                     "currency",
                     "per"
                   ],
                   "properties": {
                     "amount": {
-                      "type": "number"
+                      "type": "number",
+                      "description": "price per unit; with by_quality, the highest listed price (a request is priced from by_quality, never from this)"
                     },
                     "currency": {
                       "type": "string"
@@ -269,7 +269,8 @@
                         "image",
                         "second",
                         "megapixel",
-                        "operation"
+                        "operation",
+                        "token"
                       ]
                     },
                     "basis": {
@@ -292,9 +293,87 @@
                         "not_stated"
                       ],
                       "description": "per megapixel: how the host rounds; both are estimated as rounding each image up to the next megapixel"
+                    },
+                    "by_quality": {
+                      "type": "object",
+                      "description": "per image: price by the request's quality parameter, verified only at the sizes listed in sizes; a request without a listed quality or size is unpriced",
+                      "additionalProperties": {
+                        "type": "number"
+                      }
+                    },
+                    "quality_param": {
+                      "type": "string",
+                      "description": "per image with by_quality: the request param that names the quality; default quality"
+                    },
+                    "sizes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[0-9]+x[0-9]+$"
+                      },
+                      "description": "per image with by_quality: the output sizes (WxH) the prices were verified at; other sizes are unpriced"
+                    },
+                    "per_token": {
+                      "type": "object",
+                      "description": "per token: price per 1M tokens of each kind. Estimated only from the request's token_estimate, which must give input_text and output_image (and input_image when the request carries images); output_text counts when given; cached prices are never assumed (the uncached price is an upper bound). Otherwise the call is unpriced",
+                      "properties": {
+                        "input_text": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "cached_input_text": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "output_text": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "input_image": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "cached_input_image": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "output_image": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "source": {
+                      "type": "string",
+                      "description": "where this price was read, when it differs from the route source"
                     }
                   },
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "anyOf": [
+                    {
+                      "required": [
+                        "amount"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "per_token"
+                      ]
+                    }
+                  ]
                 },
                 "source": {
                   "type": "string"
@@ -319,11 +398,56 @@
               "draft"
             ],
             "description": "quality tier from the maker's positioning and public arenas, not a benchmark on your task: flagship for finals, draft for cheap probes; absent = standard. cstack route prefers flagship unless asked for draft"
+          },
+          "quality": {
+            "description": "measured quality: a dated rank on a public leaderboard (one object, or an array for several boards). cstack route ranks by it while it is fresh (30 days) and warns when it is older or missing; recorded from the board itself, never inferred",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/quality"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/quality"
+                },
+                "minItems": 1
+              }
+            ]
           }
         },
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "$defs": {
+    "quality": {
+      "type": "object",
+      "required": [
+        "leaderboard",
+        "rank",
+        "as_of",
+        "source"
+      ],
+      "properties": {
+        "leaderboard": {
+          "type": "string",
+          "description": "which board, e.g. Artificial Analysis text-to-image arena"
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "position on that board; lower is better"
+        },
+        "as_of": {
+          "$ref": "common.schema.json#/$defs/date"
+        },
+        "source": {
+          "type": "string",
+          "pattern": "^https://"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
 }

@@ -23,7 +23,6 @@ const stub = (id, interfaces, env, note) => ({
 
 export const stubs = {
   higgsfield: stub('higgsfield', ['media'], ['HF_API_KEY', 'HF_API_SECRET'], 'Higgsfield exposes generation via its own CLI/skills; route by mode (image, video, product photoshoot, brandkit). See docs/integrations.md'),
-  'openai-image': stub('openai-image', ['media'], ['OPENAI_API_KEY'], 'OpenAI image generation/edit; many teams reach it through fal instead'),
   google: stub('google', ['media'], ['GEMINI_API_KEY'], 'Gemini image / Veo video via Google AI APIs'),
   replicate: stub('replicate', ['media'], ['REPLICATE_API_TOKEN'], 'generic model host'),
   // local verifier = deterministic gates + a separate judge; implemented by skills + scripts, not HTTP

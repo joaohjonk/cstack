@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-03",
+  "updated": "2026-10-05",
   "snapshot_note": "Dated snapshot from docs/research/model-landscape.md. Prices and rankings go stale; /model-router re-verifies before important batches.",
   "models": [
     {
@@ -44,7 +44,7 @@
       },
       "est_unit_cost": null,
       "latency_snapshot": null,
-      "access": "direct",
+      "access": "direct; fal",
       "last_verified": "2026-10-03",
       "source": [
         "https://developers.openai.com/api/docs/models/gpt-image-2.5-sunburst",
@@ -55,7 +55,44 @@
       "confidence": "high",
       "status": "active",
       "tier": "flagship",
-      "notes": "Snapshot gpt-image-2.5-sunburst-2026-09-08. Endpoints: v1/images/generations, v1/images/edits, Batch. Announced 2026-09-08. Not served by fal (a fal call returned 404 in the field test, 2026-10-03); call it at OpenAI."
+      "quality": {
+        "leaderboard": "Artificial Analysis text-to-image arena",
+        "rank": 1,
+        "as_of": "2026-10-05",
+        "source": "https://artificialanalysis.ai/text-to-image/arena"
+      },
+      "notes": "Snapshot gpt-image-2.5-sunburst-2026-09-08. Endpoints: v1/images/generations, v1/images/edits, Batch. Announced 2026-09-08. Also served by fal (text-to-image endpoint verified 2026-10-05, field test F60); the fal edit endpoint is listed but its id is unverified, so it has no route yet.",
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "openai/gpt-image-2.5/sunburst/text-to-image",
+          "price": {
+            "currency": "USD",
+            "per": "token",
+            "per_token": {
+              "input_text": 5.0,
+              "cached_input_text": 1.25,
+              "output_text": 10.0,
+              "input_image": 8.0,
+              "cached_input_image": 2.0,
+              "output_image": 30.0
+            },
+            "basis": "USD per 1M tokens as listed by fal: text input 5.00 (cached 1.25), output 10.00; image input 8.00 (cached 2.00), output 30.00. No verified output-image token count per size and quality, so a call is estimated only from a token_estimate; the field test (F60) observed about USD 0.04 to 0.055 per high-quality image depending on size, which is an observation, not a price",
+            "source": "https://fal.ai/models/openai/gpt-image-2.5/sunburst/text-to-image"
+          },
+          "source": "https://fal.ai/models/openai/gpt-image-2.5/sunburst/text-to-image",
+          "last_verified": "2026-10-05",
+          "notes": null
+        },
+        {
+          "provider": "openai-image",
+          "endpoint_id": "gpt-image-2.5-sunburst",
+          "price": null,
+          "source": "https://developers.openai.com/api/reference/resources/images/methods/edit",
+          "last_verified": "2026-10-05",
+          "notes": "OpenAI bills this model by tokens; no per-token price is verified for this route, so a call is unpriced (ask the owner, then --confirm-unpriced, or set budget.allow_unpriced)"
+        }
+      ]
     },
     {
       "model_id": "gpt-image-2.5-flare",
@@ -114,7 +151,17 @@
       "confidence": "high",
       "status": "active",
       "tier": "flagship",
-      "notes": "Snapshot gpt-image-2.5-flare-2026-09-08. Endpoints: v1/images/generations, v1/images/edits, Batch , Responses, Chat Completions. Announced 2026-09-08."
+      "notes": "Snapshot gpt-image-2.5-flare-2026-09-08. Endpoints: v1/images/generations, v1/images/edits, Batch , Responses, Chat Completions. Announced 2026-09-08. fal lists a Flare variant (2026-10-05, field test F60), but its endpoint id is unverified, so it has no fal route: confirm the id on fal before adding one, never infer it (F61).",
+      "routes": [
+        {
+          "provider": "openai-image",
+          "endpoint_id": "gpt-image-2.5-flare",
+          "price": null,
+          "source": "https://developers.openai.com/api/reference/resources/images/methods/edit",
+          "last_verified": "2026-10-05",
+          "notes": "OpenAI bills this model by tokens; no per-token price is verified for this route, so a call is unpriced (ask the owner, then --confirm-unpriced, or set budget.allow_unpriced)"
+        }
+      ]
     },
     {
       "model_id": "gpt-image-2",
@@ -163,7 +210,45 @@
       "confidence": "high",
       "status": "active",
       "tier": "flagship",
-      "notes": "Snapshot gpt-image-2-2026-04-21."
+      "quality": {
+        "leaderboard": "Artificial Analysis text-to-image arena",
+        "rank": 3,
+        "as_of": "2026-10-05",
+        "source": "https://artificialanalysis.ai/text-to-image/arena"
+      },
+      "notes": "Snapshot gpt-image-2-2026-04-21.",
+      "routes": [
+        {
+          "provider": "fal",
+          "endpoint_id": "openai/gpt-image-2",
+          "price": {
+            "amount": 0.211,
+            "currency": "USD",
+            "per": "image",
+            "by_quality": {
+              "low": 0.006,
+              "medium": 0.053,
+              "high": 0.211
+            },
+            "quality_param": "quality",
+            "sizes": [
+              "1024x1024"
+            ],
+            "basis": "per image at 1024x1024: low 0.006, medium 0.053, high 0.211; other sizes have no verified price and stay unpriced"
+          },
+          "source": "https://fal.ai/models/openai/gpt-image-2",
+          "last_verified": "2026-10-05",
+          "notes": null
+        },
+        {
+          "provider": "openai-image",
+          "endpoint_id": "gpt-image-2",
+          "price": null,
+          "source": "https://developers.openai.com/api/reference/resources/images/methods/edit",
+          "last_verified": "2026-10-05",
+          "notes": "OpenAI bills this model by tokens; no per-token price is verified for this route, so a call is unpriced (ask the owner, then --confirm-unpriced, or set budget.allow_unpriced)"
+        }
+      ]
     },
     {
       "model_id": "sora-2 / sora-2-pro",
@@ -682,6 +767,12 @@
       "confidence": "high",
       "status": "active",
       "tier": "flagship",
+      "quality": {
+        "leaderboard": "Artificial Analysis text-to-image arena",
+        "rank": 41,
+        "as_of": "2026-10-05",
+        "source": "https://artificialanalysis.ai/text-to-image/arena"
+      },
       "notes": "API max refs 8 (Playground 10) for pro/max per BFL help centre.",
       "routes": [
         {
