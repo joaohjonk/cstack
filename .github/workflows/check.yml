@@ -5,6 +5,7 @@ name: check
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
@@ -50,12 +51,14 @@ jobs:
         run: npx --no-install playwright-core install chromium
 
       # the owner's private brand denylist (one regex per line) lives in a repository secret, never in the tree;
-      # with it set, validate fails on any brand term, and CSTACK_REQUIRE_DENYLIST fails if the secret is missing
+      # with it set, validate fails on any brand term, and CSTACK_REQUIRE_DENYLIST fails if the secret is missing.
+      # (the secrets context is not allowed in a step `if`, so the shell checks for an empty value)
       - name: Brand denylist from the repository secret
-        if: ${{ secrets.BRAND_DENYLIST != '' }}
         env:
           BRAND_DENYLIST: ${{ secrets.BRAND_DENYLIST }}
-        run: mkdir -p private && printf '%s\n' "$BRAND_DENYLIST" > private/brand-denylist.txt
+        run: |
+          if [ -z "$BRAND_DENYLIST" ]; then echo "no BRAND_DENYLIST secret; validate will warn"; exit 0; fi
+          mkdir -p private && printf '%s\n' "$BRAND_DENYLIST" > private/brand-denylist.txt
 
       - name: Check (validate + budgets + tests), no skipped tests
         run: |
