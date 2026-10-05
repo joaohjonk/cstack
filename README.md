@@ -134,6 +134,14 @@ Claude: You struck "curated" and "elevate". The interview says "never say
 
 You asked for three photos. The agent noticed you needed one hero and one proof, refused to guess a colour the brand had not settled, kept the real product real, and asked before spending a cent. That is not a prompt box. That is a studio that remembers.
 
+## Made with cstack
+
+<p align="center">
+  <img src="docs/showcase/nevada/pack-lineup.jpg" alt="Five tall Nevada cans, each with a big screen-printed picture, the NEVADA wordmark, a NEVER TOO SWEET sweetness meter and a round $3.99 ALWAYS badge." width="100%">
+</p>
+
+**Nevada. Never too sweet.** A fictional sparkling tea taken from a founder's first line to a brief, a pack on true 3D cans, a 10-shot campaign, ads with tests, a website and a map of its own process, in one day, for about USD 3.91 of images. cstack interviewed the founder first, then pushed back with evidence (a sweetness meter, legal sugar claims, a price test), read competitor ads before writing its own, and logged every mistake it made. [The whole run, step by step](docs/showcase/nevada.md).
+
 ## The studio
 
 cstack is a process, not a pile of prompts. The skills run in the order good brand work runs:

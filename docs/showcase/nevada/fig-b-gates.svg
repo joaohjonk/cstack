@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 1208" width="360" height="1208" role="img" aria-labelledby="t d" font-family="Archivo, &#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif">
+<title id="t">Five stops: who caught each problem, and what cstack changed after</title>
+<desc id="d">Five moments the Nevada run had to stop: who caught it (founder, agent, independent reviewer or cstack) and what changed in cstack afterwards.</desc>
+<rect width="360" height="1208" fill="#f4ecdb"/>
+<rect x="16.0" y="16.0" width="91.2" height="22.0" rx="0" fill="#1b1916"/>
+<text x="23.0" y="31.5" font-size="12.5" font-weight="800" fill="#f4ecdb" text-anchor="start" letter-spacing="1.2" style="">FIGURE B</text>
+<text x="16.0" y="66.0" font-size="26" font-weight="900" fill="#1b1916" text-anchor="start" letter-spacing="0" style="font-stretch:88%;">Five stops: who caught</text>
+<text x="16.0" y="93.3" font-size="26" font-weight="900" fill="#1b1916" text-anchor="start" letter-spacing="0" style="font-stretch:88%;">it, and what changed</text>
+<text x="16.0" y="124.6" font-size="14" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">A gate is a check that must pass before</text>
+<text x="16.0" y="143.5" font-size="14" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">work goes on. Only one of these five was</text>
+<text x="16.0" y="162.4" font-size="14" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">caught by cstack itself.</text>
+<text x="28.0" y="201.3" font-size="14" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">1 · FOUNDER BRIEF</text>
+<text x="28.0" y="221.3" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="1" style="">CAUGHT BY</text>
+<text x="124.0" y="221.3" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="0.6" style="">FOUNDER</text>
+<text x="28.0" y="241.3" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Pictures were made before anyone asked the</text>
+<text x="28.0" y="258.2" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">founder why the brand exists. He stopped it</text>
+<text x="28.0" y="275.1" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">at 02:25Z.</text>
+<text x="28.0" y="296.0" font-size="12.5" font-weight="800" fill="#1c492e" text-anchor="start" letter-spacing="1" style="">CHANGED</text>
+<text x="28.0" y="314.0" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">The make gate now refuses to make pictures</text>
+<text x="28.0" y="330.9" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">without an approved founder brief.</text>
+<text x="28.0" y="349.8" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">F23, F24 still open; F26 fixed</text>
+<rect x="16" y="189.3" width="4" height="166.5" fill="#8c1d2c"/>
+<line x1="16.0" y1="365.8" x2="344.0" y2="365.8" stroke="#1b1916" stroke-width="0.5" stroke-dasharray="2 3"/>
+<text x="28.0" y="383.8" font-size="14" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">2 · REFERENCE REACTIONS</text>
+<text x="28.0" y="403.8" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="1" style="">CAUGHT BY</text>
+<text x="124.0" y="403.8" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="0.6" style="">NOBODY, THEN CSTACK</text>
+<text x="28.0" y="423.8" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">One “awesome research” for the whole board</text>
+<text x="28.0" y="440.7" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">let the gate pass.</text>
+<text x="28.0" y="461.6" font-size="12.5" font-weight="800" fill="#1c492e" text-anchor="start" letter-spacing="1" style="">CHANGED</text>
+<text x="28.0" y="479.6" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Reactions from before a pivot no longer</text>
+<text x="28.0" y="496.5" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">count. He waived the gate at 15:51Z.</text>
+<text x="28.0" y="515.4" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">F36 open; F42 fixed</text>
+<rect x="16" y="371.8" width="4" height="149.6" fill="#8c1d2c"/>
+<line x1="16.0" y1="531.4" x2="344.0" y2="531.4" stroke="#1b1916" stroke-width="0.5" stroke-dasharray="2 3"/>
+<text x="28.0" y="549.4" font-size="14" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">3 · PIVOT</text>
+<text x="28.0" y="569.4" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="1" style="">CAUGHT BY</text>
+<text x="124.0" y="569.4" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="0.6" style="">AGENT</text>
+<text x="28.0" y="589.4" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">At 03:07Z he switched to “a better,</text>
+<text x="28.0" y="606.3" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">healthier Arizona”. cstack didn’t notice;</text>
+<text x="28.0" y="623.2" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">the agent reset the brief by hand.</text>
+<text x="28.0" y="644.1" font-size="12.5" font-weight="800" fill="#1c492e" text-anchor="start" letter-spacing="1" style="">CHANGED</text>
+<text x="28.0" y="662.1" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">cstack now has “brief reopen”. Making stays</text>
+<text x="28.0" y="679.0" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">blocked until a new yes.</text>
+<text x="28.0" y="697.9" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">F37 fixed</text>
+<rect x="16" y="537.4" width="4" height="166.5" fill="#8c1d2c"/>
+<line x1="16.0" y1="713.9" x2="344.0" y2="713.9" stroke="#1b1916" stroke-width="0.5" stroke-dasharray="2 3"/>
+<text x="28.0" y="731.9" font-size="14" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">4 · BUDGET</text>
+<text x="28.0" y="751.9" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="1" style="">CAUGHT BY</text>
+<text x="124.0" y="751.9" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="0.6" style="">CSTACK</text>
+<text x="28.0" y="771.9" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">A paid call at a zero budget was refused (1</text>
+<text x="28.0" y="788.8" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">blocked row, 2026-10-03).</text>
+<text x="28.0" y="809.7" font-size="12.5" font-weight="800" fill="#1c492e" text-anchor="start" letter-spacing="1" style="">CHANGED</text>
+<text x="28.0" y="827.7" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Every batch shows its price first. He set</text>
+<text x="28.0" y="844.6" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">about USD 2 for R3 and USD 5 for R4.</text>
+<text x="28.0" y="863.5" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">F06 fixed</text>
+<rect x="16" y="719.9" width="4" height="149.6" fill="#8c1d2c"/>
+<line x1="16.0" y1="879.5" x2="344.0" y2="879.5" stroke="#1b1916" stroke-width="0.5" stroke-dasharray="2 3"/>
+<text x="28.0" y="897.5" font-size="14" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">5 · TEXT CHECK</text>
+<text x="28.0" y="917.5" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="1" style="">CAUGHT BY</text>
+<text x="124.0" y="917.5" font-size="12.5" font-weight="800" fill="#8c1d2c" text-anchor="start" letter-spacing="0.6" style="">INDEPENDENT REVIEWER</text>
+<text x="28.0" y="937.5" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Fake letters in 6 probes, and KŌCHI became</text>
+<text x="28.0" y="954.4" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">KÖCHI on two can scenes. The author’s eye</text>
+<text x="28.0" y="971.3" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">check missed them.</text>
+<text x="28.0" y="992.2" font-size="12.5" font-weight="800" fill="#1c492e" text-anchor="start" letter-spacing="1" style="">CHANGED</text>
+<text x="28.0" y="1010.2" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">cstack can now run a judge for stray text.</text>
+<text x="28.0" y="1027.1" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">It still can’t compare a can’s words with</text>
+<text x="28.0" y="1044.0" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">the wrap.</text>
+<text x="28.0" y="1062.9" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">F20 still open</text>
+<rect x="16" y="885.4999999999999" width="4" height="183.4" fill="#8c1d2c"/>
+<line x1="16.0" y1="1094.9" x2="344.0" y2="1094.9" stroke="#1b1916" stroke-width="1"/>
+<text x="16.0" y="1110.9" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Status (open or fixed) is the latest row for</text>
+<text x="16.0" y="1127.1" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">that F-number in the findings table, the same</text>
+<text x="16.0" y="1143.4" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">count as figure E. Times are UTC (Z).</text>
+<text x="16.0" y="1161.6" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Source: findings.md (field-test folder);</text>
+<text x="16.0" y="1177.9" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">R3/run.md; ws/ostrel/state/cost-ledger.jsonl</text>
+</svg>

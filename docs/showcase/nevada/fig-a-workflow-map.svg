@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 1374" width="360" height="1374" role="img" aria-labelledby="t d" font-family="Archivo, &#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif">
+<title id="t">How Nevada was made: the cstack workflow, step by step</title>
+<desc id="d">Eight stages from a false start to the R4 applications, with the gate that guarded each step.</desc>
+<rect width="360" height="1374" fill="#f4ecdb"/>
+<rect x="16.0" y="16.0" width="91.2" height="22.0" rx="0" fill="#1b1916"/>
+<text x="23.0" y="31.5" font-size="12.5" font-weight="800" fill="#f4ecdb" text-anchor="start" letter-spacing="1.2" style="">FIGURE A</text>
+<text x="16.0" y="66.0" font-size="26" font-weight="900" fill="#1b1916" text-anchor="start" letter-spacing="0" style="font-stretch:88%;">How Nevada was made</text>
+<text x="16.0" y="97.3" font-size="14" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">The steps cstack ran, in order. Diamonds</text>
+<text x="16.0" y="116.2" font-size="14" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">are gates: checks that must pass before</text>
+<text x="16.0" y="135.1" font-size="14" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">the next step.</text>
+<circle cx="30" cy="172.0" r="7" fill="#f4ecdb" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="177.0" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">FALSE START</text>
+<text x="48.0" y="196.0" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Pictures before a brief: 24 probe</text>
+<text x="48.0" y="212.9" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">images. The founder stopped it at</text>
+<text x="48.0" y="229.8" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">02:25Z: wrong order.</text>
+<line x1="48.0" y1="173.0" x2="138.2" y2="173.0" stroke="#1b1916" stroke-width="1.5"/>
+<line x1="30.0" y1="180.0" x2="30.0" y2="261.7" stroke="#1b1916" stroke-width="2" stroke-dasharray="4 4"/>
+<circle cx="30" cy="268.7" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="273.7" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">1 · FOUNDER INTERVIEW</text>
+<text x="48.0" y="292.7" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Three rounds, 02:46Z to 03:17Z: why the</text>
+<text x="48.0" y="309.6" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">brand exists, who it is for, what it</text>
+<text x="48.0" y="326.5" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">must never be.</text>
+<polygon points="53,345.4 60,352.4 53,359.4 46,352.4" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="357.4" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gate: founder brief approved (03:06Z;</text>
+<text x="66.0" y="373.6" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">again 15:33Z after the pivot)</text>
+<line x1="30.0" y1="276.7" x2="30.0" y2="404.9" stroke="#1b1916" stroke-width="2"/>
+<circle cx="30" cy="411.9" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="416.9" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">2 · REFERENCES</text>
+<text x="48.0" y="435.9" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">25 reference cards, each with what to</text>
+<text x="48.0" y="452.8" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">borrow and what never to copy.</text>
+<polygon points="53,471.7 60,478.7 53,485.7 46,478.7" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="483.7" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gate: founder reacts to references</text>
+<text x="66.0" y="499.9" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">(waived 15:51Z)</text>
+<line x1="30.0" y1="419.9" x2="30.0" y2="531.2" stroke="#1b1916" stroke-width="2"/>
+<circle cx="30" cy="538.2" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="543.2" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">3 · TERRITORIES</text>
+<text x="48.0" y="562.2" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Three directions written up. He picked a</text>
+<text x="48.0" y="579.1" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">merge at 15:31Z: the Tall Poster Drop.</text>
+<polygon points="53,598.0 60,605.0 53,612.0 46,605.0" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="610.0" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gate: owner picks a direction</text>
+<line x1="30.0" y1="546.2" x2="30.0" y2="641.2" stroke="#1b1916" stroke-width="2"/>
+<circle cx="30" cy="648.2" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="653.2" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">4 · EXPLORE</text>
+<text x="48.0" y="672.2" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">22 cheap images to look broadly.</text>
+<text x="48.0" y="689.1" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Verdict: “kinda ok”.</text>
+<polygon points="53,708.0 60,715.0 53,722.0 46,715.0" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="720.0" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gates: budget, and a check for stray</text>
+<text x="66.0" y="736.3" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">lettering</text>
+<line x1="30.0" y1="656.2" x2="30.0" y2="767.5" stroke="#1b1916" stroke-width="2"/>
+<circle cx="30" cy="774.5" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="779.5" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">5 · CRAFT-FIRST WRAPS</text>
+<text x="48.0" y="798.5" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Real type set in code; the model only</text>
+<text x="48.0" y="815.4" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">paints 8 posters. Verdict: “kinda</text>
+<text x="48.0" y="832.3" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">enjoy”.</text>
+<polygon points="53,851.2 60,858.2 53,865.2 46,858.2" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="863.2" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gate: text check on every poster</text>
+<line x1="30.0" y1="782.5" x2="30.0" y2="894.5" stroke="#1b1916" stroke-width="2"/>
+<circle cx="30" cy="901.5" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="906.5" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">6 · ON THE CAN</text>
+<text x="48.0" y="925.5" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">4 scenes with the wrap on a can.</text>
+<text x="48.0" y="942.4" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Verdict: “all real cool”.</text>
+<polygon points="53,961.3 60,968.3 53,975.3 46,968.3" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="973.3" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gate: every word on the can matches the</text>
+<text x="66.0" y="989.5" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">wrap</text>
+<line x1="30.0" y1="909.5" x2="30.0" y2="1020.8" stroke="#1b1916" stroke-width="2"/>
+<circle cx="30" cy="1027.8" r="7" fill="#1b1916" stroke="#1b1916" stroke-width="2"/>
+<text x="48.0" y="1032.8" font-size="13" font-weight="800" fill="#1b1916" text-anchor="start" letter-spacing="0.6" style="">7 · R4 APPLICATIONS</text>
+<text x="48.0" y="1051.8" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Pack v3, 3D can, photoshoot, ads, this</text>
+<text x="48.0" y="1068.7" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">site and these figures.</text>
+<polygon points="53,1087.6 60,1094.6 53,1101.6 46,1094.6" fill="#e9b51c" stroke="#1b1916" stroke-width="1.5"/>
+<text x="66.0" y="1099.6" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Gate: cstack&#x27;s challenge memo first;</text>
+<text x="66.0" y="1115.8" font-size="12.5" font-weight="700" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">owner said “ok” at 18:27Z</text>
+<text x="16.0" y="1150.1" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Words: a territory is a written creative</text>
+<text x="16.0" y="1167.0" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">direction; a probe is a cheap test image; R3</text>
+<text x="16.0" y="1183.9" font-size="13" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">and R4 are test rounds; Z means UTC time.</text>
+<line x1="16.0" y1="1212.8" x2="344.0" y2="1212.8" stroke="#1b1916" stroke-width="1"/>
+<text x="16.0" y="1228.8" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Founder verdicts in his words: 2026-10-05</text>
+<text x="16.0" y="1245.0" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">feedback rows FB-20261005-16b0c9,</text>
+<text x="16.0" y="1261.3" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">FB-20261005-d695cc, FB-20261005-dacb9f. Image</text>
+<text x="16.0" y="1277.5" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">counts are paid ledger rows with status ok.</text>
+<text x="16.0" y="1295.8" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">Source: R3/run.md; R4/run.md;</text>
+<text x="16.0" y="1312.0" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">ws/ostrel/state/feedback.jsonl;</text>
+<text x="16.0" y="1328.3" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">ws/ostrel/state/cost-ledger.jsonl;</text>
+<text x="16.0" y="1344.5" font-size="12.5" font-weight="400" fill="#1b1916" text-anchor="start" letter-spacing="0" style="">ws/ostrel/references/inspiration/</text>
+</svg>
