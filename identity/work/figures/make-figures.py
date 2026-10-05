@@ -73,20 +73,20 @@ for r in range(4):
 s.append(sq(x+10,262+3*100-20,20))
 s+=wordmark(col(W,9),H-M-6,TEXT)
 s.append('</svg>'); open(OUT+'cstack-hero.svg','w').write('\n'.join(s)+'\n')
-# ---------- drift as texture: prompted is noise, kept is flat ----------
-import math,random
-s=poster(W,H,'Prompted versus kept in files','Klein blue poster. Two lines in white: Ask a model for your brand a hundred times: a hundred cousins. Keep it in files: one brand. Below, two blocks side by side: on the left a block of fine vertical white lines of uneven weight that shimmers like a gradient, labelled Prompted ten times; on the right one flat white block, labelled Kept in files. Made from one brand.')
-s.append(T('Ask a model for your brand a hundred times:',M,72,TEXT,'b',WHITE))
-s.append(T('a hundred cousins. Keep it in files: one brand.',M,124,TEXT,'r',WHITE))
-bw=(W-2*M-40)/2; top=164; bh=290; rnd=random.Random(3); n=110; step=bw/n
+# ---------- drift: prompts forget, a brand in files does not ----------
+s=poster(W,H,'Prompts forget. Brands should not.','Klein blue poster. Headline in white: Prompts forget. Brands shouldn\'t. Below, ten outlined white squares drift in size and angle, labelled: Ten prompts. Ten cousins. Under a thin rule, ten identical solid white squares in a row, labelled: cstack remembers. Ten times, one brand.')
+s.append(T('Prompts forget.',M,96,HEAD,'b',WHITE,track=-1.5))
+s.append(T('Brands shouldn\u2019t.',M,168,HEAD,'r',WHITE,track=-1.5))
+n=10; colw=(W-2*M)/n; size=60
+dr=[[0,0,0,1],[4,-3,5,1.04],[-5,4,-8,.92],[7,-5,11,1.1],[-8,6,-14,.88],[10,-7,18,1.14],[-11,9,-22,.84],[9,-10,27,1.16],[-6,12,-31,.82],[-4,-9,38,1.18]]
 for i in range(n):
-    w=1.2+4.5*(0.5+0.5*math.sin(i/7.0))*(0.6+0.8*rnd.random())
-    s.append(f'<rect x="{M+i*step:.1f}" y="{top}" width="{w:.1f}" height="{bh}" fill="{WHITE}"/>')
-s.append(f'<rect x="{M+bw+40:.1f}" y="{top}" width="{bw:.1f}" height="{bh}" fill="{WHITE}"/>')
-s.append(T('Prompted ten times.',M,top+bh+64,TEXT,'b',WHITE))
-s.append(T('Kept in files.',M+bw+40,top+bh+64,TEXT,'b',WHITE))
-s.append(T('Made from one brand.',M+bw+40,top+bh+116,TEXT,'r',WHITE))
-s+=wordmark(M,top+bh+116,TEXT)
+    dx,dy,rot,sc=dr[i]; sz=size*sc; cx=M+i*colw+colw/2+dx; cy=280+dy
+    s.append(f'<rect x="{cx-sz/2:.1f}" y="{cy-sz/2:.1f}" width="{sz:.1f}" height="{sz:.1f}" fill="none" stroke="{WHITE}" stroke-width="2.5" transform="rotate({rot} {cx:.1f} {cy:.1f})"/>')
+s.append(T('Ten prompts. Ten cousins.',M,370,TEXT,'r',WHITE))
+s.append(f'<rect x="{M}" y="402" width="{W-2*M}" height="2" fill="{WHITE}" opacity="0.5"/>')
+for i in range(n):
+    cx=M+i*colw+colw/2; s.append(sq(cx-size/2,446,size))
+s.append(T('cstack remembers. Ten times, one brand.',M,H-M,TEXT,'b',WHITE))
 s.append('</svg>'); open(OUT+'cstack-drift.svg','w').write('\n'.join(s)+'\n')
 # ---------- nine layers: one transit line, nine stops, and the loop back ----------
 L=[('01','Reality','What is true about the product'),('02','Culture','People, scenes, rituals, language'),('03','Canon','Models from people who did it well'),('04','References','Source, mechanism, transfer'),('05','System','Tokens, type, grid, motion, voice'),('06','Generation','People, agents, code, models'),('07','Judgment','Never by the maker'),('08','Memory','Every correction written down'),('09','Compounding taste','The next brief starts smarter')]

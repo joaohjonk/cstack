@@ -11,7 +11,7 @@ The New York subway still reads as one system half a century later. The reason i
 Generative AI made making cheap. It did not make judgment cheap. Ask a model for your brand a hundred times and you get a hundred cousins: the orange slides toward pink, the type drifts, the product grows a cap it never had, the copy reaches for the word the founder banned last spring. No single image is wrong. The set is.
 
 <p align="center">
-  <img src="docs/images/cstack-drift.svg" alt="Ask a model for your brand a hundred times: a hundred cousins. Keep it in files: one brand. Two blocks on Klein blue: fine shimmering white lines labelled Prompted ten times, and one flat white block labelled Kept in files." width="100%">
+  <img src="docs/images/cstack-drift.svg" alt="Prompts forget. Brands shouldn’t. On Klein blue: ten outlined white squares drift in size and angle, labelled Ten prompts. Ten cousins. Below a rule, ten identical solid white squares, labelled cstack remembers. Ten times, one brand." width="100%">
 </p>
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
