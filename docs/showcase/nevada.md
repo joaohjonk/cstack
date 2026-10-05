@@ -3,7 +3,7 @@
 Nevada is a fictional sparkling iced tea, built from zero with cstack in one day (2026-10-05) as a field test. The founder was played by cstack's owner, and every step below is a real cstack step with the owner's real verdicts. Nevada is not a product, and no one sells it.
 
 <p align="center">
-  <img src="nevada/can-lineup.jpg" alt="Five tall Nevada cans in a row, drops 01 to 04 and the plain drop 00, each wrapped in one big screen-printed picture." width="100%">
+  <img src="nevada/05-on-the-can.jpg" alt="Five tall Nevada cans in a row, drops 01 to 04 and the plain drop 00, each wrapped in one big screen-printed picture." width="100%">
 </p>
 
 ## 1. The founder first
@@ -33,8 +33,8 @@ The founder picked **A, with C's numbered drops**, and cstack wrote that up as t
 The first round was 22 images on the current leading image model, shown on a blind contact sheet (`cstack sheet make --blind`). The rule against text in generated images kept the model from inventing lettering, but it also stripped the pack of its system. The founder's verdict: "kinda ok", then "just ugly craft on the packaging".
 
 <p align="center">
-  <img src="nevada/explore-1.jpg" alt="An early explore frame: a generated can with no pack system." width="32%">
-  <img src="nevada/explore-2.jpg" alt="A second early explore frame." width="32%">
+  <img src="nevada/03-explore-yuzu-single1.jpg" alt="An early explore frame: a hand holds a pale yellow can with a citrus sun over tea leaves, and no name, price or drop on it." width="40%">
+  <img src="nevada/03-explore-tamarind-grid.jpg" alt="An explore grid of four frames: the same tamarind can in hand, on a fridge shelf, on a plain set and on a cafe table." width="40%">
 </p>
 
 ## 4. Craft first: "kinda enjoy"
@@ -42,11 +42,16 @@ The first round was 22 images on the current leading image model, shown on a bli
 The fix was to stop asking an image model to design a pack. The five wraps were designed flat, with real type: the wordmark, the drop number, a round price badge, and the flavour, sugar and origin lines. Only the poster picture is generated, in a flat three-ink screen-print style: yuzu as the sun over tea rows, cherries cannonballing into a lime pool, a tamarind pod lit like a firecracker, a lychee pearl in a rose, and bare metal for the plain can.
 
 <p align="center">
-  <img src="nevada/wrap-01.jpg" alt="Flat wrap, drop 01, yuzu white tea." width="19%">
-  <img src="nevada/wrap-02.jpg" alt="Flat wrap, drop 02, black cherry lime." width="19%">
-  <img src="nevada/wrap-03.jpg" alt="Flat wrap, drop 03, tamarind chili rooibos." width="19%">
-  <img src="nevada/wrap-04.jpg" alt="Flat wrap, drop 04, lychee rose." width="19%">
-  <img src="nevada/wrap-00.jpg" alt="Flat wrap, drop 00, plain." width="19%">
+  <img src="nevada/04-poster-yuzu-a.jpg" alt="The generated picture alone: a yuzu rising like the sun over rows of tea, in three flat inks." width="49%">
+  <img src="nevada/04-flat-wrap-yuzu.jpg" alt="The flat wrap for drop 01: the same picture with the NEVADA wordmark, DROP 01, a round $3.99 ALWAYS badge and the flavour lines set in real type." width="49%">
+</p>
+
+<p align="center">
+  <img src="nevada/04-front-yuzu.jpg" alt="Front panel, drop 01, yuzu white tea." width="19%">
+  <img src="nevada/04-front-cherry.jpg" alt="Front panel, drop 02, black cherry lime." width="19%">
+  <img src="nevada/04-front-tamarind.jpg" alt="Front panel, drop 03, tamarind chili." width="19%">
+  <img src="nevada/04-front-lychee.jpg" alt="Front panel, drop 04, lychee rose." width="19%">
+  <img src="nevada/04-front-plain.jpg" alt="Front panel, drop 00, plain sparkling tea on bare metal." width="19%">
 </p>
 
 ## 5. Polish: "all real cool"
