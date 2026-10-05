@@ -187,7 +187,7 @@ export function goldRefs(ws) {
 
 const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
-  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on a references/ or work/references/ item in state/feedback.jsonl, given since the latest brief approval): bring the founder references first (taste-search) and record what they say',
+  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search) and record what they say',
 };
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
@@ -229,16 +229,20 @@ function requirementMet(ws, req) {
     const fb = path.join(ws, 'state', 'feedback.jsonl');
     if (!packet || !exists(fb)) return false;
     const kinds = new Set(['approve', 'reject', 'gold', 'anti', 'pairwise', 'comment']);
-    // reactions given before the latest brief approval were to work made for an older brief (F42)
+    // reactions given before the last pivot were to work made for an older brief (F42, F52)
     const mark = feedbackMark(ws);
-    return fs.readFileSync(fb, 'utf8').split('\n').filter((l) => l.trim()).slice(mark).some((l) => {
+    // one "yes" to the whole board is not a reaction to references (F36): it takes reactions to at least two
+    // individual references (a pairwise pick names two)
+    const refs = new Set();
+    const isRef = (r) => /^(work\/)?references\//.test(r) && !/-packet\.md$/.test(r) && !r.endsWith('/');
+    for (const l of fs.readFileSync(fb, 'utf8').split('\n').filter((x) => x.trim()).slice(mark)) {
       try {
         const e = JSON.parse(l);
-        return kinds.has(e.type) && /^(work\/)?references\//.test(String(e.artifact_ref ?? ''));
-      } catch {
-        return false;
-      }
-    });
+        if (!kinds.has(e.type)) continue;
+        for (const r of [e.artifact_ref, e.pair?.a, e.pair?.b].map((x) => String(x ?? ''))) if (isRef(r)) refs.add(r);
+      } catch {}
+    }
+    return refs.size >= 2;
   }
   return false;
 }

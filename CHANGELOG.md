@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **A reaction to the whole board is not a reaction to references** (field test F36). The make gate needs reactions to at least two individual references since the last pivot; a reaction to the reference packet or a folder no longer counts.
 - **Keys from a .env without a shell** (own-brand run F47). `--env-from <file>` loads only the provider variables cstack declares, never prints a value, and reports malformed lines by number. The preamble says never to cat, grep or source a `.env`.
 - **Calls that never left this machine cost nothing** (own-brand run F46). A fal request that fails on DNS, a refused connection, TLS or a malformed key header is booked as not charged, like a 4xx; a reset after sending stays booked.
 - **The eval agent without your own context** (F41). `docs/evals.md` gives the `claude -p` flags that keep your personal CLAUDE.md, memory and MCP servers out of a run while still using your subscription.
