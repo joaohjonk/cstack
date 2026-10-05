@@ -23,10 +23,6 @@ It is to brand work what [gstack](https://github.com/garrytan/gstack) is to ship
 
 ## First, step outside
 
-<p align="center">
-  <img src="docs/images/step-outside.svg" alt="First, step outside. cstack can keep your taste. It cannot give you any. Go see the world. Then come back and make." width="100%">
-</p>
-
 cstack can keep your taste. It cannot give you any.
 
 Taste comes from distance: the further apart the things you have seen, touched and lived, the more surprising the connections you can make between them. A model is trained on the average of everything, so it will always offer you the nearest idea. The far ones only come from you.

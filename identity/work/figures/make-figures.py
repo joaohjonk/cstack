@@ -73,14 +73,6 @@ for r in range(4):
 s.append(sq(x+10,262+3*100-20,20))
 s+=wordmark(col(W,9),H-M-6,TEXT)
 s.append('</svg>'); open(OUT+'cstack-hero.svg','w').write('\n'.join(s)+'\n')
-# ---------- step outside: the sign, in the README's own words ----------
-s=poster(W,H,'First, step outside','Klein blue poster with grain. Headline in white: First, step outside. Below it: cstack can keep your taste. It cannot give you any. Go see the world. Then come back and make. Bottom left, the wordmark.')
-s.append(T('First,',M-4,190,150,'b',WHITE,track=-5))
-s.append(T('step outside.',M-4,330,150,'b',WHITE,track=-5))
-s.append(T('cstack can keep your taste. It cannot give you any.',M,440,TEXT,'r',WHITE))
-s.append(T('Go see the world. Then come back and make.',M,496,TEXT,'r',WHITE))
-s+=wordmark(M,H-M-6,TEXT)
-s.append('</svg>'); open(OUT+'step-outside.svg','w').write('\n'.join(s)+'\n')
 # ---------- drift as texture: prompted is noise, kept is flat ----------
 import math,random
 s=poster(W,H,'Prompted versus kept in files','Klein blue poster. Two lines in white: Ask a model for your brand a hundred times: a hundred cousins. Keep it in files: one brand. Below, two blocks side by side: on the left a block of fine vertical white lines of uneven weight that shimmers like a gradient, labelled Prompted ten times; on the right one flat white block, labelled Kept in files. Made from one brand.')
