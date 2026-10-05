@@ -36,6 +36,7 @@ import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
 import { checkForUpdate, runUpdate, snooze, setConfig, readConfig, recordInstall, installsToRefresh, stateDir } from '../scripts/lib/update.mjs';
 import { checkLinks } from '../scripts/lib/links.mjs';
+import { loadEnvFile } from '../scripts/lib/envfile.mjs';
 import { report as creativeReport, checkBet, checkFamily, checkPlan, readPerformance, families as taxFamilies } from '../scripts/lib/creative.mjs';
 import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 
@@ -73,6 +74,17 @@ const ws = path.resolve(args.ws ?? process.env.CSTACK_WORKSPACE ?? process.cwd()
 if (args.ws !== undefined && (args.ws === true || !fs.existsSync(ws))) {
   console.error(`--ws ${args.ws === true ? '(no value)' : ws}: no such directory`);
   process.exit(1);
+}
+// --env-from <file>: provider keys from a .env file, read here so no shell prints it (F47); values never shown
+if (args['env-from'] !== undefined) {
+  if (args['env-from'] === true || !fs.existsSync(path.resolve(args['env-from']))) {
+    console.error('--env-from needs an existing file');
+    process.exit(1);
+  }
+  const names = [...new Set(availability().flatMap((p) => p.needs ?? []).concat(['FAL_ADMIN_KEY']))];
+  const r = loadEnvFile(path.resolve(args['env-from']), names);
+  const parts = [r.loaded.length ? `loaded ${r.loaded.join(', ')}` : 'loaded nothing', r.skipped.length ? `kept the shell's ${r.skipped.join(', ')}` : '', r.malformed.length ? `skipped malformed line(s) ${r.malformed.join(', ')} (not shown)` : ''].filter(Boolean);
+  console.error(`env: ${parts.join('; ')} from ${path.basename(args['env-from'])}; values are never printed`);
 }
 // Commands that read or write brand state need a real workspace, not whatever folder the shell is in.
 const requireWs = () => {

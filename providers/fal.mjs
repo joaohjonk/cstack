@@ -12,20 +12,39 @@ const scrub = (s) => (KEY() ? String(s).replaceAll(KEY(), '<key>') : String(s));
 // FAL_KEY goes only to fal's queue host. status_url/response_url come from a response and are persisted in an
 // editable pending-job file, so they are checked before every authenticated request.
 const FAL_ORIGINS = new Set(['https://queue.fal.run']);
+// A request that never left this machine costs nothing (F46: five calls that failed before reaching fal were booked as
+// charged). Connection refusals, DNS failures, TLS failures and a malformed key header all fail before fal sees the
+// request; a reset or timeout after sending might have been accepted, so those stay booked.
+const NEVER_SENT = /^(ENOTFOUND|EAI_AGAIN|ECONNREFUSED|EHOSTUNREACH|ENETUNREACH|UND_ERR_CONNECT_TIMEOUT|ERR_INVALID_CHAR|ERR_INVALID_HTTP_TOKEN|CERT_|ERR_TLS_CERT|DEPTH_ZERO_SELF_SIGNED_CERT|SELF_SIGNED_CERT_IN_CHAIN|UNABLE_TO_)/;
+export function notSent(err) {
+  err.not_submitted = true;
+  return err;
+}
+export function neverSent(err) {
+  const code = String(err?.cause?.code ?? err?.code ?? '');
+  return NEVER_SENT.test(code) || /invalid header value|Headers\.(append|set)|is not a legal HTTP header value/i.test(String(err?.message ?? '') + String(err?.cause?.message ?? ''));
+}
+
 function falUrl(url) {
   let u;
   try {
     u = new URL(url);
   } catch {
-    throw new Error(`refusing to call a non-URL with FAL_KEY: ${String(url).slice(0, 80)}`);
+    throw notSent(new Error(`refusing to call a non-URL with FAL_KEY: ${String(url).slice(0, 80)}`));
   }
-  if (!FAL_ORIGINS.has(u.origin)) throw new Error(`refusing to send FAL_KEY to ${u.origin} (only ${[...FAL_ORIGINS].join(', ')})`);
+  if (!FAL_ORIGINS.has(u.origin)) throw notSent(new Error(`refusing to send FAL_KEY to ${u.origin} (only ${[...FAL_ORIGINS].join(', ')})`));
   return u.href;
 }
 
 async function http(url, init = {}) {
   url = falUrl(url);
-  const res = await fetch(url, { ...init, headers: { Authorization: `Key ${KEY()}`, 'Content-Type': 'application/json', ...(init.headers ?? {}) } });
+  let res;
+  try {
+    res = await fetch(url, { ...init, headers: { Authorization: `Key ${KEY()}`, 'Content-Type': 'application/json', ...(init.headers ?? {}) } });
+  } catch (err) {
+    const e = new Error(scrub(`fal request failed: ${err?.cause?.code ?? err?.code ?? err?.message ?? err}`));
+    throw neverSent(err) ? notSent(e) : e;
+  }
   const text = await res.text();
   if (!res.ok) throw new Error(scrub(`fal HTTP ${res.status}: ${text.slice(0, 400)}`));
   return text ? JSON.parse(text) : {};
@@ -42,7 +61,7 @@ export const fal = {
   env: ['FAL_KEY'],
   available: (env) => !!env.FAL_KEY,
   async submit(req) {
-    if (!KEY()) throw new Error('FAL_KEY is not set (auth): configure it in your shell or secret store');
+    if (!KEY()) throw notSent(new Error('FAL_KEY is not set (auth): configure it in your shell or secret store'));
     const { prompt, images = [], params = {} } = req.inputs ?? {};
     // Reference images: callers pre-resize (cost scales with input pixels on some endpoints).
     const body = { prompt, ...params };

@@ -162,3 +162,20 @@ test('F39, F44: the founder brief holds price position apart from reach, inferre
   assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
   assert.equal(validateValue('founder-brief', { ...brief, market: { price_position: 'cheap' } }).ok, false);
 });
+
+test('F47: --env-from loads only declared keys, keeps the shell value, and never prints a value or a bad line', async () => {
+  const { loadEnvFile } = await import('../scripts/lib/envfile.mjs');
+  const dir = tmpDir('cstack-f47-');
+  const f = path.join(dir, '.env');
+  fs.writeFileSync(f, '# keys\nOTHER_SECRET=nope\nexport FAL_KEY="abc123:def"\nTASTE_API_KEY=tk-1 # comment\nFAL_ADMIN_KEY=broken value with spaces\nnot a line\n');
+  const env = { TASTE_API_KEY: 'from-shell' };
+  const r = loadEnvFile(f, ['FAL_KEY', 'TASTE_API_KEY', 'FAL_ADMIN_KEY'], env);
+  assert.deepEqual(r, { loaded: ['FAL_KEY'], skipped: ['TASTE_API_KEY'], malformed: [5, 6] });
+  assert.equal(env.FAL_KEY, 'abc123:def');
+  assert.equal(env.OTHER_SECRET, undefined);
+  const { spawnSync } = await import('node:child_process');
+  const out = spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), 'providers', '--env-from', f], { encoding: 'utf8', env: { ...process.env, FAL_KEY: '', TASTE_API_KEY: '' } });
+  const all = out.stdout + out.stderr;
+  assert.match(out.stderr, /env: loaded FAL_KEY, TASTE_API_KEY; skipped malformed line\(s\) 5, 6 \(not shown\)/);
+  for (const secret of ['abc123', 'tk-1', 'broken value', 'nope']) assert.ok(!all.includes(secret), secret);
+});

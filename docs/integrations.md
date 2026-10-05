@@ -98,3 +98,7 @@ Always set `estimated_cost` (an unpriced call is blocked) and `recipe_hash` (it 
 ## Agent hosts
 
 Skills are plain folders, so any host that reads Agent Skills can use them. Install ids, folders and per-host caveats: [skill-authoring.md](skill-authoring.md#host-install).
+
+## Keys in a .env file
+
+If your keys live in a `.env` file, pass `--env-from <file>` to any cstack command instead of sourcing or printing the file. cstack reads only the variables its adapters declare (`FAL_KEY`, `FAL_ADMIN_KEY`, `TASTE_API_KEY`, ...), leaves a variable your shell already set alone, and never prints a value. A malformed line, such as a value with spaces in it, is skipped and reported by line number only.

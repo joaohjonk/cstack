@@ -24,11 +24,14 @@ cstack health          # per-skill validity, budget, fixture count, cost class, 
 ```bash
 cstack evals run make-it-cooler --dry-run                     # build the case and write the prompt; calls nothing
 cstack evals run --all --ws ~/brands/evals --cost-per-call 0 \
-  --agent "claude -p --output-format stream-json --verbose" \
-  --judge "claude -p" --out runs/2026-10-05 --record          # live: 3 runs per fixture, graded, recorded
+  --agent "claude -p --setting-sources project --strict-mcp-config --mcp-config '{\"mcpServers\":{}}' --output-format stream-json --verbose --permission-mode acceptEdits --allowedTools Bash Read Write Edit Glob Grep" \
+  --judge "claude -p --setting-sources project --strict-mcp-config --mcp-config '{\"mcpServers\":{}}'" \
+  --out runs/2026-10-05 --record                              # live: 3 runs per fixture, graded, recorded
 cstack evals run --all --recorded runs/2026-10-05             # regrade a saved run; calls nothing
 cstack evals run --since main --agent "codex exec" --ws ...   # the fixtures `evals plan` selects
 ```
+
+Run the agent and the judge without your own context. A plain `claude -p` loads your personal `~/.claude/CLAUDE.md`, your memory and your MCP servers, so the score measures your setup as well as cstack (field test F41). `--setting-sources project --strict-mcp-config --mcp-config '{"mcpServers":{}}'` keeps them out and still uses your subscription login; `--bare` keeps them out too but needs an API key. To check, send the agent command a prompt asking it to list any CLAUDE.md, memory or MCP servers it can see.
 
 For each run of each fixture the runner:
 

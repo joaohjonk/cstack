@@ -201,3 +201,35 @@ test('a request refused at submit books nothing; a near-miss endpoint names the 
   assert.equal(res.row.charged, false);
   assert.equal(spent(readLedger(w2)), 0);
 });
+
+test('F46: a fal call that never left this machine books nothing; a reset after sending stays booked', async () => {
+  const { spent } = await import('../scripts/lib/ledger.mjs');
+  const { fal } = await import('../providers/fal.mjs');
+  const ws = tmpDir('cstack-f46-');
+  fs.writeFileSync(path.join(ws, 'cstack.config.yaml'), 'budget:\n  currency: USD\n  per_run: 1\n  per_day: 2\n');
+  const realFetch = globalThis.fetch;
+  const hadKey = 'FAL_KEY' in process.env;
+  const oldKey = process.env.FAL_KEY;
+  process.env.FAL_KEY = 'test-key-not-real';
+  const req = (n) => ({ provider: 'fal', model: 'fal-ai/flux-2-pro', operation: 'text_to_image', inputs: { prompt: `a cup ${n}` }, out_dir: 'work/gen', out_prefix: `f46-${n}`, estimated_cost: { amount: 0.05, currency: 'USD' } });
+  const failWith = (code) => async () => { throw Object.assign(new TypeError('fetch failed'), { cause: Object.assign(new Error(code), { code }) }); };
+  try {
+    for (const [n, code] of [[1, 'ENOTFOUND'], [2, 'ECONNREFUSED']]) {
+      globalThis.fetch = failWith(code);
+      const r = await runMedia(ws, req(n), { provider: fal });
+      assert.equal(r.row.charged, false, code);
+      assert.doesNotMatch(r.row.error, /test-key-not-real/);
+    }
+    globalThis.fetch = failWith('ECONNRESET');
+    const reset = await runMedia(ws, req(3), { provider: fal });
+    assert.equal(reset.row.charged, undefined, 'a reset may come after fal accepted the request');
+    // only the reset attempts (retried as transient) are booked
+    const resetRows = readLedger(ws).filter((x) => /ECONNRESET/.test(x.error ?? ''));
+    assert.ok(resetRows.length >= 1);
+    assert.equal(spent(readLedger(ws)), Math.round(resetRows.length * 0.05 * 100) / 100);
+  } finally {
+    globalThis.fetch = realFetch;
+    if (hadKey) process.env.FAL_KEY = oldKey;
+    else delete process.env.FAL_KEY;
+  }
+});
