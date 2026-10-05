@@ -158,6 +158,7 @@ Tiers, graders and how `cstack evals plan` selects fixtures from your diff: [eva
 
 ```bash
 cstack setup                                  # default hosts: agents + claude-code, user scope (~)
+cstack setup --host auto                      # default + Copilot CLI, Factory, Kiro when their folders exist in ~
 cstack setup --host all                       # every host in registry/hosts.json
 cstack setup --host cursor --target ./my-project
 cstack setup --copy                           # copy instead of symlink
@@ -172,12 +173,16 @@ cstack setup --dry-run                        # print what would be installed
 | `cursor` | `.cursor/skills` | `.cursor/skills` |
 | `gemini-cli` | `.gemini/skills` | `.gemini/skills` |
 | `opencode` | `.opencode/skills` | `.config/opencode/skills` |
+| `copilot` (GitHub Copilot CLI) | `.github/skills` | `.copilot/skills` |
+| `factory` (Factory Droid) | `.factory/skills` | `.factory/skills` |
+| `kiro` | `.kiro/skills` | `.kiro/skills` |
 
 - Host paths are data in `registry/hosts.json`. When a host moves its folder, edit one line there.
 - Directories that resolve to the same path are installed once.
 - A same-named skill that cstack did not install (another toolkit's folder or symlink) is never replaced. Setup skips it and names it in a warning.
 - `skills/cstack-shared/` travels with the skills. It has no SKILL.md, so host scanners ignore it, and skills link to it as `../cstack-shared/`.
 - Cursor and OpenCode also scan `.claude/skills`, so installing into every compatible folder at one scope produces duplicate skills. Stay on the default unless you need a specific host.
+- Setup records each install in `~/.cstack/installs.json`; `cstack update` (and `cstack setup --refresh`) relinks exactly those, plus any home host folder that already holds cstack's links.
 - Per-host caveats (consent prompts, name rules, the 1024-character description limit) are in `registry/hosts.json`.
 
 ## Checklist

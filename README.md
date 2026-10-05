@@ -84,7 +84,11 @@ alias cstack="node ~/cstack/bin/cstack.mjs"   # setup prints this line; add it t
 cstack help
 ```
 
-Run `./setup` (or `npm install`) once before the first `cstack` command; on a bare clone the CLI stops and tells you to. `./setup all` also installs for Codex, Cursor, Gemini CLI and OpenCode (`registry/hosts.json`). Setup never installs system software, never asks for keys and makes no paid calls.
+Run `./setup` (or `npm install`) once before the first `cstack` command; on a bare clone the CLI stops and tells you to. The default install works in Claude Code and in every agent that reads `.agents/skills` (Codex, Cursor, Gemini CLI, OpenCode). `./setup auto` also installs for GitHub Copilot CLI, Factory and Kiro when they are on your machine, and `./setup all` for every host in `registry/hosts.json`. Setup never installs system software, never asks for keys and makes no paid calls.
+
+Call a skill by name: `/brief` in Claude Code, `$brief` in Codex, or ask for it in any other agent.
+
+**Update.** Run `/cstack-update` in your agent, or `cstack update`. It fast-forwards your checkout (never discarding your changes), reinstalls dependencies when they changed, relinks every agent you installed into and tells you what is new. Skills check for an update once a session and ask first; `cstack update --auto on` updates without asking, `cstack update --checks off` stops the checks.
 
 **Money and keys.** Provider credentials are read from environment variables by name (`FAL_KEY`, `TASTE_API_KEY`) and never written to disk. A new brand workspace has a budget of zero, so nothing costs money until you say how much it may.
 
