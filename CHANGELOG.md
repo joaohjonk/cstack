@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Field test F30 to F32.** `cstack tools` now tells detected from usable: a connected Cosmos MCP shows as NO, because Cosmos's terms allow only its own software or a browser and it publishes no MCP or API (the ones in circulation are unofficial). Research tools can carry `agent_use`; `providers` reports the usable route. `cstack browse shot --out <dir|file.png>` copies the shots there, and the browser lookup falls back to an installed Chrome or Chromium (macOS included). `brand init` creates `references/inspiration/`.
 - **Field test F28, F29.** The founder brief gains a `product` section (what is made, the founder's stances, functional add-ons, range and its limits, what it will never be), and the founding interview asks about it. `cstack prompt compile` now checks the recipe against the `prompt-recipe` schema, so a recipe that compiles also passes `brand check`.
 - **Text in generated images stops the batch** (field test F20). `cstack image text` flags lettering, garbled text and logos with local OCR (tesseract) or a judge command, and exits 1 so a stop rule can run it after each image. With no engine it refuses rather than passing. The `mood-probes` probe gate runs it.
 - **What fal billed** (field test F21). Ledger rows keep the provider's request ids. `cstack spend reconcile --provider fal` fetches fal's billing event for each request into `state/billing.jsonl` (new schema `billing-record`). `spend summary` shows billed against estimated, and whether the gap is within 25%.

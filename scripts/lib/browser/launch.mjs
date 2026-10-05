@@ -2,7 +2,7 @@
 // browse/src/find-browse.ts (gstack binary lookup), scripts/resolvers/aside.ts ("detect, never install").
 // MIT License, Copyright (c) 2026 Garry Tan, modified for cstack. See licenses/gstack-MIT.txt.
 // Changes: one-shot Node launcher (no daemon, ports, tokens, headed mode, proxy or stealth); empty profile;
-// executable resolution CSTACK_CHROMIUM -> Playwright default -> /opt/pw-browsers/chromium; gstack probe never boots its daemon.
+// executable resolution CSTACK_CHROMIUM -> Playwright default -> /opt/pw-browsers/chromium -> an installed Chrome/Chromium; gstack probe never boots its daemon.
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -12,6 +12,14 @@ import { installGuard } from './url-guard.mjs';
 
 export const FALLBACK_CHROMIUM = '/opt/pw-browsers/chromium';
 const require = createRequire(import.meta.url);
+
+/** Installed Chrome/Chromium paths to try last, per platform. */
+export function systemChromes(platform = process.platform, home = os.homedir()) {
+  if (platform === 'darwin')
+    return ['Google Chrome.app/Contents/MacOS/Google Chrome', 'Chromium.app/Contents/MacOS/Chromium', 'Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'].flatMap((a) => [path.join('/Applications', a), path.join(home, 'Applications', a)]);
+  if (platform === 'win32') return [process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.LOCALAPPDATA].filter(Boolean).map((d) => path.join(d, 'Google', 'Chrome', 'Application', 'chrome.exe'));
+  return ['/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium', '/usr/bin/chromium-browser', '/snap/bin/chromium'];
+}
 
 /** Load playwright-core and pick a Chromium. Never downloads anything. Throws a one-line, actionable error. */
 export async function loadEngine() {
@@ -38,6 +46,10 @@ export async function loadEngine() {
   tried.push(def ?? '(playwright default)');
   if (fs.existsSync(FALLBACK_CHROMIUM)) return { pw, chromium: pw.chromium, version, launchOpts: { executablePath: FALLBACK_CHROMIUM }, executable: FALLBACK_CHROMIUM };
   tried.push(FALLBACK_CHROMIUM);
+  // an installed Chrome or Chromium (field test F31: Chrome on macOS was never found)
+  const sys = systemChromes().find((p) => fs.existsSync(p));
+  if (sys) return { pw, chromium: pw.chromium, version, launchOpts: { executablePath: sys }, executable: sys };
+  tried.push(...systemChromes());
   throw new Error(`MISSING: Chromium for playwright-core ${version} not found (looked at: ${tried.join(', ')}). cstack never downloads browsers; set CSTACK_CHROMIUM or PLAYWRIGHT_BROWSERS_PATH.`);
 }
 

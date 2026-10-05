@@ -55,8 +55,8 @@
       ],
       "mcp": {
         "official": false,
-        "notes": "No official Cosmos MCP or public API found. '@polarity-lab/cosmos-mcp' (env COSMOS_TOKEN) is an unrelated personal knowledge-graph server; do not treat it as Cosmos.",
-        "source": "https://www.getdrio.com/mcp/io-github-teampolarity-cosmos-mcp/md",
+        "notes": "No official Cosmos MCP or public API found. The cosmos.so MCP servers in circulation are unofficial: 'mrmos/cosmos-mcp' calls the private GraphQL endpoint the web app uses with the user's session token and says it is not affiliated with Cosmos. '@polarity-lab/cosmos-mcp' (env COSMOS_TOKEN) is an unrelated personal knowledge-graph server; do not treat it as Cosmos.",
+        "source": "https://github.com/mrmos/cosmos-mcp; https://www.getdrio.com/mcp/io-github-teampolarity-cosmos-mcp/md",
         "confidence": "medium"
       },
       "detect": {
@@ -79,13 +79,19 @@
         "images and clusters curated by the user (via export only)"
       ],
       "tos_notes": "ToS section 8(F) forbids accessing, searching or downloading with any engine, software, tool, agent, robot, crawler or data-mining tool other than Cosmos-provided software or generally available browsers. Agent-driven browsing of Cosmos is therefore not allowed; a human browsing and exporting is.",
+      "agent_use": {
+        "allowed": false,
+        "reason": "Cosmos ToS 8(F) allows only Cosmos-provided software or a standard browser, and no Cosmos-provided MCP or API exists; a connected Cosmos MCP is detected but not used for agent search",
+        "until": "Cosmos publishes its own MCP or API, or the owner records a legal opinion that allows it",
+        "source": "https://tostracker.app/document/cosmosso-tos (ToS 2025-09-25)"
+      },
       "fallback": "Ask the user to paste public cluster URLs or export saved images into the project; route open taste search to Are.na (API) or Taste Labs (MCP) and say Cosmos was not queried.",
       "cstack_skills": [
         "taste-search",
         "cultural-scan",
         "creative-direction"
       ],
-      "last_verified": "2026-10-03"
+      "last_verified": "2026-10-05"
     },
     {
       "id": "refero",

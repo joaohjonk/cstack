@@ -67,11 +67,15 @@ export function detectTools(ws, { mcpServers = [], env = process.env } = {}) {
     signals.splice(0, signals.length, ...new Set(signals.map((x) => x.replace(/"([^"]*)"/, (m, n) => `"${n.replace(/_/g, '-')}"`))));
     const machine = (t.access ?? []).some((a) => ['mcp', 'api', 'cli'].includes(a.mode));
     const available = signals.length > 0 && !exclude;
+    // detected is not the same as allowed (field test F30): a tool whose terms bar agent access stays unused when connected
+    const barred = t.agent_use?.allowed === false;
     return {
       id: t.id,
       name: t.name,
       layer: t.layer,
       available,
+      usable: available && !barred,
+      ...(barred ? { agent_use: `not allowed: ${t.agent_use.reason}` } : {}),
       signals: exclude ? [...signals, 'excluded: unrelated package with the same name'] : signals,
       agent_access: machine ? 'mcp/api' : 'none (browser or owner export only)',
       fallback: t.fallback,

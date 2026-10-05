@@ -303,6 +303,11 @@ test('tools: detects by agent-visible MCP server name and env presence, never by
   // a connector named after the tool counts, with or without the host's prefix (field test F04)
   for (const name of ['Cosmos', 'claude_ai_Cosmos', 'cosmos-so']) assert.equal(Object.fromEntries(detectTools(w, { mcpServers: [name], env: {} }).map((t) => [t.id, t])).cosmos.available, true, name);
   assert.equal(Object.fromEntries(detectTools(w, { mcpServers: ['cosmonaut'], env: {} }).map((t) => [t.id, t])).cosmos.available, false);
+  // detected but not usable: Cosmos's terms allow only its own software or a browser, and it publishes no MCP (field test F30)
+  const cos = Object.fromEntries(detectTools(w, { mcpServers: ['Cosmos'], env: {} }).map((t) => [t.id, t])).cosmos;
+  assert.equal(cos.usable, false);
+  assert.match(cos.agent_use, /not allowed/);
+  assert.equal(by.figma.usable, true);
   assert.ok(!JSON.stringify(res).includes('"x"'), 'env values are never echoed');
 });
 

@@ -116,3 +116,9 @@ test('F28: the founder brief holds the product and the founder stance on it', as
   assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
   assert.equal(validateValue('founder-brief', { ...brief, product: { flavour: 'x' } }).ok, false);
 });
+
+test('F32: brand init creates references/inspiration/ for the inspiration library', () => {
+  const ws = path.join(tmpDir('cstack-f32-'), 'ws');
+  initBrand(ws, { name: 'Inspo Test' });
+  for (const lib of ['gold', 'anti', 'inspiration']) assert.ok(fs.statSync(path.join(ws, 'references', lib)).isDirectory(), lib);
+});

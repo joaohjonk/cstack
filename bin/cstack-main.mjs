@@ -1121,7 +1121,11 @@ switch (cmd) {
     const { mcp, res } = routes();
     if (args.json) json(res);
     else {
-      for (const t of res) console.log(`${t.available ? 'YES' : ' - '}  ${t.name.padEnd(26)} ${t.available ? t.signals.join('; ') : `fallback: ${t.fallback ?? 'none'}`}${t.cli_adapter ? `  [cstack CLI: ${t.cli_adapter}]` : ''}`);
+      for (const t of res) {
+        const mark = t.usable ? 'YES' : t.available ? 'NO ' : ' - ';
+        const why = t.usable ? t.signals.join('; ') : t.available ? `connected (${t.signals.join('; ')}), but ${t.agent_use}; fallback: ${t.fallback ?? 'none'}` : `fallback: ${t.fallback ?? 'none'}`;
+        console.log(`${mark}  ${t.name.padEnd(26)} ${why}${t.cli_adapter ? `  [cstack CLI: ${t.cli_adapter}]` : ''}`);
+      }
       if (!mcp.length) console.log('\nnote: MCP servers visible to the agent were not passed (--mcp); MCP-only tools may be under-reported.');
     }
     break;
@@ -1129,7 +1133,7 @@ switch (cmd) {
   case 'providers': {
     // one answer per route, shared with `cstack tools`: the CLI adapter (env keys) and the agent's MCP server
     const { tools } = routes();
-    json(availability().map((p) => (tools.has(p.id) ? { ...p, agent_mcp: tools.get(p.id).available, agent_signals: tools.get(p.id).signals } : p)));
+    json(availability().map((p) => (tools.has(p.id) ? { ...p, agent_mcp: tools.get(p.id).usable, agent_signals: tools.get(p.id).signals } : p)));
     break;
   }
   case 'audit':
