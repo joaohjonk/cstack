@@ -3,9 +3,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
-import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
+import { ROOT, exists, readData, writeAtomic, today, walk } from './core.mjs';
 import { validateValue } from './schemas.mjs';
 import { briefApproved, feedbackMark } from './brief.mjs';
+import { onPath } from './tools.mjs';
+import { approvedSpecs } from './packspec.mjs';
 
 const DAY = 86400000;
 
@@ -101,6 +103,10 @@ export function planDoc(f, { id, target, deliverable, key_visual } = {}) {
 }
 
 const MAKES = ['generative', 'probe'];
+const PACK_FLOWS = new Set(['concept-wrap', 'packaging-system', 'mockup-set', 'shelf-test']);
+const PACK_WORDS = /\b(pack|packs|packaging|can|cans|label|labels|wrap|bottle|bottles|box|boxes|pouch|carton)\b/i;
+// F91: an ad round starts from what the category is running
+const AD_WORDS = /\b(ad|ads|advert|adverts|advertising|ugc|paid[ -]social|hooks?)\b/i;
 
 // A flow is followable only if it compared ways of getting there, gates every step, says how each made
 // thing is judged against the target, and names where spending stops. Pure: no file or network access.
@@ -125,6 +131,8 @@ export function checkFlow(flow, { skills = null } = {}) {
     if (MAKES.includes(st?.kind) && !st.compare_to_target) errors.push(`${at}: ${st.kind} step never says how its output is compared to the target (compare_to_target)`);
     if (skills && st?.skill && !skills.includes(st.skill)) errors.push(`${at}: unknown skill "${st.skill}"`);
     if (st?.kind === 'generative' && st.est_cost == null) warnings.push(`${at}: generative step has no est_cost`);
+    // a phase budget (F64) caps what the step may spend before it stops and asks; below its own unit cost it can never run
+    if (st?.budget && st.est_cost && st.budget.currency === st.est_cost.currency && Number(st.budget.amount) < Number(st.est_cost.amount)) errors.push(`${at}: budget ${st.budget.amount} ${st.budget.currency} is below one unit of its est_cost (${st.est_cost.amount})`);
   }
   if (steps.some((s) => MAKES.includes(s?.kind))) {
     if (!flow.cost_ladder) errors.push('makes things but has no cost_ladder (probe, selection, final, and where it stops)');
@@ -167,7 +175,9 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
 //           provider here (or the owner's recorded yes to a substitute): missing capability never degrades silently
 //   decide  + at least two territories, each made visible as a probe contact sheet that exists
 //   final   + references/gold is not empty, and the work has been put side by side with at least one gold reference
-export const GATE_STAGES = ['make', 'decide', 'final'];
+// make: before generating; polish: before spending detail on picked frames (F89); decide: before the owner chooses a
+// direction; final: before the work is shown as finished
+export const GATE_STAGES = ['make', 'polish', 'decide', 'final'];
 const VISUAL = new Set(['image', 'video', '3d', 'vector', 'type', 'diagram', 'page']);
 const GENERATED = new Set(['image', 'video']);
 // skills that call a media model; a generative step in another skill (an agent drafting SVG icons) needs no provider
@@ -187,7 +197,10 @@ export function goldRefs(ws) {
 
 const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
-  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search) and record what they say',
+  reference_reactions: 'no reference packet or board the owner has reacted to (work/references/*-packet.md or a cstack sheet board, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search), then let them keep or kill each one on a board (cstack sheet board references/ --out work/sheets/refs.html, then cstack sheet import)',
+  pack_spec: 'no approved pack spec (a *.pack-spec.yaml with front_mm and flat_mm from the dieline, the converter\'s print file or a measurement, source named, approval locked or current): cstack never invents packaging sizes (F86); ask the owner for the dieline or print file, read its sizes (cstack pack spec-from-pdf <file>), have them confirm, and check every pack render with cstack pack check',
+  competitor_ads: 'no competitor-ads scan (a *.competitor-ads.yaml, schema competitor-ads, dated within 90 days: live ads from 5 or more rivals, each with link, days running, format, hook, offer and claim, and a saturated and white-space map): cstack makes no ad before seeing what the category runs (F91); collect it by browser or an approved API (Meta Ad Library, TikTok Creative Center, Foreplay; competitor-intel, references/ads-lens.md), and have every bet cite it',
+  product_truth: 'no owner-confirmed product-truth reference (a *.reference.yaml with library own_asset and approval locked or current: the owner\'s own photo or an official asset): a product or food close-up drawn from research images can show someone else\'s product (F71); ask the owner for one photo of the real product, record it, and keep research images labelled "real product" at approval inferred until the owner confirms them',
 };
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
@@ -197,20 +210,25 @@ function sourceFlowRef(flow) {
   return (flow.related ?? []).filter((r) => String(r).startsWith('flow:')).at(-1);
 }
 
-export function requirementGaps(ws, flow) {
+export function requirementGaps(ws, flow, implied = []) {
   const out = [];
   // a plan made before its library flow gained a requirement still owes it (F26): the library's requires count too
   const src = sourceFlowRef(flow);
   const lib = src ? listFlows(ws).find((f) => f.id === String(src).slice(5)) : null;
-  for (const req of new Set([...(flow.requires ?? []), ...(lib?.requires ?? [])])) {
+  for (const req of new Set([...(flow.requires ?? []), ...(lib?.requires ?? []), ...implied])) {
     if (requirementMet(ws, req)) continue;
     const w = (flow.waivers ?? []).find((x) => x.requires === req && x.owner_approved);
-    out.push(w ? { requires: req, waived: true, message: `make: going ahead without ${req.replace('_', ' ')} (owner waived it ${w.owner_approved}: ${w.why}); say so wherever the work is shown` } : { requires: req, waived: false, message: `make: ${REQUIRE_TEXT[req] ?? req}; or record the owner's waiver in the plan (waivers: [{requires: ${req}, owner_approved: <date>, why}])` });
+    // F66: a waiver says who waived it and in their words, so the warning carries the owner's voice, not the agent's
+    const who = w?.by ? `${w.by} waived it ${w.owner_approved}` : `owner waived it ${w?.owner_approved}`;
+    const said = w?.quote ? `, saying "${w.quote}"` : '';
+    out.push(w ? { requires: req, waived: true, message: `make: going ahead without ${req.replace('_', ' ')} (${who}${said}: ${w.why})${w.by && w.quote ? '' : '; record by and quote on the waiver: who said yes, and their words'}; say so wherever the work is shown` } : { requires: req, waived: false, message: `make: ${REQUIRE_TEXT[req] ?? req}; or record the owner's waiver in the plan (waivers: [{requires: ${req}, owner_approved: <date>, by: <owner>, quote: "<their words>", why}])` });
   }
   return out;
 }
 
 function requirementMet(ws, req) {
+  if (req === 'pack_spec') return approvedSpecs(ws).length > 0;
+  if (req === 'competitor_ads') return competitorScans(ws).length > 0;
   if (req === 'founder_brief') {
     const dir = path.join(ws, 'briefs');
     if (!exists(dir)) return false;
@@ -223,9 +241,40 @@ function requirementMet(ws, req) {
       }
     });
   }
+  if (req === 'product_truth') {
+    const dir = path.join(ws, 'references');
+    if (!exists(dir)) return false;
+    const recs = [];
+    const walkRefs = (d) => {
+      for (const f of fs.readdirSync(d)) {
+        const p = path.join(d, f);
+        if (fs.statSync(p).isDirectory()) walkRefs(p);
+        else if (/\.reference\.ya?ml$/.test(f)) recs.push(p);
+      }
+    };
+    walkRefs(dir);
+    return recs.some((p) => {
+      try {
+        const r = readData(p);
+        return r?.library === 'own_asset' && ['locked', 'current'].includes(r?.approval);
+      } catch {
+        return false;
+      }
+    });
+  }
   if (req === 'reference_reactions') {
     const dir = path.join(ws, 'work', 'references');
-    const packet = exists(dir) && fs.readdirSync(dir).some((f) => f.endsWith('-packet.md'));
+    // a reference board (cstack sheet board, F65) stands in for a written packet: it is where the founder reacts
+    const sheets = path.join(ws, 'work', 'sheets');
+    const board = exists(sheets) && fs.readdirSync(sheets).some((f) => {
+      if (!f.endsWith('.json')) return false;
+      try {
+        return JSON.parse(fs.readFileSync(path.join(sheets, f), 'utf8'))?.board === true;
+      } catch {
+        return false;
+      }
+    });
+    const packet = board || (exists(dir) && fs.readdirSync(dir).some((f) => f.endsWith('-packet.md')));
     const fb = path.join(ws, 'state', 'feedback.jsonl');
     if (!packet || !exists(fb)) return false;
     const kinds = new Set(['approve', 'reject', 'gold', 'anti', 'pairwise', 'comment']);
@@ -282,17 +331,49 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
     // a zero budget is the same gap as a missing key: ask for money, never fall back to a free method that cannot meet the brief
     if (usable.length && budget !== undefined && !(budget?.per_run > 0 && budget?.per_day > 0) && !d.substitute?.owner_approved)
       errors.push(`needs generation, and the budget here is ${budget ? `per_run ${budget.per_run ?? 0}, per_day ${budget.per_day ?? 0}` : 'not set'}: ask the owner for a budget (cstack.config.yaml budget:) before making it; a free substitute needs their yes, recorded as deliverable.substitute`);
+    // F64: the phases' budgets together must fit the run budget, or the last phase is the one that gets cut
+    const phases = (flow.steps ?? []).filter((s) => s.budget?.amount > 0);
+    const total = Math.round(phases.reduce((a, s) => a + Number(s.budget.amount), 0) * 100) / 100;
+    if (phases.length && budget?.per_run > 0 && total > budget.per_run) warnings.push(`make: the phase budgets add up to ${total} (${phases.map((s) => `${s.id} ${s.budget.amount}`).join(', ')}), over this workspace's per_run ${budget.per_run}; lower a phase or ask the owner to raise per_run before starting, so the polish phase is not the one cut`);
     if (!usable.length && d.substitute?.owner_approved) warnings.push(`making it as ${d.substitute.to} instead of generating it (owner approved ${d.substitute.owner_approved}); say so wherever the work is shown`);
   }
+  // F67: a stop rule that runs `cstack image text` needs tesseract or a judge command; say so before making, not mid-batch
+  if (at === 0 && (flow.steps ?? []).some((s) => /cstack image text/.test(String(s.gate?.check ?? ''))) && !onPath('tesseract'))
+    warnings.push('make: a stop rule runs cstack image text, and tesseract is not on PATH here; install it (brew install tesseract; cstack never installs it) or pass --engine judge --judge "<agent cmd>" each time, or the check refuses');
+  // F68: compiled prompts are cheap to review and expensive to discover wrong after a paid batch
+  if (at === 0 && generative) {
+    const steps = flow.steps ?? [];
+    const firstGen = steps.findIndex((s) => s.kind === 'generative' && MEDIA_SKILLS.has(s.skill));
+    const reviewed = steps.slice(0, firstGen < 0 ? steps.length : firstGen).some((s) => /prompt/i.test(`${s.id} ${s.does}`) && (s.skill === 'creative-review' || s.gate?.type === 'independent_review'));
+    if (firstGen >= 0 && !reviewed) warnings.push('make: no prompt review before the first paid generation; have creative-review read the compiled prompts against the territory and the references the founder reacted to before spending (a prompt-review step)');
+  }
+  // F73: a pack made by an image model comes back with invented type and a label, not a poster; the pack is flat
+  // artwork with real type (concept-wrap), the model makes only the picture inside it
+  if (at === 0 && generative && !PACK_FLOWS.has(String(sourceFlowRef(flow) ?? '').slice(5) || flow.id) && PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`))
+    warnings.push('make: the target is a pack, and this flow has an image model make it; design the pack as flat artwork with real type (cstack flows plan concept-wrap), let the model make only the picture inside it, and see it on the object with cstack mockup template can and mockup render');
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
-  if (at === 0) for (const e of requirementGaps(ws, flow)) (e.waived ? warnings : errors).push(e.message);
-  if (at >= 1 && VISUAL.has(d.kind)) {
+  // F86: a plan that makes a pack, or pictures of one, owes the real pack's sizes whichever flow it came from
+  const packTarget = PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`);
+  const adTarget = AD_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`);
+  const implied = [...(generative && packTarget ? ['pack_spec'] : []), ...(adTarget ? ['competitor_ads'] : [])];
+  if (at === 0) for (const e of requirementGaps(ws, flow, implied)) (e.waived ? warnings : errors).push(e.message);
+  // F91: every bet behind an ad round cites the scan, so the hooks answer the category instead of ignoring it
+  if (at === 0 && adTarget && competitorScans(ws).length)
+    for (const b of findData(ws, 'creative-bet')) if (!(b.data.evidence ?? []).some((e) => /competitor-ads/.test(String(e.ref)))) warnings.push(`make: bet ${b.data.id ?? path.basename(b.file)} does not cite the competitor-ads scan in its evidence; name the saturated hook it avoids or the white space it takes`);
+  if (at >= 2 && VISUAL.has(d.kind)) {
     const t = flow.territories ?? [];
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);
     for (const x of t) if (!inWs(x.probe_sheet)) errors.push(`decide: territory "${x.name}" has no probe sheet at ${x.probe_sheet}; a direction described only in words is not a visible option`);
     if (t.length === 2) warnings.push('decide: two territories; creative-direction asks for three that differ in idea, not styling');
+    // F87: founder first, not founder only; a decision taken without cstack arguing for something better is taken alone
+    const memos = walk(path.join(ws, 'work'), (f) => /challenge[^/\\]*\.md$/i.test(path.basename(f)));
+    if (!memos.length) warnings.push('decide: no challenge memo in work/ (work/direction/<date>-challenge.md): before the owner decides, creative-review argues for a braver version and asks about price, claim and positioning (creative-review references/challenge.md)');
+    // F69: a territory that depends on a price, a number or the wordmark needs them set after generation, not dropped
+    const needs = [...new Set(t.flatMap((x) => x.composite ?? []))];
+    const composites = (flow.steps ?? []).some((s) => s.skill === 'vector-master' || /\bcomposit(e|ed|es|ing)\b/i.test(`${s.id} ${s.does}`));
+    if (needs.length && !composites) errors.push(`decide: territories depend on ${needs.join(', ')}, set after generation, and the plan has no composite step (vector-master) to set them; add one, so the no-lettering rule does not strip what the idea needs`);
   }
-  if (at >= 2 && VISUAL.has(d.kind)) {
+  if (at >= 3 && VISUAL.has(d.kind)) {
     const gold = goldRefs(ws);
     if (!gold.length) errors.push('final: references/gold is empty, so nothing says what good looks like; add at least one gold reference (taste-search) before judging the work');
     const cmp = flow.gold_comparisons ?? [];
@@ -302,5 +383,56 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
       if (!inWs(c.sheet)) errors.push(`final: comparison sheet ${c.sheet} does not exist`);
     }
   }
+  // F48, F52, F89: exploration went straight to finals three times with no pick on record. Past the grid, the plan's
+  // pick step needs the owner's winners (cstack sheet import) or the owner's waiver, before polish spends anything.
+  if (at >= 1) {
+    const e = ownerPickGap(ws, flow);
+    if (e) (e.waived ? warnings : errors).push(e.message);
+  }
   return { file, stage, errors, warnings };
+}
+
+const PICK_SCOPES = new Set(['winner pick', 'blind winner pick']);
+
+/** ownerPickGap(ws, flow) -> null | {waived, message}: a plan with a human pick step before more generation owes a recorded pick. */
+export function ownerPickGap(ws, flow) {
+  const steps = flow.steps ?? [];
+  const pickAt = steps.findIndex((s) => s.kind === 'human' && /\bpick/i.test(`${s.id} ${s.does ?? ''}`));
+  if (pickAt < 0 || !steps.slice(pickAt + 1).some((s) => s.kind === 'generative')) return null;
+  const fb = path.join(ws, 'state', 'feedback.jsonl');
+  const mark = feedbackMark(ws);
+  let picks = 0;
+  if (exists(fb))
+    for (const l of fs.readFileSync(fb, 'utf8').split('\n').filter((x) => x.trim()).slice(mark)) {
+      try {
+        const e = JSON.parse(l);
+        if (e.type === 'approve' && PICK_SCOPES.has(e.context?.scope)) picks++;
+      } catch {}
+    }
+  if (picks) return null;
+  const w = (flow.waivers ?? []).find((x) => x.requires === 'owner_pick' && x.owner_approved);
+  if (w) return { waived: true, message: `polish: going ahead with no recorded pick (${w.by ? `${w.by} waived it` : 'owner waived it'} ${w.owner_approved}${w.quote ? `: "${w.quote}"` : ''}); say so wherever the work is shown` };
+  return { waived: false, message: `polish: no owner pick on record for step "${steps[pickAt].id}" (approve feedback from a winner pick in state/feedback.jsonl since the last brief pivot): show the grids on a sheet (cstack sheet make, cstack sheet open), let the owner pick one to three winners and say why, and record them (cstack sheet import); or record the owner's waiver (waivers: [{requires: owner_pick, owner_approved: <date>, by: <owner>, quote: "<their words>", why}])` };
+}
+
+// valid *.competitor-ads.(yaml|json) files, dated within 90 days, outside state/ and .git
+const SCAN_DAYS = 90;
+function findData(ws, schema) {
+  const re = new RegExp(`\\.${schema}\\.(ya?ml|json)$`);
+  const out = [];
+  if (!exists(ws)) return out;
+  for (const d of fs.readdirSync(ws)) {
+    if (['state', '.git', 'node_modules'].includes(d)) continue;
+    const p = path.join(ws, d);
+    for (const f of fs.statSync(p).isDirectory() ? walk(p, (x) => re.test(x)) : re.test(d) ? [p] : []) {
+      try {
+        out.push({ file: f, data: readData(f) });
+      } catch {}
+    }
+  }
+  return out;
+}
+
+export function competitorScans(ws, { now = Date.now() } = {}) {
+  return findData(ws, 'competitor-ads').filter(({ data }) => validateValue('competitor-ads', data).ok && new Set(data.ads.map((a) => a.competitor)).size >= 5 && now - Date.parse(data.date) <= SCAN_DAYS * 86400000);
 }

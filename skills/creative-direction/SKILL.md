@@ -41,7 +41,7 @@ Thinking work; no paid calls by default. Optional cheap probes (contact sheets v
 Follow the compact pattern: objective → gold standard → evidence → reference graph → divergence → critique → mutation → decision.
 
 1. **Objective and gold standard** from the brief.
-2. **Diverge**: 3 territories that differ in idea, not styling. Each: one-line idea, strategic tension it resolves, product truth it carries, the mechanism(s) it borrows (with distance), what the brand does (behavior), verbal direction (voice moves, a sample line), art direction (light, camera, casting, surfaces, color logic, type behavior), and what it refuses.
+2. **Diverge**: 3 territories that differ in idea, not styling. Each: one-line idea, strategic tension it resolves, product truth it carries, the mechanism(s) it borrows (with distance), what the brand does (behavior), verbal direction (voice moves, a sample line), art direction (light, camera, casting, surfaces, color logic, type behavior), what it refuses, and its `composite` elements.
 3. **Critique** each against explicit criteria: brand fit, product truth, distinctiveness vs. category map, cultural vitality, feasibility and cost, risk. Name the generic moves in each.
 4. **Mutate** the strongest: push it with one mechanism from a far domain; show before/after.
 5. **Gate**: `cstack flows gate <plan> --stage decide` before the owner picks.

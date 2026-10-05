@@ -100,19 +100,34 @@ export const fal = {
   },
   estimate: () => null, // use registry pricing_snapshot; null means "unpriced", never guessed
   billing: falBilling,
+  billingNotes: falBillingNotes,
 };
 
 // What fal billed for one request, from its Platform API (GET https://api.fal.ai/v1/models/billing-events, filtered
 // by request_id; needs an admin key: FAL_ADMIN_KEY, else FAL_KEY). fal bills asynchronously, so a fresh request
 // may have no event yet. Field names are read defensively and the one used is reported as `basis`.
 const BILLING_URL = 'https://api.fal.ai/v1/models/billing-events';
+const ADMIN_HELP = "fal's billing events need a key with ADMIN scope (fal dashboard, Keys, scope ADMIN), set as FAL_ADMIN_KEY; the API key that runs generations is refused (403). Nothing was written";
+/** What reconcile should say before it starts: the key it will use, and whether that key can read billing. */
+export function falBillingNotes(env = process.env) {
+  if (env.FAL_ADMIN_KEY) return [];
+  if (env.FAL_KEY) return ['FAL_ADMIN_KEY is not set, so FAL_KEY is tried; fal refuses billing to a key without ADMIN scope, and the first 403 stops the run'];
+  return [];
+}
 export async function falBilling(requestId, { fetchImpl = fetch, env = process.env } = {}) {
   const key = env.FAL_ADMIN_KEY ?? env.FAL_KEY;
-  if (!key) throw new Error('FAL_ADMIN_KEY (or FAL_KEY) is not set; fal billing events need an admin key');
+  if (!key) throw Object.assign(new Error(`FAL_ADMIN_KEY is not set; ${ADMIN_HELP}`), { fatal: true });
   const url = `${BILLING_URL}?request_id=${encodeURIComponent(requestId)}`;
   const res = await fetchImpl(url, { headers: { Authorization: `Key ${key}`, Accept: 'application/json' } });
   const text = await res.text();
   const clean = (t) => String(t).replaceAll(key, '<key>');
+  // F77, F78: a key without admin scope fails every request the same way, so the first one stops the run
+  if (res.status === 401 || res.status === 403)
+    throw Object.assign(new Error(clean(`fal billing HTTP ${res.status} with ${env.FAL_ADMIN_KEY ? 'FAL_ADMIN_KEY' : 'FAL_KEY'}: ${ADMIN_HELP}`)), { fatal: true, http: res.status });
+  if (res.status === 429) {
+    const ra = Number(res.headers?.get?.('retry-after'));
+    throw Object.assign(new Error('fal billing HTTP 429: rate limited'), { retryable: true, http: 429, ...(Number.isFinite(ra) && ra > 0 ? { retry_after_ms: ra * 1000 } : {}) });
+  }
   if (!res.ok) throw new Error(clean(`fal billing HTTP ${res.status}: ${text.slice(0, 300)}`));
   return parseFalBilling(text ? JSON.parse(text) : {}, requestId);
 }

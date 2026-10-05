@@ -1,4 +1,4 @@
-# Contact sheets, winner picks, blind pairs and the text check
+# Contact sheets, reference boards, winner picks, blind pairs and the text check
 
 A visual decision needs the options side by side, and calibration needs the owner's picks recorded before any reviewer's opinion reaches them. `cstack sheet` does both for still images. It never calls a model and never uploads anything.
 
@@ -23,6 +23,10 @@ A sheet is an HTML file on your computer, not a web page: open it in any browser
 - `--png` renders the page to `<sheet>.png` with Chromium (needs `playwright-core` and a Chromium, as `cstack browse` does). Use the PNG wherever a gate or a message needs an image. A territory's `probe_sheet` in a flow plan can be the HTML or the PNG.
 - `--blind` shuffles the images and labels them A, B, C... The page shows copies named by code in `<sheet>.files/`, so neither the page nor "open image in new tab" shows a file name, territory or model. The code-to-file map goes to `<sheet>.key.json` with the shuffle's `--seed` (random unless given). Don't open the key before the picks are in.
 - Nothing is overwritten without `--force`.
+
+## Reference boards
+
+`cstack sheet board <references/ or *.reference.yaml or images...> --out work/sheets/refs.html` makes a board the founder reacts on: each reference shows its image (the record's `local_path`, when the image is stored), its library, its mechanism and a link to the source, with *Keep* and *Kill* and a line for why. `sheet import` writes a `gold` for each keep and an `anti` for each kill on the reference file itself, which is what the make gate's `reference_reactions` counts (two individual references since the last brief pivot). Before this, a board was a static page and reactions arrived only through chat (field test F65).
 
 ## Picking winners
 

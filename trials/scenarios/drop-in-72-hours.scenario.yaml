@@ -1,0 +1,17 @@
+id: drop-in-72-hours
+title: A limited drop moved up to 72 hours
+asker: the head of growth, after a supplier freed up a small batch
+deadline: live on social and on site in 72 hours
+situation: >-
+  A small batch of a flavour nobody planned for is available now, enough for one numbered limited release. It has
+  never had a pack, a picture or a line of copy. Growth wants it announced in three days.
+constraint: the release system must hold for a flavour that was never designed, with no time for exploration rounds
+applications:
+  - {id: drop-wrap, kind: vector, what: "the flat pack artwork for the new flavour within the existing system"}
+  - {id: launch-poster, kind: picture, what: "the launch poster", size: 4:5, pictures: 4}
+  - {id: story-frames, kind: picture, what: "three vertical story frames that count down to the release", size: 1080 x 1920, pictures: 4}
+success:
+  - it sits in the existing range as if it had always been planned
+  - the release number and the flavour are clear
+  - made in one round, no rework
+flows: [concept-wrap, grid-pick-polish]

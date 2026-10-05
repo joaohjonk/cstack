@@ -349,3 +349,23 @@ test('SVG and JPEG art (chromium): rasterized at the needed size, recorded in th
   assert.deepEqual([j.art.format, j.art.raster], ['jpeg', { width: 64, height: 48 }]);
   assert.equal((await verifyMockup({ template: d, art: path.join(d, 'art.jpg'), render: path.join(d, 'jpg.png') })).verdict, 'pass');
 });
+
+test('can template (F75): drawn CC0 package checks, renders a flat wrap and verifies PASS; the CLI prints the wrap size', async () => {
+  const { makeCanTemplate, wrapSize } = await import('../scripts/lib/mockup/can.mjs');
+  const d = tmp();
+  assert.deepEqual(wrapSize('tall-16oz').mm, { w: 207.3, h: 134 });
+  assert.throws(() => wrapSize('magnum'), /unknown can size/);
+  const t = makeCanTemplate({ size: 'standard-12oz', out: path.join(d, 'can') });
+  assert.throws(() => makeCanTemplate({ size: 'standard-12oz', out: path.join(d, 'can') }), /--force/);
+  const spec = JSON.parse(fs.readFileSync(t.template, 'utf8'));
+  assert.deepEqual(spec.placements.map((p) => p.id), ['front', 'left', 'back']);
+  assert.equal(spec.licence.client_use_allowed, true);
+  assert.match(await runMockup('check', { template: t.dir }), /template can-standard-12oz: OK/);
+  write(path.join(d, 'wrap.png'), labelArt(207, 98));
+  const out = path.join(d, 'front.png');
+  await renderMockup({ template: t.dir, art: path.join(d, 'wrap.png'), out, placement: 'front' });
+  const v = await verifyMockup({ template: t.dir, art: path.join(d, 'wrap.png'), render: out, placement: 'front' });
+  assert.equal(v.verdict, 'pass', JSON.stringify(v.placements));
+  const msg = await runMockup('template', { _: ['can'], out: path.join(d, 'tall'), size: 'tall-16oz' });
+  assert.match(msg, /207\.3 x 134 mm/);
+});

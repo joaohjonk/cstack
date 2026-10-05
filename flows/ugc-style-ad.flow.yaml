@@ -8,6 +8,8 @@ aliases:
 - creator ad for tiktok or reels
 - ugc creator video
 status: researched
+requires:
+- competitor_ads
 target:
   description: a native-feeling presenter ad that demonstrates or explains the product honestly, with AI disclosure on
   must:

@@ -6,7 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT, readJSONL } from '../scripts/lib/core.mjs';
 import { encodePNG } from '../scripts/lib/image/png.mjs';
-import { makeSheet, importPicks, renderPNG, shuffle } from '../scripts/lib/sheet.mjs';
+import { makeSheet, makeBoard, importPicks, renderPNG, shuffle } from '../scripts/lib/sheet.mjs';
 import { validateValue } from '../scripts/lib/schemas.mjs';
 import { tmpDir } from './tmp.mjs';
 
@@ -172,6 +172,65 @@ test('sheet: a click on a grid frame picks it as a winner, with its reasons, in 
     assert.match(await page.textContent('#wcount'), /1 of 3/);
     await page.click('#toggle');
     assert.match(await page.textContent('#lc'), /^[AB]#[1-4]$/);
+  } finally {
+    await browser.close();
+  }
+});
+
+function refRecord(file, id, extra = '') {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, `id: ${id}\nkind: image\nlibrary: inspiration\nrights:\n  status: inspiration_only\ntransferable_mechanism: one hard edge against grain\n${extra}`);
+}
+
+test('sheet board: keep and kill on references import as gold and anti on the reference files (F65)', () => {
+  const ws = path.join(tmpDir('cstack-board-'), 'ws');
+  assert.equal(cli(['brand', 'init', ws, '--name', 'Boardcase']).status, 0);
+  probes(path.join(ws, 'references', 'inspiration'), ['shelf.png']);
+  refRecord(path.join(ws, 'references', 'inspiration', 'tall-poster.reference.yaml'), 'ref-tall-poster', 'local_path: references/inspiration/shelf.png\n');
+  refRecord(path.join(ws, 'references', 'anti', 'loud.reference.yaml'), 'ref-loud', 'uri: https://example.com/loud\n');
+  const out = path.join(ws, 'work', 'sheets', 'refs.html');
+  const made = cli(['sheet', 'board', path.join(ws, 'references'), '--out', out]);
+  assert.equal(made.status, 0, made.stderr);
+  assert.match(made.stdout, /3 references/);
+  assert.match(made.stdout, /Keep or Kill/);
+  const html = fs.readFileSync(out, 'utf8');
+  assert.match(html, /data-code="ref-tall-poster"/);
+  assert.match(html, /src="\.\.\/\.\.\/references\/inspiration\/shelf\.png"/);
+  assert.match(html, /href="https:\/\/example\.com\/loud"/);
+  const picks = path.join(ws, 'p.json');
+  fs.writeFileSync(picks, JSON.stringify({ sheet: 'refs', board: true, reactions: [{ code: 'ref-tall-poster', verdict: 'keep', reason: 'one big picture', at: '2026-10-05T16:30:00Z' }, { code: 'ref-loud', verdict: 'kill' }] }));
+  const imp = cli(['sheet', 'import', picks, '--sheet', out, '--by', 'Founder', '--ws', ws]);
+  assert.equal(imp.status, 0, imp.stderr);
+  assert.match(imp.stdout, /1 keep\(s\) and 1 kill\(s\)/);
+  const rows = readJSONL(path.join(ws, 'state', 'feedback.jsonl'));
+  assert.deepEqual(rows.map((r) => [r.type, r.artifact_ref]), [['gold', 'references/inspiration/tall-poster.reference.yaml'], ['anti', 'references/anti/loud.reference.yaml']]);
+  assert.equal(rows[0].reason, 'one big picture');
+  for (const r of rows) assert.ok(validateValue('feedback-event', r).ok);
+  assert.equal(cli(['brand', 'check', '--ws', ws]).status, 0);
+  fs.writeFileSync(picks, JSON.stringify({ sheet: 'refs', reactions: [{ code: 'ref-loud', verdict: 'maybe' }] }));
+  assert.notEqual(cli(['sheet', 'import', picks, '--sheet', out, '--by', 'Founder', '--ws', ws]).status, 0);
+});
+
+test('sheet board: Keep and Kill toggle in the browser and the download carries the why', async () => {
+  const ws = tmpDir('cstack-board-');
+  refRecord(path.join(ws, 'refs', 'a.reference.yaml'), 'ref-a');
+  refRecord(path.join(ws, 'refs', 'b.reference.yaml'), 'ref-b', 'uri: "javascript:alert(1)"\n');
+  const r = makeBoard({ inputs: [path.join(ws, 'refs')], out: path.join(ws, 'board.html') });
+  assert.ok(!fs.readFileSync(r.html, 'utf8').includes('javascript:'), 'only http(s) links are rendered');
+  const { loadEngine, launch } = await import('../scripts/lib/browser/launch.mjs');
+  const browser = await launch(await loadEngine());
+  try {
+    const page = await browser.newPage();
+    await page.goto(`file://${r.html}`);
+    await page.click('article[data-code="ref-a"] [data-v="keep"]');
+    await page.fill('article[data-code="ref-a"] input', 'calm');
+    await page.click('article[data-code="ref-b"] [data-v="kill"]');
+    await page.click('article[data-code="ref-b"] [data-v="kill"]');
+    const state = await page.evaluate(() => JSON.parse(localStorage.getItem('cstack-board:board') || '{}'));
+    assert.equal(state['ref-a'].verdict, 'keep');
+    assert.equal(state['ref-a'].reason, 'calm');
+    assert.equal(state['ref-b'].verdict, null);
+    assert.match(await page.textContent('#count'), /1 kept, 0 killed/);
   } finally {
     await browser.close();
   }

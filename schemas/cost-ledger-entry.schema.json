@@ -113,6 +113,14 @@
         "type": "string"
       },
       "description": "the provider's own request ids, so `cstack spend reconcile` can fetch what was billed"
+    },
+    "price_source": {
+      "enum": [
+        "registry",
+        "provider",
+        "request"
+      ],
+      "description": "where estimated_cost came from: a dated registry price, the provider adapter, or a price entered on the request by hand (F80)"
     }
   },
   "additionalProperties": true

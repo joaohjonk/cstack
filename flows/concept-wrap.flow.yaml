@@ -1,0 +1,111 @@
+id: concept-wrap
+outcome: pack concepts the founder can choose between, made as flat wrap artwork with the brand's real type and one generated picture, shown on the pack before any converter work
+aliases:
+- concept wrap
+- pack concepts
+- can concepts
+- label concepts
+- packaging concept
+- can design
+- flat wrap
+status: researched
+target:
+  description: two or three pack concepts per territory, each a flat wrap at the pack's real size with the brand's own type, the composite elements the territory depends on (price, drop number, wordmark) and the picture as the only generated part, rendered on the pack and picked by the founder from a sheet
+  must:
+  - the wrap is laid out as artwork at the real wrap size (cstack mockup template can prints it; a converter's dieline wins when there is one)
+  - every word on the pack is the brand's outlined type, set in vector, never drawn by a model
+  - the picture is the only generated element, made the Grid → Pick → Polish way and placed into the layout
+  - the territory's composite elements (price, drop number, wordmark) are on the wrap
+  - each concept is shown on the pack from the front and one turned view, and cstack mockup verify passes on what is shown
+  must_not:
+  - an image model designing the whole pack (layout, type, label) in one picture
+  - generated lettering, logos, barcodes, nutrition tables or legal copy
+  - converter spec or print gates at this stage; those belong to packaging-system once a concept is chosen
+  quality_bar: the founder picks a concept from the mockups, says why, and the chosen wrap goes to packaging-system unchanged
+deliverable: {kind: vector, generated: true}
+requires:
+- founder_brief
+- pack_spec
+when:
+- a new pack needs concepts and the territory is chosen, before converter work
+- generated pack pictures look like pictures of packs (wrong type, wrong proportions, made-up labels)
+not_when:
+- the concept is chosen and the pack goes to print (packaging-system)
+- the brand has no direction yet (mood-probes)
+- mockups of finished art only (mockup-set)
+candidates_considered:
+- name: flat wrap in vector with the brand's type at the real size, one generated picture placed in it, rendered on a drawn can template, picked from a sheet
+  verdict: chosen
+  why: type, hierarchy and proportion are decided where they can be exact; the model does only what it is good at, the picture; the founder judges the pack as a pack
+- name: an image model renders the whole pack from a prompt
+  verdict: rejected
+  why: the field test's first pack sheet read as ugly craft; lettering drifts, proportions are wrong, and nothing can be carried to print (F73)
+- name: a designer builds concepts by hand in a design tool
+  verdict: fallback
+  why: highest craft, but slow and outside the run's record; use when a studio is engaged, and import the wraps as SVG
+steps:
+- id: wrap-spec
+  does: the pack size and the flat wrap size from the approved pack spec, never a typical size (cstack mockup template can --spec <file.pack-spec.yaml> --out work/pack/template prints it), the territory's composite elements, the brand's type and colour from identity
+  kind: deterministic
+  skill: identity-system
+  gate: {type: auto, check: "wrap size recorded; composite elements listed per territory; the brand's type available as outlines"}
+  compare_to_target: is the wrap the pack's real proportion?
+- id: layout
+  does: two or three wrap layouts per territory in SVG at the wrap size, with the hierarchy written first (what reads at shelf distance, what reads in the hand), a placeholder frame where the picture goes, and the composite elements set
+  kind: deterministic
+  skill: vector-master
+  gate: {type: deterministic_check, check: "cstack svg legibility at the pack's shelf and hand sizes; no <text> left in the master (outlined type)"}
+  compare_to_target: does the wrap read in the territory's order before the picture is in?
+- id: prompt-review
+  does: creative-review reads the picture prompts against the territory, the layout's frame and the references the founder kept or killed, before anything is paid for
+  kind: research
+  skill: creative-review
+  gate: {type: independent_review, check: "every prompt traced to a territory decision; the frame's proportion is in the prompt; no lettering asked of the model"}
+  compare_to_target: will the picture fit the frame and the idea?
+- id: picture
+  does: the picture for each layout, the only generated element, explored as a grid and picked (flow grid-pick-polish), at the frame's proportion
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.055, currency: USD, unit: "per high-quality image on fal GPT Image 2.5 Sunburst, observed in the field test 2026-10-05"}
+  budget: {amount: 0.6, currency: USD, basis: "grids and rebuilds for up to three layouts"}
+  gate: {type: deterministic_check, check: "cstack flows gate <plan> --stage make passes; cstack spend plan ok; cstack image text on each picture"}
+  compare_to_target: does the picture carry the territory inside the layout?
+- id: mockups
+  does: each wrap rendered on the pack, front and one turned view (cstack mockup render --placement front|left), then cstack mockup verify
+  kind: deterministic
+  skill: mockup
+  gate: {type: deterministic_check, check: "cstack mockup verify passes for every render shown"}
+  compare_to_target: does it read as a pack on a shelf, not a poster on a cylinder?
+- id: scene
+  does: optional in-scene shots of the strongest wraps (a can in a hand, on a shelf) through an edit route, each request naming the flat wrap as `depicts` so the render is labelled illustrative on every sheet; the lettering the wrap carries goes in work/pack/<wrap>.on-pack.txt, one line each
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.07, currency: USD, unit: "per edit on fal GPT Image 2.5 Sunburst; fal publishes no edit price, so it is entered by hand and booked as such (F80)"}
+  budget: {amount: 0.5, currency: USD, basis: "three hero scenes and one redo each"}
+  gate: {type: deterministic_check, check: "cstack image text <render> --expect-file work/pack/<wrap>.on-pack.txt passes (every declared line read as written, nothing else); a render that changes the wrap is redone or dropped, never shown as the artwork"}
+  compare_to_target: is it still the same wrap, in a life?
+- id: pick
+  does: one sheet of all concepts (cstack sheet make work/pack/renders --out work/sheets/pack.html, blind across territories), the founder picks one to three winners and says why (cstack sheet import)
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: "the founder's winners are recorded with reasons"}
+  compare_to_target: the winners against the brief
+cost_ladder: layouts and mockups cost nothing but time; pictures about USD 0.05-0.25 per layout through grid-pick-polish, within the picture budget; stop after two rounds the founder rejects and rewrite the territory or the hierarchy, not the picture
+failure_modes:
+- an image model asked for the whole pack, so type, label and proportion are the model's
+- the picture made first and the layout bent around it
+- concepts judged flat, never on the pack
+- composite elements dropped because no lettering may come from the model
+evidence:
+- {ref: "field test findings F73, F74 and F75 (the first pack sheet read as ugly craft; the flat-wrap stage was hand-built)", kind: run_record, date: 2026-10-05}
+- {ref: "field test findings F76 and F79 (designed type failed the no-lettering check; edit renders redrew the pack unlabelled)", kind: run_record, date: 2026-10-05}
+- {ref: "flow packaging-system: rejected generative concept-first packs for print", kind: practitioner, date: 2026-10-05}
+last_verified: 2026-10-05
+stale_after_days: 90
+related:
+- flow:grid-pick-polish
+- flow:packaging-system
+- flow:mockup-set
+- skill:vector-master
+- skill:mockup
+- skill:generate-media

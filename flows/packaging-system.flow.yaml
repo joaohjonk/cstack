@@ -10,6 +10,8 @@ aliases:
 - carton, pouch or wrapper design
 - print-ready pack files
 status: researched
+requires:
+- pack_spec
 target:
   description: a pack that shoppers find faster than or as fast as the current one on the real competitor shelf, reads in the right order on every panel, prints within the converter's colour targets on the chosen substrate, and whose renders, mockups and shots show exactly the approved artwork
   must:

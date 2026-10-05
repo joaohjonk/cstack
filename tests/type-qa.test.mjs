@@ -16,7 +16,8 @@ import { tmpDir } from './tmp.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = path.join(ROOT, 'tests', 'fixtures', 'type');
 const SCALE = path.join(FIX, 'scale.css');
-const WEB_FONT = ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'].find((f) => fs.existsSync(f));
+// a TrueType file to serve as the fixture's web font: Linux CI fonts, then macOS system fonts (an owner's Mac, F72)
+const WEB_FONT = ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf', '/System/Library/Fonts/Supplemental/Arial.ttf', '/Library/Fonts/Arial.ttf', '/System/Library/Fonts/Supplemental/Verdana.ttf'].find((f) => fs.existsSync(f));
 const tmpWs = () => tmpDir('cstack-typeqa-');
 const runDir = (ws, out) => path.join(ws, out.match(/^run: (.+)$/m)[1]);
 const run = promisify(execFile);
@@ -64,7 +65,8 @@ browserTest('type qa (cli): every deliberate fault is reported, run dir is hashe
   assert.equal(err.code, 1);
   const out = err.stdout;
   assert.match(out, /^RESULT=FAIL$/m);
-  assert.match(out, /^FONT_FALLBACK=1$/m);
+  // Ghost Sans never loads; Fixture Web loads only when this machine has a font file to serve as it
+  assert.match(out, new RegExp(`^FONT_FALLBACK=${WEB_FONT ? 1 : 2}$`, 'm'));
   assert.match(out, /--- BEGIN UNTRUSTED EXTERNAL CONTENT[\s\S]*"Low contrast copy[\s\S]*--- END UNTRUSTED EXTERNAL CONTENT ---/);
   const dir = runDir(ws, out);
   const rec = JSON.parse(fs.readFileSync(path.join(dir, 'run.json'), 'utf8'));

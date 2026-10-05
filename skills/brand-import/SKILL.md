@@ -45,7 +45,7 @@ The preamble ladder (§2); extracted patterns are Taste, CSS and screenshots. An
 ## Process
 
 1. **Inventory** every source with path/URL, kind and hash into `provenance.ingested`. Note dates; prefer the newest official source.
-2. **Extract candidates per section** (business truth, audience, positioning, voice, vocabulary, banned language, logo marks, color, typography, grid, spacing, photography, product representation, packaging rules, claims, proof, compliance ...). Each candidate is a Field with `sources[{kind, ref, quote?}]`.
+2. **Extract candidates per section** (F34: positioning, audience and product claims found by research, not in the owner's own sources, enter as `approval: inferred` and stay candidates until the owner confirms them) (business truth, audience, positioning, voice, vocabulary, banned language, logo marks, color, typography, grid, spacing, photography, product representation, packaging rules, claims, proof, compliance ...). Each candidate is a Field with `sources[{kind, ref, quote?}]`.
 3. **Normalize tokens**: colors, type, spacing, radii, motion into `brand/tokens/*.tokens.json` (DTCG) only for values from official or approved sources; inferred tokens stay in brand-system with `approval: inferred`.
 4. **Merge through precedence**: `cstack brand set <section.field> --file f.json` for each field. Equal-rank disagreements become conflicts with both sources.
 5. **Entities**: products, packaging, recurring cast, locations, surfaces, light setups into `brand/brand-world.json` with immutable traits, allowed variation, forbidden drift and canonical files.
@@ -57,6 +57,7 @@ The preamble ladder (§2); extracted patterns are Taste, CSS and screenshots. An
 
 ## Decision rules
 
+- Read the converter's print and dieline PDFs into a pack spec (`cstack pack spec-from-pdf`); artwork of another size is an owner decision, recorded as `artwork_mismatch` (F86).
 - Never average two conflicting values. Never choose silently. Default = higher-precedence or newer official source, marked `conflict` until the owner resolves it.
 - A rule is promoted to `current` only with an official source or owner confirmation; patterns seen on the live site stay `inferred`.
 - Claims and proof are imported verbatim with their source; their legal status is `claims-proof`'s job.

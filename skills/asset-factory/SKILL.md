@@ -49,6 +49,7 @@ Owner originals and approved masters > derived edits > new shoots > generation. 
 
 ## Decision rules
 
+- No approved pack spec, no pack render: ask for the dieline or print file first (F86).
 - One bet, one experiment id; every asset names its cell.
 - Cut-downs are derived from a master, never regenerated.
 - Nothing ships that `product-fidelity` or `brand-verify` failed.

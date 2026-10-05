@@ -1,0 +1,16 @@
+id: event-merch
+title: Merch for a festival booth
+asker: the events lead, after a festival offered a booth
+deadline: production files in five days
+situation: >-
+  A music festival offered the brand a booth for three days. The events lead wants merch people keep and wear after,
+  and a backdrop that works in photos people take at the booth.
+constraint: the brand must survive one-colour screen print on fabric and work as a backdrop in other people's photos
+applications:
+  - {id: tee, kind: vector, what: "tee print artwork, one colour", size: 300 x 400 mm}
+  - {id: tote, kind: vector, what: "tote print artwork, one colour", size: 280 x 280 mm}
+  - {id: booth, kind: mockup, what: "the booth backdrop with people in front of it, as a festival photo", pictures: 3}
+success:
+  - people would wear the tee without being paid to
+  - the brand reads in one colour
+  - the backdrop works behind faces in a phone photo
