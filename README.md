@@ -16,7 +16,7 @@ Generative AI made making cheap. It did not make judgment cheap. Ask a model for
 
 **cstack is a way to make taste repeatable.** It turns a brand into files an agent can read, check and keep: the decisions and who made them, the references and *why* they work, what was killed and why. Then it gives the agent the habits of a good studio. Brief before making. Find the method before generating. Never let the maker approve its own work. Write down every correction so it is never needed twice.
 
-It is to brand work what [gstack](https://github.com/garrytan/gstack) is to shipping software: thirty specialist skills, a small CLI and plain files in git, so that Claude Code, Codex, Cursor, Gemini CLI or OpenCode works like a disciplined studio instead of a prompt box. Free, MIT, and holding no brand's data: each brand keeps its own workspace in its own repo.
+It is to brand work what [gstack](https://github.com/garrytan/gstack) is to shipping software: thirty-five specialist skills, a small CLI and plain files in git, so that Claude Code, Codex, Cursor, Gemini CLI or OpenCode works like a disciplined studio instead of a prompt box. Free, MIT, and holding no brand's data: each brand keeps its own workspace in its own repo.
 
 **Read:** [Step outside](#first-step-outside) · [How it thinks](#how-it-thinks) · [See it work](#see-it-work) · [The studio](#the-studio)  
 **Use:** [Quick start](#quick-start) · [Install](#install) · [Workflows](#workflows) · [The CLI](#the-cli) · [Make it yours](#make-it-yours) · [Acknowledgements](#acknowledgements)
@@ -165,6 +165,11 @@ Each one writes files the next one reads. `/brief` writes the brief that `/creat
 | `/symbol-design` | **Identity designer** | Logo, symbol and monogram exploration the way a studio does it: wide and cheap, judged in one colour at 32 px, then construction and optical correction. |
 | `/vector-master` | **Production artist** | Clean SVG masters, linted structure, reduction tests, one-colour versions, lockups, favicon and app-icon kits. |
 | `/copywriting` | **Copywriter** | Writes in a declared mode (conversion, campaign, editorial, product truth) in the brand's voice and vocabulary; banned words stay banned. A separate pass checks it. |
+| `/creative-strategist` | **Growth strategist** | Decides what to make next. Reads brand, customer, market and results as one picture and writes a few bets, each with a tension, an angle, proof and one clean experiment. Data says what deserves another question, not what the brand should become. |
+| `/creative-intelligence` | **Performance analyst** | Why your ads work or die. Imports results from any export, tags them by family, and reports only what the numbers can carry. Confounds and fatigue stay on the page. |
+| `/hook-format-lab` | **Hook writer** | Designs the first second before anything is made: angle, hook, mechanic, format, payoff. Varies one thing at a time, so a result means something. |
+| `/winner-scaler` | **Series editor** | Turns one winner into a family. Names what must stay, frees what may change, and refuses to call a new headline a new ad. |
+| `/asset-factory` | **Production planner** | Finds the cheapest honest way to test a bet: reuse, edit, derive, shoot, then generate. Every asset knows which bet it serves, then the right skills run in order. |
 | `/prompt-director` | **Prompt engineer** | Compiles decisions into versioned recipes with named slots and seeded variants, so a good result can be made again and a change can be diffed. |
 | `/model-router` | **Technical director** | Picks the model for the job from a dated registry, runs a small probe when unsure, never trusts a stale price. |
 | `/generate-media` | **Producer** | Guarded generation: dry run and estimate first, cheap probes before finals, never pays twice, re-attaches to pending jobs. |
@@ -177,7 +182,7 @@ Each one writes files the next one reads. `/brief` writes the brief that `/creat
 | `/claims-proof` | **Claims editor** | Every claim tied to its proof and to current primary regulation, with uncertainty marked. |
 | `/learn-loop` | **Studio memory** | Observe, compare, articulate, decide, encode. Corrections and picks become rules only when the evidence repeats. |
 | `/creative-autoresearch` | **R&D** | A bounded keep-or-discard experiment on one variable against a frozen test, with a budget and a stop. |
-| `/workflow` | **Producer of record** | Runs a whole job (brand, campaign, photoshoot, landing page, packaging, deck, 3D, video, logo) as a resumable plan with owner gates. |
+| `/workflow` | **Producer of record** | Runs a whole job (brand, campaign, photoshoot, growth creative, landing page, packaging, deck, 3D, video, logo) as a resumable plan with owner gates. |
 
 Each skill has a fixed contract (inputs, what to do when an input is missing, precedence, process, outputs, evals, handoff, failure modes) and a context budget that CI enforces.
 
@@ -197,7 +202,7 @@ Then, in your agent:
 /brief                  reframe the ask, write the brief
 /brand-import           an existing brand   (or: /workflow create-brand for a new one)
 /creative-direction     three territories, one recommendation, a rejection list
-/workflow <name>        campaign, product-photoshoot, landing-page, paid-social, packaging, deck ...
+/workflow <name>        campaign, product-photoshoot, landing-page, growth-creative, packaging, deck ...
 /creative-review        independent lenses, disagreement kept visible
 /brand-verify           deterministic gates, then a verifier, fix, re-verify, then you
 /learn-loop retro       promote only what has earned it
@@ -209,7 +214,7 @@ A step-by-step walkthrough with no spend is in [docs/quickstart.md](docs/quickst
 
 `/workflow <name>` runs a whole job as a resumable plan with owner gates and a tracker in `work/plans/`. `cstack workflow list` shows them all:
 
-`create-brand` · `import-brand` · `campaign` · `product-photoshoot` · `paid-social` · `landing-page` · `packaging` · `deck` · `product-3d` · `product-video` · `logo-system`
+`create-brand` · `import-brand` · `campaign` · `product-photoshoot` · `growth-creative` · `landing-page` · `packaging` · `deck` · `product-3d` · `product-video` · `logo-system`
 
 Every step names its skill, inputs, outputs, gate, and what to do when a tool or provider is missing. Definitions live in [workflows/](workflows).
 
@@ -222,6 +227,7 @@ cstack search "product photoshoot"                         # find the right skil
 cstack flows search "rotating 3d product on the homepage"  # the researched method, before making
 cstack brand context --task copy                           # only the brand files this task needs
 cstack brand guide                                         # one page from the brand files, for people and agents
+cstack creative report --ws .                              # which of your own ads work, as observations only
 cstack generate --file request.json --dry-run             # one guarded, budgeted call; --confirm above your limit
 cstack type qa http://localhost:4173                       # measure, leading, caps, contrast, fallbacks
 ```
