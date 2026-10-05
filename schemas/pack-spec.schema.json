@@ -89,7 +89,7 @@
     },
     "material": {
       "type": "string",
-      "description": "the base material and its colour where no ink covers it (bare aluminium, white PE, kraft)"
+      "description": "the base material and its colour where no ink covers it (bare aluminium, white PE, kraft); a tinted base film (cream PE) goes here so a render's film colour can be checked"
     },
     "source": {
       "type": "object",
@@ -290,6 +290,16 @@
         "max": {
           "type": "number",
           "exclusiveMinimum": 0
+        },
+        "source": {
+          "enum": [
+            "measured",
+            "label",
+            "converter",
+            "inferred",
+            "pending"
+          ],
+          "description": "how this size was found: measured, read off a label or converter file, inferred (for example from carton pitch), or pending a caliper"
         }
       }
     },
@@ -344,7 +354,8 @@
         },
         "pitch_mm": {
           "type": "number",
-          "exclusiveMinimum": 0
+          "exclusiveMinimum": 0,
+          "description": "distance between packs in the carton"
         },
         "faces": {
           "type": "object",
@@ -367,6 +378,10 @@
         },
         "notes": {
           "type": "string"
+        },
+        "lid_mm": {
+          "$ref": "#/$defs/size",
+          "description": "lid or header panel size"
         }
       }
     }
