@@ -6,7 +6,8 @@ import { renderMockup } from './render.mjs';
 import { verifyMockup, THRESHOLDS } from './verify.mjs';
 import { loadTemplate, licenceGate } from './template.mjs';
 import { footprint } from './geometry.mjs';
-import { makeCanTemplate, CAN_SIZES } from './can.mjs';
+import { makeCanTemplate, CAN_SIZES, sizeFromSpec } from './can.mjs';
+import { readData } from '../core.mjs';
 
 export const MOCKUP_HELP = `cstack mockup <sub> (pure Node; Chromium only to read SVG, JPEG or WebP)
   render --template <dir> --art <file.png|svg|jpg|webp> --out <file.png> [--placement id] [--force] [--internal]
@@ -16,7 +17,7 @@ export const MOCKUP_HELP = `cstack mockup <sub> (pure Node; Chromium only to rea
          inverse-warp each placement back to flat art space and diff it against the art as the template composites
          it: PASS / WARN / FAIL (exit 1 on FAIL); writes <render>.verify.json and a heatmap per placement
   check  --template <dir>   validate a template package: placements, footprints, files, licence, template hash
-  template can --out <dir> [--size standard-12oz|sleek-12oz|tall-16oz] [--force]
+  template can --out <dir> --spec <file.pack-spec.yaml> | --size standard-12oz|sleek-12oz|tall-16oz (typical, a first comp only) [--force]
          draw a plain aluminium can template (CC0, no photograph) with front, left and back placements, and print the
          flat wrap size the art should have
 Licence gate: client_use_allowed false blocks render; "unknown" warns loudly unless --internal (internal comps only).
@@ -134,11 +135,14 @@ export async function runMockup(sub, args = {}, ws = process.cwd()) {
     }
     case 'template': {
       const kind = a._[0];
-      if (kind !== 'can') throw new Error(`usage: cstack mockup template can --out <dir> [--size ${Object.keys(CAN_SIZES).join('|')}] (only can templates are drawn so far)`);
-      const r = makeCanTemplate({ size: typeof a.size === 'string' ? a.size : 'standard-12oz', out: need('out', 'template can --out <dir>'), force: !!a.force });
+      if (kind !== 'can') throw new Error(`usage: cstack mockup template can --out <dir> --spec <file.pack-spec.yaml> (or --size ${Object.keys(CAN_SIZES).join('|')}, typical, a first comp only) (only can templates are drawn so far)`);
+      // F86: the owner's pack spec decides the can; a named typical size is a first comp only, and says so
+      const spec = typeof a.spec === 'string' ? sizeFromSpec(readData(path.resolve(a.spec))) : null;
+      const r = makeCanTemplate({ size: spec ?? (typeof a.size === 'string' ? a.size : 'standard-12oz'), out: need('out', 'template can --out <dir>'), force: !!a.force });
       if (a.json) return r;
       return [
         `wrote ${here(r.template)} and ${here(r.base)} (${r.size}, placements front, left, back; CC0, drawn, no photograph)`,
+        ...(r.from_spec ? [] : ['note: a typical size, not this pack: pass --spec <file.pack-spec.yaml> with the real dimensions before anything is shown as the pack (F86)']),
         `flat wrap art: ${r.wrap.mm.w} x ${r.wrap.mm.h} mm, aspect ${r.wrap.aspect} (${r.wrap.px.w} x ${r.wrap.px.h} px at 12 px/mm); a converter's dieline wins for print`,
         `next: cstack mockup render --template ${here(r.dir)} --art <wrap.svg|png> --placement front --out <file.png>`,
       ].join('\n');

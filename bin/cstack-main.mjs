@@ -32,6 +32,7 @@ import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/li
 import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
+import { findPackSpecs, approvedSpec, specAspects, checkPack, pdfBoxes } from '../scripts/lib/packspec.mjs';
 import { listScenarios, planTrial, writePlan, readPlan, runTrial, scoreTrial, importTaps } from '../scripts/lib/trial.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
@@ -158,7 +159,10 @@ const COMMANDS = {
   'video deliver': 'per-channel H.264 + AAC encodes with faststart and a manifest: cstack video deliver <master> [--channels meta,tiktok,youtube,reels] --out <dir>',
   'mockup render': 'composite approved art onto a template package (quad, cylinder, mesh; displacement, shading; licence gate): cstack mockup render --template <dir> --art <file.png|svg> --out <file.png> [--placement id] [--force] [--internal]',
   'mockup verify': 'prove the art survived: inverse-warp each placement to flat art space and diff it (mean, edges, worst-tile SSIM, heatmap): cstack mockup verify --template <dir> --art <file> --render <file.png> [--placement id]; exits 1 on FAIL',
-  'mockup template': 'draw a can template (CC0, no photograph) and print the flat wrap size: cstack mockup template can --out <dir> [--size standard-12oz|sleek-12oz|tall-16oz]',
+  'mockup template': 'draw a can template (CC0, no photograph) and print the flat wrap size: cstack mockup template can --out <dir> --spec <file.pack-spec.yaml> (the real can; --size standard-12oz|sleek-12oz|tall-16oz is typical, a first comp only)',
+  'pack check': 'measure pack renders against the real pack (F86): cstack pack check <images|svgs...> --spec <file.pack-spec.yaml> [--box x,y,w,h | --judge "<cmd>"] [--tolerance 0.04] [--json] (exit 1 when off spec, unmeasurable or angled)',
+  'pack spec-from-pdf': 'read a print or dieline PDF\'s page boxes (TrimBox = finished size) in mm, to fill a pack spec: cstack pack spec-from-pdf <file.pdf> [--artwork <svg>] (flags artwork of a different size)',
+  'pack list': 'the pack specs in a workspace and whether each is approved: cstack pack list [--ws <dir>]',
   'mockup check': 'validate a template package (placements, footprints, layer files, licence): cstack mockup check --template <dir>',
   'svg legibility': 'can a figure be read where it is shown: text size at each display width and text contrast on its ground: cstack svg legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117]; exits 1 on FAIL',
   'svg lint': 'lint marks and icon sets: structure and security, viewBox, complexity, palette, strokes across a set, grid against an icon grammar: cstack svg lint <file|dir...> [--grammar icons.tokens.json] [--palette ...]; exits 1 on FAIL',
@@ -807,6 +811,61 @@ function cmdImage(sub) {
   if (!r.ok) process.exit(1);
 }
 
+// F86: cstack never invents packaging sizes; the real pack is a file, and renders are measured against it
+function cmdPack(sub) {
+  try {
+    if (sub === 'list') {
+      const all = findPackSpecs(ws);
+      if (!all.length) return console.log(`no pack specs in ${shown(ws)}: add one (*.pack-spec.yaml, schema pack-spec) from the dieline or print file; cstack pack spec-from-pdf reads a PDF's sizes`);
+      for (const f of all) {
+        const s = readData(f);
+        const a = specAspects(s);
+        console.log(`${approvedSpec(s) ? 'APPROVED' : 'NOT YET '} ${shown(f)}  ${s.format} ${s.front_mm?.width}x${s.front_mm?.height} mm front${s.flat_mm ? `, ${s.flat_mm.width}x${s.flat_mm.height} mm flat` : ''} (h:w ${a.front?.toFixed(3)}) from ${s.source?.kind}${s.source?.file ? ` ${s.source.file}` : ''}`);
+      }
+      return;
+    }
+    if (sub === 'check') {
+      if (args.spec === undefined || args.spec === true) die('--spec <file.pack-spec.yaml> required: cstack never invents packaging sizes');
+      const spec = readData(path.resolve(args.spec));
+      const v = validateValue('pack-spec', spec);
+      if (!v.ok) die(`${args.spec} is not a valid pack spec: ${v.errors}`);
+      if (!approvedSpec(spec)) console.log(`WARN ${args.spec} is not approved (approval ${spec.approval?.status}, source ${spec.source?.kind}): the owner confirms the sizes before they decide anything`);
+      if (args.judge === true) die('--judge needs a command');
+      const box = typeof args.box === 'string' ? args.box.split(',').map(Number) : null;
+      if (box && (box.length !== 4 || box.some((n) => !Number.isFinite(n)))) die('--box takes x,y,w,h in pixels');
+      if (!args._.length) die('usage: cstack pack check <images|svgs...> --spec <file> [--box x,y,w,h | --judge "<cmd>"]');
+      const r = checkPack(args._, { spec, box, judge: args.judge ? tokenize(args.judge) : null, tolerance: args.tolerance === undefined ? undefined : Number(args.tolerance) });
+      if (args.json) json(r);
+      else {
+        for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(12)} ${shown(i.file)}  ${i.evidence}`);
+        const bad = r.images.filter((i) => i.result !== 'pass').length;
+        console.log(`pack check against ${spec.id}: ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length}); off-spec or unmeasured renders are redone, or shown only as illustrative`}`);
+      }
+      if (!r.ok) process.exit(1);
+      return;
+    }
+    if (sub === 'spec-from-pdf') {
+      const f = args._[0] ?? die('usage: cstack pack spec-from-pdf <file.pdf> [--artwork <svg>]');
+      const b = pdfBoxes(path.resolve(f));
+      if (args.json) return json(b);
+      if (!Object.keys(b).length) die(`no page boxes found in ${f} (compressed page tree?); read the size from the dieline's dimension lines and record source.kind measured`);
+      for (const [k, s] of Object.entries(b)) console.log(`${k.padEnd(9)} ${s.width} x ${s.height} mm`);
+      const trim = b.TrimBox ?? null;
+      if (!trim) console.log('no TrimBox: the finished size is not declared; MediaBox includes bleed and marks, so do not use it as the pack size');
+      else console.log(`finished size (TrimBox): ${trim.width} x ${trim.height} mm; put it in flat_mm with source {kind: print-file, file: ${f}}, then ask the owner to confirm`);
+      if (trim && typeof args.artwork === 'string') {
+        const a = checkPack([args.artwork], { spec: { front_mm: trim, flat_mm: trim } }).images[0];
+        if (a.result !== 'pass') console.log(`MISMATCH the artwork ${args.artwork} is ${a.evidence}: an owner decision (re-lay the face, or the converter changes the repeat); record it as artwork_mismatch, never let an image model pick a side`);
+        else console.log(`the artwork ${args.artwork} matches the print size`);
+      }
+      return;
+    }
+  } catch (e) {
+    die(e.message);
+  }
+  die('usage: cstack pack list|check|spec-from-pdf');
+}
+
 // docs/trials.md: agent teams with only the brand's files answer simulated problems; the owner attributes their work blind
 function cmdTrial(sub) {
   const num = (v, d) => (v === undefined || v === true ? d : Number(v));
@@ -1141,7 +1200,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video', 'trial', 'pack'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1374,6 +1433,9 @@ switch (cmd) {
     break;
   case 'trial':
     cmdTrial(argv[0]);
+    break;
+  case 'pack':
+    cmdPack(argv[0]);
     break;
   case 'setup':
     cmdSetup();

@@ -57,6 +57,7 @@ The preamble ladder (§2); extracted patterns are Taste, CSS and screenshots. An
 
 ## Decision rules
 
+- Read the converter's print and dieline PDFs into a pack spec (`cstack pack spec-from-pdf`); artwork of another size is an owner decision, recorded as `artwork_mismatch` (F86).
 - Never average two conflicting values. Never choose silently. Default = higher-precedence or newer official source, marked `conflict` until the owner resolves it.
 - A rule is promoted to `current` only with an official source or owner confirmation; patterns seen on the live site stay `inferred`.
 - Claims and proof are imported verbatim with their source; their legal status is `claims-proof`'s job.

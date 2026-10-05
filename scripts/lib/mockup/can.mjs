@@ -19,18 +19,34 @@ const W = 1200;
 const H = 1600;
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 
-/** The wrap's flat art size: circumference x label height, in mm and at 12 px/mm. */
-export function wrapSize(size) {
+// A size is a CAN_SIZES name (typical dimensions, for a first comp only) or the owner's pack spec (F86: the real can).
+function resolve(size) {
+  if (size && typeof size === 'object') return size;
   const s = CAN_SIZES[size];
   if (!s) throw new Error(`unknown can size "${size}" (${Object.keys(CAN_SIZES).join(', ')})`);
+  return s;
+}
+
+/** A can size from a pack spec: diameter, overall height and the printed label height, all from the spec. */
+export function sizeFromSpec(spec) {
+  if (spec?.format !== 'can') throw new Error(`the pack spec is a ${spec?.format ?? 'missing'} format, not a can`);
+  const diameter = spec.diameter_mm ?? spec.front_mm?.width;
+  const label = spec.flat_mm?.height ?? spec.front_mm?.height;
+  const height = spec.height_mm ?? label;
+  if (!(diameter > 0 && label > 0 && height >= label)) throw new Error('the can spec needs diameter_mm (or front_mm.width), flat_mm.height (the label) and height_mm at least the label height');
+  return { diameter, height, label, note: `${spec.product} (pack spec ${spec.id})`, spec: spec.id };
+}
+
+/** The wrap's flat art size: circumference x label height, in mm and at 12 px/mm. */
+export function wrapSize(size) {
+  const s = resolve(size);
   const w = Math.round(Math.PI * s.diameter * 10) / 10;
   return { mm: { w, h: s.label }, px: { w: Math.round(w * 12), h: Math.round(s.label * 12) }, aspect: Math.round((w / s.label) * 1000) / 1000 };
 }
 
 /** Geometry of the drawn can in base pixels. */
 export function canGeometry(size) {
-  const s = CAN_SIZES[size];
-  if (!s) throw new Error(`unknown can size "${size}" (${Object.keys(CAN_SIZES).join(', ')})`);
+  const s = resolve(size);
   const scale = 1100 / s.height; // px per mm: the can stands 1100 px tall
   const r = Math.round((s.diameter / 2) * scale);
   const sag = Math.round(r * 0.14); // seen slightly from above
@@ -128,14 +144,16 @@ export function makeCanTemplate({ size = 'standard-12oz', out, force = false } =
     { id: 'left', rotation: -90, notes: 'the wrap turned so its left quarter faces the camera' },
     { id: 'back', rotation: 180, notes: 'the wrap seam side faces the camera' },
   ].map((p) => ({ id: p.id, kind: 'cylinder', cylinder: cyl(p.rotation), shading, notes: `${p.notes}; art is the full flat wrap, ${wrap.mm.w} x ${wrap.mm.h} mm (aspect ${wrap.aspect})` }));
+  const s = resolve(size);
+  const label = s.spec ? `spec-${s.spec}` : size;
   const spec = {
-    id: `can-${size}`,
+    id: `can-${label}`,
     base: 'base.png',
     placements,
     licence: { source: 'drawn by cstack (scripts/lib/mockup/can.mjs); no photograph', terms: 'CC0-1.0', client_use_allowed: true },
-    notes: `${CAN_SIZES[size].note} can, seen slightly from above. Render one placement at a time (--placement front|left|back): each shows the half of the wrap that faces the camera. A comp for concept work, not a product photograph.`,
-    meta: { size, wrap_mm: wrap.mm, wrap_px_at_12_per_mm: wrap.px, made_by: 'cstack mockup template can' },
+    notes: `${s.note} can, seen slightly from above. Render one placement at a time (--placement front|left|back): each shows the half of the wrap that faces the camera. A comp for concept work, not a product photograph.`,
+    meta: { size: label, ...(s.spec ? { pack_spec: s.spec } : { typical_size: true }), wrap_mm: wrap.mm, wrap_px_at_12_per_mm: wrap.px, made_by: 'cstack mockup template can' },
   };
   writeJSON(files.template, spec);
-  return { dir, ...files, size, wrap };
+  return { dir, ...files, size: label, from_spec: !!s.spec, wrap };
 }

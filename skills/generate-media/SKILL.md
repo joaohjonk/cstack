@@ -48,7 +48,7 @@ The recipe and Shot DNA decide content; the router decides the model; this skill
 ## Decision rules
 
 - Never render many expensive finals to discover composition.
-- Never ask a model for a whole pack, label or can: it invents the type. Make the picture; the pack is flat artwork with real type (`concept-wrap` flow). A render of designed artwork names it as `depicts`, so it is labelled illustrative.
+- Never ask a model for a whole pack, label or can: it invents the type. Make the picture; the pack is flat artwork with real type (`concept-wrap` flow). A render of designed artwork names it as `depicts`, so it is labelled illustrative. A pack in the frame is measured with `cstack pack check` against the pack spec (F86).
 - A timeout is not a failure: the job stays pending; rerun the same request to re-attach. Never resubmit by hand.
 - A policy refusal is reported once with the prompt component likely responsible; rephrasing to evade provider policy is not allowed.
 - Stop when the stop condition triggers, even mid-batch.

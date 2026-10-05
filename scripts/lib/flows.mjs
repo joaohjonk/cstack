@@ -7,6 +7,7 @@ import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
 import { validateValue } from './schemas.mjs';
 import { briefApproved, feedbackMark } from './brief.mjs';
 import { onPath } from './tools.mjs';
+import { approvedSpecs } from './packspec.mjs';
 
 const DAY = 86400000;
 
@@ -193,6 +194,7 @@ export function goldRefs(ws) {
 const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
   reference_reactions: 'no reference packet or board the owner has reacted to (work/references/*-packet.md or a cstack sheet board, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search), then let them keep or kill each one on a board (cstack sheet board references/ --out work/sheets/refs.html, then cstack sheet import)',
+  pack_spec: 'no approved pack spec (a *.pack-spec.yaml with front_mm and flat_mm from the dieline, the converter\'s print file or a measurement, source named, approval locked or current): cstack never invents packaging sizes (F86); ask the owner for the dieline or print file, read its sizes (cstack pack spec-from-pdf <file>), have them confirm, and check every pack render with cstack pack check',
   product_truth: 'no owner-confirmed product-truth reference (a *.reference.yaml with library own_asset and approval locked or current: the owner\'s own photo or an official asset): a product or food close-up drawn from research images can show someone else\'s product (F71); ask the owner for one photo of the real product, record it, and keep research images labelled "real product" at approval inferred until the owner confirms them',
 };
 
@@ -203,12 +205,12 @@ function sourceFlowRef(flow) {
   return (flow.related ?? []).filter((r) => String(r).startsWith('flow:')).at(-1);
 }
 
-export function requirementGaps(ws, flow) {
+export function requirementGaps(ws, flow, implied = []) {
   const out = [];
   // a plan made before its library flow gained a requirement still owes it (F26): the library's requires count too
   const src = sourceFlowRef(flow);
   const lib = src ? listFlows(ws).find((f) => f.id === String(src).slice(5)) : null;
-  for (const req of new Set([...(flow.requires ?? []), ...(lib?.requires ?? [])])) {
+  for (const req of new Set([...(flow.requires ?? []), ...(lib?.requires ?? []), ...implied])) {
     if (requirementMet(ws, req)) continue;
     const w = (flow.waivers ?? []).find((x) => x.requires === req && x.owner_approved);
     // F66: a waiver says who waived it and in their words, so the warning carries the owner's voice, not the agent's
@@ -220,6 +222,7 @@ export function requirementGaps(ws, flow) {
 }
 
 function requirementMet(ws, req) {
+  if (req === 'pack_spec') return approvedSpecs(ws).length > 0;
   if (req === 'founder_brief') {
     const dir = path.join(ws, 'briefs');
     if (!exists(dir)) return false;
@@ -343,7 +346,9 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   if (at === 0 && generative && !PACK_FLOWS.has(String(sourceFlowRef(flow) ?? '').slice(5) || flow.id) && PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`))
     warnings.push('make: the target is a pack, and this flow has an image model make it; design the pack as flat artwork with real type (cstack flows plan concept-wrap), let the model make only the picture inside it, and see it on the object with cstack mockup template can and mockup render');
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
-  if (at === 0) for (const e of requirementGaps(ws, flow)) (e.waived ? warnings : errors).push(e.message);
+  // F86: a plan that makes a pack, or pictures of one, owes the real pack's sizes whichever flow it came from
+  const packTarget = PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`);
+  if (at === 0) for (const e of requirementGaps(ws, flow, generative && packTarget ? ['pack_spec'] : [])) (e.waived ? warnings : errors).push(e.message);
   if (at >= 1 && VISUAL.has(d.kind)) {
     const t = flow.territories ?? [];
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);

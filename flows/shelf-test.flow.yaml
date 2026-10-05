@@ -10,6 +10,8 @@ aliases:
 - planogram mockup
 - competitor shelf capture
 status: researched
+requires:
+- pack_spec
 target:
   description: a simulated shelf built from the real competitor set at true scale, and a timed find test that shows whether the candidate is found as fast as or faster than the current pack, with the variant cue still read at distance
   must:

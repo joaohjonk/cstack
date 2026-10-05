@@ -45,6 +45,7 @@ Approved tokens and rules are the reference. A verifier score is evidence about 
 
 ## Decision rules
 
+- Pack renders: `cstack pack check <files> --spec <pack-spec>` before review; off-spec, angled or unmeasured frames never pass as the pack (F86).
 - Any hard rule failure (logo violation, raw brand color, unlicensed asset, required accessibility state) blocks delivery regardless of verifier score.
 - A verifier fix that contradicts locked brand state is rejected and logged as a verifier quirk.
 - Verify → fix → re-verify happens at most twice before a human.

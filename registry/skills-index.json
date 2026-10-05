@@ -51,7 +51,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/asset-factory/SKILL.md",
-      "tokens": 1206
+      "tokens": 1228
     },
     {
       "slug": "brand-import",
@@ -97,7 +97,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-import/SKILL.md",
-      "tokens": 1698
+      "tokens": 1743
     },
     {
       "slug": "brand-verify",
@@ -141,7 +141,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brand-verify/SKILL.md",
-      "tokens": 1146
+      "tokens": 1182
     },
     {
       "slug": "brief",
@@ -780,7 +780,7 @@
         "media provider"
       ],
       "path": "skills/generate-media/SKILL.md",
-      "tokens": 1381
+      "tokens": 1402
     },
     {
       "slug": "hook-format-lab",
@@ -1021,7 +1021,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/mockup/SKILL.md",
-      "tokens": 1522
+      "tokens": 1523
     },
     {
       "slug": "model-router",
@@ -1106,7 +1106,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/product-fidelity/SKILL.md",
-      "tokens": 1404
+      "tokens": 1445
     },
     {
       "slug": "prompt-director",

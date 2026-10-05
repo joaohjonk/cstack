@@ -25,6 +25,7 @@ target:
 deliverable: {kind: vector, generated: true}
 requires:
 - founder_brief
+- pack_spec
 when:
 - a new pack needs concepts and the territory is chosen, before converter work
 - generated pack pictures look like pictures of packs (wrong type, wrong proportions, made-up labels)
@@ -44,7 +45,7 @@ candidates_considered:
   why: highest craft, but slow and outside the run's record; use when a studio is engaged, and import the wraps as SVG
 steps:
 - id: wrap-spec
-  does: the pack size and the flat wrap size (cstack mockup template can --size <size> --out work/pack/template prints it), the territory's composite elements, the brand's type and colour from identity
+  does: the pack size and the flat wrap size from the approved pack spec, never a typical size (cstack mockup template can --spec <file.pack-spec.yaml> --out work/pack/template prints it), the territory's composite elements, the brand's type and colour from identity
   kind: deterministic
   skill: identity-system
   gate: {type: auto, check: "wrap size recorded; composite elements listed per territory; the brand's type available as outlines"}

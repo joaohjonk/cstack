@@ -384,12 +384,13 @@
     },
     "requires": {
       "type": "array",
-      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet or board the owner has reacted to, recorded in state/feedback.jsonl), product_truth (an owner-confirmed photo or official asset of the real product, library own_asset)",
+      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet or board the owner has reacted to, recorded in state/feedback.jsonl), product_truth (an owner-confirmed photo or official asset of the real product, library own_asset), pack_spec (an approved *.pack-spec.yaml: the real pack's sizes from the dieline or print file)",
       "items": {
         "enum": [
           "founder_brief",
           "reference_reactions",
-          "product_truth"
+          "product_truth",
+          "pack_spec"
         ]
       },
       "uniqueItems": true
@@ -409,7 +410,8 @@
             "enum": [
               "founder_brief",
               "reference_reactions",
-              "product_truth"
+              "product_truth",
+              "pack_spec"
             ]
           },
           "owner_approved": {

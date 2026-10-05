@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/pack-spec.schema.json",
+  "title": "Pack spec",
+  "description": "The real pack, as a file (F86): sizes in mm from the dieline, the converter's print file or a measurement, never invented. The make gate needs an approved one before any pack render, and `cstack pack check` measures outputs against it.",
+  "type": "object",
+  "required": ["id", "product", "format", "front_mm", "source", "approval"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "product": { "type": "string", "description": "which product and size this pack holds" },
+    "format": { "enum": ["can", "bottle", "jar", "box", "carton", "flow-pack", "pouch", "sachet", "label", "tube", "other"] },
+    "front_mm": { "$ref": "#/$defs/size", "description": "the face seen front-on (for a can: diameter by label height)" },
+    "flat_mm": { "$ref": "#/$defs/size", "description": "the flat print size of the artwork (dieline trim, or a can's full wrap: circumference by label height)" },
+    "depth_mm": { "type": "number", "exclusiveMinimum": 0 },
+    "diameter_mm": { "type": "number", "exclusiveMinimum": 0 },
+    "height_mm": { "type": "number", "exclusiveMinimum": 0, "description": "overall height of the object, when it differs from the front face" },
+    "repeat_mm": { "type": "number", "exclusiveMinimum": 0, "description": "the packing machine's repeat for a flow-pack or label web" },
+    "seals": { "type": "array", "items": { "type": "object", "required": ["where", "mm"], "additionalProperties": false, "properties": { "where": { "type": "string" }, "mm": { "type": "number", "minimum": 0 } } }, "description": "crimps, fin seals, lids: where they sit and how deep" },
+    "material": { "type": "string", "description": "the base material and its colour where no ink covers it (bare aluminium, white PE, kraft)" },
+    "source": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["dieline", "print-file", "converter-spec", "measured", "guess"], "description": "guess never passes the make gate" },
+        "file": { "type": "string", "description": "the file the sizes were read from, relative to the workspace or a path on the owner's machine" },
+        "page": { "type": "integer", "minimum": 1 },
+        "measured_by": { "type": "string" },
+        "date": { "type": "string" }
+      }
+    },
+    "photos": { "type": "array", "items": { "type": "string" }, "description": "owner-confirmed photos of the real pack" },
+    "artwork_mismatch": { "type": "string", "description": "when the current artwork's size differs from the print file or the machine repeat: an owner decision (re-lay the face, or change the repeat), never one an image model makes" },
+    "tolerance": { "type": "number", "exclusiveMinimum": 0, "maximum": 0.25, "description": "allowed difference in height:width ratio (default 0.04)" },
+    "approval": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "enum": ["draft", "current", "locked"] },
+        "by": { "type": "string" },
+        "date": { "type": "string" }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "size": { "type": "object", "required": ["width", "height"], "additionalProperties": false, "properties": { "width": { "type": "number", "exclusiveMinimum": 0 }, "height": { "type": "number", "exclusiveMinimum": 0 } } }
+  }
+}

@@ -123,3 +123,22 @@ test('trial run, score, import: isolated workspaces, resumable roles, blind shee
   fs.writeFileSync(tf, JSON.stringify({ kind: 'attribution', taps: [{ code: 'T999', answer: 'yes' }] }));
   assert.throws(() => importTaps(plan, [tf]), /codes this trial's key does not have/);
 });
+
+test('trial cli: plan through the command line writes the plan and refuses a round over the cap', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const { ROOT } = await import('../scripts/lib/core.mjs');
+  const cli = (...a) => spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cstack.mjs'), 'trial', ...a], { encoding: 'utf8' });
+  assert.match(cli('list').stdout, /retail-endcap/);
+  const ws = brandWs();
+  const out = path.join(tmpDir('cstack-trial-'), 'r1');
+  const over = cli('plan', '--brand', ws, '--out', out, '--cap', '1', '--floor', '0.5');
+  assert.equal(over.status, 1);
+  assert.match(over.stderr, /over the cap of 1/);
+  const ok = cli('plan', '--brand', ws, '--out', out, '--scenarios', 'retail-endcap,price-change', '--floor', '0.5', '--cap', '2', '--positioning', 'a test brand');
+  assert.equal(ok.status, 0, ok.stdout + ok.stderr);
+  assert.match(ok.stdout, /2 scenarios x 3 teams/);
+  assert.ok(fs.existsSync(path.join(out, 'trial.plan.json')));
+  const run = cli('run', out);
+  assert.equal(run.status, 1);
+  assert.match(run.stderr, /--agent/);
+});
