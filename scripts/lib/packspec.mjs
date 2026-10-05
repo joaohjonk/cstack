@@ -12,7 +12,7 @@ import crypto from 'node:crypto';
 import { exists, readData, walk } from './core.mjs';
 import { imageSize } from './image.mjs';
 
-export const DEFAULT_TOLERANCE = 0.04; // 4% on the height:width ratio; a 70 x 85 face drawn 70 x 96 is 13% off
+export const DEFAULT_TOLERANCE = 0.04; // 4% on the height:width ratio; a 60 x 110 face drawn 60 x 124 is 13% off
 const SPEC = /\.pack-spec\.(ya?ml|json)$/;
 const SKIP = ['work', 'state', 'node_modules', '.git'];
 
@@ -54,7 +54,7 @@ export function specAspects(spec) {
 
 /**
  * specWarnings(spec, {ws}) -> [string]: what the owner still has to decide or confirm before renders rely on the spec.
- *   artwork laid out at a different front proportion than the print file (a 70 x 96 face for a 70 x 85 front)
+ *   artwork laid out at a different front proportion than the print file (a 60 x 124 face for a 60 x 110 front)
  *   a machine repeat that matches neither side of the flat print size
  *   a source file whose hash no longer matches the one recorded
  *   estimated sizes, on the pack or on a carton
