@@ -1,0 +1,27 @@
+{
+  "provider": "fal",
+  "model": "openai/gpt-image-2",
+  "operation": "generate",
+  "job_id": "01a10402-01fa-73b1-ab54-1d9e29a99c8c",
+  "idempotency_key": "ac88fbc91b3f3182c5f1118559d97e31d182d5ee9d30bcd05e02ab2e00713b25",
+  "prompt": "Looking out through a simple open window frame onto a flat green field that runs to a straight horizon under a soft overcast sky; the window frame is warm white painted wood, the field is wide and empty. Deadpan and calm, warm daylight, natural colour, editorial photograph, square frame. No faces, no text, no letters, no logos, no signage.",
+  "refs": [],
+  "input_hashes": [],
+  "params": {
+    "image_size": {
+      "width": 1024,
+      "height": 1024
+    },
+    "quality": "medium",
+    "num_images": 1,
+    "output_format": "jpeg"
+  },
+  "seed": null,
+  "size_audit": {
+    "ok": true,
+    "findings": []
+  },
+  "cost": null,
+  "created_at": "2026-10-03T23:03:55.238Z",
+  "skill": "generate-media"
+}

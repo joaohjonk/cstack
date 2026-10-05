@@ -1,0 +1,27 @@
+{
+  "provider": "fal",
+  "model": "openai/gpt-image-2",
+  "operation": "generate",
+  "job_id": "01a10402-01f9-7002-a267-8ee96f3f59ca",
+  "idempotency_key": "d7ae021185de0022fe4c7e1e4742cc62082b9a1d8f63a85e297eef2cc648031b",
+  "prompt": "A hand seen from behind, wrist and fingers only, holding a small matte International Klein Blue cube, deep ultramarine #002FA7, up against open pale blue sky with a few thin clouds, framed by the edge of an open doorway. Only the hand, no face. Deadpan and calm, warm daylight, natural colour, editorial photograph, square frame. No faces, no text, no letters, no logos, no signage.",
+  "refs": [],
+  "input_hashes": [],
+  "params": {
+    "image_size": {
+      "width": 1024,
+      "height": 1024
+    },
+    "quality": "medium",
+    "num_images": 1,
+    "output_format": "jpeg"
+  },
+  "seed": null,
+  "size_audit": {
+    "ok": true,
+    "findings": []
+  },
+  "cost": null,
+  "created_at": "2026-10-03T23:03:57.335Z",
+  "skill": "generate-media"
+}

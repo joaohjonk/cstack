@@ -1,0 +1,43 @@
+id: 032c
+name: 032c (magazine and studio, Berlin)
+kind: studio
+domains:
+- editorial
+- identity
+- art direction
+- fashion
+mental_model: 'the magazine as a system that can afford to be loud because its frame is strict: a fixed signal colour, one grotesk at violent scale, data set like a specification sheet, and content that changes every issue'
+mechanisms:
+- 'fix one signal colour and one typeface, then spend all the range on scale: a word can be the whole page'
+- set information as data (tables, labels in caps, numbered lists) so that facts read as the picture
+- let letters within one display word jump in size or weight on one baseline, while the masthead itself never changes
+- mix the register on purpose, high culture beside street or workwear, without changing the typographic rigour
+- 'treat the identity as a frame for guests: artists, photographers and writers remake the content inside the same rules'
+representative_works:
+- 032c magazine (Berlin, since 2000), its red signal colour and typographic covers
+- 032c apparel and the studio's work for fashion houses
+when_useful:
+- a brand that has few, strong facts and wants them read as the image
+- editorial systems that must stay recognisable while every issue looks different
+- adding scale and wit to a Swiss grid without adding colour or ornament
+when_not_useful:
+- brands whose value is quiet continuity at the touchpoint (packaging, wayfinding)
+- 'as a costume: red, caps and shouting without a strict frame underneath'
+tensions:
+- 'loudness vs. reduction: canon:vignelli keeps the same discipline at a lower volume; pick the volume per brief'
+- 'the frame for guests vs. the brand''s own voice (canon:bureau-borsche shares the move)'
+distance_from:
+  editorial: near
+  identity: near
+  campaign-advertising: near
+  fashion: near
+  packaging: far
+  wayfinding: far
+  motion: middle
+sources:
+- kind: external_reference
+  ref: https://032c.com
+  captured_at: '2026-10-03'
+added: '2026-10-03'
+added_by: cstack self-imagery thread, from the owner's reference board
+status: current

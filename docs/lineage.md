@@ -68,6 +68,7 @@ The Acknowledgements in the README, in full. Debts of attention, not sources: no
 | **Pentagram: Paula Scher and Michael Bierut** | Two durable modes: type as a loud vernacular voice that becomes the identity, and a simple mark in a flexible system that earns meaning through use. [canon](../canon/pentagram.canon-entry.yaml) |
 | **COLLINS** | A brand is behaviour performed over time: identity with range in type, image and motion, built to flex. [canon](../canon/collins.canon-entry.yaml) |
 | **Bureau Borsche** | Identity as behaviour and motion rather than a static sheet. [canon](../canon/bureau-borsche.canon-entry.yaml) |
+| **032c** | Loud inside a strict frame: one signal colour, one grotesk at violent scale, facts set as a specification sheet. It is why cstack's posters let a headline word's letters jump in size while the wordmark never moves, and why the nine layers can be a table. [canon](../canon/032c.canon-entry.yaml) |
 | **DIA** | Type that moves as a system. Motion is a brand token in cstack (duration, easing, sequence), not decoration. |
 | **OK-RM** | Editorial structure as identity, where the system grows out of the content. [canon](../canon/ok-rm.canon-entry.yaml) |
 | **Irma Boom** | The publication is an object: format, edge, paper and weight carry the idea. [canon](../canon/irma-boom.canon-entry.yaml) |
@@ -85,6 +86,7 @@ The Acknowledgements in the README, in full. Debts of attention, not sources: no
 | **Formafantasma** | Research and material intelligence as the design act. Know where the material comes from before you shape it; it is why `/product-fidelity` locks what the product is really made of. [canon](../canon/formafantasma.canon-entry.yaml) |
 | **Sarnoff Mednick and Arthur Koestler** | Good ideas often join things that are not normally linked. It is why every reference search mixes near, middle and far. [canon](../canon/associative-creativity.canon-entry.yaml) |
 | **Charlie Munger** | A latticework of mental models instead of a list of heroes. The shape of the whole canon. |
+| **William Wegman** | Where cstack's own imagery started: one of his photographs of a dog mid-game on a floor of marked positions, deadpan, in a calm studio. Play as the face of seriousness. It is why cstack's own posters put a single blue square on a row of positions and let it step out of line. The idea only: the photograph is not reproduced here, nothing of it is drawn, traced or given to a model, and the image belongs to him. |
 | **Bret Victor and Dynamicland** | Interfaces as thinking environments: make the system visible and directly manipulable. `cstack brand check` shows what is known, unknown and in conflict instead of hiding it in a prompt. [canon](../canon/bret-victor.canon-entry.yaml) |
 | **Ink & Switch** | Local-first: your work lives in files you own. Every brand in cstack is a git repo on its owner's machine. |
 | **Andrew Chen** | Growth starts with the smallest network that can sustain itself; density beats reach. [canon](../canon/cold-start-networks.canon-entry.yaml) |

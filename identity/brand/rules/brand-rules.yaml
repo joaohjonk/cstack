@@ -30,5 +30,20 @@ rules:
   - id: R-NAMES-01
     scope: core
     rule: no practitioner or studio is named inside a visual; credits live in README and docs/lineage.md text only
-    check: deterministic   # ! grep -il -E 'vignelli|pawson|ando|aicher|brockmann' docs/images/*.svg
+    check: deterministic   # ! grep -il -E 'vignelli|pawson|ando|aicher|brockmann|wegman|twister' docs/images/*.svg
     source: brand/brand-system.json#anti_references.named_practitioners
+  - id: R-FIELD-01
+    scope: core
+    rule: positions are squares in the one colour, outlined where open and solid where taken; no circles and no second colour in a field
+    check: deterministic   # ! grep -l '<circle' docs/images/cstack-hero.svg docs/images/the-field.svg
+    source: brand/brand-system.json#graphic_devices.field
+  - id: R-FIGURE-01
+    scope: core
+    rule: at most one figure per image, only in poster moments (hero, social card), built from the square unit by make-figures.py figure(); never in a diagram that must be read, never given a face, words or a name
+    check: judge
+    source: brand/brand-system.json#graphic_devices.figure
+  - id: R-REF-01
+    scope: core
+    rule: nothing from a mood reference is reproduced or traced; the idea transfers, the dress does not (no animal from life, no dots in rows, no game colours or lettering)
+    check: judge
+    source: brand/brand-system.json#anti_references.reference_dress

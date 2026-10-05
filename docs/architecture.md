@@ -22,6 +22,12 @@ cstack turns a brand's judgment into files an agent must read, checks that code 
 
 ## Skill map
 
+<p align="center">
+  <img src="images/the-field.svg" alt="A job stops only where it needs to. Each row is a stage from Think to Remember; each square a skill. The squares a job did not use are soft and blurred; the one it used in each stage is sharp and white, joined by a white line: brief, identity-system, creative-direction, vector-master, brand-verify, learn-loop. In Look outward it does not stop: not this time." width="560">
+</p>
+
+The route drawn here is the job that drew cstack's own figures. The figure is generated from the table below by `identity/work/figures/make-figures.py`, so a skill added to the table appears as a square the next time it runs.
+
 The 30 skills follow one sequence. Each stage writes files the next one reads.
 
 | Stage | Skills |
