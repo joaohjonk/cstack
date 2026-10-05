@@ -411,7 +411,8 @@
               "founder_brief",
               "reference_reactions",
               "product_truth",
-              "pack_spec"
+              "pack_spec",
+              "owner_pick"
             ]
           },
           "owner_approved": {

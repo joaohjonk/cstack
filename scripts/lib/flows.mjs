@@ -173,7 +173,9 @@ export function checkFlowFile(ws, file, { skills = null } = {}) {
 //           provider here (or the owner's recorded yes to a substitute): missing capability never degrades silently
 //   decide  + at least two territories, each made visible as a probe contact sheet that exists
 //   final   + references/gold is not empty, and the work has been put side by side with at least one gold reference
-export const GATE_STAGES = ['make', 'decide', 'final'];
+// make: before generating; polish: before spending detail on picked frames (F89); decide: before the owner chooses a
+// direction; final: before the work is shown as finished
+export const GATE_STAGES = ['make', 'polish', 'decide', 'final'];
 const VISUAL = new Set(['image', 'video', '3d', 'vector', 'type', 'diagram', 'page']);
 const GENERATED = new Set(['image', 'video']);
 // skills that call a media model; a generative step in another skill (an agent drafting SVG icons) needs no provider
@@ -349,7 +351,7 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   // F86: a plan that makes a pack, or pictures of one, owes the real pack's sizes whichever flow it came from
   const packTarget = PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`);
   if (at === 0) for (const e of requirementGaps(ws, flow, generative && packTarget ? ['pack_spec'] : [])) (e.waived ? warnings : errors).push(e.message);
-  if (at >= 1 && VISUAL.has(d.kind)) {
+  if (at >= 2 && VISUAL.has(d.kind)) {
     const t = flow.territories ?? [];
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);
     for (const x of t) if (!inWs(x.probe_sheet)) errors.push(`decide: territory "${x.name}" has no probe sheet at ${x.probe_sheet}; a direction described only in words is not a visible option`);
@@ -362,7 +364,7 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
     const composites = (flow.steps ?? []).some((s) => s.skill === 'vector-master' || /\bcomposit(e|ed|es|ing)\b/i.test(`${s.id} ${s.does}`));
     if (needs.length && !composites) errors.push(`decide: territories depend on ${needs.join(', ')}, set after generation, and the plan has no composite step (vector-master) to set them; add one, so the no-lettering rule does not strip what the idea needs`);
   }
-  if (at >= 2 && VISUAL.has(d.kind)) {
+  if (at >= 3 && VISUAL.has(d.kind)) {
     const gold = goldRefs(ws);
     if (!gold.length) errors.push('final: references/gold is empty, so nothing says what good looks like; add at least one gold reference (taste-search) before judging the work');
     const cmp = flow.gold_comparisons ?? [];
@@ -372,5 +374,34 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
       if (!inWs(c.sheet)) errors.push(`final: comparison sheet ${c.sheet} does not exist`);
     }
   }
+  // F48, F52, F89: exploration went straight to finals three times with no pick on record. Past the grid, the plan's
+  // pick step needs the owner's winners (cstack sheet import) or the owner's waiver, before polish spends anything.
+  if (at >= 1) {
+    const e = ownerPickGap(ws, flow);
+    if (e) (e.waived ? warnings : errors).push(e.message);
+  }
   return { file, stage, errors, warnings };
+}
+
+const PICK_SCOPES = new Set(['winner pick', 'blind winner pick']);
+
+/** ownerPickGap(ws, flow) -> null | {waived, message}: a plan with a human pick step before more generation owes a recorded pick. */
+export function ownerPickGap(ws, flow) {
+  const steps = flow.steps ?? [];
+  const pickAt = steps.findIndex((s) => s.kind === 'human' && /\bpick/i.test(`${s.id} ${s.does ?? ''}`));
+  if (pickAt < 0 || !steps.slice(pickAt + 1).some((s) => s.kind === 'generative')) return null;
+  const fb = path.join(ws, 'state', 'feedback.jsonl');
+  const mark = feedbackMark(ws);
+  let picks = 0;
+  if (exists(fb))
+    for (const l of fs.readFileSync(fb, 'utf8').split('\n').filter((x) => x.trim()).slice(mark)) {
+      try {
+        const e = JSON.parse(l);
+        if (e.type === 'approve' && PICK_SCOPES.has(e.context?.scope)) picks++;
+      } catch {}
+    }
+  if (picks) return null;
+  const w = (flow.waivers ?? []).find((x) => x.requires === 'owner_pick' && x.owner_approved);
+  if (w) return { waived: true, message: `polish: going ahead with no recorded pick (${w.by ? `${w.by} waived it` : 'owner waived it'} ${w.owner_approved}${w.quote ? `: "${w.quote}"` : ''}); say so wherever the work is shown` };
+  return { waived: false, message: `polish: no owner pick on record for step "${steps[pickAt].id}" (approve feedback from a winner pick in state/feedback.jsonl since the last brief pivot): show the grids on a sheet (cstack sheet make, cstack sheet open), let the owner pick one to three winners and say why, and record them (cstack sheet import); or record the owner's waiver (waivers: [{requires: owner_pick, owner_approved: <date>, by: <owner>, quote: "<their words>", why}])` };
 }

@@ -403,3 +403,27 @@ test('founder first, not founder only: decide warns without a challenge memo; cr
   for (const id of ['challenge-strategy', 'challenge-territories', 'packaging', 'photoshoot', 'ads', 'launch-page', 'replicability']) assert.ok(ids.includes(id), id);
   assert.ok(ids.indexOf('challenge-strategy') < ids.indexOf('territories') && ids.indexOf('packaging') > ids.indexOf('systemization'));
 });
+
+test('flows gate --stage polish: past the grid, the owner pick is on record or waived (F48, F52, F89)', async () => {
+  const { gateFlow, GATE_STAGES } = await import('../scripts/lib/flows.mjs');
+  assert.deepEqual(GATE_STAGES, ['make', 'polish', 'decide', 'final']);
+  const w = tmpDir('cstack-f89-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const plan = planFromFlow(w, 'grid-pick-polish', { target: 'a launch ad still for a tea can' });
+  const polish = () => gateFlow(w, plan.file, { stage: 'polish', providers: fal });
+  assert.match(polish().errors.join('\n'), /polish: no owner pick on record for step "pick"/);
+  assert.doesNotMatch(gateFlow(w, plan.file, { stage: 'make', providers: fal, budget: { per_run: 2, per_day: 5 } }).errors.join('\n'), /owner pick/, 'the grid itself needs no pick');
+  fs.mkdirSync(path.join(w, 'state'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'state', 'feedback.jsonl'), JSON.stringify({ id: 'FB-1', date: today, by: 'owner', type: 'approve', artifact_ref: 'work/grid.png', context: { surface: 'contact sheet', scope: 'review' } }) + '\n');
+  assert.match(polish().errors.join('\n'), /no owner pick/, 'an approval that is not a winner pick does not count');
+  fs.appendFileSync(path.join(w, 'state', 'feedback.jsonl'), JSON.stringify({ id: 'FB-2', date: today, by: 'owner', type: 'approve', artifact_ref: 'work/grid.png', reason: 'the can reads at thumb size', context: { surface: 'contact sheet', scope: 'winner pick' } }) + '\n');
+  assert.doesNotMatch(polish().errors.join('\n'), /owner pick/);
+  const w2 = tmpDir('cstack-f89-');
+  const p2 = planFromFlow(w2, 'grid-pick-polish', { target: 'a launch ad still for a tea can' });
+  const doc = YAML.parse(fs.readFileSync(p2.file, 'utf8'));
+  doc.waivers = [{ requires: 'owner_pick', owner_approved: today, by: 'owner', quote: 'just polish frame 3', why: 'owner chose in chat' }];
+  fs.writeFileSync(p2.file, YAML.stringify(doc));
+  const r = gateFlow(w2, p2.file, { stage: 'polish', providers: fal });
+  assert.doesNotMatch(r.errors.join('\n'), /owner pick/);
+  assert.match(r.warnings.join('\n'), /polish: going ahead with no recorded pick \(owner waived it .*"just polish frame 3"/);
+});

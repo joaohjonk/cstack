@@ -47,8 +47,8 @@
       "set": "2026-10-03"
     },
     "generate-media": {
-      "ceiling": 1282,
-      "set": "2026-10-03"
+      "ceiling": 1443,
+      "set": "2026-10-05"
     },
     "identity-system": {
       "ceiling": 1440,
@@ -266,6 +266,13 @@
       "from": 1576,
       "to": 1743,
       "reason": "F86 (owner's rule): read the converter's print and dieline files into a pack spec and surface artwork that differs"
+    },
+    {
+      "date": "2026-10-05",
+      "slug": "generate-media",
+      "from": 1282,
+      "to": 1443,
+      "reason": "F89 and F90: the polish gate and format extensions from the verified frame belong where media is made; one line"
     }
   ]
 }

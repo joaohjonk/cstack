@@ -117,9 +117,11 @@ function parseBox(out) {
 
 const pctOff = (got, want) => Math.round((Math.abs(got - want) / want) * 1000) / 10;
 
+// F90: the band edge is strict. The raw difference decides, never the rounded one shown, and nothing past the band
+// passes as "within error" (0.90 against a 0.89 limit is a fail).
 function verdict(got, want, tol, what) {
   const off = pctOff(got, want);
-  return { result: off <= tol * 100 ? 'pass' : 'fail', measured: Math.round(got * 1000) / 1000, expected: Math.round(want * 1000) / 1000, off_pct: off, evidence: `${what} height:width ${Math.round(got * 1000) / 1000} against the spec's ${Math.round(want * 1000) / 1000} (${off}% off, tolerance ${tol * 100}%)` };
+  return { result: Math.abs(got - want) / want <= tol + 1e-9 ? 'pass' : 'fail', measured: Math.round(got * 1000) / 1000, expected: Math.round(want * 1000) / 1000, off_pct: off, evidence: `${what} height:width ${Math.round(got * 1000) / 1000} against the spec's ${Math.round(want * 1000) / 1000} (${off}% off, tolerance ${tol * 100}%)` };
 }
 
 /**

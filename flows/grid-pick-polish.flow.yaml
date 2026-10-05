@@ -76,7 +76,7 @@ steps:
   skill: generate-media
   est_cost: {amount: 0.055, currency: USD, unit: "per high-quality single image on fal GPT Image 2.5 Sunburst, observed in the field test 2026-10-05; more at larger delivery sizes"}
   budget: {amount: 0.35, currency: USD, basis: "polish phase, rebuilds: up to three winners, two tries each"}
-  gate: {type: deterministic_check, check: "cstack spend plan ok; cstack image text passes; the owner sees the rebuild next to its frame"}
+  gate: {type: deterministic_check, check: "cstack flows gate <plan> --stage polish passes (the owner's pick is on record); cstack spend plan ok; cstack image text passes; the owner sees the rebuild next to its frame"}
   compare_to_target: does the rebuild keep what the owner said won?
 - id: refine
   does: local edits, one change per pass, describing only the change (image-edit); cstack prompt diff shows one component per pass

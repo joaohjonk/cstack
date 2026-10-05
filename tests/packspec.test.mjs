@@ -107,3 +107,31 @@ test('pack spec: real-pack fields validate, and mismatches, changed sources and 
   assert.ok(specWarnings(full, { ws: w }).some((x) => /changed since the sizes were read/.test(x)));
   assert.deepEqual(specWarnings({ ...full, artwork_mismatch: 'owner: re-lay the face to 70 x 85', cartons: [], source: { kind: 'print-file' } }), [], 'a recorded owner decision clears the flag');
 });
+
+test('pack check: the band edge is strict, and a story version is made from the verified frame (F90)', async () => {
+  const d = tmpDir('cstack-pack-');
+  fs.writeFileSync(path.join(d, 'ad.png'), encodePNG({ width: 400, height: 400, data: Buffer.alloc(400 * 400 * 4, 200) }));
+  // front 70 x 85 is h:w 1.2143; a 4% band reaches 1.2629. 100 x 126.4 is 4.09% off: shown as 4.1, a fail
+  const edge = checkPack([path.join(d, 'ad.png')], { spec: bar, box: [0, 0, 100, 126.4] });
+  assert.equal(edge.images[0].result, 'fail', edge.images[0].evidence);
+  assert.equal(checkPack([path.join(d, 'ad.png')], { spec: bar, box: [0, 0, 100, 126.2] }).ok, true);
+  const { extendFrame, parseAspect } = await import('../scripts/lib/image/extend.mjs');
+  const px = new Uint8ClampedArray(4 * 2 * 4);
+  for (let i = 0; i < 8; i++) px.set(i < 4 ? [255, 0, 0, 255] : [0, 0, 255, 255], i * 4);
+  const tall = extendFrame({ width: 4, height: 2, data: px }, { aspect: '9:16', fill: '#ffffff' });
+  assert.deepEqual([tall.width, tall.height, tall.box], [4, 7, [0, 3, 4, 2]]);
+  assert.deepEqual([...tall.data.subarray(0, 4)], [255, 255, 255, 255], 'padding is the fill colour');
+  assert.deepEqual([...tall.data.subarray(3 * 16, 3 * 16 + 4)], [255, 0, 0, 255], 'the frame is copied, untouched');
+  const edgeFill = extendFrame({ width: 4, height: 2, data: px }, { aspect: '9:16' });
+  assert.deepEqual([...edgeFill.data.subarray(0, 4)], [255, 0, 0, 255], 'edge fill repeats the frame edge');
+  const crop = extendFrame({ width: 4, height: 2, data: px }, { aspect: '1:1', fit: 'crop' });
+  assert.deepEqual([crop.width, crop.height], [2, 2]);
+  assert.throws(() => parseAspect('tall'), /W:H/);
+  const r = spawnSync(process.execPath, [CLI, 'image', 'extend', path.join(d, 'ad.png'), '--aspect', '9:16', '--out', path.join(d, 'story.png'), '--fill', '#000000'], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /400x711\) .* nothing regenerated/);
+  const meta = JSON.parse(fs.readFileSync(path.join(d, 'story.png.json'), 'utf8'));
+  assert.equal(meta.method, 'pad');
+  assert.match(meta.derived_from.sha256, /^[0-9a-f]{64}$/);
+  assert.notEqual(spawnSync(process.execPath, [CLI, 'image', 'extend', path.join(d, 'ad.png'), '--aspect', '9:16', '--out', path.join(d, 'story.png')], { encoding: 'utf8' }).status, 0, 'refuses to overwrite without --force');
+});

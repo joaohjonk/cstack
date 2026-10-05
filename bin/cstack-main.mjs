@@ -32,6 +32,7 @@ import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/li
 import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
+import { extendFile } from '../scripts/lib/image/extend.mjs';
 import { findPackSpecs, approvedSpec, specAspects, specWarnings, checkPack, pdfBoxes } from '../scripts/lib/packspec.mjs';
 import { listScenarios, planTrial, writePlan, readPlan, runTrial, scoreTrial, importTaps } from '../scripts/lib/trial.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
@@ -134,6 +135,7 @@ const COMMANDS = {
   'trial run': 'run every team role through an agent CLI, one fresh workspace per team and scenario: cstack trial run <dir> --agent "<cmd>" [--only team-a,retail-endcap] [--timeout 1800] (resumes; stops at a usage limit)',
   'trial score': 'blind attribution sheet (brand teams mixed with the control team) and cross-team pairs sheet: cstack trial score <dir> [--seed N] [--force]',
   'trial import': 'read the owner\'s taps and write the report: cstack trial import <dir> <taps.json>...',
+  'image extend': 'make a 9:16, 4:5 or 1:1 version of a verified frame without regenerating it (F90): cstack image extend <frame> --aspect 9:16 --out <file.png> [--fit pad|crop] [--fill edge|#rrggbb] [--force] [--json]',
   'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>] [--json] (exit 1 when any image shows text; with --expect, when a declared line is missing or garbled or undeclared lettering appears)',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
   taste: 'Taste Labs capability: cstack taste search "intent" [--k 6] | extract <url> | verify --reference <url> --candidate <url>',
@@ -179,7 +181,7 @@ const COMMANDS = {
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage" [--json [--workflows]]; also lists the workflows that cover the outcome',
   'flows show': 'print one flow: cstack flows show <id>',
   'flows plan': 'copy a flow into this run\'s plan, deliverable included: cstack flows plan <id> [--target "what as-close-as-possible means"] [--deliverable image|video|3d|vector|type|diagram|page|copy|other] [--key-visual] → work/flows/',
-  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
+  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|polish|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
   'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
@@ -789,8 +791,21 @@ async function cmdEvals(sub) {
 }
 
 // cstack image text (field test F20): a per-image gate a flow's stop rule can run after each generation
-function cmdImage(sub) {
-  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>]');
+async function cmdImage(sub) {
+  if (sub === 'extend') {
+    // F90: a 9:16 or 4:5 version of a verified frame pads or crops that frame; regenerating it redraws the pack
+    const f = args._[0] ?? die('usage: cstack image extend <verified frame> --aspect 9:16 --out <file.png> [--fit pad|crop] [--fill edge|#rrggbb] [--force]');
+    try {
+      const r = await extendFile(path.resolve(f), { aspect: args.aspect ?? die('--aspect W:H required (9:16, 4:5, 1:1)'), fit: args.fit ?? 'pad', fill: args.fill ?? 'edge', out: typeof args.out === 'string' ? args.out : undefined, force: !!args.force });
+      if (args.json) return json(r);
+      console.log(`wrote ${shown(r.out)} (${r.width}x${r.height}) from ${shown(f)} by ${args.fit ?? 'pad'}; nothing regenerated (${shown(r.sidecar)} names the source frame)`);
+      if ((args.fit ?? 'pad') === 'crop') console.log('cropped: run cstack pack check on the result with the pack\'s box, so a cut pack is caught');
+    } catch (e) {
+      die(e.message);
+    }
+    return;
+  }
+  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>]\n       cstack image extend <frame> --aspect 9:16 --out <file.png> [--fit pad|crop] [--fill edge|#rrggbb]');
   if (args.judge === true) die('--judge needs a command');
   const list = (v) => (v == null ? [] : [].concat(v));
   if ([...list(args.expect), ...list(args['expect-file'])].includes(true)) die('--expect needs a line of text, --expect-file a file');
@@ -1319,7 +1334,7 @@ switch (cmd) {
       }
       if (res.some((x) => x.errors.length)) process.exitCode = 1;
     } else if (sub === 'gate') {
-      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|decide|final');
+      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|polish|decide|final');
       const stage = args.stage ?? die(`--stage required: ${GATE_STAGES.join('|')}`);
       if (!GATE_STAGES.includes(stage)) die(`--stage must be one of ${GATE_STAGES.join(', ')}`);
       const x = gateFlow(ws, path.resolve(f), { stage, providers: availability(), skills: listSkills().map((s) => s.slug), budget: loadBudget(ws) });
@@ -1431,7 +1446,7 @@ switch (cmd) {
     await cmdSheet(argv[0]);
     break;
   case 'image':
-    cmdImage(argv[0]);
+    await cmdImage(argv[0]);
     break;
   case 'trial':
     cmdTrial(argv[0]);
