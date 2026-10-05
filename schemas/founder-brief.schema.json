@@ -111,6 +111,45 @@
       },
       "additionalProperties": false
     },
+    "product": {
+      "type": "object",
+      "description": "what is made and the founder's stance on it: often half of why the brand exists",
+      "properties": {
+        "what": {
+          "type": "string",
+          "description": "the product or service in plain words"
+        },
+        "stance": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "positions the founder holds (ingredients, sourcing, materials, what is left out)"
+        },
+        "functional": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "what it does beyond the core (added benefits, features)"
+        },
+        "range": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "first products, sizes, formats, and the range's boundaries"
+        },
+        "never": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "what the product will never be or contain"
+        }
+      },
+      "additionalProperties": false
+    },
     "brand_as_person": {
       "type": "object",
       "description": "a brand acts like a person: a name, a look, places, the company it keeps",

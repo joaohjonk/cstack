@@ -358,6 +358,12 @@ function cmdPrompt(sub) {
       values[String(kv).slice(0, eq)] = String(kv).slice(eq + 1);
     }
     const res = compile(recipe, { values, seed: args.seed, names: canonNames() });
+    // the same schema brand check applies, so a recipe that compiles also passes the workspace check (F29)
+    const sv = validateValue('prompt-recipe', recipe);
+    if (!sv.ok) {
+      res.errors.push(`[prompt-recipe schema] ${sv.errors}`);
+      res.ok = false;
+    }
     if (args.json) json(res);
     else {
       if (res.ok) console.log(res.prompt + '\n');

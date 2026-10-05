@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Field test F28, F29.** The founder brief gains a `product` section (what is made, the founder's stances, functional add-ons, range and its limits, what it will never be), and the founding interview asks about it. `cstack prompt compile` now checks the recipe against the `prompt-recipe` schema, so a recipe that compiles also passes `brand check`.
 - **Text in generated images stops the batch** (field test F20). `cstack image text` flags lettering, garbled text and logos with local OCR (tesseract) or a judge command, and exits 1 so a stop rule can run it after each image. With no engine it refuses rather than passing. The `mood-probes` probe gate runs it.
 - **What fal billed** (field test F21). Ledger rows keep the provider's request ids. `cstack spend reconcile --provider fal` fetches fal's billing event for each request into `state/billing.jsonl` (new schema `billing-record`). `spend summary` shows billed against estimated, and whether the gap is within 25%.
 - **A plan made before its flow gained `requires` still owes them** (F26), because the gate reads the library flow's `requires` too. The plan's source flow is its last `flow:` entry; the unchanged-copy check had been comparing against the first one. The founder brief gains the founder's ambition and how the brand talks to its customer (F27).

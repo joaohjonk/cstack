@@ -89,3 +89,30 @@ test('nested workspaces and experiment runs are schema-governed', () => {
   assert.equal(schemaFor(path.join(ROOT, 'templates/brand-workspace/brand/brand-system.json')), null);
   assert.equal(schemaFor(path.join(ROOT, 'examples/x/experiments/runs/e1/experiment-run.yaml')), 'experiment-run');
 });
+
+test('F29: prompt compile refuses a recipe that brand check would reject', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const { tmpDir } = await import('./tmp.mjs');
+  const fsm = (await import('node:fs')).default;
+  const p = (await import('node:path')).default;
+  const { ROOT } = await import('../scripts/lib/core.mjs');
+  const d = tmpDir('cstack-f29-');
+  const ok = { id: 'r1', version: 1, task: 'text_to_image', template: 'A cup of {tea}.', slots: { tea: { required: true } }, values: { tea: 'green tea' } };
+  const run = (recipe) => {
+    const f = p.join(d, 'r.prompt-recipe.json');
+    fsm.writeFileSync(f, JSON.stringify(recipe));
+    return spawnSync(process.execPath, [p.join(ROOT, 'bin', 'cstack.mjs'), 'prompt', 'compile', f], { encoding: 'utf8' });
+  };
+  const good = run(ok);
+  assert.equal(good.status, 0, good.stdout + good.stderr);
+  const bad = run({ ...ok, mood: 'extra field' });
+  assert.equal(bad.status, 1);
+  assert.match(bad.stdout, /\[prompt-recipe schema\].*mood/);
+});
+
+test('F28: the founder brief holds the product and the founder stance on it', async () => {
+  const { validateValue } = await import('../scripts/lib/schemas.mjs');
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'r' }, customer: { who: 'w', evidence: 'told' }, product: { what: 'canned iced tea', stance: ['no added sugar'], functional: ['adaptogens'], range: ['three flavours, 330 ml'], never: ['artificial sweeteners'] }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
+  assert.equal(validateValue('founder-brief', { ...brief, product: { flavour: 'x' } }).ok, false);
+});
