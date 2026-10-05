@@ -6,6 +6,8 @@ aliases:
 - tiktok version
 - hook variants
 status: researched
+requires:
+- competitor_ads
 target:
   description: every channel version derived from one master, hook in the first 2 s, text inside safe zones, loudness and specs right
   must:

@@ -105,6 +105,8 @@ export function planDoc(f, { id, target, deliverable, key_visual } = {}) {
 const MAKES = ['generative', 'probe'];
 const PACK_FLOWS = new Set(['concept-wrap', 'packaging-system', 'mockup-set', 'shelf-test']);
 const PACK_WORDS = /\b(pack|packs|packaging|can|cans|label|labels|wrap|bottle|bottles|box|boxes|pouch|carton)\b/i;
+// F91: an ad round starts from what the category is running
+const AD_WORDS = /\b(ad|ads|advert|adverts|advertising|ugc|paid[ -]social|hooks?)\b/i;
 
 // A flow is followable only if it compared ways of getting there, gates every step, says how each made
 // thing is judged against the target, and names where spending stops. Pure: no file or network access.
@@ -197,6 +199,7 @@ const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
   reference_reactions: 'no reference packet or board the owner has reacted to (work/references/*-packet.md or a cstack sheet board, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search), then let them keep or kill each one on a board (cstack sheet board references/ --out work/sheets/refs.html, then cstack sheet import)',
   pack_spec: 'no approved pack spec (a *.pack-spec.yaml with front_mm and flat_mm from the dieline, the converter\'s print file or a measurement, source named, approval locked or current): cstack never invents packaging sizes (F86); ask the owner for the dieline or print file, read its sizes (cstack pack spec-from-pdf <file>), have them confirm, and check every pack render with cstack pack check',
+  competitor_ads: 'no competitor-ads scan (a *.competitor-ads.yaml, schema competitor-ads, dated within 90 days: live ads from 5 or more rivals, each with link, days running, format, hook, offer and claim, and a saturated and white-space map): cstack makes no ad before seeing what the category runs (F91); collect it by browser or an approved API (Meta Ad Library, TikTok Creative Center, Foreplay; competitor-intel, references/ads-lens.md), and have every bet cite it',
   product_truth: 'no owner-confirmed product-truth reference (a *.reference.yaml with library own_asset and approval locked or current: the owner\'s own photo or an official asset): a product or food close-up drawn from research images can show someone else\'s product (F71); ask the owner for one photo of the real product, record it, and keep research images labelled "real product" at approval inferred until the owner confirms them',
 };
 
@@ -225,6 +228,7 @@ export function requirementGaps(ws, flow, implied = []) {
 
 function requirementMet(ws, req) {
   if (req === 'pack_spec') return approvedSpecs(ws).length > 0;
+  if (req === 'competitor_ads') return competitorScans(ws).length > 0;
   if (req === 'founder_brief') {
     const dir = path.join(ws, 'briefs');
     if (!exists(dir)) return false;
@@ -350,7 +354,12 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
   // F86: a plan that makes a pack, or pictures of one, owes the real pack's sizes whichever flow it came from
   const packTarget = PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`);
-  if (at === 0) for (const e of requirementGaps(ws, flow, generative && packTarget ? ['pack_spec'] : [])) (e.waived ? warnings : errors).push(e.message);
+  const adTarget = AD_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`);
+  const implied = [...(generative && packTarget ? ['pack_spec'] : []), ...(adTarget ? ['competitor_ads'] : [])];
+  if (at === 0) for (const e of requirementGaps(ws, flow, implied)) (e.waived ? warnings : errors).push(e.message);
+  // F91: every bet behind an ad round cites the scan, so the hooks answer the category instead of ignoring it
+  if (at === 0 && adTarget && competitorScans(ws).length)
+    for (const b of findData(ws, 'creative-bet')) if (!(b.data.evidence ?? []).some((e) => /competitor-ads/.test(String(e.ref)))) warnings.push(`make: bet ${b.data.id ?? path.basename(b.file)} does not cite the competitor-ads scan in its evidence; name the saturated hook it avoids or the white space it takes`);
   if (at >= 2 && VISUAL.has(d.kind)) {
     const t = flow.territories ?? [];
     if (t.length < 2) errors.push(`decide: ${t.length} territor${t.length === 1 ? 'y' : 'ies'} recorded; a visual decision needs at least two, each made visible as a probe contact sheet (territories: [{name, probe_sheet}])`);
@@ -404,4 +413,26 @@ export function ownerPickGap(ws, flow) {
   const w = (flow.waivers ?? []).find((x) => x.requires === 'owner_pick' && x.owner_approved);
   if (w) return { waived: true, message: `polish: going ahead with no recorded pick (${w.by ? `${w.by} waived it` : 'owner waived it'} ${w.owner_approved}${w.quote ? `: "${w.quote}"` : ''}); say so wherever the work is shown` };
   return { waived: false, message: `polish: no owner pick on record for step "${steps[pickAt].id}" (approve feedback from a winner pick in state/feedback.jsonl since the last brief pivot): show the grids on a sheet (cstack sheet make, cstack sheet open), let the owner pick one to three winners and say why, and record them (cstack sheet import); or record the owner's waiver (waivers: [{requires: owner_pick, owner_approved: <date>, by: <owner>, quote: "<their words>", why}])` };
+}
+
+// valid *.competitor-ads.(yaml|json) files, dated within 90 days, outside state/ and .git
+const SCAN_DAYS = 90;
+function findData(ws, schema) {
+  const re = new RegExp(`\\.${schema}\\.(ya?ml|json)$`);
+  const out = [];
+  if (!exists(ws)) return out;
+  for (const d of fs.readdirSync(ws)) {
+    if (['state', '.git', 'node_modules'].includes(d)) continue;
+    const p = path.join(ws, d);
+    for (const f of fs.statSync(p).isDirectory() ? walk(p, (x) => re.test(x)) : re.test(d) ? [p] : []) {
+      try {
+        out.push({ file: f, data: readData(f) });
+      } catch {}
+    }
+  }
+  return out;
+}
+
+export function competitorScans(ws, { now = Date.now() } = {}) {
+  return findData(ws, 'competitor-ads').filter(({ data }) => validateValue('competitor-ads', data).ok && new Set(data.ads.map((a) => a.competitor)).size >= 5 && now - Date.parse(data.date) <= SCAN_DAYS * 86400000);
 }

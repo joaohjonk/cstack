@@ -59,6 +59,7 @@ Primary observation (URL + timestamp + screenshot) > tool data (labelled with th
 
 - `state/competitors.jsonl` (append observations), `references/competitors/<id>.reference.yaml` for notable pieces (library `competitor`).
 - `work/competitors/<date>-category-map.md` with the convention map and implications; screenshots in `work/competitors/<date>/`.
+- Before any ad round: `work/competitors/<date>.competitor-ads.yaml` (F91, ads lens).
 
 ## Evals required
 

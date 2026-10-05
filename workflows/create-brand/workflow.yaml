@@ -120,6 +120,12 @@ steps:
   outputs:
   - work/shoot/
   gate: owner
+- id: competitor-ads
+  skill: competitor-intel
+  does: 'before any ad: live ads from 5 to 10 rivals (Meta Ad Library, TikTok Creative Center or Foreplay, by browser or approved API), each with link, days running, format, hook, offer and claim, ending in a saturated and white-space map (work/competitors/<date>.competitor-ads.yaml); every ad bet cites it (F91)'
+  outputs:
+  - work/competitors/
+  gate: auto
 - id: ads
   skill: asset-factory
   does: 'a launch ad family from the photoshoot and the line: static ads at the channels'' sizes, one UGC storyboard and a cutdown plan (workflow growth-creative, flow paid-social-cutdowns), each with a bet and a cell'

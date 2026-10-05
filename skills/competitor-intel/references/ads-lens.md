@@ -7,3 +7,6 @@ what marketers and creators are doing, as distinct from `cultural-scan`'s what i
 - **Saturation**: the angle, format or claim everyone copies.
 - **White space**: a mechanism that works elsewhere and has not entered the category.
 Output mechanisms, not ads to remake: "long-running in the category: transformation mechanic in before-and-after format, 7 of 10 brands", never "make their ad".
+
+
+**Before any ad round (F91):** write `work/competitors/<date>.competitor-ads.yaml` (schema `competitor-ads`): live ads from 5 to 10 rivals, each with link, days running, format, hook, offer and claim, then `saturated` and `white_space`. The make gate refuses an ad plan without one under 90 days old, and every creative bet cites it in `evidence` (the saturated hook it avoids, or the white space it takes).

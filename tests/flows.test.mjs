@@ -427,3 +427,28 @@ test('flows gate --stage polish: past the grid, the owner pick is on record or w
   assert.doesNotMatch(r.errors.join('\n'), /owner pick/);
   assert.match(r.warnings.join('\n'), /polish: going ahead with no recorded pick \(owner waived it .*"just polish frame 3"/);
 });
+
+test('flows gate: an ad round starts from a competitor-ads scan, and bets cite it (F91)', async () => {
+  const { gateFlow, competitorScans } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f91-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const opts = { stage: 'make', providers: fal, budget: { per_run: 2, per_day: 5 } };
+  const plan = planFromFlow(w, 'brand-hero-photo', { target: 'four static launch ads for a tea brand' });
+  assert.match(gateFlow(w, plan.file, opts).errors.join('\n'), /no competitor-ads scan .* \(F91\)/);
+  const ugc = planFromFlow(w, 'ugc-style-ad', { target: 'a creator video for the launch' });
+  assert.match(gateFlow(w, ugc.file, opts).errors.join('\n'), /no competitor-ads scan/, 'ad flows require it whatever the target says');
+  const ad = (competitor) => ({ competitor, link: `https://example.com/ads/${competitor}`, days_running: 40, format: 'UGC talking head', hook: 'I quit soda for this', offer: '20% off first order', claim: 'zero sugar' });
+  const scan = { id: 'tea-ads', date: today, category: 'canned iced tea', sources: ['Meta Ad Library'], ads: ['a', 'b', 'c', 'd'].map(ad), saturated: ['zero-sugar claim over a taste test'], white_space: ['price told plainly'] };
+  fs.mkdirSync(path.join(w, 'work', 'competitors'), { recursive: true });
+  const f = path.join(w, 'work', 'competitors', 'scan.competitor-ads.yaml');
+  fs.writeFileSync(f, YAML.stringify(scan));
+  assert.equal(competitorScans(w).length, 0, 'four ads is not a scan');
+  fs.writeFileSync(f, YAML.stringify({ ...scan, ads: ['a', 'b', 'c', 'd', 'e'].map(ad) }));
+  assert.equal(competitorScans(w).length, 1);
+  assert.equal(competitorScans(w, { now: Date.parse(today) + 91 * 86400000 }).length, 0, 'a scan older than 90 days is stale');
+  assert.doesNotMatch(gateFlow(w, plan.file, opts).errors.join('\n'), /competitor-ads/);
+  fs.writeFileSync(path.join(w, 'work', 'b1.creative-bet.yaml'), YAML.stringify({ id: 'b1', evidence: [{ ref: 'work/insights/i1.md', ladder: 'observation' }] }));
+  assert.match(gateFlow(w, plan.file, opts).warnings.join('\n'), /bet b1 does not cite the competitor-ads scan/);
+  const photo = planFromFlow(tmpDir('cstack-f91-'), 'brand-hero-photo', { target: 'a hero photo of a kitchen at dawn for the home page' });
+  assert.doesNotMatch(gateFlow(path.dirname(path.dirname(photo.file)), photo.file, opts).errors.join('\n'), /competitor-ads/);
+});
