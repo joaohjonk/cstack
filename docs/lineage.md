@@ -49,6 +49,7 @@ The Acknowledgements in the README, in full. Debts of attention, not sources: no
 | **David Ogilvy** | Research before persuasion. The consumer is not a moron, specific facts sell, and the headline does most of the work. `/copywriting` and `/claims-proof` start from evidence. [canon](../canon/ogilvy.canon-entry.yaml) |
 | **Little Plains** | Brand systems written for people and agents at once, and the shift of value upstream: when output is cheap, the inputs (research, positioning, rules and the reasons behind them) decide the work, and a brand kit becomes something maintained rather than delivered. It is why cstack keeps the brand as files in git and treats every output as made from them. |
 | **Motion (creative library)** | An ad read in layers (messaging angle, creative mechanic, hook, visual format) rather than as one label; cstack writes its own vocabulary. |
+| **Founders and operators interviewed on the Open Residency podcast** | Not-obvious-but-true ideas, shelf blockers and pack-only sell-through, culture rings, validity lines. Anonymous; generalized from public episodes. |
 | **The D&AD tradition** | Work judged by peers who make work, for craft and for the idea at once. `/creative-review` is a crit, not a score: separate lenses, separate people, disagreement left on the table. |
 | **LoveFrom** | Care in the parts nobody will see. cstack checks favicons, fallbacks, safe zones and loudness for the same reason. |
 
