@@ -1,0 +1,37 @@
+{
+  "slug": "cstack-update",
+  "type": "capability",
+  "summary": "Update cstack itself: fast-forward the checkout, reinstall changed dependencies, relink every host, show what is new; answer the update check",
+  "tags": [
+    "update",
+    "upgrade",
+    "install",
+    "maintenance"
+  ],
+  "triggers": [
+    "update cstack",
+    "upgrade cstack",
+    "latest cstack",
+    "UPDATE_AVAILABLE"
+  ],
+  "required_inputs": [
+    "cstack git checkout"
+  ],
+  "outputs": [
+    "updated checkout and skill links"
+  ],
+  "cost_class": "free",
+  "context_class": "s",
+  "mutating": true,
+  "handoff": [],
+  "approval_gates": [],
+  "fallback": {
+    "when_missing": [
+      "git checkout"
+    ],
+    "mode": "degraded"
+  },
+  "last_verified": null,
+  "status": "beta",
+  "required_providers": []
+}

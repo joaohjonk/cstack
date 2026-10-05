@@ -1,6 +1,6 @@
 {
   "tolerance": 0.1,
-  "catalog_ceiling": 4366,
+  "catalog_ceiling": 4493,
   "skills": {
     "brand-import": {
       "ceiling": 1576,
@@ -141,6 +141,10 @@
     "winner-scaler": {
       "ceiling": 1066,
       "set": "2026-10-03"
+    },
+    "cstack-update": {
+      "ceiling": 1191,
+      "set": "2026-10-05"
     }
   },
   "history": [
@@ -227,6 +231,13 @@
       "from": 3835,
       "to": 4366,
       "reason": "five creative strategy skills (creative-strategist, creative-intelligence, hook-format-lab, winner-scaler, asset-factory) approved by the owner on 2026-10-03; descriptions trimmed first"
+    },
+    {
+      "date": "2026-10-05",
+      "slug": "catalog",
+      "from": 4366,
+      "to": 4493,
+      "reason": "new skill cstack-update (install and update surface)"
     }
   ]
 }

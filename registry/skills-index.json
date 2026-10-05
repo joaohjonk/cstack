@@ -1,7 +1,7 @@
 {
   "generated_by": "cstack index",
   "note": "GENERATED from skills/*/skill.meta.json. Do not edit by hand; run `cstack index`.",
-  "count": 35,
+  "count": 36,
   "skills": [
     {
       "slug": "asset-factory",
@@ -601,6 +601,38 @@
       "required_providers": [],
       "path": "skills/creative-strategist/SKILL.md",
       "tokens": 1656
+    },
+    {
+      "slug": "cstack-update",
+      "type": "capability",
+      "status": "beta",
+      "summary": "Update cstack itself: fast-forward the checkout, reinstall changed dependencies, relink every host, show what is new; answer the update check",
+      "tags": [
+        "update",
+        "upgrade",
+        "install",
+        "maintenance"
+      ],
+      "triggers": [
+        "update cstack",
+        "upgrade cstack",
+        "latest cstack",
+        "UPDATE_AVAILABLE"
+      ],
+      "required_inputs": [
+        "cstack git checkout"
+      ],
+      "outputs": [
+        "updated checkout and skill links"
+      ],
+      "handoff": [],
+      "evals": [],
+      "cost_class": "free",
+      "context_class": "s",
+      "mutating": true,
+      "required_providers": [],
+      "path": "skills/cstack-update/SKILL.md",
+      "tokens": 1191
     },
     {
       "slug": "cultural-scan",
