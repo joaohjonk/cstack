@@ -29,6 +29,7 @@ import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.m
 import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
 import { makeSheet, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
+import { checkText } from '../scripts/lib/textcheck.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -112,6 +113,7 @@ const COMMANDS = {
   providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json. Pass --mcp "Server,…" (or CSTACK_MCP_SERVERS) to add agent_mcp, the same answer `cstack tools` gives',
   'lint shot-dna': 'warn when Shot DNA lighting is adjectives, not a recipe: cstack lint shot-dna <file...> (no file: every *.shot-dna.* in the repo)',
   'edit paste': 'paste a patch onto a base with a feathered edge, writing a new file: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] [--region x,y,w,h] --out c.png',
+  'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--json] (exit 1 when any image shows text)',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
   taste: 'Taste Labs capability: cstack taste search "intent" [--k 6] | extract <url> | verify --reference <url> --candidate <url>',
   failure: 'append a failure event: cstack failure --file event.json',
@@ -725,6 +727,20 @@ async function cmdEvals(sub) {
   console.log(p.text);
 }
 
+// cstack image text (field test F20): a per-image gate a flow's stop rule can run after each generation
+function cmdImage(sub) {
+  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"]');
+  if (args.judge === true) die('--judge needs a command');
+  const r = checkText(args._, { engine: args.engine ?? 'auto', judge: args.judge ? tokenize(args.judge) : null });
+  if (args.json) json(r);
+  else {
+    for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(5)} ${shown(i.file)}  ${i.evidence}`);
+    const bad = r.images.filter((i) => i.result !== 'pass').length;
+    console.log(`image text (${r.engine}${r.thresholds ? ', thresholds uncalibrated' : ''}): ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length})`}`);
+  }
+  if (!r.ok) process.exit(1);
+}
+
 // docs/sheets.md: contact sheets for stills and blind pairwise picks
 async function cmdSheet(sub) {
   if (sub === 'make') {
@@ -918,7 +934,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'sheet', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1138,6 +1154,9 @@ switch (cmd) {
     break;
   case 'sheet':
     await cmdSheet(argv[0]);
+    break;
+  case 'image':
+    cmdImage(argv[0]);
     break;
   case 'setup':
     cmdSetup();

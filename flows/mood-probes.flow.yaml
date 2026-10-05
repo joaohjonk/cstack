@@ -57,7 +57,7 @@ steps:
   kind: generative
   skill: generate-media
   est_cost: {amount: 0.005, currency: USD, unit: "per 1 MP draft image on fal FLUX.2 klein 4B, checked 2026-10-03"}
-  gate: {type: deterministic_check, check: cstack flows gate <plan> --stage make passes; cstack spend plan ok}
+  gate: {type: deterministic_check, check: "cstack flows gate <plan> --stage make passes; cstack spend plan ok; cstack image text on each probe as it lands, stopping the batch on the first FAIL"}
   compare_to_target: does each probe carry its territory's idea?
 - id: sheets
   does: "one contact sheet per territory (cstack sheet make <probes> --out work/sheets/<territory>.html --png), every probe labelled by territory and model, recorded under territories in the plan; plus one blind sheet of all probes (--blind) for the owner"
