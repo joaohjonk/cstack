@@ -165,11 +165,11 @@ Each one writes files the next one reads. `/brief` writes the brief that `/creat
 | `/symbol-design` | **Identity designer** | Logo, symbol and monogram exploration the way a studio does it: wide and cheap, judged in one colour at 32 px, then construction and optical correction. |
 | `/vector-master` | **Production artist** | Clean SVG masters, linted structure, reduction tests, one-colour versions, lockups, favicon and app-icon kits. |
 | `/copywriting` | **Copywriter** | Writes in a declared mode (conversion, campaign, editorial, product truth) in the brand's voice and vocabulary; banned words stay banned. A separate pass checks it. |
-| `/creative-strategist` | **Growth strategist** | Decides which creative bets to make next: reads brand, customer, market and results together, and writes a few bets, each with its tension, angle, proof and one controlled experiment. |
-| `/creative-intelligence` | **Performance analyst** | Reads why your own ads work or fail: imports results from any export, tags them by family, and reports only what the data can carry, confounds and fatigue included. |
-| `/hook-format-lab` | **Hook writer** | Designs a bet's attention before anything is made: angle, visual and verbal hook, mechanic, format, payoff, with variants on one angle at a time. |
-| `/winner-scaler` | **Series editor** | Turns one of your own winning ads into a varied family: names what must stay, frees what may change, and plans variants beyond headline rewrites. |
-| `/asset-factory` | **Production planner** | The cheapest way to test approved bets (reuse, edit, derive, shoot, generate), with a bet and experiment cell on every asset, then runs the right skills in order. |
+| `/creative-strategist` | **Growth strategist** | Decides what to make next. Reads brand, customer, market and results as one picture and writes a few bets, each with a tension, an angle, proof and one clean experiment. Data says what deserves another question, not what the brand should become. |
+| `/creative-intelligence` | **Performance analyst** | Why your ads work or die. Imports results from any export, tags them by family, and reports only what the numbers can carry. Confounds and fatigue stay on the page. |
+| `/hook-format-lab` | **Hook writer** | Designs the first second before anything is made: angle, hook, mechanic, format, payoff. Varies one thing at a time, so a result means something. |
+| `/winner-scaler` | **Series editor** | Turns one winner into a family. Names what must stay, frees what may change, and refuses to call a new headline a new ad. |
+| `/asset-factory` | **Production planner** | Finds the cheapest honest way to test a bet: reuse, edit, derive, shoot, then generate. Every asset knows which bet it serves, then the right skills run in order. |
 | `/prompt-director` | **Prompt engineer** | Compiles decisions into versioned recipes with named slots and seeded variants, so a good result can be made again and a change can be diffed. |
 | `/model-router` | **Technical director** | Picks the model for the job from a dated registry, runs a small probe when unsure, never trusts a stale price. |
 | `/generate-media` | **Producer** | Guarded generation: dry run and estimate first, cheap probes before finals, never pays twice, re-attaches to pending jobs. |
