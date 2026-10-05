@@ -203,6 +203,10 @@
           },
           "fallback": {
             "type": "string"
+          },
+          "budget": {
+            "$ref": "common.schema.json#/$defs/money",
+            "description": "the most this step (phase) may spend before it stops and asks the owner"
           }
         }
       }
@@ -405,6 +409,14 @@
           },
           "why": {
             "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who said yes (the owner, by name)"
+          },
+          "quote": {
+            "type": "string",
+            "description": "the owner's words when they waived it"
           }
         },
         "additionalProperties": false

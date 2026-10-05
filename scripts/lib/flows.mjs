@@ -6,6 +6,7 @@ import YAML from 'yaml';
 import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
 import { validateValue } from './schemas.mjs';
 import { briefApproved, feedbackMark } from './brief.mjs';
+import { onPath } from './tools.mjs';
 
 const DAY = 86400000;
 
@@ -125,6 +126,8 @@ export function checkFlow(flow, { skills = null } = {}) {
     if (MAKES.includes(st?.kind) && !st.compare_to_target) errors.push(`${at}: ${st.kind} step never says how its output is compared to the target (compare_to_target)`);
     if (skills && st?.skill && !skills.includes(st.skill)) errors.push(`${at}: unknown skill "${st.skill}"`);
     if (st?.kind === 'generative' && st.est_cost == null) warnings.push(`${at}: generative step has no est_cost`);
+    // a phase budget (F64) caps what the step may spend before it stops and asks; below its own unit cost it can never run
+    if (st?.budget && st.est_cost && st.budget.currency === st.est_cost.currency && Number(st.budget.amount) < Number(st.est_cost.amount)) errors.push(`${at}: budget ${st.budget.amount} ${st.budget.currency} is below one unit of its est_cost (${st.est_cost.amount})`);
   }
   if (steps.some((s) => MAKES.includes(s?.kind))) {
     if (!flow.cost_ladder) errors.push('makes things but has no cost_ladder (probe, selection, final, and where it stops)');
@@ -187,7 +190,7 @@ export function goldRefs(ws) {
 
 const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
-  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search) and record what they say',
+  reference_reactions: 'no reference packet or board the owner has reacted to (work/references/*-packet.md or a cstack sheet board, and approve, reject, gold, anti, pairwise or comment feedback on at least two individual references/ or work/references/ items in state/feedback.jsonl, given since the last brief pivot; a reaction to the whole packet does not count): bring the founder references first (taste-search), then let them keep or kill each one on a board (cstack sheet board references/ --out work/sheets/refs.html, then cstack sheet import)',
 };
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
@@ -205,7 +208,10 @@ export function requirementGaps(ws, flow) {
   for (const req of new Set([...(flow.requires ?? []), ...(lib?.requires ?? [])])) {
     if (requirementMet(ws, req)) continue;
     const w = (flow.waivers ?? []).find((x) => x.requires === req && x.owner_approved);
-    out.push(w ? { requires: req, waived: true, message: `make: going ahead without ${req.replace('_', ' ')} (owner waived it ${w.owner_approved}: ${w.why}); say so wherever the work is shown` } : { requires: req, waived: false, message: `make: ${REQUIRE_TEXT[req] ?? req}; or record the owner's waiver in the plan (waivers: [{requires: ${req}, owner_approved: <date>, why}])` });
+    // F66: a waiver says who waived it and in their words, so the warning carries the owner's voice, not the agent's
+    const who = w?.by ? `${w.by} waived it ${w.owner_approved}` : `owner waived it ${w?.owner_approved}`;
+    const said = w?.quote ? `, saying "${w.quote}"` : '';
+    out.push(w ? { requires: req, waived: true, message: `make: going ahead without ${req.replace('_', ' ')} (${who}${said}: ${w.why})${w.by && w.quote ? '' : '; record by and quote on the waiver: who said yes, and their words'}; say so wherever the work is shown` } : { requires: req, waived: false, message: `make: ${REQUIRE_TEXT[req] ?? req}; or record the owner's waiver in the plan (waivers: [{requires: ${req}, owner_approved: <date>, by: <owner>, quote: "<their words>", why}])` });
   }
   return out;
 }
@@ -225,7 +231,17 @@ function requirementMet(ws, req) {
   }
   if (req === 'reference_reactions') {
     const dir = path.join(ws, 'work', 'references');
-    const packet = exists(dir) && fs.readdirSync(dir).some((f) => f.endsWith('-packet.md'));
+    // a reference board (cstack sheet board, F65) stands in for a written packet: it is where the founder reacts
+    const sheets = path.join(ws, 'work', 'sheets');
+    const board = exists(sheets) && fs.readdirSync(sheets).some((f) => {
+      if (!f.endsWith('.json')) return false;
+      try {
+        return JSON.parse(fs.readFileSync(path.join(sheets, f), 'utf8'))?.board === true;
+      } catch {
+        return false;
+      }
+    });
+    const packet = board || (exists(dir) && fs.readdirSync(dir).some((f) => f.endsWith('-packet.md')));
     const fb = path.join(ws, 'state', 'feedback.jsonl');
     if (!packet || !exists(fb)) return false;
     const kinds = new Set(['approve', 'reject', 'gold', 'anti', 'pairwise', 'comment']);
@@ -282,8 +298,15 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
     // a zero budget is the same gap as a missing key: ask for money, never fall back to a free method that cannot meet the brief
     if (usable.length && budget !== undefined && !(budget?.per_run > 0 && budget?.per_day > 0) && !d.substitute?.owner_approved)
       errors.push(`needs generation, and the budget here is ${budget ? `per_run ${budget.per_run ?? 0}, per_day ${budget.per_day ?? 0}` : 'not set'}: ask the owner for a budget (cstack.config.yaml budget:) before making it; a free substitute needs their yes, recorded as deliverable.substitute`);
+    // F64: the phases' budgets together must fit the run budget, or the last phase is the one that gets cut
+    const phases = (flow.steps ?? []).filter((s) => s.budget?.amount > 0);
+    const total = Math.round(phases.reduce((a, s) => a + Number(s.budget.amount), 0) * 100) / 100;
+    if (phases.length && budget?.per_run > 0 && total > budget.per_run) warnings.push(`make: the phase budgets add up to ${total} (${phases.map((s) => `${s.id} ${s.budget.amount}`).join(', ')}), over this workspace's per_run ${budget.per_run}; lower a phase or ask the owner to raise per_run before starting, so the polish phase is not the one cut`);
     if (!usable.length && d.substitute?.owner_approved) warnings.push(`making it as ${d.substitute.to} instead of generating it (owner approved ${d.substitute.owner_approved}); say so wherever the work is shown`);
   }
+  // F67: a stop rule that runs `cstack image text` needs tesseract or a judge command; say so before making, not mid-batch
+  if (at === 0 && (flow.steps ?? []).some((s) => /cstack image text/.test(String(s.gate?.check ?? ''))) && !onPath('tesseract'))
+    warnings.push('make: a stop rule runs cstack image text, and tesseract is not on PATH here; install it (brew install tesseract; cstack never installs it) or pass --engine judge --judge "<agent cmd>" each time, or the check refuses');
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
   if (at === 0) for (const e of requirementGaps(ws, flow)) (e.waived ? warnings : errors).push(e.message);
   if (at >= 1 && VISUAL.has(d.kind)) {

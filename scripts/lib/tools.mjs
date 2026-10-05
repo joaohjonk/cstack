@@ -16,7 +16,7 @@ export function loadTools() {
 const norm = (s) => String(s).toLowerCase().replace(/[-_\s.]/g, '');
 const serverOf = (pattern) => pattern.replace(/^mcp__/, '').replace(/__\*$/, '');
 
-function onPath(bin) {
+export function onPath(bin) {
   try {
     execFileSync(process.platform === 'win32' ? 'where' : 'which', [bin], { stdio: 'ignore' });
     return true;

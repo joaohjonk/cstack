@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { exists, writeAtomic, writeJSON, readJSON, sha256File, nowISO, today, newId } from './core.mjs';
+import YAML from 'yaml';
 import { imageSize } from './image.mjs';
 
 const IMAGE = /\.(png|jpe?g|webp|gif|avif)$/i;
@@ -319,6 +320,20 @@ export function importPicks({ picksFile, sheet, by, brand_id, ws }) {
     };
   });
   if (winners.length > 3) throw new Error(`${winners.length} winners: a pick is one to three, so the polish pass stays small`);
+  // a reference board's keep and kill (F65): gold and anti on the reference file itself
+  const reactions = (picks.reactions ?? []).map((x) => {
+    if (!['keep', 'kill'].includes(x.verdict)) throw new Error(`reaction on "${x.code}" is "${x.verdict}", not keep or kill`);
+    return {
+      id: newId('FB'),
+      date: String(x.at ?? '').slice(0, 10) || today(),
+      by: String(by),
+      ...(brand_id ? { brand_id } : {}),
+      type: x.verdict === 'keep' ? 'gold' : 'anti',
+      artifact_ref: ref(x.code),
+      ...(x.reason ? { reason: String(x.reason) } : {}),
+      context: { surface: `reference board ${sheetRef}`, scope: 'reference reaction' },
+    };
+  });
   const pairs = (picks.picks ?? []).map((p) => ({
     id: newId('FB'),
     date: String(p.at ?? '').slice(0, 10) || today(),
@@ -330,7 +345,167 @@ export function importPicks({ picksFile, sheet, by, brand_id, ws }) {
     ...(p.reason ? { reason: String(p.reason) } : {}),
     context: { surface: 'contact sheet', scope: blind ? 'blind pairwise' : 'pairwise' },
   }));
-  return [...winners, ...pairs];
+  return [...reactions, ...winners, ...pairs];
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Reference boards (field test F65): the founder keeps or kills each reference on the page, with a line on why, and
+// `cstack sheet import` turns those into gold and anti feedback on the reference files. Those reactions are what the
+// make gate's reference_reactions requirement counts, so the board is where the founder unlocks making.
+
+const REF = /\.reference\.(ya?ml|json)$/i;
+
+export function collectReferences(inputs) {
+  const out = [];
+  const take = (p) => (REF.test(p) || IMAGE.test(p)) && fs.statSync(p).isFile() && out.push(p);
+  const walk = (d) => {
+    for (const f of fs.readdirSync(d).sort()) {
+      const p = path.join(d, f);
+      if (f.startsWith('.')) continue;
+      if (fs.statSync(p).isDirectory()) walk(p);
+      else take(p);
+    }
+  };
+  for (const raw of inputs) {
+    const p = path.resolve(String(raw));
+    if (!exists(p)) throw new Error(`not found: ${p}`);
+    if (fs.statSync(p).isDirectory()) walk(p);
+    else if (REF.test(p) || IMAGE.test(p)) out.push(p);
+    else throw new Error(`not a reference record or image: ${p}`);
+  }
+  const uniq = [...new Set(out)];
+  if (!uniq.length) throw new Error('no references found (*.reference.yaml or images)');
+  return uniq;
+}
+
+function wsRoot(from) {
+  let d = path.dirname(from);
+  for (;;) {
+    if (exists(path.join(d, 'cstack.config.yaml'))) return d;
+    const up = path.dirname(d);
+    if (up === d) return null;
+    d = up;
+  }
+}
+
+function readRef(file) {
+  const text = fs.readFileSync(file, 'utf8');
+  const rec = file.endsWith('.json') ? JSON.parse(text) : YAML.parse(text);
+  let img = null;
+  const lp = rec?.local_path ? String(rec.local_path) : '';
+  if (lp) for (const base of [path.dirname(file), wsRoot(file)].filter(Boolean)) {
+    const p = path.isAbsolute(lp) ? lp : path.resolve(base, lp);
+    if (exists(p) && IMAGE.test(p)) {
+      img = p;
+      break;
+    }
+  }
+  return { rec: rec ?? {}, img };
+}
+
+/** makeBoard({inputs, out, title, cols, force}): a keep/kill board for references; <out>.html and <out>.json. */
+export function makeBoard({ inputs, out, title, cols = 3, force = false } = {}) {
+  if (!out || out === true) throw new Error('--out <board.html> required');
+  const html = path.resolve(String(out).endsWith('.html') ? out : `${out}.html`);
+  const stem = html.slice(0, -5);
+  const files = { html, record: `${stem}.json` };
+  for (const f of Object.values(files)) if (exists(f) && !force) throw new Error(`${f} exists; pass --force to replace it`);
+  const dir = path.dirname(html);
+  const rel = (p) => path.relative(dir, p).split(path.sep).join('/');
+  const seen = new Map();
+  const items = collectReferences(inputs).map((f) => {
+    const isRec = REF.test(f);
+    const { rec, img } = isRec ? readRef(f) : { rec: {}, img: f };
+    let k = isRec ? String(rec.id ?? path.basename(f).replace(REF, '')) : path.basename(f);
+    const n = (seen.get(k) ?? 0) + 1;
+    seen.set(k, n);
+    if (n > 1) k = `${k}-${n}`;
+    return {
+      code: k,
+      src: rel(f),
+      ...(img ? { img: rel(img) } : {}),
+      ...(rec.uri ? { uri: String(rec.uri) } : {}),
+      library: rec.library ?? path.basename(path.dirname(f)),
+      mechanism: rec.transferable_mechanism ? String(rec.transferable_mechanism).trim() : '',
+      sha256: sha256File(f),
+    };
+  });
+  const c = Math.max(1, Math.min(6, Number(cols) || 3));
+  const name = title && title !== true ? String(title) : path.basename(stem);
+  writeAtomic(files.html, boardHTML({ title: name, cols: c, items, sheetId: path.basename(stem) }));
+  writeJSON(files.record, { tool: 'cstack sheet', board: true, ts: nowISO(), title: name, cols: c, count: items.length, html: path.basename(html), items });
+  return { ...files, board: true, count: items.length, blind: false };
+}
+
+function boardHTML({ title, cols, items, sheetId }) {
+  const safeUri = (u) => (/^https?:\/\//i.test(u) ? u : null);
+  const cards = items
+    .map((it) => {
+      const pic = it.img ? `<img src="${esc(it.img)}" alt="${esc(it.code)}" loading="lazy">` : `<div class="noimg">${safeUri(it.uri ?? '') ? 'linked, not stored' : 'no image'}</div>`;
+      const link = safeUri(it.uri ?? '') ? ` <a href="${esc(it.uri)}" target="_blank" rel="noopener noreferrer">open source</a>` : '';
+      return `<article data-code="${esc(it.code)}">${pic}<h2>${esc(it.code)} <span>${esc(it.library)}</span>${link}</h2>${it.mechanism ? `<p class="mech">${esc(it.mechanism)}</p>` : ''}
+<div class="row"><button type="button" class="btn keep" data-v="keep">Keep</button><button type="button" class="btn kill" data-v="kill">Kill</button></div>
+<input type="text" placeholder="Why (one line, optional)"></article>`;
+    })
+    .join('\n');
+  const data = JSON.stringify({ sheet: sheetId, board: true, codes: items.map((it) => it.code) }).replace(/</g, '\\u003c');
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<style>
+:root{--bg:#f6f4ef;--fg:#111;--mute:#666;--line:#ddd;--accent:#002fa7;--on:#fff;--kill:#8a1c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--fg:#eee;--mute:#999;--line:#333;--accent:#7f9cff;--on:#111;--kill:#ff8a8a}}
+*{box-sizing:border-box}body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+h1{font-size:18px;margin:0}header p{margin:0;color:var(--mute)}
+.how{border:1px solid var(--line);padding:10px 12px;margin:0 0 12px}.how ol{margin:4px 0 0;padding-left:20px}
+main{display:grid;grid-template-columns:repeat(${cols},minmax(0,1fr));gap:12px}
+@media (max-width:640px){main{grid-template-columns:1fr}}
+article{border:1px solid var(--line);padding:8px}article.keep{outline:3px solid var(--accent)}article.kill{outline:3px solid var(--kill);opacity:.7}
+img{display:block;width:100%;height:auto;background:var(--line)}.noimg{aspect-ratio:4/3;display:grid;place-items:center;background:var(--line);color:var(--mute)}
+h2{font-size:13px;margin:6px 0 2px}h2 span{font-weight:400;color:var(--mute)}a{color:var(--accent)}
+.mech{margin:0 0 6px;color:var(--mute);font-size:12px;max-height:7.5em;overflow:auto}
+.row{display:flex;gap:8px;margin:6px 0}
+.btn{font:inherit;padding:6px 12px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.btn.primary,article.keep .keep{background:var(--accent);border-color:var(--accent);color:var(--on)}article.kill .kill{background:var(--kill);border-color:var(--kill);color:var(--on)}
+input[type=text]{width:100%;font:inherit;padding:6px;border:1px solid var(--line);background:transparent;color:var(--fg)}
+</style></head><body>
+<header><div><h1>${esc(title)}</h1><p>${items.length} references</p></div>
+<div class="controls"><span id="count"></span> <button id="download" class="btn primary">Download picks.json</button></div></header>
+<section class="how controls"><strong>How to react</strong><ol>
+<li>Press <em>Keep</em> on references that feel like the brand, <em>Kill</em> on the ones that don't. Press again to undo.</li>
+<li>Add a line on why if you like: the why is what the work learns from.</li>
+<li>Press <em>Download picks.json</em> and send the file back (or run <code>cstack sheet import</code>).</li>
+</ol></section>
+<main>
+${cards}
+</main>
+<script>
+const SHEET=${data};
+const KEY='cstack-board:'+SHEET.sheet;
+let state={};try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const count=()=>{const v=Object.values(state).filter(x=>x.verdict);document.getElementById('count').textContent=v.filter(x=>x.verdict==='keep').length+' kept, '+v.filter(x=>x.verdict==='kill').length+' killed'};
+document.querySelectorAll('article').forEach(a=>{
+  const c=a.dataset.code,inp=a.querySelector('input');
+  const paint=()=>{a.classList.toggle('keep',state[c]?.verdict==='keep');a.classList.toggle('kill',state[c]?.verdict==='kill');inp.value=state[c]?.reason||''};
+  a.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{
+    const cur=state[c]||{};const v=cur.verdict===b.dataset.v?null:b.dataset.v;
+    state[c]={...cur,verdict:v,at:new Date().toISOString()};save();paint();count();
+  });
+  inp.oninput=()=>{state[c]={...(state[c]||{}),reason:inp.value};save()};
+  paint();
+});
+count();
+document.getElementById('download').onclick=()=>{
+  const reactions=SHEET.codes.filter(c=>state[c]?.verdict).map(c=>({code:c,verdict:state[c].verdict,reason:(state[c].reason||'').trim(),at:state[c].at}));
+  const blob=new Blob([JSON.stringify({sheet:SHEET.sheet,board:true,reactions},null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download=SHEET.sheet+'.picks.json';l.click();URL.revokeObjectURL(u);
+  document.getElementById('count').textContent='saved '+reactions.length+' reaction(s)';
+};
+</script>
+</body></html>
+`;
 }
 
 // The sheet as a PNG for places that take an image (a gate record, a message): Chromium, local file only.

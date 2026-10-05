@@ -207,7 +207,7 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   // the R3 run: no brief, no references, and the gate passed
   const cold = gate().errors.join('\n');
   assert.match(cold, /no owner-approved founder brief.*founding mode/);
-  assert.match(cold, /no reference packet the owner has reacted to/);
+  assert.match(cold, /no reference packet or board the owner has reacted to/);
   const brief = { id: 'FB-ostrel', brand_id: 'evalcase', date: '2026-10-05', why_it_exists: { reason: 'tea that tastes of the second steep' }, customer: { who: 'people who drink tea at their desk', evidence: 'told' }, brand_as_person: { name: 'UNKNOWN' }, assets_and_inspirations: { inspirations: [{ ref: 'vintage tea tins', what_draws_them: 'one colour, one mark, the leaf named plainly' }] }, owner_approval: { status: 'draft' } };
   fs.mkdirSync(path.join(w, 'briefs'), { recursive: true });
   const bf = path.join(w, 'briefs', '2026-10-05-founding.founder-brief.yaml');
@@ -217,13 +217,13 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   assert.doesNotMatch(gate().errors.join('\n'), /founder brief/);
   fs.mkdirSync(path.join(w, 'work', 'references'), { recursive: true });
   fs.writeFileSync(path.join(w, 'work', 'references', '2026-10-05-tea-packet.md'), '# packet\n');
-  assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/, 'a packet nobody reacted to is not enough');
+  assert.match(gate().errors.join('\n'), /reference packet or board the owner has reacted to/, 'a packet nobody reacted to is not enough');
   fs.mkdirSync(path.join(w, 'state'), { recursive: true });
   const fbl = path.join(w, 'state', 'feedback.jsonl');
   // F36: one yes to the whole board is not a reaction to references, nor is a single card
   fs.writeFileSync(fbl, JSON.stringify({ id: 'FB-0', date: '2026-10-05', by: 'Founder', type: 'approve', artifact_ref: 'work/references/2026-10-05-tea-packet.md' }) + '\n');
   fs.appendFileSync(fbl, JSON.stringify({ id: 'FB-1', date: '2026-10-05', by: 'Founder', type: 'gold', artifact_ref: 'references/inspiration/ref-tea-tin.reference.yaml' }) + '\n');
-  assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/);
+  assert.match(gate().errors.join('\n'), /reference packet or board the owner has reacted to/);
   fs.appendFileSync(fbl, JSON.stringify({ id: 'FB-2', date: '2026-10-05', by: 'Founder', type: 'anti', artifact_ref: 'references/anti/ref-protein-tub.reference.yaml' }) + '\n');
   assert.deepEqual(gate().errors, []);
   // an owner who chooses to skip a step records it, and the warning travels with the work
@@ -256,7 +256,7 @@ test('flows gate: after a pivot and a new approval, reactions from before the pi
   reopenBrief(bf, { reason: 'a healthier mass-market soda' });
   fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('tea you can carry', 'a healthier soda'));
   approveBrief(bf, { by: 'Founder' });
-  assert.match(gate(), /reference packet the owner has reacted to/);
+  assert.match(gate(), /reference packet or board the owner has reacted to/);
   react('FB-b');
   assert.equal(gate(), '');
   // F52: the natural order is react, then say yes; reactions given after the pivot and before the new yes count
@@ -268,7 +268,7 @@ test('flows gate: after a pivot and a new approval, reactions from before the pi
   // an approved brief edited and approved again without a reopen: reactions before the previous yes stop counting
   fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('a sparkling tea', 'a still tea'));
   approveBrief(bf, { by: 'Founder' });
-  assert.match(gate(), /reference packet the owner has reacted to/);
+  assert.match(gate(), /reference packet or board the owner has reacted to/);
 });
 
 test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
@@ -281,4 +281,47 @@ test('flows gate: a plan made before its library flow gained requires still owes
   const errs = gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } }).errors.join('\n');
   assert.match(errs, /founder brief/);
   assert.match(errs, /reference packet/);
+});
+
+test('flows gate: a reference board stands in for the packet; waivers carry who and their words (F65, F66)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f65-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territory probes for a canned iced tea with no type or colour yet' });
+  const gate = () => gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } });
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, YAML.stringify({ ...plan, waivers: [{ requires: 'founder_brief', owner_approved: '2026-10-05', why: 'testing references only' }] }));
+  fs.mkdirSync(path.join(w, 'work', 'sheets'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'work', 'sheets', 'refs.json'), JSON.stringify({ tool: 'cstack sheet', board: true, items: [] }));
+  fs.mkdirSync(path.join(w, 'state'), { recursive: true });
+  const fbl = path.join(w, 'state', 'feedback.jsonl');
+  fs.writeFileSync(fbl, ['references/inspiration/a.reference.yaml', 'references/anti/b.reference.yaml'].map((r, i) => JSON.stringify({ id: `FB-${i}`, date: '2026-10-05', by: 'Founder', type: i ? 'anti' : 'gold', artifact_ref: r })).join('\n') + '\n');
+  let g = gate();
+  assert.deepEqual(g.errors, [], 'a board with two reactions meets reference_reactions without a packet file');
+  assert.match(g.warnings.join('\n'), /record by and quote on the waiver/);
+  fs.writeFileSync(file, YAML.stringify({ ...plan, waivers: [{ requires: 'founder_brief', owner_approved: '2026-10-05', by: 'Founder', quote: 'skip the brief for this test', why: 'testing references only' }] }));
+  g = gate();
+  assert.ok(validateValue('flow', YAML.parse(fs.readFileSync(file, 'utf8'))).ok);
+  assert.match(g.warnings.join('\n'), /Founder waived it 2026-10-05, saying "skip the brief for this test": testing references only\); say so/);
+});
+
+test('flows: phase budgets are checked against est_cost and the run budget; a text-check stop rule names its engine (F64, F67)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const lib = listFlows(ROOT).find((f) => f.id === 'grid-pick-polish');
+  assert.ok(lib.steps.filter((s) => s.budget).length >= 3, 'grid-pick-polish carries phase budgets');
+  const bad = structuredClone(lib);
+  bad.steps.find((s) => s.id === 'grid').budget.amount = 0.01;
+  assert.match(checkFlow(bad).errors.join('\n'), /step "grid": budget 0\.01 USD is below one unit of its est_cost/);
+  const w = tmpDir('cstack-f64-');
+  const { file } = planFromFlow(w, 'grid-pick-polish', { target: 'flavour pictures for a tall can, four frames each' });
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const warn = (per_run) => gateFlow(w, file, { providers: fal, budget: { per_run, per_day: 5 } }).warnings.join('\n');
+  assert.match(warn(0.5), /phase budgets add up to 1\.05 \(grid 0\.3, rebuild 0\.35, refine 0\.4\), over this workspace's per_run 0\.5/);
+  assert.doesNotMatch(warn(2), /phase budgets add up/);
+  const PATH = process.env.PATH;
+  process.env.PATH = path.join(w, 'empty-bin');
+  try {
+    assert.match(warn(2), /tesseract is not on PATH here; install it \(brew install tesseract; cstack never installs it\) or pass --engine judge/);
+  } finally {
+    process.env.PATH = PATH;
+  }
 });

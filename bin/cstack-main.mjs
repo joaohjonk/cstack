@@ -29,7 +29,7 @@ import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
 import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
-import { makeSheet, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
+import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText } from '../scripts/lib/textcheck.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
@@ -183,6 +183,7 @@ const COMMANDS = {
   'brief approve': "record the founder's yes to a founder brief, with a fingerprint the make gate checks: cstack brief approve <briefs/x.founder-brief.yaml> --by <founder>",
   'brief reopen': 'take an approved founder brief back after a pivot, so make re-gates until it is approved again: cstack brief reopen <file> --reason "<what changed>" [--by <name>]',
   'sheet make': 'contact sheet for stills, where the owner picks winners: cstack sheet make <images|folders...> --out work/sheets/a.html [--grid 3x3] [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
+  'sheet board': 'a reference board the founder reacts on (keep or kill, with why): cstack sheet board references/ --out work/sheets/refs.html [--cols 3] [--title "..."]; import writes gold and anti feedback',
   'sheet open': 'open a sheet in the default browser and print how to pick: cstack sheet open work/sheets/a.html',
   'sheet import': 'winners and pairs picked on a sheet into feedback events: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
   'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
@@ -813,6 +814,18 @@ async function cmdSheet(sub) {
     console.log(sheetHowTo(r.html));
     return;
   }
+  if (sub === 'board') {
+    let r;
+    try {
+      r = makeBoard({ inputs: args._, out: args.out, title: args.title, cols: args.cols, force: !!args.force });
+    } catch (e) {
+      die(e.message);
+    }
+    if (args.json) return json({ ...r, url: pathToFileURL(r.html).href });
+    console.log(`wrote ${shown(r.html)} (${r.count} references)`);
+    console.log(sheetHowTo(r.html, { board: true }));
+    return;
+  }
   if (sub === 'open') {
     const html = args._[0] && path.resolve(String(args._[0]));
     if (!html || !fs.existsSync(html)) die('usage: cstack sheet open <sheet.html>');
@@ -822,7 +835,11 @@ async function cmdSheet(sub) {
         spawn(opener[0], opener[1], { detached: true, stdio: 'ignore' }).on('error', () => {}).unref();
       } catch {}
     }
-    console.log(sheetHowTo(html));
+    let board = false;
+    try {
+      board = !!readJSON(html.replace(/\.html$/, '.json'))?.board;
+    } catch {}
+    console.log(sheetHowTo(html, { board }));
     return;
   }
   if (sub === 'import') {
@@ -842,26 +859,28 @@ async function cmdSheet(sub) {
     }
     for (const rec of recs) appendJSONL(path.join(ws, 'state', 'feedback.jsonl'), rec);
     if (args.json) return json(recs);
+    const reacts = recs.filter((r) => ['gold', 'anti'].includes(r.type));
+    if (reacts.length) console.log(`appended ${reacts.filter((r) => r.type === 'gold').length} keep(s) and ${reacts.filter((r) => r.type === 'anti').length} kill(s) on references to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
     const wins = recs.filter((r) => r.type === 'approve');
     const pairs = recs.filter((r) => r.type === 'pairwise');
     const w = pairs.filter((r) => ['a', 'b'].includes(r.pair.winner)).length;
-    console.log(`appended ${wins.length} winner(s) and ${pairs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
+    if (wins.length || pairs.length || !reacts.length) console.log(`appended ${wins.length} winner(s) and ${pairs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
     for (const r of wins) console.log(`  winner: ${r.artifact_ref}${r.region ? ` (frame at x ${r.region.x}, y ${r.region.y} of the grid)` : ''}${r.reason_codes ? `: ${r.reason_codes.join(', ')}` : ''}${r.reason ? ` ("${r.reason}")` : ''}`);
     if (wins.length) console.log('next: polish each winner as a single image (flow grid-pick-polish), editing locally; upscale only the finalists');
     return;
   }
-  die('usage: cstack sheet make|open|import');
+  die('usage: cstack sheet make|board|open|import');
 }
 
 // F62: the owner could not tell where the boards are picked. Every sheet command says where the page is and what to press.
-function sheetHowTo(html) {
+function sheetHowTo(html, { board = false } = {}) {
   return [
-    `pick on the sheet in a browser: ${pathToFileURL(html).href}`,
-    '  (cstack sheet open <sheet> opens it; it is a file on this computer, not a web page)',
-    '  1. click up to three winners, and tick why each won',
+    `${board ? 'react on the board' : 'pick on the sheet'} in a browser: ${pathToFileURL(html).href}`,
+    `  (cstack sheet open <${board ? 'board' : 'sheet'}> opens it; it is a file on this computer, not a web page)`,
+    board ? '  1. press Keep or Kill on each reference, and add a line on why' : '  1. click up to three winners, and tick why each won',
     '  2. press "Download picks.json"',
     `  3. cstack sheet import <downloaded picks.json> --sheet ${shown(html)} --by <name>`,
-    '  "Pick pairs" on the page is optional, for calibrating the reviewers',
+    board ? '  keeps and kills count as reference reactions at the make gate' : '  "Pick pairs" on the page is optional, for calibrating the reviewers',
   ].join('\n');
 }
 
