@@ -32,6 +32,7 @@ import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/li
 import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
+import { listScenarios, planTrial, writePlan, readPlan, runTrial, scoreTrial, importTaps } from '../scripts/lib/trial.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -44,7 +45,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
+const BOOLEAN_FLAGS = new Set(['no-control', 'key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set', 'expect', 'expect-file']);
 
@@ -127,6 +128,11 @@ const COMMANDS = {
   providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json. Pass --mcp "Server,…" (or CSTACK_MCP_SERVERS) to add agent_mcp, the same answer `cstack tools` gives',
   'lint shot-dna': 'warn when Shot DNA lighting is adjectives, not a recipe: cstack lint shot-dna <file...> (no file: every *.shot-dna.* in the repo)',
   'edit paste': 'paste a patch onto a base with a feathered edge, writing a new file: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] [--region x,y,w,h] --out c.png',
+  'trial list': 'the simulated real-world scenarios a brand trial can use (trials/scenarios/)',
+  'trial plan': 'plan a brand trial: cstack trial plan --brand <workspace> --out <dir> [--scenarios a,b] [--teams 2] [--no-control] [--positioning "one line"] [--floor 5] [--cap 8] [--per-picture 0.055] [--pictures-scale 1] (refuses a round under the floor or over the cap)',
+  'trial run': 'run every team role through an agent CLI, one fresh workspace per team and scenario: cstack trial run <dir> --agent "<cmd>" [--only team-a,retail-endcap] [--timeout 1800] (resumes; stops at a usage limit)',
+  'trial score': 'blind attribution sheet (brand teams mixed with the control team) and cross-team pairs sheet: cstack trial score <dir> [--seed N] [--force]',
+  'trial import': 'read the owner\'s taps and write the report: cstack trial import <dir> <taps.json>...',
   'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>] [--json] (exit 1 when any image shows text; with --expect, when a declared line is missing or garbled or undeclared lettering appears)',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
   taste: 'Taste Labs capability: cstack taste search "intent" [--k 6] | extract <url> | verify --reference <url> --candidate <url>',
@@ -801,6 +807,74 @@ function cmdImage(sub) {
   if (!r.ok) process.exit(1);
 }
 
+// docs/trials.md: agent teams with only the brand's files answer simulated problems; the owner attributes their work blind
+function cmdTrial(sub) {
+  const num = (v, d) => (v === undefined || v === true ? d : Number(v));
+  const list = (v) => (v === undefined || v === true ? [] : String(v).split(',').map((x) => x.trim()).filter(Boolean));
+  try {
+    if (sub === 'list') {
+      const xs = listScenarios();
+      if (args.json) return json(xs.map(({ file, ...x }) => x));
+      for (const x of xs) console.log(`${x.id.padEnd(20)} ${x.title}  (${x.applications.map((a) => a.id).join(', ')})`);
+      return;
+    }
+    if (sub === 'plan') {
+      const r = planTrial({ brand: args.brand, scenarios: list(args.scenarios), teams: num(args.teams, 2), control: args['no-control'] ? false : true, floor: num(args.floor, 5), cap: num(args.cap, 8), per_picture: num(args['per-picture'], 0.055), pictures_scale: num(args['pictures-scale'], 1), name: args.name, positioning: args.positioning, out: args.out });
+      if (args.json) json(r);
+      if (!r.ok) {
+        if (!args.json) for (const e of r.errors) console.error(`FAIL ${e}`);
+        process.exit(1);
+      }
+      const f = writePlan(r.plan, { force: !!args.force });
+      if (args.json) return;
+      for (const w of r.warnings) console.log(`WARN ${w}`);
+      const p = r.plan;
+      console.log(`trial plan: ${shown(f)}`);
+      console.log(`  ${p.scenarios.length} scenarios x ${p.teams.length} teams (${p.teams.join(', ')}), ${p.roles.length} roles each = ${p.units.length * p.roles.length} agent sessions`);
+      console.log(`  generation round: estimated ${p.estimate_usd} USD (floor ${p.floor}, cap ${p.cap}, ${p.per_picture} USD a picture); each workspace's budget is its share of the cap`);
+      console.log(`  brand teams get ${p.brand_files} files from ${shown(p.brand)}; the control team gets the name${p.positioning ? ' and one line' : ''}`);
+      console.log(`next: cstack trial run ${shown(p.out)} --agent "<agent command>"  (spends up to ${p.cap} USD; run it where the provider keys live)`);
+      return;
+    }
+    if (sub === 'run') {
+      const plan = readPlan(args._[0] ?? die('usage: cstack trial run <trial dir> --agent "<cmd>" [--only team-a,retail-endcap] [--timeout 1800]'));
+      if (args.agent === undefined || args.agent === true) die('--agent "<agent command>" required, for example: claude -p --setting-sources project --strict-mcp-config --mcp-config \'{"mcpServers":{}}\'');
+      const r = runTrial(plan, { agent: tokenize(args.agent), timeout_s: num(args.timeout, 1800), only: list(args.only), log: (m) => console.log(`  ${m}`) });
+      if (args.json) return json(r);
+      const by = (k) => r.ran.filter((x) => x.status === k).length;
+      console.log(`ran ${r.ran.length} role session(s): ${by('ok')} wrote their file, ${by('no_output')} wrote nothing, ${by('agent_failed')} failed`);
+      if (r.stopped) {
+        console.log(`stopped: ${r.stopped}. ${r.left.length} role session(s) left; run the same command again after the limit resets, and it carries on`);
+        process.exit(1);
+      }
+      console.log(`next: cstack trial score ${shown(plan.out)}`);
+      return;
+    }
+    if (sub === 'score') {
+      const plan = readPlan(args._[0] ?? die('usage: cstack trial score <trial dir> [--seed N] [--force]'));
+      const r = scoreTrial(plan, { seed: args.seed === undefined ? undefined : Number(args.seed), force: !!args.force });
+      if (args.json) return json(r);
+      console.log(`${r.count} applications under shuffled codes; ${r.pair_count} cross-team pair(s)`);
+      console.log(`attribute blind in a browser: ${pathToFileURL(r.attribution).href}`);
+      if (r.pairs) console.log(`then the pairs: ${pathToFileURL(r.pairs).href}`);
+      console.log(`  press "Download taps.json" on each, then: cstack trial import ${shown(plan.out)} <taps.json> [<pairs taps.json>]`);
+      return;
+    }
+    if (sub === 'import') {
+      const plan = readPlan(args._[0] ?? die('usage: cstack trial import <trial dir> <taps.json>...'));
+      if (args._.length < 2) die('give at least one taps.json downloaded from the attribution or pairs sheet');
+      const r = importTaps(plan, args._.slice(1));
+      if (args.json) return json(r);
+      console.log(fs.readFileSync(r.report, 'utf8'));
+      console.log(`report: ${shown(r.report)}`);
+      return;
+    }
+  } catch (e) {
+    die(e.message);
+  }
+  die('usage: cstack trial list|plan|run|score|import');
+}
+
 // docs/sheets.md: contact sheets for stills and blind pairwise picks
 function cmdBrief(sub) {
   const file = args._[0];
@@ -1297,6 +1371,9 @@ switch (cmd) {
     break;
   case 'image':
     cmdImage(argv[0]);
+    break;
+  case 'trial':
+    cmdTrial(argv[0]);
     break;
   case 'setup':
     cmdSetup();

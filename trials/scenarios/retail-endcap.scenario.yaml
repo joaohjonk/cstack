@@ -1,0 +1,18 @@
+id: retail-endcap
+title: Retail endcap in two weeks
+asker: the category buyer at a national grocery chain
+deadline: artwork to the fixture vendor in ten working days
+situation: >-
+  A national chain offers the brand an endcap for one month in 400 stores. The fixture is a fixed steel unit with a
+  header panel, three shelves and a shelf-edge strip. The buyer says shoppers decide in the aisle in a few seconds and
+  wants the price readable from the end of the aisle.
+constraint: the header is a fixed wide format the brand has never designed for, and the price must read at 5 metres without the endcap looking like a discount bin
+applications:
+  - {id: header, kind: vector, what: "endcap header panel with the price", size: 1220 x 305 mm}
+  - {id: shelf-talker, kind: vector, what: "shelf-edge talker", size: 90 x 60 mm}
+  - {id: endcap-view, kind: mockup, what: "the full endcap stocked with product, as a shopper sees it from the aisle", pictures: 3}
+success:
+  - the brand is recognisable from the end of the aisle before the price is read
+  - the price reads at 5 metres
+  - the header still looks like the brand's own work, not the retailer's template
+flows: [packaging-system, shelf-test, mockup-set]

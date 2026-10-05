@@ -1,0 +1,15 @@
+id: copycat
+title: A competitor copies the look
+asker: the founder, after customers sent screenshots
+deadline: this week, while people are talking about it
+situation: >-
+  A larger competitor launched a product whose pack and ads look very close to the brand's. Customers are tagging the
+  brand. Legal says not to name the competitor. The founder wants a public answer that makes the original obvious.
+constraint: answer with the brand's own idea and wit, never by attacking, naming or showing the competitor
+applications:
+  - {id: answer-post, kind: picture, what: "one social post that answers without naming anyone", size: 1080 x 1350, pictures: 4}
+  - {id: answer-poster, kind: vector, what: "a poster version for the brand's own retail and events", size: A2}
+success:
+  - people who know the story get it; people who do not still enjoy it
+  - no competitor named, shown or parodied
+  - it could only have come from this brand

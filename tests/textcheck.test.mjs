@@ -86,7 +86,7 @@ test('image text --expect: declared on-pack lines pass, missing, garbled or unde
   assert.match(miss.stdout, /missing or garbled: "No\. 03"/);
   assert.match(judgePrompt('/x.png', lines), /- No\. 03/);
   const judge = path.join(d, 'judge2.sh');
-  fs.writeFileSync(judge, `#!/bin/sh\necho '{"text": true, "expected": [{"line": "MERIDIAN", "found": true}, {"line": "No. 03", "found": false}], "unexpected": "", "confidence": "high"}'\n`);
+  fs.writeFileSync(judge, `#!/bin/sh\ncat >/dev/null\necho '{"text": true, "expected": [{"line": "MERIDIAN", "found": true}, {"line": "No. 03", "found": false}], "unexpected": "", "confidence": "high"}'\n`);
   fs.chmodSync(judge, 0o755);
   const j = run([path.join(img, 'pack.png'), '--engine', 'judge', '--judge', judge, '--expect', 'MERIDIAN', '--expect', 'No. 03'], null, false);
   assert.equal(j.status, 1);

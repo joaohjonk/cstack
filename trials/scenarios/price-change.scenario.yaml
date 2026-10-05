@@ -1,0 +1,17 @@
+id: price-change
+title: The price on pack goes up
+asker: the founder, after the co-packer raised costs
+deadline: new packs go to print on Friday
+situation: >-
+  Ingredient and can costs rose and the brand must raise its price. The price is printed on the pack as part of the
+  design. The founder does not want the change hidden, and does not want the pack to look cheaper or apologetic.
+constraint: change a designed element that customers know, keep everything else identical, and explain it in public in the brand's voice
+applications:
+  - {id: revised-wrap, kind: vector, what: "the revised flat pack artwork with the new price set in the brand type"}
+  - {id: pack-render, kind: mockup, what: "the revised pack on its template, front view", pictures: 0}
+  - {id: announcement, kind: picture, what: "one social post that tells customers about the new price", size: 1080 x 1350, pictures: 4}
+success:
+  - only the price changed on the pack
+  - the post says what changed and why in one breath, in the brand's voice
+  - nobody would mistake the post for a discount ad
+flows: [concept-wrap]

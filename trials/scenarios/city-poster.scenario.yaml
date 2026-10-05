@@ -1,0 +1,17 @@
+id: city-poster
+title: First poster in a new city
+asker: the founder, launching in a new city
+deadline: the media owner needs files in a week
+situation: >-
+  The brand is entering a new city with a small out-of-home buy: a few large posters at transit stops. Most people who
+  see one will never have heard of the brand. The same image will also run as a paid social ad.
+constraint: one idea must read at 6 metres and at phone size, to people who do not know the brand
+applications:
+  - {id: poster, kind: picture, what: "the transit poster", size: 1185 x 1750 mm, pictures: 4}
+  - {id: poster-in-situ, kind: mockup, what: "the poster at a transit stop", pictures: 2}
+  - {id: social-cut, kind: vector, what: "the same idea cut for a phone feed", size: 1080 x 1350}
+success:
+  - one idea, read in two seconds at distance
+  - the name and what it is are clear to a stranger
+  - the phone cut is the same idea, not a shrunk poster
+flows: [grid-pick-polish, mockup-set]
