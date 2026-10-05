@@ -8,7 +8,7 @@ Ask in rounds, one theme per round, and write down the founder's words. The thre
 
 1. **Why it exists.** Why should this brand exist? What is the founder's story, instinct or problem behind it? Which cultural space does it step into? What do they believe the world will want more of? Which boundary do they want to push, and how should design make the customer's experience better?
 2. **The customer, first.** Who is it for, and when and where do they meet it? What do they use instead today? Does the founder know this from watching or from being told, or is it assumed?
-3. **The product.** What exactly is made? Which stances does the founder hold on it (what goes in, what is left out, how it is sourced)? What does it do beyond the core? What is the first range, and where does the range stop? What will it never be? Where does it sit in its market: the price it wants to be read at, the "better X" it measures itself against, and how long the bet has to hold (this season's trend or years)? These go in `market`.
+3. **The product.** What exactly is made? Which stances does the founder hold on it (what goes in, what is left out, how it is sourced)? What does it do beyond the core? What is the first range, and where does the range stop? What will it never be? Where does it sit in its market: the price it wants to be read at, the "better X" it measures itself against, and how long the bet has to hold (this season's trend or years)? These go in `market`; keep reach (niche to mass) apart from price, and list in `market.inferred` any field you mapped from their words rather than heard them say, for them to confirm.
 4. **The brand as a person.** A brand acts like a person. Does it have a name yet? What is its personality? What colours, marks, type and materials does the founder already see? How does it sound, and how does it talk to its customer? Where does it hang out, whose company does it keep, and where is it sold? What would it never do?
 5. **Assets and inspirations.** What exists already (a name, a mark, photos, a recipe, a supplier, packaging)? Which brands, objects, places or schools of design inspire the founder, and what exactly draws them: the mechanism, not the look? These inspirations are the first references to bring back to them.
 
@@ -20,7 +20,7 @@ Push back where an answer is an adjective ("premium", "clean"). Ask what it woul
 
 When a later round contradicts an earlier one, record both answers and which one the brief keeps in `interview.conflicts`, and ask once if it is not clear.
 
-If the founder changes the why, the customer, the product or the brand as a person after approving, run `cstack brief reopen <file> --reason "<what changed, in their words>"` before anything else, then interview again and approve again. An edited brief whose fingerprint no longer matches fails the make gate on its own; a pivot said only in conversation needs the reopen.
+If the founder changes the why, the customer, the product or the brand as a person after approving, run `cstack brief reopen <file> --reason "<what changed, in their words>"` before anything else, then interview again and approve again. An edited brief whose fingerprint no longer matches fails the make gate on its own; a pivot said only in conversation needs the reopen. After the new approval, the founder reacts to references again: reactions given before it no longer count at the make gate.
 
 ## What waits for it
 

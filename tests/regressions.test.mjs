@@ -125,7 +125,8 @@ test('F32: brand init creates references/inspiration/ for the inspiration librar
 
 test('F37: an approved founder brief re-gates after an edit or a reopen until it is approved again', async () => {
   const { approveBrief, reopenBrief, briefApproved } = await import('../scripts/lib/brief.mjs');
-  const file = path.join(tmpDir('cstack-f37-'), 'founding.founder-brief.yaml');
+  const file = path.join(tmpDir('cstack-f37-'), 'briefs', 'founding.founder-brief.yaml');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
   const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'tea you can carry' }, customer: { who: 'w', evidence: 'told' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
   fs.writeFileSync(file, '# founder brief\n' + YAML.stringify(brief));
   const read = () => YAML.parse(fs.readFileSync(file, 'utf8'));
@@ -146,11 +147,18 @@ test('F37: an approved founder brief re-gates after an edit or a reopen until it
   assert.deepEqual(b.amendments.map((a) => [a.reason, a.previous.status]), [['founder pivoted to a mass-market soda', 'owner_approved']]);
   assert.throws(() => reopenBrief(file, {}), /--reason/);
   assert.throws(() => approveBrief(file, {}), /--by/);
+  // F43: a brief that is not approved has nothing to reopen
+  assert.throws(() => reopenBrief(file, { reason: 'again' }), /nothing to reopen: .* is reopened/);
+  // F45: the approved version is kept, so a reopen says what changed since the yes
+  const ok = approveBrief(file, { by: 'Founder' });
+  assert.ok(fs.existsSync(ok.snapshot) && ok.snapshot.includes(path.join('state', 'approved-briefs')));
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('evidence: told', 'evidence: observed'));
+  assert.deepEqual(reopenBrief(file, { reason: 'met customers' }).changed, ['customer']);
 });
 
-test('F39: the founder brief holds price position, the anchor brand, trend horizon, cohorts and round conflicts', async () => {
+test('F39, F44: the founder brief holds price position apart from reach, inferred fields, the anchor brand, trend horizon, cohorts and round conflicts', async () => {
   const { validateValue } = await import('../scripts/lib/schemas.mjs');
-  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', interview: { rounds: 3, conflicts: [{ about: 'price', earlier: 'round 1: premium niche', later: 'round 3: mass hype at a premium price', kept: 'later' }] }, why_it_exists: { reason: 'r' }, customer: { who: 'w', evidence: 'told', cohorts: ['Gen Z, 16 to 24'] }, market: { price_position: 'masstige', price_note: 'mass hype at a premium price', anchor: 'a healthier version of a mass iced tea', trend_horizon: 'flavours rotate each season; the brand holds for years' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', interview: { rounds: 3, conflicts: [{ about: 'price', earlier: 'round 1: premium niche', later: 'round 3: mass hype at a premium price', kept: 'later' }] }, why_it_exists: { reason: 'r' }, customer: { who: 'w', evidence: 'told', cohorts: ['Gen Z, 16 to 24'] }, market: { price_position: 'premium', reach: 'mass', inferred: ['reach'], price_note: 'mass hype at a premium price', anchor: 'a healthier version of a mass iced tea', trend_horizon: 'flavours rotate each season; the brand holds for years' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
   assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
   assert.equal(validateValue('founder-brief', { ...brief, market: { price_position: 'cheap' } }).ok, false);
 });

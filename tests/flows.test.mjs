@@ -230,6 +230,32 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   assert.match(waived.warnings.join('\n'), /going ahead without founder brief \(owner waived it 2026-10-05: owner said just go\)/);
 });
 
+test('flows gate: after a pivot and a new approval, reactions from before it no longer count (F42)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const { approveBrief, reopenBrief } = await import('../scripts/lib/brief.mjs');
+  const w = tmpDir('cstack-f42-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territory probes for a canned iced tea' });
+  const gate = () => gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } }).errors.join('\n');
+  fs.mkdirSync(path.join(w, 'briefs'), { recursive: true });
+  fs.mkdirSync(path.join(w, 'work', 'references'), { recursive: true });
+  fs.mkdirSync(path.join(w, 'state'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'work', 'references', 'tea-packet.md'), '# packet\n');
+  const bf = path.join(w, 'briefs', 'founding.founder-brief.yaml');
+  fs.writeFileSync(bf, YAML.stringify({ id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'tea you can carry' }, customer: { who: 'w', evidence: 'told' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } }));
+  approveBrief(bf, { by: 'Founder' });
+  const fb = path.join(w, 'state', 'feedback.jsonl');
+  const react = (id) => fs.appendFileSync(fb, JSON.stringify({ id, date: '2026-10-05', by: 'Founder', type: 'approve', artifact_ref: 'work/references/tea-packet.md' }) + '\n');
+  react('FB-a');
+  assert.equal(gate(), '');
+  // the founder pivots: reopen, rewrite, approve again; the old yes was to a board for the old brief
+  reopenBrief(bf, { reason: 'a healthier mass-market soda' });
+  fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('tea you can carry', 'a healthier soda'));
+  approveBrief(bf, { by: 'Founder' });
+  assert.match(gate(), /reference packet the owner has reacted to/);
+  react('FB-b');
+  assert.equal(gate(), '');
+});
+
 test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
   const { gateFlow } = await import('../scripts/lib/flows.mjs');
   const w = tmpDir('cstack-f26-');

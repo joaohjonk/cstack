@@ -216,6 +216,26 @@
         "trend_horizon": {
           "type": "string",
           "description": "how long the bet must hold: this season's flavour, a few years, a generation"
+        },
+        "reach": {
+          "enum": [
+            "niche",
+            "broad",
+            "mass"
+          ],
+          "description": "how many people the founder wants to reach, apart from price: 'mass hype at a premium price' is reach mass, price premium"
+        },
+        "inferred": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "price_position",
+              "reach",
+              "anchor",
+              "trend_horizon"
+            ]
+          },
+          "description": "fields the interviewer mapped from the founder's words rather than heard said; the founder confirms them before approval"
         }
       },
       "additionalProperties": false
@@ -414,6 +434,11 @@
           "type": "string",
           "pattern": "^sha256:[0-9a-f]{64}$",
           "description": "written by `cstack brief approve`: the content the founder said yes to; the make gate refuses the brief once it no longer matches"
+        },
+        "feedback_mark": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "written by `cstack brief approve`: how many state/feedback.jsonl lines existed at approval; the make gate counts only reactions after it"
         }
       },
       "additionalProperties": false

@@ -5,7 +5,7 @@ import path from 'node:path';
 import YAML from 'yaml';
 import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
 import { validateValue } from './schemas.mjs';
-import { briefApproved } from './brief.mjs';
+import { briefApproved, feedbackMark } from './brief.mjs';
 
 const DAY = 86400000;
 
@@ -181,7 +181,7 @@ export function goldRefs(ws) {
 
 const REQUIRE_TEXT = {
   founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
-  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on a references/ or work/references/ item in state/feedback.jsonl): bring the founder references first (taste-search) and record what they say',
+  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on a references/ or work/references/ item in state/feedback.jsonl, given since the latest brief approval): bring the founder references first (taste-search) and record what they say',
 };
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
@@ -223,7 +223,9 @@ function requirementMet(ws, req) {
     const fb = path.join(ws, 'state', 'feedback.jsonl');
     if (!packet || !exists(fb)) return false;
     const kinds = new Set(['approve', 'reject', 'gold', 'anti', 'pairwise', 'comment']);
-    return fs.readFileSync(fb, 'utf8').split('\n').some((l) => {
+    // reactions given before the latest brief approval were to work made for an older brief (F42)
+    const mark = feedbackMark(ws);
+    return fs.readFileSync(fb, 'utf8').split('\n').filter((l) => l.trim()).slice(mark).some((l) => {
       try {
         const e = JSON.parse(l);
         return kinds.has(e.type) && /^(work\/)?references\//.test(String(e.artifact_ref ?? ''));

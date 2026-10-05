@@ -760,10 +760,10 @@ function cmdBrief(sub) {
   try {
     if (sub === 'approve') {
       const b = approveBrief(p, { by: args.by });
-      console.log(`approved ${shown(p)} by ${b.owner_approval.by} on ${b.owner_approval.date} (${b.owner_approval.fingerprint.slice(0, 19)}...); any later edit needs a new approval before make`);
+      console.log(`approved ${shown(p)} by ${b.owner_approval.by} on ${b.owner_approval.date} (${b.owner_approval.fingerprint.slice(0, 19)}...; copy kept at ${shown(b.snapshot)}); any later edit needs a new approval before make, and reference reactions count from here`);
     } else {
       const b = reopenBrief(p, { reason: args.reason, by: args.by });
-      console.log(`reopened ${shown(p)}: ${b.amendments.at(-1).reason}. flows gate --stage make now refuses until the founder approves it again (cstack brief approve)`);
+      console.log(`reopened ${shown(p)}: ${b.amendments.at(-1).reason}.${b.changed ? ` Changed since the founder's yes: ${b.changed.length ? b.changed.join(', ') : 'nothing yet'}.` : ' No copy of the approved version was kept, so what changed cannot be shown.'} flows gate --stage make now refuses until the founder approves it again (cstack brief approve), and reactions to earlier references stop counting then`);
     }
   } catch (e) {
     die(e.message);
