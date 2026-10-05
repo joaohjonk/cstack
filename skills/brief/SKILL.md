@@ -13,7 +13,7 @@ The most important skill in cstack. It decides what is worth making before money
 - Any new creative request, before production.
 - The ask is an adjective ("cooler", "more premium", "pop more") or a format ("we need a TikTok") without a job.
 - The owner is unsure whether the brief, the channel or the artifact is right.
-- A brand from zero: **founding mode**. Interview the founder before any research, reference or territory ([founding.md](references/founding.md)). Ask, then stop: no `cstack flows plan`, no probes, no directions in the same turn as the questions.
+- A brand from zero: **founding mode**. Interview the founder before any research, reference or territory ([founding.md](references/founding.md)). Ask, then stop: writing the draft brief is fine, but no `cstack flows plan`, probes or directions in the same turn as the questions.
 
 ## When not to use
 

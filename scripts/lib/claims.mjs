@@ -4,12 +4,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const PRICE = /(?:US\$|R\$|USD\s?|BRL\s?|EUR\s?|GBP\s?|[$€£])\s?\d+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?\s?(?:USD|BRL|EUR|GBP|reais|dollars)\b/gi;
+// a number with optional thousands groups (2,999 or 2.999) and an optional two-digit decimal part
+const NUM = '\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})?|\\d+(?:[.,]\\d{2})?';
+const PRICE = new RegExp(`(?:US\\$|R\\$|USD\\s?|BRL\\s?|EUR\\s?|GBP\\s?|[$€£])\\s?(?:${NUM})|(?:${NUM})\\s?(?:USD|BRL|EUR|GBP|reais|dollars)\\b`, 'gi');
 const FIXED = /\b(always|every day|everyday|forever|for good|never more than|never over|one price|sempre|todo dia|para sempre)\b/i;
 const WINDOW = 40;
 
 function norm(p) {
-  const n = Number(p.match(/\d+(?:[.,]\d{1,2})?/)[0].replace(',', '.'));
+  const raw = p.match(/\d[\d.,]*/)[0];
+  // the last separator is the decimal point only when exactly two digits follow it; the rest group thousands
+  const m = raw.match(/^(.*?)(?:([.,])(\d{2}))?$/);
+  const n = Number(m[1].replace(/[.,]/g, '') + (m[3] ? `.${m[3]}` : ''));
   const cur = /R\$|BRL|reais/i.test(p) ? 'BRL' : /€|EUR/i.test(p) ? 'EUR' : /£|GBP/i.test(p) ? 'GBP' : 'USD';
   return `${cur} ${n.toFixed(2)}`;
 }
@@ -17,13 +22,22 @@ function norm(p) {
 /** Text of a copy file: tags stripped from HTML and SVG, strings kept from JSON and YAML as written. */
 export function copyText(file) {
   const raw = fs.readFileSync(file, 'utf8');
-  return /\.(html?|svg|xml)$/i.test(file) ? raw.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ') : raw;
+  if (!/\.(html?|svg|xml)$/i.test(file)) return raw;
+  // block and line tags end a sentence, so two headlines in one page are two promises, not one
+  return raw
+    .replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<\/?(p|div|h[1-6]|li|br|tr|td|th|section|article|header|footer|text|tspan|title|blockquote)\b[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&amp;/g, '&');
 }
 
 /** fixedPrices(text) -> [{price, said}]: prices in the same sentence as a fixed-price word, and close to it. */
 export function fixedPrices(text) {
   const out = [];
-  for (const sentence of String(text).split(/(?<!\d)[.!?;](?!\d)|\n|·|\|/)) {
+  // a sentence ends at . ! ? ; followed by a space or the end ("Always $3. Sale: $2" is two), never inside 2.99
+  for (const sentence of String(text).split(/[.!?;](?=\s|$)|\n|·|\|/)) {
     const said = sentence.replace(/\s+/g, ' ').trim();
     const fixed = said.match(FIXED);
     if (!fixed) continue;

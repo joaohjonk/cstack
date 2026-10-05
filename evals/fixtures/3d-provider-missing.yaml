@@ -32,7 +32,7 @@ setup_props:
       <circle cx="120" cy="340" r="62" fill="none" stroke="#e4007c"/>
       <text x="200" y="320" font-family="Helvetica, Arial, sans-serif" font-size="12">wrap 600 x 240 mm (circumference 600 = diameter 191 mm); lid disc 124 mm; bleed 3 mm; magenta = cut, cyan = fold</text>
       </svg>
-  work/3d/tin/model.glb:   # shape-only tin built from the dieline (191 mm x 240 mm), label UVs mapped to the official artwork
+  work/3d/tin/model.glb:   # shape-only tin built from the dieline (191 mm x 240 mm); no label UVs, the label is still to be mapped
     kind: glb
     size: [0.191, 0.24, 0.191]
     triangles: 4000

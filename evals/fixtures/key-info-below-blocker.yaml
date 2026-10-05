@@ -14,12 +14,12 @@ setup_files:
     # Can front, 330 ml slim can (fictional brand Lumen Soda), 115 mm printable height
     - top third (0-38 mm from the top): wordmark only
     - middle third: illustration
-    - lower third (77-115 mm): flavour name "Yuzu Ginger" and the "no sugar" callout
+    - lower third (77-115 mm): flavour name "Pear Ginger" and the "no sugar" callout
     Retail: grocery shelves with a front blocker (price rail) covering about the lower third of the can.
   work/research/shelf-test-2026-09.md: |
     # Shelf find test, 2026-09-18
     Planogram: 4 shelves, 24 facings, drawn without the front blocker (online-style clean shelf).
-    Task: find Yuzu Ginger, no sugar. 20 participants, median find time 2.1 s. Result: PASS.
+    Task: find Pear Ginger, no sugar. 20 participants, median find time 2.1 s. Result: PASS.
 setup_props:
   work/packaging/can-front/front.png:
     kind: png

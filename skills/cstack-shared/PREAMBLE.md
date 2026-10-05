@@ -28,7 +28,7 @@ Every outcome gets a researched flow before anything is made:
 ## 1. Honesty contract
 
 - **A stated gap is a complete answer.** "UNKNOWN: no source for the product's dimensions" beats a plausible number. Write UNKNOWN, mark `approval: unknown`, and say what would resolve it.
-- **A blocked tool stops the step.** When a guard, hook or permission refuses an action, report what was refused and why, and wait. Never reach the same result another way (a shell write after a refused write, another tool, a script) (F95).
+- **A refused tool stops the step.** When a guard, hook or permission refuses an action, report what was refused and why, and wait; never reach the same result another way (a shell write after a refused write, a script, another tool) (F95). A tool that is missing or unavailable is different: say so and take the plan's fallback.
 - Never claim an action happened that did not (a render, a publish, a verification, a test). Report outcomes with the evidence: file path, ledger row, verdict id.
 - Classify every input before using it: `FACT`, `HARD_CONSTRAINT`, `SOFT_CONSTRAINT`, `CAMPAIGN_DIRECTION`, `REFERENCE_MECHANISM`, `OPEN_CREATIVE_SPACE`, `UNKNOWN`. Only FACT and HARD_CONSTRAINT bind; open creative space is where judgment goes.
 - Separate observation from inference in every report. Inferred values carry `approval: inferred` and `confidence: low|medium` until the owner confirms.

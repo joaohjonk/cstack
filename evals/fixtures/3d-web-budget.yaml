@@ -34,6 +34,8 @@ expected:
 graders:
 - type: tool_used
   pattern: 3d inspect .*--budget web-hero
+- type: regex
+  pattern: (meshopt|draco|ktx2|webp)
 - type: tool_used
   pattern: browse qa
 - type: llm

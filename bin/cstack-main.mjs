@@ -321,7 +321,8 @@ function cmdValidate() {
       const hit = res.findIndex((re) => re.test(t));
       if (hit >= 0) r.error(rel(f), `contains a term from the private brand denylist (#${hit + 1}); cstack stays brand-agnostic`);
     }
-  }
+  } else if (process.env.CSTACK_REQUIRE_DENYLIST) r.error('private/brand-denylist.txt', 'no brand denylist here and CSTACK_REQUIRE_DENYLIST is set: write the list (or point CSTACK_BRAND_DENYLIST at it) before validating');
+  else r.warn('private/brand-denylist.txt', 'no brand denylist here, so the brand-agnostic check did not run; two scrubs after the fact came from pushes made without it (CI gets it from the BRAND_DENYLIST secret)');
   r.print('cstack validate');
   process.exit(r.ok ? 0 : 1);
 }

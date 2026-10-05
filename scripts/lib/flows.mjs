@@ -352,8 +352,10 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
   if (at === 0 && generative && !PACK_FLOWS.has(String(sourceFlowRef(flow) ?? '').slice(5) || flow.id) && PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`))
     warnings.push('make: the target is a pack, and this flow has an image model make it; design the pack as flat artwork with real type (cstack flows plan concept-wrap), let the model make only the picture inside it, and see it on the object with cstack mockup template can and mockup render');
   // F92: a model asked for a scene with the product redraws its label; product frames composite the verified pack
-  // (the flat artwork, or its render on the true object) over the generated scene, never trust the model's label
-  if (at === 0 && generative && PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`) && !(flow.steps ?? []).some((s) => ['mockup', 'three-d'].includes(s.skill) || (/\bcomposit(e|ed|es|ing)\b|mockup/i.test(`${s.id} ${s.does}`) && PACK_WORDS.test(`${s.id} ${s.does}`))))
+  // (the flat artwork, or its render on the true object) over the generated scene, never trust the model's label.
+  // Still frames only (video has its own label checks); it says something F73 does not, so both may fire
+  const packNoun = /\b(pack|packs|packaging|cans?|labels?|wrap|bottles?|box|boxes|pouch|carton)\b(?!\s+(be|you|we|they|it|share|see|find|buy|get|do|make|help|also|still|never|not))/i;
+  if (at === 0 && generative && d.kind === 'image' && packNoun.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`) && !(flow.steps ?? []).some((s) => ['mockup', 'three-d'].includes(s.skill) || (/\bcomposit(e|ed|es|ing)\b|mockup/i.test(`${s.id} ${s.does}`) && PACK_WORDS.test(`${s.id} ${s.does}`))))
     warnings.push('make: the frames show the pack, and no step composites the verified pack onto them; the model redraws the label (wrong in 4 of 7 frames in the field test). Add a composite step: the flat artwork or its render on the true object (cstack mockup render, three-d) placed over each generated scene, then cstack pack check');
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
   // F86: a plan that makes a pack, or pictures of one, owes the real pack's sizes whichever flow it came from
