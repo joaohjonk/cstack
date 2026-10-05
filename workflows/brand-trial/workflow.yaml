@@ -1,0 +1,37 @@
+name: brand-trial
+status: template
+summary: Prove a brand replicates. Agent teams with only the brand's files answer simulated real-world problems; the owner attributes their work blind against a control team.
+entry_skill: workflow
+methods:
+- concept-wrap
+- grid-pick-polish
+- mockup-set
+triggers:
+- brand trial
+- replicability
+- stress test the brand
+- brand applications
+note: template = not yet proven on a real run. Promote to validated only with a linked run record in runs. Commands in docs/trials.md.
+runs: []
+steps:
+- id: system-ready
+  skill: brand-verify
+  does: the brand's system is complete enough to hand to strangers (approved founder brief, identity rules, references the founder kept and killed, on-pack elements declared); gaps go back to create-brand, not into the trial
+  gate: owner
+- id: plan
+  does: cstack trial plan picks four to eight scenarios from trials/scenarios/, two or three brand teams and a control team, and prices the generation round against the owner's floor and cap; a round under the floor is sent back to spend on quality, one over the cap is refused
+  gate: owner
+- id: run
+  does: cstack trial run gives each team and scenario a fresh workspace with only the brand's files (the control team gets the name and one line), then runs strategist, art director, copywriter, producer, makers and reviewer as separate agent sessions; each workspace's budget is its share of the cap
+  gate: auto
+- id: score
+  skill: brand-verify
+  does: cstack trial score collects the applications under shuffled codes and builds the attribution sheet and the cross-team pairs sheet; the reviewer's verdicts are recorded before the owner taps
+  gate: auto
+- id: attribute
+  does: the owner taps the attribution sheet (is this the brand's?) and the pairs sheet (same brand?), blind, then cstack trial import writes the report
+  gate: owner
+- id: learn
+  skill: learn-loop
+  does: every piece the owner did not attribute, and every reviewer verdict the owner disagreed with, becomes a finding against the brand system or a skill; a rule changes only after a test reproduces it and the owner approves
+  gate: owner

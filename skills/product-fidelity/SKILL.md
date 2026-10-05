@@ -38,6 +38,7 @@ Deterministic: `cstack audit` (dimensions, unintended reframe), silhouette/outli
 
 ## Process
 
+0. **Product truth first** (F71): the canonical files are the owner's own photo or official assets, recorded as a reference with `library: own_asset` and `approval: locked` or `current`. Images research labels "real product" stay `approval: inferred` until the owner confirms them; a flow with `requires: [product_truth]` will not make until one exists.
 1. **Lock the entity** (`brand/brand-world.json`): canonical files with roles (master, vector, mask, spec) and sha256, immutable traits (silhouette, proportions, label layout, logo, closures, seams, material, finish, color), allowed variation (condensation, angle, fill level), forbidden drift.
 2. **Decide the method** with the decision tree: can the final be generated faithfully in one pass? yes → generate + verify. no → decompose: lock product → environment plate → talent/hands → interaction → integrate the real product → contact shadows → reflections/refraction → lens and perspective match → grain/sharpness match → grade → type/layout outside the model → verify.
 3. **Plan audits** per output: dimensions/aspect, silhouette vs. master, label OCR or overlay diff, logo overlay diff, color delta vs. token, solid background exactness for commerce, crop-safe zones, hands/fingers only where hands are in the brief.
@@ -46,6 +47,7 @@ Deterministic: `cstack audit` (dimensions, unintended reframe), silhouette/outli
 
 ## Decision rules
 
+- Packaging sizes come from the approved `*.pack-spec.yaml`, never a guess; every pack-bearing frame passes `cstack pack check` or is labelled illustrative (F86).
 - Anatomy errors in hands holding the product fail the frame outright.
 - Text, logos and legal copy on product are composited from official art, never generated.
 - Two failed full regenerations on the same defect → switch method (decompose or composite); do not reroll a third time.

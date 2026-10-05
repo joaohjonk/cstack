@@ -26,6 +26,7 @@ A model may invent light, folds and context. It may not invent the mark, the lab
 ## Missing-input behavior
 
 - No approved art: stop. Never generate a stand-in mark, label or legal copy.
+- A can and no template: `cstack mockup template can --out <dir> --spec <pack-spec>` draws a CC0 one at the real size; `--size` is typical, a first comp only.
 - No template: build one from an owned photo (quad corners, cylinder parameters, mask) or request a plate through `generate-media`; say which.
 - Template licence unknown: internal previews only, labelled; client-facing renders stay blocked until the licence is recorded.
 - Packaging without the official dieline: stop and ask (`product-fidelity` rule).

@@ -29,9 +29,12 @@ import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
 import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
-import { makeSheet, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
+import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
-import { checkText } from '../scripts/lib/textcheck.mjs';
+import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
+import { extendFile } from '../scripts/lib/image/extend.mjs';
+import { findPackSpecs, approvedSpec, specAspects, specWarnings, checkPack, pdfBoxes } from '../scripts/lib/packspec.mjs';
+import { listScenarios, planTrial, writePlan, readPlan, runTrial, scoreTrial, importTaps } from '../scripts/lib/trial.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -44,9 +47,9 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
+const BOOLEAN_FLAGS = new Set(['no-control', 'key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
 // Flags that may repeat: values accumulate in an array.
-const REPEATABLE_FLAGS = new Set(['set']);
+const REPEATABLE_FLAGS = new Set(['set', 'expect', 'expect-file']);
 
 function parseArgs(a) {
   const out = { _: [] };
@@ -120,14 +123,20 @@ const COMMANDS = {
   route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]; with billed amounts, estimate vs billed',
-  'spend reconcile': 'fetch what a provider billed for each paid request: cstack spend reconcile --provider <id> --ws <dir> [--since YYYY-MM-DD] [--dry-run] (adapters with a billing lookup: fal, which needs FAL_ADMIN_KEY or FAL_KEY)',
+  'spend reconcile': 'fetch what a provider billed for each paid request: cstack spend reconcile --provider <id> --ws <dir> [--since YYYY-MM-DD] [--dry-run] (adapters with a billing lookup: fal, which needs a key with ADMIN scope as FAL_ADMIN_KEY; a key without it stops the run on the first request and writes nothing)',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
   providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json. Pass --mcp "Server,…" (or CSTACK_MCP_SERVERS) to add agent_mcp, the same answer `cstack tools` gives',
   'lint shot-dna': 'warn when Shot DNA lighting is adjectives, not a recipe: cstack lint shot-dna <file...> (no file: every *.shot-dna.* in the repo)',
   'edit paste': 'paste a patch onto a base with a feathered edge, writing a new file: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] [--region x,y,w,h] --out c.png',
-  'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--json] (exit 1 when any image shows text)',
+  'trial list': 'the simulated real-world scenarios a brand trial can use (trials/scenarios/)',
+  'trial plan': 'plan a brand trial: cstack trial plan --brand <workspace> --out <dir> [--scenarios a,b] [--teams 2] [--no-control] [--positioning "one line"] [--floor 5] [--cap 8] [--per-picture 0.055] [--pictures-scale 1] (refuses a round under the floor or over the cap)',
+  'trial run': 'run every team role through an agent CLI, one fresh workspace per team and scenario: cstack trial run <dir> --agent "<cmd>" [--only team-a,retail-endcap] [--timeout 1800] (resumes; stops at a usage limit)',
+  'trial score': 'blind attribution sheet (brand teams mixed with the control team) and cross-team pairs sheet: cstack trial score <dir> [--seed N] [--force]',
+  'trial import': 'read the owner\'s taps and write the report: cstack trial import <dir> <taps.json>...',
+  'image extend': 'make a 9:16, 4:5 or 1:1 version of a verified frame without regenerating it (F90): cstack image extend <frame> --aspect 9:16 --out <file.png> [--fit pad|crop] [--fill edge|#rrggbb] [--force] [--json]',
+  'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>] [--json] (exit 1 when any image shows text; with --expect, when a declared line is missing or garbled or undeclared lettering appears)',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
   taste: 'Taste Labs capability: cstack taste search "intent" [--k 6] | extract <url> | verify --reference <url> --candidate <url>',
   failure: 'append a failure event: cstack failure --file event.json',
@@ -152,6 +161,10 @@ const COMMANDS = {
   'video deliver': 'per-channel H.264 + AAC encodes with faststart and a manifest: cstack video deliver <master> [--channels meta,tiktok,youtube,reels] --out <dir>',
   'mockup render': 'composite approved art onto a template package (quad, cylinder, mesh; displacement, shading; licence gate): cstack mockup render --template <dir> --art <file.png|svg> --out <file.png> [--placement id] [--force] [--internal]',
   'mockup verify': 'prove the art survived: inverse-warp each placement to flat art space and diff it (mean, edges, worst-tile SSIM, heatmap): cstack mockup verify --template <dir> --art <file> --render <file.png> [--placement id]; exits 1 on FAIL',
+  'mockup template': 'draw a can template (CC0, no photograph) and print the flat wrap size: cstack mockup template can --out <dir> --spec <file.pack-spec.yaml> (the real can; --size standard-12oz|sleek-12oz|tall-16oz is typical, a first comp only)',
+  'pack check': 'measure pack renders against the real pack (F86): cstack pack check <images|svgs...> --spec <file.pack-spec.yaml> [--box x,y,w,h | --judge "<cmd>"] [--tolerance 0.04] [--json] (exit 1 when off spec, unmeasurable or angled)',
+  'pack spec-from-pdf': 'read a print or dieline PDF\'s page boxes (TrimBox = finished size) in mm, to fill a pack spec: cstack pack spec-from-pdf <file.pdf> [--artwork <svg>] (flags artwork of a different size)',
+  'pack list': 'the pack specs in a workspace and whether each is approved: cstack pack list [--ws <dir>]',
   'mockup check': 'validate a template package (placements, footprints, layer files, licence): cstack mockup check --template <dir>',
   'svg legibility': 'can a figure be read where it is shown: text size at each display width and text contrast on its ground: cstack svg legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117]; exits 1 on FAIL',
   'svg lint': 'lint marks and icon sets: structure and security, viewBox, complexity, palette, strokes across a set, grid against an icon grammar: cstack svg lint <file|dir...> [--grammar icons.tokens.json] [--palette ...]; exits 1 on FAIL',
@@ -168,7 +181,7 @@ const COMMANDS = {
   'flows search': 'find the flow for an outcome before making anything: cstack flows search "rotating 3d product on the homepage" [--json [--workflows]]; also lists the workflows that cover the outcome',
   'flows show': 'print one flow: cstack flows show <id>',
   'flows plan': 'copy a flow into this run\'s plan, deliverable included: cstack flows plan <id> [--target "what as-close-as-possible means"] [--deliverable image|video|3d|vector|type|diagram|page|copy|other] [--key-visual] → work/flows/',
-  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
+  'flows gate': 'before making, deciding and calling it final: cstack flows gate <plan> --stage make|polish|decide|final. make: plan passes check, deliverable stated, imagery has a usable media provider here (or the owner approved a substitute); decide: 2+ territories with probe sheets; final: gold references exist and the work sits side by side with one. Exits 1 on FAIL',
   'flows check': 'is a plan followable? 2+ candidates compared, a gate on every step, compare_to_target on every made thing, a stop condition, a stated target: cstack flows check work/flows/*.flow.yaml; exits 1 on FAIL',
   preamble: 'print the shared skill preamble (honesty, precedence, cost, safety rules)',
   lineage: 'record a creative commit: cstack lineage --ws <dir> --file entry.json   |   --show <artifact_id>',
@@ -183,6 +196,7 @@ const COMMANDS = {
   'brief approve': "record the founder's yes to a founder brief, with a fingerprint the make gate checks: cstack brief approve <briefs/x.founder-brief.yaml> --by <founder>",
   'brief reopen': 'take an approved founder brief back after a pivot, so make re-gates until it is approved again: cstack brief reopen <file> --reason "<what changed>" [--by <name>]',
   'sheet make': 'contact sheet for stills, where the owner picks winners: cstack sheet make <images|folders...> --out work/sheets/a.html [--grid 3x3] [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
+  'sheet board': 'a reference board the founder reacts on (keep or kill, with why): cstack sheet board references/ --out work/sheets/refs.html [--cols 3] [--title "..."]; import writes gold and anti feedback',
   'sheet open': 'open a sheet in the default browser and print how to pick: cstack sheet open work/sheets/a.html',
   'sheet import': 'winners and pairs picked on a sheet into feedback events: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
   'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
@@ -385,6 +399,7 @@ function cmdPrompt(sub) {
     else {
       if (res.ok) console.log(res.prompt + '\n');
       for (const e of res.errors) console.log(`FAIL ${e}`);
+      for (const w of res.warnings ?? []) console.log(`WARN ${w}`);
       console.log(`hash ${res.hash.slice(0, 16)}  ${res.ok ? 'OK' : 'FAILED'}`);
     }
     process.exit(res.ok ? 0 : 1);
@@ -443,15 +458,25 @@ async function cmdSpend(sub) {
     // provider-neutral: any adapter that exports billing(request_id) can be reconciled; the others say so
     const adapter = getProvider(provider);
     if (typeof adapter.billing !== 'function') die(`${provider} has no billing lookup yet, so its rows keep cstack's estimate only; add billing(request_id) to its adapter to reconcile it`);
-    const r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => adapter.billing(id) });
+    if (!args.json) for (const n of adapter.billingNotes?.() ?? []) console.log(`note: ${n}`);
+    const est = (e) => Object.entries(e.by_currency).map(([cur, a]) => `${a} ${cur}`).join(' + ') || 'none';
+    let r;
+    try {
+      r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => adapter.billing(id) });
+    } catch (e) {
+      if (!e.fatal) throw e;
+      die(`${e.message}.${e.done ? ` ${e.done} request(s) were answered before it stopped and are kept.` : ''} Billed is unknown for ${e.left} request(s); the ledger's estimates stand.`);
+    }
     if (args.json) return json({ ...r, check: billedVsEstimated(ws, { provider }) });
-    if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s); nothing fetched`);
+    if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s), estimated ${est(r.estimate)}${r.estimate.unpriced ? ` plus ${r.estimate.unpriced} unpriced` : ''}; nothing fetched`);
     const by = (k) => r.rows.filter((x) => x.status === k).length;
     console.log(`asked ${provider} about ${r.asked} request(s): ${by('billed')} billed, ${by('not_found')} not billed yet, ${by('error')} failed`);
     for (const x of r.rows.filter((y) => y.status === 'error')) console.log(`  ${x.request_id}: ${x.error}`);
+    if (r.stopped) console.log(`stopped: ${r.stopped}`);
     const c = billedVsEstimated(ws, { provider });
     if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
-    if (by('error')) process.exit(1);
+    else console.log(`billed: unknown so far; cstack's estimate for these ${r.estimate.requests} request(s) is ${est(r.estimate)}${r.estimate.unpriced ? `, plus ${r.estimate.unpriced} unpriced` : ''} (an estimate, not a bill)`);
+    if (by('error') || r.stopped) process.exit(1);
     return;
   }
   if (sub === 'plan') {
@@ -481,7 +506,8 @@ async function cmdSpend(sub) {
     const cur = args.currency ?? 'USD';
     if (args.json) return json({ by, spent: spent(rows, { currency: cur, since: args.since }), billed_vs_estimated: billedVsEstimated(ws, { since: args.since }) });
     for (const [k, v] of Object.entries(by)) console.log(`${k.padEnd(40)} calls ${v.calls}  ok ${v.ok}  failed ${v.failed}  dedup ${v.dedup}  dry ${v.dry}`);
-    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''} (cstack's estimates)`);
+    const byHand = spent(rows.filter((r) => r.price_source === 'request'), { currency: cur, since: args.since });
+    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''} (cstack's estimates${byHand ? `; ${byHand} ${cur} of it from prices entered by hand, not a published price` : ''})`);
     const c = billedVsEstimated(ws, { since: args.since });
     if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} reconciled request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
     return;
@@ -765,17 +791,164 @@ async function cmdEvals(sub) {
 }
 
 // cstack image text (field test F20): a per-image gate a flow's stop rule can run after each generation
-function cmdImage(sub) {
-  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"]');
+async function cmdImage(sub) {
+  if (sub === 'extend') {
+    // F90: a 9:16 or 4:5 version of a verified frame pads or crops that frame; regenerating it redraws the pack
+    const f = args._[0] ?? die('usage: cstack image extend <verified frame> --aspect 9:16 --out <file.png> [--fit pad|crop] [--fill edge|#rrggbb] [--force]');
+    try {
+      const r = await extendFile(path.resolve(f), { aspect: args.aspect ?? die('--aspect W:H required (9:16, 4:5, 1:1)'), fit: args.fit ?? 'pad', fill: args.fill ?? 'edge', out: typeof args.out === 'string' ? args.out : undefined, force: !!args.force });
+      if (args.json) return json(r);
+      console.log(`wrote ${shown(r.out)} (${r.width}x${r.height}) from ${shown(f)} by ${args.fit ?? 'pad'}; nothing regenerated (${shown(r.sidecar)} names the source frame)`);
+      if ((args.fit ?? 'pad') === 'crop') console.log('cropped: run cstack pack check on the result with the pack\'s box, so a cut pack is caught');
+    } catch (e) {
+      die(e.message);
+    }
+    return;
+  }
+  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>]\n       cstack image extend <frame> --aspect 9:16 --out <file.png> [--fit pad|crop] [--fill edge|#rrggbb]');
   if (args.judge === true) die('--judge needs a command');
-  const r = checkText(args._, { engine: args.engine ?? 'auto', judge: args.judge ? tokenize(args.judge) : null });
+  const list = (v) => (v == null ? [] : [].concat(v));
+  if ([...list(args.expect), ...list(args['expect-file'])].includes(true)) die('--expect needs a line of text, --expect-file a file');
+  let expected;
+  try {
+    expected = readExpected({ expect: list(args.expect), files: list(args['expect-file']) });
+    if ((args.expect != null || args['expect-file'] != null) && !expected.length) die('--expect/--expect-file gave no lines; leave both out to check that no text appears at all');
+  } catch (e) {
+    die(e.message);
+  }
+  const r = checkText(args._, { engine: args.engine ?? 'auto', judge: args.judge ? tokenize(args.judge) : null, expected });
   if (args.json) json(r);
   else {
     for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(5)} ${shown(i.file)}  ${i.evidence}`);
     const bad = r.images.filter((i) => i.result !== 'pass').length;
-    console.log(`image text (${r.engine}${r.thresholds ? ', thresholds uncalibrated' : ''}): ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length})`}`);
+    console.log(`image text (${r.engine}${r.mode === 'expected' ? `, expecting ${r.expected.length} line(s)` : ''}${r.thresholds ? ', thresholds uncalibrated' : ''}): ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length})`}`);
   }
   if (!r.ok) process.exit(1);
+}
+
+// F86: cstack never invents packaging sizes; the real pack is a file, and renders are measured against it
+function cmdPack(sub) {
+  try {
+    if (sub === 'list') {
+      const all = findPackSpecs(ws);
+      if (!all.length) return console.log(`no pack specs in ${shown(ws)}: add one (*.pack-spec.yaml, schema pack-spec) from the dieline or print file; cstack pack spec-from-pdf reads a PDF's sizes`);
+      for (const f of all) {
+        const s = readData(f);
+        const a = specAspects(s);
+        console.log(`${approvedSpec(s) ? 'APPROVED' : 'NOT YET '} ${shown(f)}  ${s.format} ${s.front_mm?.width}x${s.front_mm?.height} mm front${s.flat_mm ? `, ${s.flat_mm.width}x${s.flat_mm.height} mm flat` : ''} (h:w ${a.front?.toFixed(3)}) from ${s.source?.kind}${s.source?.file ? ` ${s.source.file}` : ''}${s.estimated ? ' (ESTIMATED)' : ''}`);
+        for (const w of specWarnings(s, { ws })) console.log(`  WARN ${w}`);
+      }
+      return;
+    }
+    if (sub === 'check') {
+      if (args.spec === undefined || args.spec === true) die('--spec <file.pack-spec.yaml> required: cstack never invents packaging sizes');
+      const spec = readData(path.resolve(args.spec));
+      const v = validateValue('pack-spec', spec);
+      if (!v.ok) die(`${args.spec} is not a valid pack spec: ${v.errors}`);
+      for (const w of specWarnings(spec, { ws })) console.log(`WARN ${w}`);
+      if (!approvedSpec(spec)) console.log(`WARN ${args.spec} is not approved (approval ${spec.approval?.status}, source ${spec.source?.kind}): the owner confirms the sizes before they decide anything`);
+      if (args.judge === true) die('--judge needs a command');
+      const box = typeof args.box === 'string' ? args.box.split(',').map(Number) : null;
+      if (box && (box.length !== 4 || box.some((n) => !Number.isFinite(n)))) die('--box takes x,y,w,h in pixels');
+      if (!args._.length) die('usage: cstack pack check <images|svgs...> --spec <file> [--box x,y,w,h | --judge "<cmd>"]');
+      const r = checkPack(args._, { spec, box, judge: args.judge ? tokenize(args.judge) : null, tolerance: args.tolerance === undefined ? undefined : Number(args.tolerance) });
+      if (args.json) json(r);
+      else {
+        for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(12)} ${shown(i.file)}  ${i.evidence}`);
+        const bad = r.images.filter((i) => i.result !== 'pass').length;
+        console.log(`pack check against ${spec.id}: ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length}); off-spec or unmeasured renders are redone, or shown only as illustrative`}`);
+      }
+      if (!r.ok) process.exit(1);
+      return;
+    }
+    if (sub === 'spec-from-pdf') {
+      const f = args._[0] ?? die('usage: cstack pack spec-from-pdf <file.pdf> [--artwork <svg>]');
+      const b = pdfBoxes(path.resolve(f));
+      if (args.json) return json(b);
+      if (!Object.keys(b).length) die(`no page boxes found in ${f} (compressed page tree?); read the size from the dieline's dimension lines and record source.kind measured`);
+      for (const [k, s] of Object.entries(b)) console.log(`${k.padEnd(9)} ${s.width} x ${s.height} mm`);
+      const trim = b.TrimBox ?? null;
+      if (!trim) console.log('no TrimBox: the finished size is not declared; MediaBox includes bleed and marks, so do not use it as the pack size');
+      else console.log(`finished size (TrimBox): ${trim.width} x ${trim.height} mm; put it in flat_mm with source {kind: print-file, file: ${f}}, then ask the owner to confirm`);
+      if (trim && typeof args.artwork === 'string') {
+        const a = checkPack([args.artwork], { spec: { front_mm: trim, flat_mm: trim } }).images[0];
+        if (a.result !== 'pass') console.log(`MISMATCH the artwork ${args.artwork} is ${a.evidence}: an owner decision (re-lay the face, or the converter changes the repeat); record it as artwork_mismatch, never let an image model pick a side`);
+        else console.log(`the artwork ${args.artwork} matches the print size`);
+      }
+      return;
+    }
+  } catch (e) {
+    die(e.message);
+  }
+  die('usage: cstack pack list|check|spec-from-pdf');
+}
+
+// docs/trials.md: agent teams with only the brand's files answer simulated problems; the owner attributes their work blind
+function cmdTrial(sub) {
+  const num = (v, d) => (v === undefined || v === true ? d : Number(v));
+  const list = (v) => (v === undefined || v === true ? [] : String(v).split(',').map((x) => x.trim()).filter(Boolean));
+  try {
+    if (sub === 'list') {
+      const xs = listScenarios();
+      if (args.json) return json(xs.map(({ file, ...x }) => x));
+      for (const x of xs) console.log(`${x.id.padEnd(20)} ${x.title}  (${x.applications.map((a) => a.id).join(', ')})`);
+      return;
+    }
+    if (sub === 'plan') {
+      const r = planTrial({ brand: args.brand, scenarios: list(args.scenarios), teams: num(args.teams, 2), control: args['no-control'] ? false : true, floor: num(args.floor, 5), cap: num(args.cap, 8), per_picture: num(args['per-picture'], 0.055), pictures_scale: num(args['pictures-scale'], 1), name: args.name, positioning: args.positioning, out: args.out });
+      if (args.json) json(r);
+      if (!r.ok) {
+        if (!args.json) for (const e of r.errors) console.error(`FAIL ${e}`);
+        process.exit(1);
+      }
+      const f = writePlan(r.plan, { force: !!args.force });
+      if (args.json) return;
+      for (const w of r.warnings) console.log(`WARN ${w}`);
+      const p = r.plan;
+      console.log(`trial plan: ${shown(f)}`);
+      console.log(`  ${p.scenarios.length} scenarios x ${p.teams.length} teams (${p.teams.join(', ')}), ${p.roles.length} roles each = ${p.units.length * p.roles.length} agent sessions`);
+      console.log(`  generation round: estimated ${p.estimate_usd} USD (floor ${p.floor}, cap ${p.cap}, ${p.per_picture} USD a picture); each workspace's budget is its share of the cap`);
+      console.log(`  brand teams get ${p.brand_files} files from ${shown(p.brand)}; the control team gets the name${p.positioning ? ' and one line' : ''}`);
+      console.log(`next: cstack trial run ${shown(p.out)} --agent "<agent command>"  (spends up to ${p.cap} USD; run it where the provider keys live)`);
+      return;
+    }
+    if (sub === 'run') {
+      const plan = readPlan(args._[0] ?? die('usage: cstack trial run <trial dir> --agent "<cmd>" [--only team-a,retail-endcap] [--timeout 1800]'));
+      if (args.agent === undefined || args.agent === true) die('--agent "<agent command>" required, for example: claude -p --setting-sources project --strict-mcp-config --mcp-config \'{"mcpServers":{}}\'');
+      const r = runTrial(plan, { agent: tokenize(args.agent), timeout_s: num(args.timeout, 1800), only: list(args.only), log: (m) => console.log(`  ${m}`) });
+      if (args.json) return json(r);
+      const by = (k) => r.ran.filter((x) => x.status === k).length;
+      console.log(`ran ${r.ran.length} role session(s): ${by('ok')} wrote their file, ${by('no_output')} wrote nothing, ${by('agent_failed')} failed`);
+      if (r.stopped) {
+        console.log(`stopped: ${r.stopped}. ${r.left.length} role session(s) left; run the same command again after the limit resets, and it carries on`);
+        process.exit(1);
+      }
+      console.log(`next: cstack trial score ${shown(plan.out)}`);
+      return;
+    }
+    if (sub === 'score') {
+      const plan = readPlan(args._[0] ?? die('usage: cstack trial score <trial dir> [--seed N] [--force]'));
+      const r = scoreTrial(plan, { seed: args.seed === undefined ? undefined : Number(args.seed), force: !!args.force });
+      if (args.json) return json(r);
+      console.log(`${r.count} applications under shuffled codes; ${r.pair_count} cross-team pair(s)`);
+      console.log(`attribute blind in a browser: ${pathToFileURL(r.attribution).href}`);
+      if (r.pairs) console.log(`then the pairs: ${pathToFileURL(r.pairs).href}`);
+      console.log(`  press "Download taps.json" on each, then: cstack trial import ${shown(plan.out)} <taps.json> [<pairs taps.json>]`);
+      return;
+    }
+    if (sub === 'import') {
+      const plan = readPlan(args._[0] ?? die('usage: cstack trial import <trial dir> <taps.json>...'));
+      if (args._.length < 2) die('give at least one taps.json downloaded from the attribution or pairs sheet');
+      const r = importTaps(plan, args._.slice(1));
+      if (args.json) return json(r);
+      console.log(fs.readFileSync(r.report, 'utf8'));
+      console.log(`report: ${shown(r.report)}`);
+      return;
+    }
+  } catch (e) {
+    die(e.message);
+  }
+  die('usage: cstack trial list|plan|run|score|import');
 }
 
 // docs/sheets.md: contact sheets for stills and blind pairwise picks
@@ -813,6 +986,18 @@ async function cmdSheet(sub) {
     console.log(sheetHowTo(r.html));
     return;
   }
+  if (sub === 'board') {
+    let r;
+    try {
+      r = makeBoard({ inputs: args._, out: args.out, title: args.title, cols: args.cols, force: !!args.force });
+    } catch (e) {
+      die(e.message);
+    }
+    if (args.json) return json({ ...r, url: pathToFileURL(r.html).href });
+    console.log(`wrote ${shown(r.html)} (${r.count} references)`);
+    console.log(sheetHowTo(r.html, { board: true }));
+    return;
+  }
   if (sub === 'open') {
     const html = args._[0] && path.resolve(String(args._[0]));
     if (!html || !fs.existsSync(html)) die('usage: cstack sheet open <sheet.html>');
@@ -822,7 +1007,11 @@ async function cmdSheet(sub) {
         spawn(opener[0], opener[1], { detached: true, stdio: 'ignore' }).on('error', () => {}).unref();
       } catch {}
     }
-    console.log(sheetHowTo(html));
+    let board = false;
+    try {
+      board = !!readJSON(html.replace(/\.html$/, '.json'))?.board;
+    } catch {}
+    console.log(sheetHowTo(html, { board }));
     return;
   }
   if (sub === 'import') {
@@ -842,26 +1031,28 @@ async function cmdSheet(sub) {
     }
     for (const rec of recs) appendJSONL(path.join(ws, 'state', 'feedback.jsonl'), rec);
     if (args.json) return json(recs);
+    const reacts = recs.filter((r) => ['gold', 'anti'].includes(r.type));
+    if (reacts.length) console.log(`appended ${reacts.filter((r) => r.type === 'gold').length} keep(s) and ${reacts.filter((r) => r.type === 'anti').length} kill(s) on references to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
     const wins = recs.filter((r) => r.type === 'approve');
     const pairs = recs.filter((r) => r.type === 'pairwise');
     const w = pairs.filter((r) => ['a', 'b'].includes(r.pair.winner)).length;
-    console.log(`appended ${wins.length} winner(s) and ${pairs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
+    if (wins.length || pairs.length || !reacts.length) console.log(`appended ${wins.length} winner(s) and ${pairs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
     for (const r of wins) console.log(`  winner: ${r.artifact_ref}${r.region ? ` (frame at x ${r.region.x}, y ${r.region.y} of the grid)` : ''}${r.reason_codes ? `: ${r.reason_codes.join(', ')}` : ''}${r.reason ? ` ("${r.reason}")` : ''}`);
     if (wins.length) console.log('next: polish each winner as a single image (flow grid-pick-polish), editing locally; upscale only the finalists');
     return;
   }
-  die('usage: cstack sheet make|open|import');
+  die('usage: cstack sheet make|board|open|import');
 }
 
 // F62: the owner could not tell where the boards are picked. Every sheet command says where the page is and what to press.
-function sheetHowTo(html) {
+function sheetHowTo(html, { board = false } = {}) {
   return [
-    `pick on the sheet in a browser: ${pathToFileURL(html).href}`,
-    '  (cstack sheet open <sheet> opens it; it is a file on this computer, not a web page)',
-    '  1. click up to three winners, and tick why each won',
+    `${board ? 'react on the board' : 'pick on the sheet'} in a browser: ${pathToFileURL(html).href}`,
+    `  (cstack sheet open <${board ? 'board' : 'sheet'}> opens it; it is a file on this computer, not a web page)`,
+    board ? '  1. press Keep or Kill on each reference, and add a line on why' : '  1. click up to three winners, and tick why each won',
     '  2. press "Download picks.json"',
     `  3. cstack sheet import <downloaded picks.json> --sheet ${shown(html)} --by <name>`,
-    '  "Pick pairs" on the page is optional, for calibrating the reviewers',
+    board ? '  keeps and kills count as reference reactions at the make gate' : '  "Pick pairs" on the page is optional, for calibrating the reviewers',
   ].join('\n');
 }
 
@@ -1026,7 +1217,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video', 'trial', 'pack'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1143,7 +1334,7 @@ switch (cmd) {
       }
       if (res.some((x) => x.errors.length)) process.exitCode = 1;
     } else if (sub === 'gate') {
-      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|decide|final');
+      const f = args._[0] ?? die('usage: cstack flows gate <plan.flow.yaml> --stage make|polish|decide|final');
       const stage = args.stage ?? die(`--stage required: ${GATE_STAGES.join('|')}`);
       if (!GATE_STAGES.includes(stage)) die(`--stage must be one of ${GATE_STAGES.join(', ')}`);
       const x = gateFlow(ws, path.resolve(f), { stage, providers: availability(), skills: listSkills().map((s) => s.slug), budget: loadBudget(ws) });
@@ -1255,7 +1446,13 @@ switch (cmd) {
     await cmdSheet(argv[0]);
     break;
   case 'image':
-    cmdImage(argv[0]);
+    await cmdImage(argv[0]);
+    break;
+  case 'trial':
+    cmdTrial(argv[0]);
+    break;
+  case 'pack':
+    cmdPack(argv[0]);
     break;
   case 'setup':
     cmdSetup();

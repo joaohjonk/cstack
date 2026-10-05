@@ -1,0 +1,16 @@
+id: creator-kit
+title: A creator wants an unboxing kit
+asker: the talent manager of a creator with two million followers
+deadline: the kit ships next week
+situation: >-
+  A large creator agreed to open a kit on camera. The manager asks for something that looks good in the first two
+  seconds of a vertical video, under a ring light, held at arm's length.
+constraint: the brand must work as an object opened on camera, not as a flat graphic, and look like itself in a stranger's video
+applications:
+  - {id: mailer, kind: vector, what: "mailer box print, all faces flat", size: 300 x 220 x 100 mm}
+  - {id: insert, kind: vector, what: "insert card with one line from the brand", size: A6}
+  - {id: unboxing-frame, kind: picture, what: "the first frame of the unboxing as the creator's phone sees it", size: 1080 x 1920, pictures: 4}
+success:
+  - recognisable in the first frame without a logo close-up
+  - the insert line sounds like the brand, not like an influencer brief
+  - nothing on the box needs the creator to explain it

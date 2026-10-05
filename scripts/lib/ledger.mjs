@@ -133,6 +133,7 @@ export async function guardedCall(ws, spec, fn) {
     prompt_recipe_hash: spec.prompt_recipe_hash ?? '',
     idempotency_key: key,
     estimated_cost: spec.estimated_cost ?? null,
+    ...(spec.price_source ? { price_source: spec.price_source } : {}),
     skill: spec.skill,
     experiment_id: spec.experiment_id,
   };

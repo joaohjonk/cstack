@@ -5,6 +5,8 @@ aliases:
 - cgi packshot
 - product render
 status: researched
+requires:
+- pack_spec
 target:
   description: stills that match the brand's photography rules (lens, light ratio, backdrop) with the real label, reusable for any angle or colourway
   must:

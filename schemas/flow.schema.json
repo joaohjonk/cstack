@@ -203,6 +203,10 @@
           },
           "fallback": {
             "type": "string"
+          },
+          "budget": {
+            "$ref": "common.schema.json#/$defs/money",
+            "description": "the most this step (phase) may spend before it stops and asks the owner"
           }
         }
       }
@@ -344,6 +348,13 @@
               "rejected",
               "runner_up"
             ]
+          },
+          "composite": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "elements the territory depends on that are set after generation, never drawn by a model (a price, a drop number, the wordmark); probes leave room for them and a composite step sets them (F69)"
           }
         }
       }
@@ -373,11 +384,14 @@
     },
     "requires": {
       "type": "array",
-      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet the owner has reacted to, recorded in state/feedback.jsonl)",
+      "description": "what must exist before the make gate passes: founder_brief (an owner-approved briefs/*.founder-brief.yaml), reference_reactions (a reference packet or board the owner has reacted to, recorded in state/feedback.jsonl), product_truth (an owner-confirmed photo or official asset of the real product, library own_asset), pack_spec (an approved *.pack-spec.yaml: the real pack's sizes from the dieline or print file), competitor_ads (a *.competitor-ads.yaml under 90 days old: live ads from 5 or more rivals and a saturated and white-space map)",
       "items": {
         "enum": [
           "founder_brief",
-          "reference_reactions"
+          "reference_reactions",
+          "product_truth",
+          "pack_spec",
+          "competitor_ads"
         ]
       },
       "uniqueItems": true
@@ -396,7 +410,11 @@
           "requires": {
             "enum": [
               "founder_brief",
-              "reference_reactions"
+              "reference_reactions",
+              "product_truth",
+              "pack_spec",
+              "competitor_ads",
+              "owner_pick"
             ]
           },
           "owner_approved": {
@@ -405,6 +423,14 @@
           },
           "why": {
             "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who said yes (the owner, by name)"
+          },
+          "quote": {
+            "type": "string",
+            "description": "the owner's words when they waived it"
           }
         },
         "additionalProperties": false

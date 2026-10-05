@@ -44,6 +44,12 @@ steps:
   skill: creative-direction
   gate: {type: auto, check: "prompts carry no names, no style-of, no lettering; cstack prompt compile passes"}
   compare_to_target: each territory differs in idea, not styling
+- id: prompt-review
+  does: creative-review reads every compiled prompt before anything is paid for, against the territory, the brand's colour and ground, and the space reserved for type; a prompt that names nothing the territory decided, or contradicts a slot (cstack prompt compile warns), is rewritten first
+  kind: research
+  skill: creative-review
+  gate: {type: independent_review, check: "every prompt traced to a territory decision and a reacted reference; no WARN from cstack prompt compile left unexplained"}
+  compare_to_target: would these prompts make the idea, or only the styling?
 - id: probe
   does: draft probes, about four per territory, across two or three models (cstack route --modality image --tier draft for cheap ones, flagship models for the strongest)
   kind: probe

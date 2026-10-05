@@ -1,0 +1,16 @@
+id: sold-out
+title: The hero product sells out
+asker: the operations lead
+deadline: today
+situation: >-
+  The best-selling product is out of stock for three weeks after a spike in demand. The site still shows it, emails
+  are scheduled, and customers are asking in comments. The brand must say so today.
+constraint: an operational message that usually reads like an error page has to read like the brand, and keep people coming back
+applications:
+  - {id: site-banner, kind: page, what: "site banner and the product page state for a sold-out product"}
+  - {id: email-header, kind: picture, what: "email header image for the waitlist email", size: 1200 x 600, pictures: 3}
+  - {id: social-card, kind: vector, what: "one social card that answers the comments", size: 1080 x 1080}
+success:
+  - says sold out and when it returns, plainly
+  - feels like the brand being honest, not a system notice
+  - gives one thing to do now (join the waitlist, try another flavour)

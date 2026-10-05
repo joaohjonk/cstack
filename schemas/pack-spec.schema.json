@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/pack-spec.schema.json",
+  "title": "Pack spec",
+  "description": "The real pack, as a file (F86): sizes in mm from the dieline, the converter's print file or a measurement, never invented. The make gate needs an approved one before any pack render, and `cstack pack check` measures outputs against it.",
+  "type": "object",
+  "required": [
+    "id",
+    "product",
+    "format",
+    "front_mm",
+    "source",
+    "approval"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "product": {
+      "type": "string",
+      "description": "which product and size this pack holds"
+    },
+    "format": {
+      "enum": [
+        "can",
+        "bottle",
+        "jar",
+        "box",
+        "carton",
+        "flow-pack",
+        "pouch",
+        "sachet",
+        "label",
+        "tube",
+        "other"
+      ]
+    },
+    "front_mm": {
+      "$ref": "#/$defs/size",
+      "description": "the face seen front-on (for a can: diameter by label height)"
+    },
+    "flat_mm": {
+      "$ref": "#/$defs/size",
+      "description": "the flat print size of the artwork (dieline trim, or a can's full wrap: circumference by label height)"
+    },
+    "depth_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "diameter_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "height_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "overall height of the object, when it differs from the front face"
+    },
+    "repeat_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "the packing machine's repeat for a flow-pack or label web"
+    },
+    "seals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "where",
+          "mm"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "where": {
+            "type": "string"
+          },
+          "mm": {
+            "type": "number",
+            "minimum": 0
+          },
+          "style": {
+            "type": "string",
+            "description": "crimp or seal style (serrated, flat, fin, lap)"
+          }
+        }
+      },
+      "description": "crimps, fin seals, lids: where they sit and how deep"
+    },
+    "material": {
+      "type": "string",
+      "description": "the base material and its colour where no ink covers it (bare aluminium, white PE, kraft); a tinted base film goes here so a render's film colour can be checked"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "dieline",
+            "print-file",
+            "converter-spec",
+            "measured",
+            "guess"
+          ],
+          "description": "guess never passes the make gate"
+        },
+        "file": {
+          "type": "string",
+          "description": "the file the sizes were read from, relative to the workspace or a path on the owner's machine"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "measured_by": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "hash of the source file, so a changed print file is noticed"
+        }
+      }
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "owner-confirmed photos of the real pack"
+    },
+    "artwork_mismatch": {
+      "type": "string",
+      "description": "when the current artwork's size differs from the print file or the machine repeat: an owner decision (re-lay the face, or change the repeat), never one an image model makes"
+    },
+    "tolerance": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 0.25,
+      "description": "allowed difference in height:width ratio (default 0.04)"
+    },
+    "approval": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "current",
+            "locked"
+          ]
+        },
+        "by": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        }
+      }
+    },
+    "artwork_mm": {
+      "$ref": "#/$defs/size",
+      "description": "the size the current artwork is laid out at, when it is not yet the print size; `cstack pack list` flags a different front proportion as an owner decision"
+    },
+    "film_width_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "flow-pack or label web width"
+    },
+    "panels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "width_mm"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "width_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "seen on the front between seals"
+          }
+        }
+      },
+      "description": "the flat artwork's panels across the web or round the wrap (back fin, back, front, back), in order"
+    },
+    "contents": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "what": {
+          "type": "string"
+        },
+        "length_mm": {
+          "$ref": "#/$defs/range"
+        },
+        "width_mm": {
+          "$ref": "#/$defs/range"
+        },
+        "height_mm": {
+          "$ref": "#/$defs/range"
+        },
+        "source": {
+          "type": "string",
+          "description": "measured, label, converter; how the product inside was sized"
+        },
+        "estimated": {
+          "type": "boolean"
+        }
+      },
+      "description": "the product inside the pack, sized from a measurement (renders of the product read this)"
+    },
+    "cartons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/carton"
+      },
+      "description": "secondary packs (6-box, 12-box, shipper) holding this pack"
+    },
+    "estimated": {
+      "type": "boolean",
+      "description": "true when the sizes are an estimate (carton practice, not a dieline); allowed only when marked, and shown on every check"
+    },
+    "estimated_note": {
+      "type": "string"
+    },
+    "immutable_traits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "what no render may change: seal positions, material colour, logo placement"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "drifts seen before and refused: pack drawn taller, seals dropped, product redrawn"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "size": {
+      "type": "object",
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "source": {
+          "enum": [
+            "measured",
+            "label",
+            "converter",
+            "inferred",
+            "pending"
+          ],
+          "description": "how this size was found: measured, read off a label or converter file, inferred (for example from carton pitch), or pending a caliper"
+        }
+      }
+    },
+    "carton": {
+      "type": "object",
+      "required": [
+        "id",
+        "count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "arrangement": {
+          "type": "string",
+          "description": "e.g. 2 x 3, standing"
+        },
+        "inner_mm": {
+          "type": "object",
+          "required": [
+            "length",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "length": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "lid": {
+          "type": "string"
+        },
+        "glue_flap_mm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pitch_mm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "distance between packs in the carton"
+        },
+        "faces": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "which artwork goes on which face (front, top, side)"
+        },
+        "status": {
+          "enum": [
+            "locked",
+            "testing"
+          ]
+        },
+        "estimated": {
+          "type": "boolean"
+        },
+        "source": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "lid_mm": {
+          "$ref": "#/$defs/size",
+          "description": "lid or header panel size"
+        }
+      }
+    }
+  }
+}

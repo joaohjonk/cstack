@@ -42,7 +42,8 @@ test('installHosts: re-run after the checkout moved replaces our dangling links 
 });
 
 test('installHosts: links into an older cstack checkout are replaced, and its skills this checkout lacks are removed', (t) => {
-  const target = fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-hosts-'));
+  // realpath: on macOS the temp dir sits behind a symlink (/var -> /private/var), and the log names real paths (F72)
+  const target = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'cstack-hosts-')));
   t.after(() => fs.rmSync(target, { recursive: true, force: true }));
   const base = path.join(target, '.claude', 'skills');
   const old = path.join(target, 'old cstack & co');

@@ -233,3 +233,22 @@ test('F46: a fal call that never left this machine books nothing; a reset after 
     else delete process.env.FAL_KEY;
   }
 });
+
+test('runner: a hand-entered price is booked as such; a render of designed artwork is labelled illustrative on its sidecar and sheet (F79, F80)', async () => {
+  const { makeSheet } = await import('../scripts/lib/sheet.mjs');
+  const w = ws();
+  const wrap = path.join(w, 'wrap.svg');
+  fs.writeFileSync(wrap, '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>');
+  const r = await runMedia(w, req('the can in a hand', { estimated_cost: { amount: 0.07, currency: 'USD' }, depicts: wrap }), { poll_interval_ms: 1 });
+  assert.equal(r.row.price_source, 'request');
+  assert.match(r.row.estimated_cost.basis, /entered on the request by hand/);
+  const out = path.join(w, r.output_ids[0]);
+  const side = JSON.parse(fs.readFileSync(`${out}.gen.json`, 'utf8'));
+  assert.equal(side.depicts.illustrative, true);
+  assert.equal(side.depicts.sha256.length, 64);
+  const plain = await runMedia(w, req('a glass on steel, again'), { poll_interval_ms: 1 });
+  assert.notEqual(plain.row.price_source, 'request');
+  const sheet = makeSheet({ inputs: [path.join(w, 'work', 'out')], out: path.join(w, 'work', 'sheets', 's.html') });
+  const html = fs.readFileSync(sheet.html, 'utf8');
+  assert.equal((html.match(/illustrative render; the flat file is the artwork/g) ?? []).length, 1);
+});

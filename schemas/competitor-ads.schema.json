@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cstack.dev/schemas/competitor-ads.schema.json",
+  "title": "Competitor ads scan",
+  "description": "What the category is running before cstack makes ads (F91, owner's rule 2026-10-05): 5 to 10 rivals' live ads, each with its link, how long it has run, format, hook, offer and claim, ending in a saturation and white-space map every bet cites. Collected by a person's browser or an approved API (Meta Ad Library, TikTok Creative Center, Foreplay), never scraped. Evidence for analysis, never production input.",
+  "type": "object",
+  "required": ["id", "date", "category", "sources", "ads", "saturated", "white_space"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "date": { "$ref": "common.schema.json#/$defs/date" },
+    "category": { "type": "string" },
+    "markets": { "type": "array", "items": { "type": "string" } },
+    "sources": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "where the ads were seen: Meta Ad Library, TikTok Creative Center, Foreplay, the brand's own feed, a store" },
+    "ads": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["competitor", "link", "format", "hook", "claim"],
+        "additionalProperties": false,
+        "properties": {
+          "competitor": { "type": "string" },
+          "link": { "type": "string", "description": "the ad's library or post URL, or a screenshot path in work/competitors/" },
+          "first_seen": { "type": "string", "description": "the ad's start date as the library shows it" },
+          "days_running": { "type": "integer", "minimum": 0, "description": "a weak proxy for a winner, never proof" },
+          "format": { "type": "string", "description": "static, carousel, UGC talking head, demo, before-and-after, founder, creator duet" },
+          "hook": { "type": "string", "description": "the first line or first second" },
+          "offer": { "type": "string" },
+          "claim": { "type": "string" },
+          "cta": { "type": "string" },
+          "taxonomy": { "type": "array", "items": { "type": "string" }, "description": "families from registry/creative-taxonomy.json" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "saturated": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "the hooks, formats and claims everyone runs" },
+    "white_space": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "mechanisms nobody in the category uses yet, or that work next door" },
+    "notes": { "type": "string" }
+  }
+}

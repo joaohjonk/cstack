@@ -6,7 +6,7 @@ import path from 'node:path';
 import YAML from 'yaml';
 import { guardedCall, readLedger } from '../scripts/lib/ledger.mjs';
 import { reconcile, billedVsEstimated, toReconcile } from '../scripts/lib/billing.mjs';
-import { falBilling, parseFalBilling } from '../providers/fal.mjs';
+import { falBilling, falBillingNotes, parseFalBilling } from '../providers/fal.mjs';
 import { readJSONL } from '../scripts/lib/core.mjs';
 import { validateValue } from '../scripts/lib/schemas.mjs';
 import { tmpDir } from './tmp.mjs';
@@ -68,4 +68,37 @@ test('billing: reconcile appends billed rows, retries what is not billed yet, an
   assert.equal(billedVsEstimated(w, { provider: 'fal' }).within, false, '0.055 billed against 0.033 estimated is outside 25%');
   const failing = await reconcile(ws(), { provider: 'fal', lookup: async () => { throw new Error('down'); } });
   assert.equal(failing.asked, 0);
+});
+
+test('billing: reconcile paces requests, backs off on 429, and stops once on a key without billing scope (F77, F78)', async () => {
+  const w = ws();
+  await call(w, 1, 'req-1');
+  await call(w, 2, 'req-2');
+  await call(w, 3, 'req-3');
+  const waits = [];
+  const sleep = async (ms) => waits.push(ms);
+  let n = 0;
+  const limited = async (id) => {
+    if (id === 'req-2' && n++ < 2) throw Object.assign(new Error('fal billing HTTP 429'), { retryable: true });
+    return { status: 'billed', billed: { amount: 0.01, currency: 'USD' } };
+  };
+  const r = await reconcile(w, { provider: 'fal', lookup: limited, sleep, pace_ms: 250 });
+  assert.deepEqual(r.rows.map((x) => x.status), ['billed', 'billed', 'billed']);
+  assert.deepEqual(waits, [250, 1000, 2000, 250], 'paced, then 1 s and 2 s backoff on the two 429s');
+  const w2 = ws();
+  await call(w2, 1, 'a');
+  await call(w2, 2, 'b');
+  const always = async () => { throw Object.assign(new Error('429'), { retryable: true }); };
+  const s = await reconcile(w2, { provider: 'fal', lookup: always, sleep, retries: 2 });
+  assert.match(s.stopped, /still rate limited after 2 retries.*2 left/);
+  assert.equal(readJSONL(path.join(w2, 'state', 'billing.jsonl')).length, 0, 'no rows for requests never answered');
+  // a 403 on the first request: one refusal, nothing written
+  const fetchImpl = async () => ({ ok: false, status: 403, text: async () => 'forbidden', headers: new Map() });
+  const lookup = (id) => falBilling(id, { fetchImpl, env: { FAL_KEY: 'k' } });
+  await assert.rejects(reconcile(w2, { provider: 'fal', lookup, sleep }), (e) => e.fatal && e.left === 2 && /ADMIN scope/.test(e.message));
+  assert.equal(readJSONL(path.join(w2, 'state', 'billing.jsonl')).length, 0);
+  await assert.rejects(falBilling('x', { env: {} }), (e) => e.fatal);
+  assert.equal(falBillingNotes({ FAL_KEY: 'k' }).length, 1);
+  assert.deepEqual(falBillingNotes({ FAL_ADMIN_KEY: 'k' }), []);
+  assert.deepEqual((await reconcile(w2, { provider: 'fal', dry_run: true })).estimate.requests, 2);
 });

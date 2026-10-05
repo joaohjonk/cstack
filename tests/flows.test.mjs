@@ -207,8 +207,8 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   // the R3 run: no brief, no references, and the gate passed
   const cold = gate().errors.join('\n');
   assert.match(cold, /no owner-approved founder brief.*founding mode/);
-  assert.match(cold, /no reference packet the owner has reacted to/);
-  const brief = { id: 'FB-ostrel', brand_id: 'evalcase', date: '2026-10-05', why_it_exists: { reason: 'tea that tastes of the second steep' }, customer: { who: 'people who drink tea at their desk', evidence: 'told' }, brand_as_person: { name: 'UNKNOWN' }, assets_and_inspirations: { inspirations: [{ ref: 'vintage tea tins', what_draws_them: 'one colour, one mark, the leaf named plainly' }] }, owner_approval: { status: 'draft' } };
+  assert.match(cold, /no reference packet or board the owner has reacted to/);
+  const brief = { id: 'FB-tea', brand_id: 'evalcase', date: '2026-10-05', why_it_exists: { reason: 'tea that tastes of the second steep' }, customer: { who: 'people who drink tea at their desk', evidence: 'told' }, brand_as_person: { name: 'UNKNOWN' }, assets_and_inspirations: { inspirations: [{ ref: 'vintage tea tins', what_draws_them: 'one colour, one mark, the leaf named plainly' }] }, owner_approval: { status: 'draft' } };
   fs.mkdirSync(path.join(w, 'briefs'), { recursive: true });
   const bf = path.join(w, 'briefs', '2026-10-05-founding.founder-brief.yaml');
   fs.writeFileSync(bf, YAML.stringify(brief));
@@ -217,13 +217,13 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   assert.doesNotMatch(gate().errors.join('\n'), /founder brief/);
   fs.mkdirSync(path.join(w, 'work', 'references'), { recursive: true });
   fs.writeFileSync(path.join(w, 'work', 'references', '2026-10-05-tea-packet.md'), '# packet\n');
-  assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/, 'a packet nobody reacted to is not enough');
+  assert.match(gate().errors.join('\n'), /reference packet or board the owner has reacted to/, 'a packet nobody reacted to is not enough');
   fs.mkdirSync(path.join(w, 'state'), { recursive: true });
   const fbl = path.join(w, 'state', 'feedback.jsonl');
   // F36: one yes to the whole board is not a reaction to references, nor is a single card
   fs.writeFileSync(fbl, JSON.stringify({ id: 'FB-0', date: '2026-10-05', by: 'Founder', type: 'approve', artifact_ref: 'work/references/2026-10-05-tea-packet.md' }) + '\n');
   fs.appendFileSync(fbl, JSON.stringify({ id: 'FB-1', date: '2026-10-05', by: 'Founder', type: 'gold', artifact_ref: 'references/inspiration/ref-tea-tin.reference.yaml' }) + '\n');
-  assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/);
+  assert.match(gate().errors.join('\n'), /reference packet or board the owner has reacted to/);
   fs.appendFileSync(fbl, JSON.stringify({ id: 'FB-2', date: '2026-10-05', by: 'Founder', type: 'anti', artifact_ref: 'references/anti/ref-protein-tub.reference.yaml' }) + '\n');
   assert.deepEqual(gate().errors, []);
   // an owner who chooses to skip a step records it, and the warning travels with the work
@@ -256,7 +256,7 @@ test('flows gate: after a pivot and a new approval, reactions from before the pi
   reopenBrief(bf, { reason: 'a healthier mass-market soda' });
   fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('tea you can carry', 'a healthier soda'));
   approveBrief(bf, { by: 'Founder' });
-  assert.match(gate(), /reference packet the owner has reacted to/);
+  assert.match(gate(), /reference packet or board the owner has reacted to/);
   react('FB-b');
   assert.equal(gate(), '');
   // F52: the natural order is react, then say yes; reactions given after the pivot and before the new yes count
@@ -268,7 +268,7 @@ test('flows gate: after a pivot and a new approval, reactions from before the pi
   // an approved brief edited and approved again without a reopen: reactions before the previous yes stop counting
   fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('a sparkling tea', 'a still tea'));
   approveBrief(bf, { by: 'Founder' });
-  assert.match(gate(), /reference packet the owner has reacted to/);
+  assert.match(gate(), /reference packet or board the owner has reacted to/);
 });
 
 test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
@@ -281,4 +281,174 @@ test('flows gate: a plan made before its library flow gained requires still owes
   const errs = gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } }).errors.join('\n');
   assert.match(errs, /founder brief/);
   assert.match(errs, /reference packet/);
+});
+
+test('flows gate: a reference board stands in for the packet; waivers carry who and their words (F65, F66)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f65-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territory probes for a canned iced tea with no type or colour yet' });
+  const gate = () => gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 1, per_day: 2 } });
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, YAML.stringify({ ...plan, waivers: [{ requires: 'founder_brief', owner_approved: '2026-10-05', why: 'testing references only' }] }));
+  fs.mkdirSync(path.join(w, 'work', 'sheets'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'work', 'sheets', 'refs.json'), JSON.stringify({ tool: 'cstack sheet', board: true, items: [] }));
+  fs.mkdirSync(path.join(w, 'state'), { recursive: true });
+  const fbl = path.join(w, 'state', 'feedback.jsonl');
+  fs.writeFileSync(fbl, ['references/inspiration/a.reference.yaml', 'references/anti/b.reference.yaml'].map((r, i) => JSON.stringify({ id: `FB-${i}`, date: '2026-10-05', by: 'Founder', type: i ? 'anti' : 'gold', artifact_ref: r })).join('\n') + '\n');
+  let g = gate();
+  assert.deepEqual(g.errors, [], 'a board with two reactions meets reference_reactions without a packet file');
+  assert.match(g.warnings.join('\n'), /record by and quote on the waiver/);
+  fs.writeFileSync(file, YAML.stringify({ ...plan, waivers: [{ requires: 'founder_brief', owner_approved: '2026-10-05', by: 'Founder', quote: 'skip the brief for this test', why: 'testing references only' }] }));
+  g = gate();
+  assert.ok(validateValue('flow', YAML.parse(fs.readFileSync(file, 'utf8'))).ok);
+  assert.match(g.warnings.join('\n'), /Founder waived it 2026-10-05, saying "skip the brief for this test": testing references only\); say so/);
+});
+
+test('flows: phase budgets are checked against est_cost and the run budget; a text-check stop rule names its engine (F64, F67)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const lib = listFlows(ROOT).find((f) => f.id === 'grid-pick-polish');
+  assert.ok(lib.steps.filter((s) => s.budget).length >= 3, 'grid-pick-polish carries phase budgets');
+  const bad = structuredClone(lib);
+  bad.steps.find((s) => s.id === 'grid').budget.amount = 0.01;
+  assert.match(checkFlow(bad).errors.join('\n'), /step "grid": budget 0\.01 USD is below one unit of its est_cost/);
+  const w = tmpDir('cstack-f64-');
+  const { file } = planFromFlow(w, 'grid-pick-polish', { target: 'flavour pictures for a tall can, four frames each' });
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const warn = (per_run) => gateFlow(w, file, { providers: fal, budget: { per_run, per_day: 5 } }).warnings.join('\n');
+  assert.match(warn(0.5), /phase budgets add up to 1\.05 \(grid 0\.3, rebuild 0\.35, refine 0\.4\), over this workspace's per_run 0\.5/);
+  assert.doesNotMatch(warn(2), /phase budgets add up/);
+  const PATH = process.env.PATH;
+  process.env.PATH = path.join(w, 'empty-bin');
+  try {
+    assert.match(warn(2), /tesseract is not on PATH here; install it \(brew install tesseract; cstack never installs it\) or pass --engine judge/);
+  } finally {
+    process.env.PATH = PATH;
+  }
+});
+
+test('flows gate: a product close-up needs an owner-confirmed product-truth reference (F71)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f71-');
+  const { file } = planFromFlow(w, 'product-hero-video', { target: 'a six second product film for a tall can' });
+  const gate = () => gateFlow(w, file, { providers: [{ id: 'fal', kind: 'media', available: true, missing_env: [] }], budget: { per_run: 5, per_day: 10 } }).errors.join('\n');
+  assert.match(gate(), /no owner-confirmed product-truth reference/);
+  const ref = (approval) => `id: ref-can\nkind: image\nlibrary: own_asset\nrights:\n  status: owned\ntransferable_mechanism: the real can, front, daylight\napproval: ${approval}\n`;
+  fs.mkdirSync(path.join(w, 'references', 'own'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'references', 'own', 'can.reference.yaml'), ref('inferred'));
+  assert.match(gate(), /product-truth/, 'research labelled "real product" is a candidate until the owner confirms');
+  fs.writeFileSync(path.join(w, 'references', 'own', 'can.reference.yaml'), ref('locked'));
+  assert.doesNotMatch(gate(), /product-truth/);
+});
+
+test('flows gate: no prompt review before paid generation warns; territories that need composited elements need a composite step (F68, F69)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f68-');
+  const { file } = planFromFlow(w, 'grid-pick-polish', { target: 'flavour pictures for a tall can, four frames each' });
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const run = (stage) => gateFlow(w, file, { stage, providers: fal, budget: { per_run: 2, per_day: 5 } });
+  assert.doesNotMatch(run('make').warnings.join('\n'), /no prompt review/, 'the library flow reviews prompts before the grid');
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  const noReview = { ...plan, steps: plan.steps.filter((s) => s.id !== 'prompt-review') };
+  fs.writeFileSync(file, YAML.stringify(noReview));
+  assert.match(run('make').warnings.join('\n'), /no prompt review before the first paid generation/);
+  fs.mkdirSync(path.join(w, 'work', 'sheets'), { recursive: true });
+  for (const n of ['a', 'b', 'c']) fs.writeFileSync(path.join(w, 'work', 'sheets', `${n}.png`), 'x');
+  const territories = [{ name: 'Tall Poster', probe_sheet: 'work/sheets/a.png', composite: ['the price', 'drop number'] }, { name: 'Loud', probe_sheet: 'work/sheets/b.png' }, { name: 'Drop', probe_sheet: 'work/sheets/c.png' }];
+  fs.writeFileSync(file, YAML.stringify({ ...noReview, territories }));
+  assert.ok(validateValue('flow', YAML.parse(fs.readFileSync(file, 'utf8'))).ok);
+  assert.match(run('decide').errors.join('\n'), /territories depend on the price, drop number, set after generation, and the plan has no composite step/);
+  fs.writeFileSync(file, YAML.stringify({ ...noReview, territories, steps: [...noReview.steps, { id: 'composite', does: 'set the price and drop number in the brand type over each final', kind: 'deterministic', skill: 'vector-master', gate: { type: 'deterministic_check', check: 'cstack svg legibility' } }] }));
+  assert.doesNotMatch(run('decide').errors.join('\n'), /composite step/);
+});
+
+test('prompt compile warns when slots contradict each other, and only then (F70)', async () => {
+  const { compile } = await import('../scripts/lib/prompt.mjs');
+  const r = compile({ template: '{subject}. {light}. {rules}', slots: { subject: {}, light: {}, rules: {} }, values: { subject: 'a tall can with the price printed on the side, close-up', light: 'night street, wide shot', rules: 'no lettering, no logos' } });
+  assert.ok(r.ok, 'warnings never fail a compile');
+  assert.equal(r.warnings.length, 2);
+  assert.match(r.warnings[0], /slot "rules" asks for no lettering and slot "subject" asks for text or a mark/);
+  assert.match(r.warnings[1], /close-up.*wide frame/);
+  assert.deepEqual(compile({ template: '{a}. {b}', slots: { a: {}, b: {} }, values: { a: 'no logos or text', b: 'soft window light, studio' } }).warnings, []);
+});
+
+test('flows gate: a pack target on a picture flow points at concept-wrap; concept-wrap itself does not warn (F73, F74)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f73-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const opts = { stage: 'make', providers: fal, budget: { per_run: 2, per_day: 5 } };
+  const probes = planFromFlow(w, 'mood-probes', { target: 'the can for a sparkling tea, one per flavour' });
+  assert.match(gateFlow(w, probes.file, opts).warnings.join('\n'), /the target is a pack.*concept-wrap/);
+  const hero = planFromFlow(w, 'brand-hero-photo', { target: 'a hero photo for the home page at phone width' });
+  assert.doesNotMatch(gateFlow(w, hero.file, opts).warnings.join('\n'), /the target is a pack/);
+  const wrap = planFromFlow(w, 'concept-wrap', { target: 'the can for a sparkling tea, one per flavour' });
+  assert.equal(checkFlowFile(w, wrap.file).errors.length, 0);
+  assert.doesNotMatch(gateFlow(w, wrap.file, opts).warnings.join('\n'), /the target is a pack/);
+});
+
+test('founder first, not founder only: decide warns without a challenge memo; create-brand goes downstream (F87, F88)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f87-');
+  const { file } = planFromFlow(w, 'mood-probes', { target: 'territories for a new tea brand, made visible' });
+  fs.mkdirSync(path.join(w, 'work', 'sheets'), { recursive: true });
+  for (const n of ['a', 'b', 'c']) fs.writeFileSync(path.join(w, 'work', 'sheets', `${n}.png`), 'x');
+  const plan = YAML.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, YAML.stringify({ ...plan, territories: ['a', 'b', 'c'].map((n) => ({ name: n, probe_sheet: `work/sheets/${n}.png` })) }));
+  const run = () => gateFlow(w, file, { stage: 'decide', providers: [], budget: null });
+  assert.match(run().warnings.join('\n'), /no challenge memo/);
+  fs.mkdirSync(path.join(w, 'work', 'direction'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'work', 'direction', '2026-10-05-challenge.md'), '# challenge\n');
+  assert.doesNotMatch(run().warnings.join('\n'), /no challenge memo/);
+  const wf = YAML.parse(fs.readFileSync(path.join(ROOT, 'workflows', 'create-brand', 'workflow.yaml'), 'utf8'));
+  const ids = wf.steps.map((s) => s.id);
+  for (const id of ['challenge-strategy', 'challenge-territories', 'packaging', 'photoshoot', 'ads', 'launch-page', 'replicability']) assert.ok(ids.includes(id), id);
+  assert.ok(ids.indexOf('challenge-strategy') < ids.indexOf('territories') && ids.indexOf('packaging') > ids.indexOf('systemization'));
+});
+
+test('flows gate --stage polish: past the grid, the owner pick is on record or waived (F48, F52, F89)', async () => {
+  const { gateFlow, GATE_STAGES } = await import('../scripts/lib/flows.mjs');
+  assert.deepEqual(GATE_STAGES, ['make', 'polish', 'decide', 'final']);
+  const w = tmpDir('cstack-f89-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const plan = planFromFlow(w, 'grid-pick-polish', { target: 'a launch ad still for a tea can' });
+  const polish = () => gateFlow(w, plan.file, { stage: 'polish', providers: fal });
+  assert.match(polish().errors.join('\n'), /polish: no owner pick on record for step "pick"/);
+  assert.doesNotMatch(gateFlow(w, plan.file, { stage: 'make', providers: fal, budget: { per_run: 2, per_day: 5 } }).errors.join('\n'), /owner pick/, 'the grid itself needs no pick');
+  fs.mkdirSync(path.join(w, 'state'), { recursive: true });
+  fs.writeFileSync(path.join(w, 'state', 'feedback.jsonl'), JSON.stringify({ id: 'FB-1', date: today, by: 'owner', type: 'approve', artifact_ref: 'work/grid.png', context: { surface: 'contact sheet', scope: 'review' } }) + '\n');
+  assert.match(polish().errors.join('\n'), /no owner pick/, 'an approval that is not a winner pick does not count');
+  fs.appendFileSync(path.join(w, 'state', 'feedback.jsonl'), JSON.stringify({ id: 'FB-2', date: today, by: 'owner', type: 'approve', artifact_ref: 'work/grid.png', reason: 'the can reads at thumb size', context: { surface: 'contact sheet', scope: 'winner pick' } }) + '\n');
+  assert.doesNotMatch(polish().errors.join('\n'), /owner pick/);
+  const w2 = tmpDir('cstack-f89-');
+  const p2 = planFromFlow(w2, 'grid-pick-polish', { target: 'a launch ad still for a tea can' });
+  const doc = YAML.parse(fs.readFileSync(p2.file, 'utf8'));
+  doc.waivers = [{ requires: 'owner_pick', owner_approved: today, by: 'owner', quote: 'just polish frame 3', why: 'owner chose in chat' }];
+  fs.writeFileSync(p2.file, YAML.stringify(doc));
+  const r = gateFlow(w2, p2.file, { stage: 'polish', providers: fal });
+  assert.doesNotMatch(r.errors.join('\n'), /owner pick/);
+  assert.match(r.warnings.join('\n'), /polish: going ahead with no recorded pick \(owner waived it .*"just polish frame 3"/);
+});
+
+test('flows gate: an ad round starts from a competitor-ads scan, and bets cite it (F91)', async () => {
+  const { gateFlow, competitorScans } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f91-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const opts = { stage: 'make', providers: fal, budget: { per_run: 2, per_day: 5 } };
+  const plan = planFromFlow(w, 'brand-hero-photo', { target: 'four static launch ads for a tea brand' });
+  assert.match(gateFlow(w, plan.file, opts).errors.join('\n'), /no competitor-ads scan .* \(F91\)/);
+  const ugc = planFromFlow(w, 'ugc-style-ad', { target: 'a creator video for the launch' });
+  assert.match(gateFlow(w, ugc.file, opts).errors.join('\n'), /no competitor-ads scan/, 'ad flows require it whatever the target says');
+  const ad = (competitor) => ({ competitor, link: `https://example.com/ads/${competitor}`, days_running: 40, format: 'UGC talking head', hook: 'I quit soda for this', offer: '20% off first order', claim: 'zero sugar' });
+  const scan = { id: 'tea-ads', date: today, category: 'canned iced tea', sources: ['Meta Ad Library'], ads: ['a', 'b', 'c', 'd'].map(ad), saturated: ['zero-sugar claim over a taste test'], white_space: ['price told plainly'] };
+  fs.mkdirSync(path.join(w, 'work', 'competitors'), { recursive: true });
+  const f = path.join(w, 'work', 'competitors', 'scan.competitor-ads.yaml');
+  fs.writeFileSync(f, YAML.stringify(scan));
+  assert.equal(competitorScans(w).length, 0, 'four ads is not a scan');
+  fs.writeFileSync(f, YAML.stringify({ ...scan, ads: ['a', 'b', 'c', 'd', 'e'].map(ad) }));
+  assert.equal(competitorScans(w).length, 1);
+  assert.equal(competitorScans(w, { now: Date.parse(today) + 91 * 86400000 }).length, 0, 'a scan older than 90 days is stale');
+  assert.doesNotMatch(gateFlow(w, plan.file, opts).errors.join('\n'), /competitor-ads/);
+  fs.writeFileSync(path.join(w, 'work', 'b1.creative-bet.yaml'), YAML.stringify({ id: 'b1', evidence: [{ ref: 'work/insights/i1.md', ladder: 'observation' }] }));
+  assert.match(gateFlow(w, plan.file, opts).warnings.join('\n'), /bet b1 does not cite the competitor-ads scan/);
+  const photo = planFromFlow(tmpDir('cstack-f91-'), 'brand-hero-photo', { target: 'a hero photo of a kitchen at dawn for the home page' });
+  assert.doesNotMatch(gateFlow(path.dirname(path.dirname(photo.file)), photo.file, opts).errors.join('\n'), /competitor-ads/);
 });

@@ -74,10 +74,47 @@ export function compile(recipe, opts = {}) {
     .trim();
 
   for (const leak of styleLeaks(prompt, opts.names)) errors.push(`prompt ${leak}`);
+  const warnings = contradictions({ template, ...Object.fromEntries(Object.entries(resolved).map(([k, v]) => [`slot "${k}"`, v.value])) });
 
   const slot_values = Object.fromEntries(Object.entries(resolved).map(([k, v]) => [k, v.value]));
   const hash = hashValue({ template, slot_values, target_model: recipe.target_model ?? null, parameters: recipe.parameters ?? {} });
-  return { prompt, slot_values, resolution: resolved, hash, errors, ok: errors.length === 0 };
+  return { prompt, slot_values, resolution: resolved, hash, errors, warnings, ok: errors.length === 0 };
+}
+
+// F70: slots that pull against each other ("no lettering" in one, "the price printed on the can" in another) compile
+// fine and confuse the model. Each pair is two sides of one decision; the first side is removed from a text before the
+// second is looked for, so "no logos" does not also count as asking for a logo. A warning, not a failure: the words
+// may be deliberate, and the recipe's author decides.
+const CLASHES = [
+  ['no lettering', /\b(no|without|free of|never any)\s+(visible\s+)?(text|lettering|letters|words|typography|type|logos?|labels?|branding)\b/gi, 'text or a mark in the frame', /\b(printed|lettering|wordmark|logo|headline|caption|typography|the price|price tag|label reads|reads ")/i],
+  ['close-up', /\b(close-up|close up|macro|extreme close|tight crop)\b/gi, 'a wide frame', /\b(wide shot|wide angle|establishing|full[- ]body|long shot|aerial)\b/i],
+  ['night or dark', /\b(night|nighttime|after dark|moonlit|low[- ]key|pitch dark)\b/gi, 'daylight', /\b(midday|noon|bright daylight|harsh sun|high[- ]key|sunny)\b/i],
+  ['studio', /\b(studio|seamless (backdrop|background|paper)|cyclorama)\b/gi, 'outdoors', /\b(outdoors?|on the street|beach|forest|park|in the wild|rooftop)\b/i],
+  ['shallow focus', /\b(shallow depth of field|bokeh|f\/1\.[0-9]|wide open aperture)\b/gi, 'deep focus', /\b(deep focus|everything in focus|f\/(8|11|16|22)|front-to-back sharp)\b/i],
+  ['black and white', /\b(black and white|black-and-white|monochrome|greyscale|grayscale)\b/gi, 'saturated colour', /\b(vivid|saturated|full colou?r|technicolor|neon colou?rs?)\b/i],
+  ['top-down', /\b(top[- ]down|overhead|flat ?lay|bird'?s[- ]eye)\b/gi, 'eye level or low angle', /\b(eye[- ]level|low angle|worm'?s[- ]eye|from below)\b/i],
+  ['minimal', /\b(minimal|sparse|empty|single object|lone)\b/gi, 'a busy frame', /\b(busy|crowded|cluttered|packed|maximalist|many objects)\b/i],
+];
+
+export function contradictions(sources) {
+  const out = [];
+  for (const [aName, aRe, bName, bRe] of CLASHES) {
+    const as = [];
+    const bs = [];
+    for (const [where, text] of Object.entries(sources)) {
+      const t = String(text ?? '');
+      if (new RegExp(aRe.source, 'i').test(t)) as.push(where);
+      if (bRe.test(t.replace(new RegExp(aRe.source, 'gi'), ' '))) bs.push(where);
+    }
+    for (const a of as) {
+      const b = bs.find((x) => x !== a) ?? (bs.includes(a) ? a : null);
+      if (b) {
+        out.push(`${a} asks for ${aName} and ${b === a ? 'also' : b} asks for ${bName}; pick one, or say how both hold`);
+        break;
+      }
+    }
+  }
+  return out;
 }
 
 // Component-level diff between two recipes (never diff two 4k strings by eye).
