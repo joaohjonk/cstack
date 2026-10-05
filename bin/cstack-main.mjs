@@ -164,7 +164,7 @@ const COMMANDS = {
   'mockup render': 'composite approved art onto a template package (quad, cylinder, mesh; displacement, shading; licence gate): cstack mockup render --template <dir> --art <file.png|svg> --out <file.png> [--placement id] [--force] [--internal]',
   'mockup verify': 'prove the art survived: inverse-warp each placement to flat art space and diff it (mean, edges, worst-tile SSIM, heatmap): cstack mockup verify --template <dir> --art <file> --render <file.png> [--placement id]; exits 1 on FAIL',
   'mockup template': 'draw a can template (CC0, no photograph) and print the flat wrap size: cstack mockup template can --out <dir> --spec <file.pack-spec.yaml> (the real can; --size standard-12oz|sleek-12oz|tall-16oz is typical, a first comp only)',
-  'pack check': 'measure pack renders against the real pack (F86): cstack pack check <images|svgs...> --spec <file.pack-spec.yaml> [--box x,y,w,h | --judge "<cmd>"] [--tolerance 0.04] [--json] (exit 1 when off spec, unmeasurable or angled)',
+  'pack check': 'measure pack renders against the real pack (F86): cstack pack check <images|svgs...> --spec <file.pack-spec.yaml> [--box x,y,w,h | --judge "<cmd>"] [--product-box x,y,w,h] [--tolerance 0.04] [--json] (exit 1 when off spec, unmeasurable or angled; --product-box also checks the product\'s size against the pack, F97)',
   'pack spec-from-pdf': 'read a print or dieline PDF\'s page boxes (TrimBox = finished size) in mm, to fill a pack spec: cstack pack spec-from-pdf <file.pdf> [--artwork <svg>] (flags artwork of a different size)',
   spread: 'count campaign frames by what the brief asked to vary, before the pick (F93): cstack spread <frames.yaml|json> --by flavour[,mood] [--expect flavour=a,b,c] [--max-share 0.4] [--json] (exit 1 when one value takes more than its share, a named value is missing, or a frame is unlabelled)',
   'claims conflicts': 'flag one fixed-price promise shown with two prices in a round (F94): cstack claims conflicts <copy files...> [--json] (exit 1 on a conflict; a price test needs a regional or channel split, or one price at a time)',
@@ -894,8 +894,10 @@ function cmdPack(sub) {
       if (args.judge === true) die('--judge needs a command');
       const box = typeof args.box === 'string' ? args.box.split(',').map(Number) : null;
       if (box && (box.length !== 4 || box.some((n) => !Number.isFinite(n)))) die('--box takes x,y,w,h in pixels');
-      if (!args._.length) die('usage: cstack pack check <images|svgs...> --spec <file> [--box x,y,w,h | --judge "<cmd>"]');
-      const r = checkPack(args._, { spec, box, judge: args.judge ? tokenize(args.judge) : null, tolerance: args.tolerance === undefined ? undefined : Number(args.tolerance) });
+      const productBox = typeof args['product-box'] === 'string' ? args['product-box'].split(',').map(Number) : null;
+      if (productBox && (productBox.length !== 4 || productBox.some((n) => !Number.isFinite(n)))) die('--product-box takes x,y,w,h in pixels');
+      if (!args._.length) die('usage: cstack pack check <images|svgs...> --spec <file> [--box x,y,w,h | --judge "<cmd>"] [--product-box x,y,w,h]');
+      const r = checkPack(args._, { spec, box, productBox, judge: args.judge ? tokenize(args.judge) : null, tolerance: args.tolerance === undefined ? undefined : Number(args.tolerance) });
       if (args.json) json(r);
       else {
         for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(12)} ${shown(i.file)}  ${i.evidence}`);

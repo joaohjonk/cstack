@@ -1106,7 +1106,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/product-fidelity/SKILL.md",
-      "tokens": 1445
+      "tokens": 1475
     },
     {
       "slug": "prompt-director",

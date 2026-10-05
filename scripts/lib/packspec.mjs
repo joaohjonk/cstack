@@ -97,8 +97,33 @@ export function boxPrompt(file, spec) {
   return [
     `Look at the image file ${file}. Find the ${spec.format ?? 'pack'} (${spec.product ?? 'the product'}) in it.`,
     'Give its bounding box in pixels, and say whether its front face is seen straight on (front) or at an angle (angled), or whether no pack is visible (none).',
-    'Reply with one JSON object and nothing else: {"view": "front"|"angled"|"none", "box": [x, y, width, height]}',
+    'Reply with one JSON object and nothing else: {"view": "front"|"angled"|"none", "box": [x, y, width, height], "product_box": [x, y, width, height] | null}',
+    `product_box is the bounding box of the product itself${spec?.contents?.what ? ` (${spec.contents.what})` : ''} when it is shown outside or beside the pack, else null.`,
   ].join('\n');
+}
+
+/**
+ * F97: the product next to or inside its open pack is measured too. The spec's contents size (longest side, a range)
+ * against the front face's longest side gives the expected product-to-pack ratio; the two boxes give the measured one.
+ * No contents size in the spec means the scale is unverifiable, never assumed.
+ */
+export function productScale(spec) {
+  const c = spec?.contents ?? {};
+  const sides = ['length_mm', 'width_mm', 'height_mm'].map((k) => c[k]).filter((r) => r && (r.min > 0 || r.max > 0));
+  if (!sides.length || !spec?.front_mm?.width || !spec?.front_mm?.height) return null;
+  const packLong = Math.max(spec.front_mm.width, spec.front_mm.height);
+  const lo = Math.max(...sides.map((r) => r.min ?? r.max));
+  const hi = Math.max(...sides.map((r) => r.max ?? r.min));
+  const estimated = Boolean(c.estimated) || sides.some((r) => r.estimated || ['inferred', 'pending'].includes(r.source));
+  return { min: lo / packLong, max: hi / packLong, estimated, source: c.source ?? sides.find((r) => r.source)?.source ?? null };
+}
+
+function productVerdict(packBox, productBox, scale, tol) {
+  const got = Math.max(productBox[2], productBox[3]) / Math.max(packBox[2], packBox[3]);
+  const pass = got >= scale.min * (1 - tol) - 1e-9 && got <= scale.max * (1 + tol) + 1e-9;
+  const want = scale.min === scale.max ? `${Math.round(scale.min * 1000) / 1000}` : `${Math.round(scale.min * 1000) / 1000} to ${Math.round(scale.max * 1000) / 1000}`;
+  const off = got < scale.min ? pctOff(got, scale.min) : got > scale.max ? pctOff(got, scale.max) : 0;
+  return { result: pass ? 'pass' : 'fail', measured: Math.round(got * 1000) / 1000, expected: want, off_pct: off, estimated: scale.estimated, evidence: `product to pack (longest sides) ${Math.round(got * 1000) / 1000} against the spec's ${want}${scale.estimated ? ' (an estimate)' : ''} (${off}% off, tolerance ${tol * 100}%)` };
 }
 
 function parseBox(out) {
@@ -125,11 +150,13 @@ function verdict(got, want, tol, what) {
 }
 
 /**
- * checkPack(files, {spec, specFile, box: [x,y,w,h], judge: argv, tolerance}) -> {images: [...], ok}
+ * checkPack(files, {spec, specFile, box: [x,y,w,h], productBox: [x,y,w,h], judge: argv, tolerance}) -> {images: [...], ok}
  * Raster images need --box or --judge: cstack does not guess where the pack is. A front view measured against the
  * front face; angled or missing is `unverifiable`, which fails the check (the render stays illustrative).
+ * A frame that also shows the product (open pack, product beside it) gives its box too, and the product-to-pack
+ * scale is measured against the spec's contents size (F97); a spec without one makes that frame unverifiable.
  */
-export function checkPack(files, { spec, box = null, judge = null, tolerance } = {}) {
+export function checkPack(files, { spec, box = null, productBox = null, judge = null, tolerance } = {}) {
   if (!spec) throw new Error('--spec <file.pack-spec.yaml> required: cstack never invents packaging sizes');
   const tol = Number(tolerance ?? spec.tolerance ?? DEFAULT_TOLERANCE);
   const { front, flat } = specAspects(spec);
@@ -143,6 +170,7 @@ export function checkPack(files, { spec, box = null, judge = null, tolerance } =
       return { file, kind: 'flat', ...verdict(s.height / s.width, flat ?? front, tol, flat ? 'flat artwork against the flat print size:' : 'flat artwork against the front face:') };
     }
     let b = box;
+    let pb = productBox;
     let how = '--box';
     if (!b && judge) {
       const r = spawnSync(judge[0], judge.slice(1), { input: boxPrompt(file, spec), encoding: 'utf8', cwd: path.dirname(file), timeout: 300000, maxBuffer: 16 * 1024 * 1024 });
@@ -151,6 +179,7 @@ export function checkPack(files, { spec, box = null, judge = null, tolerance } =
       if (!v) return { file, result: 'error', evidence: 'the judge reply had no {"view": ...} answer' };
       if (v.view !== 'front') return { file, result: 'unverifiable', evidence: v.view === 'none' ? 'no pack found in the frame' : 'the pack is seen at an angle, so its proportions cannot be measured from a box; label the render illustrative or render the true pack (cstack mockup, three-d)' };
       b = v.box;
+      if (!pb && Array.isArray(v.product_box)) pb = v.product_box;
       how = 'judge box';
     }
     if (!b) throw new Error('MISSING: a picture needs the pack\'s box: --box x,y,w,h (pixels) or --judge "<agent command that can read an image>"; cstack does not guess where the pack is');
@@ -162,7 +191,13 @@ export function checkPack(files, { spec, box = null, judge = null, tolerance } =
       /* size only bounds the box */
     }
     if (size && (b[0] + b[2] > size.width + 1 || b[1] + b[3] > size.height + 1)) return { file, result: 'error', evidence: `box ${b.join(',')} runs outside the ${size.width}x${size.height} image` };
-    return { file, kind: 'picture', box: b, ...verdict(b[3] / b[2], front, tol, `pack (${how})`) };
+    const pack = { file, kind: 'picture', box: b, ...verdict(b[3] / b[2], front, tol, `pack (${how})`) };
+    if (!pb) return pack;
+    if (!(Array.isArray(pb) && pb.length === 4 && pb[2] > 0 && pb[3] > 0)) return { ...pack, result: 'error', evidence: `bad product box ${JSON.stringify(pb)}` };
+    const scale = productScale(spec);
+    if (!scale) return { ...pack, product_box: pb, result: 'unverifiable', evidence: `${pack.evidence}; product scale unverifiable: the spec has no contents size (measure the product and add contents.length_mm/width_mm/height_mm, or mark it estimated)` };
+    const pv = productVerdict(b, pb, scale, tol);
+    return { ...pack, product_box: pb, product: pv, result: pack.result === 'pass' ? pv.result : pack.result, evidence: `${pack.evidence}; ${pv.evidence}` };
   });
   return { tolerance: tol, images, ok: images.every((i) => i.result === 'pass') };
 }
