@@ -303,6 +303,18 @@ test('tools: detects by agent-visible MCP server name and env presence, never by
   // a connector named after the tool counts, with or without the host's prefix (field test F04)
   for (const name of ['Cosmos', 'claude_ai_Cosmos', 'cosmos-so']) assert.equal(Object.fromEntries(detectTools(w, { mcpServers: [name], env: {} }).map((t) => [t.id, t])).cosmos.available, true, name);
   assert.equal(Object.fromEntries(detectTools(w, { mcpServers: ['cosmonaut'], env: {} }).map((t) => [t.id, t])).cosmos.available, false);
+  // detected but not usable: Cosmos's terms allow only its own software or a browser, and it publishes no MCP (field test F30)
+  const cos = Object.fromEntries(detectTools(w, { mcpServers: ['Cosmos'], env: {} }).map((t) => [t.id, t])).cosmos;
+  assert.equal(cos.usable, false);
+  assert.match(cos.agent_use, /not allowed/);
+  assert.equal(by.figma.usable, true);
+  // the owner may accept the terms risk for one workspace, by name and date; without both it does not count
+  fs.appendFileSync(path.join(w, 'cstack.config.yaml'), '\nresearch_tools:\n  cosmos: { agent_use: { allowed: true, accepted_by: Owner } }\n');
+  assert.equal(Object.fromEntries(detectTools(w, { mcpServers: ['Cosmos'], env: {} }).map((t) => [t.id, t])).cosmos.usable, false);
+  fs.writeFileSync(path.join(w, 'cstack.config.yaml'), fs.readFileSync(path.join(w, 'cstack.config.yaml'), 'utf8').replace('accepted_by: Owner', 'accepted_by: Owner, date: 2026-10-05'));
+  const own = Object.fromEntries(detectTools(w, { mcpServers: ['Cosmos'], env: {} }).map((t) => [t.id, t])).cosmos;
+  assert.equal(own.usable, true);
+  assert.match(own.agent_use, /allowed by the owner \(Owner, 2026-10-05\)/);
   assert.ok(!JSON.stringify(res).includes('"x"'), 'env values are never echoed');
 });
 

@@ -8,6 +8,7 @@ depends_on:
 description: '"Make it go viral" becomes an organic-travel objective with named reasons, kept apart from paid performance.'
 cannot_isolate: Actual spread.
 setup: 'Request: ''make our next ads go viral''. Fictional brand workspace.'
+fresh_workspace: true
 expected:
   must:
   - separates paid performance, organic travel and brand equity as different objectives and asks or decides which this bet serves

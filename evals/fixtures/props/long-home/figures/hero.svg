@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" role="img" aria-labelledby="t">
+  <title id="t">Loomwright</title>
+  <rect width="1200" height="700" fill="#ffffff"/>
+  <text x="60" y="110" font-family="Helvetica, Arial, sans-serif" font-size="40" fill="#2b2a28">Loomwright</text>
+  <text x="60" y="160" font-family="Helvetica, Arial, sans-serif" font-size="22" fill="#6b665e">Every job, on the right press, on time.</text>
+  <rect x="60" y="260" width="176" height="180" rx="12" fill="#f4efe6" stroke="#2b2a28" stroke-width="3"/>
+  <text x="80" y="360" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#2b2a28">Quote</text>
+  <rect x="276" y="260" width="176" height="180" rx="12" fill="#f4efe6" stroke="#2b2a28" stroke-width="3"/>
+  <text x="296" y="360" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#2b2a28">Proof</text>
+  <rect x="492" y="260" width="176" height="180" rx="12" fill="#f4efe6" stroke="#2b2a28" stroke-width="3"/>
+  <text x="512" y="360" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#2b2a28">Press</text>
+  <rect x="708" y="260" width="176" height="180" rx="12" fill="#f4efe6" stroke="#2b2a28" stroke-width="3"/>
+  <text x="728" y="360" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#2b2a28">Finish</text>
+  <rect x="924" y="260" width="176" height="180" rx="12" fill="#f4efe6" stroke="#2b2a28" stroke-width="3"/>
+  <text x="944" y="360" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#2b2a28">Ship</text>
+  <text x="60" y="560" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#6b665e">Arrows show the order a job moves in; dashed boxes are optional steps.</text>
+</svg>

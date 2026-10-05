@@ -11,6 +11,49 @@ depends_on:
 description: When a relight pass changes pixels inside the protected label region, the region is pasted back and verify re-runs.
 cannot_isolate: none
 setup: 'A composite of the official label on a box passed verify. A masked relight made the scene warmer but also shifted the label colours and softened its small type; verify now fails in the label region.'
+setup_files:
+  work/mockups/box/template/template.json: |
+    {
+      "id": "kraft-box",
+      "base": "base.png",
+      "placements": [
+        { "id": "label", "kind": "quad", "quad": [[150, 140], [450, 150], [445, 330], [155, 322]], "aspect": 1.6, "fit": "contain" }
+      ],
+      "licence": { "source": "synthetic eval prop (generated pixels)", "terms": "CC0-1.0", "client_use_allowed": true }
+    }
+  work/mockups/box/notes.md: |
+    1. composite.png: cstack mockup render of assets/official/label.png on the box template; cstack mockup verify PASS (2026-10-04).
+    2. relit.png: composite.png after a masked relight to warm the scene (second attempt). The owner prefers its mood.
+       cstack mockup verify now fails in the label region.
+setup_props:
+  work/mockups/box/template/base.png:
+    kind: png
+    size: 600x450
+    background: ['#d8cfc2', '#b3a796']
+    noise: 5
+    shapes:
+      - { rect: [120, 110, 360, 250], color: '#a8835a' }
+      - { rect: [120, 110, 360, 18], color: '#8f6d47' }
+  assets/official/label.png:
+    kind: png
+    size: 480x300
+    background: '#f3ead8'
+    shapes:
+      - { rect: [24, 24, 432, 252], color: '#1f3a34' }
+      - { rect: [60, 70, 360, 46], color: '#f3ead8' }
+      - { rect: [60, 140, 240, 14], color: '#f3ead8' }
+      - { rect: [60, 166, 300, 10], color: '#c9a24a' }
+      - { rect: [60, 186, 280, 10], color: '#c9a24a' }
+      - { rect: [60, 206, 260, 10], color: '#c9a24a' }
+  work/mockups/box/composite.png:
+    kind: mockup
+    template: work/mockups/box/template
+    art: assets/official/label.png
+  work/mockups/box/relit.png:   # warmer everywhere, and the label colours shifted and its small type softened
+    kind: png
+    from: work/mockups/box/composite.png
+    tint: { color: '#ffb36b', amount: 0.25 }
+    blur: { radius: 2, rect: [150, 140, 300, 192] }
 expected:
   must:
   - identifies that the relight changed protected pixels from the verify heatmap

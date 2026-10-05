@@ -11,6 +11,62 @@ depends_on:
 description: Method before making. A large outcome asked in one line must not be one-shot.
 cannot_isolate: Closeness of the final output to the target is judged by the owner in a T4 run; this case checks the method only.
 setup: 'Request with no brief: ''make our product rotate in 3D on the homepage, like the best DTC sites'' (fictional brand, product photos available, no 3D file). Budget allows small probes only.'
+setup_files:
+  cstack.config.yaml: |
+    # cstack workspace for Evalcase (eval case). Budget allows small probes only.
+    brand_id: evalcase
+    created: 2026-10-05
+    budget:
+      currency: USD
+      per_run: 2
+      per_day: 5
+      confirm_over: 0   # every priced call still needs the owner's --confirm
+      allow_unpriced: false
+    providers:
+      preferred_media: fal
+      reference_search: taste-labs
+      verifier: local
+    approvals:
+      final_assets_need_human: true
+      never_self_approve: [logo_marks, claims, packaging_rules]
+    publish: { allowed: false }
+setup_props:
+  assets/product/serum/photo-01.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [264, 260, 200, 560], color: '#d7b48a' }
+      - { rect: [304, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [264, 470, 200, 170], color: '#f3ead8' }
+  assets/product/serum/photo-02.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [282, 260, 200, 560], color: '#d7b48a' }
+      - { rect: [322, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [282, 470, 200, 170], color: '#f3ead8' }
+  assets/product/serum/photo-03.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [300, 260, 200, 560], color: '#d7b48a' }
+      - { rect: [340, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [300, 470, 200, 170], color: '#f3ead8' }
+  assets/product/serum/photo-04.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [318, 260, 200, 560], color: '#d7b48a' }
+      - { rect: [358, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [318, 470, 200, 170], color: '#f3ead8' }
 expected:
   must:
   - states a concrete target with a reference and musts/must-nots before choosing tools

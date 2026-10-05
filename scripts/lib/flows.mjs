@@ -5,6 +5,7 @@ import path from 'node:path';
 import YAML from 'yaml';
 import { ROOT, exists, readData, writeAtomic, today } from './core.mjs';
 import { validateValue } from './schemas.mjs';
+import { briefApproved, feedbackMark } from './brief.mjs';
 
 const DAY = 86400000;
 
@@ -74,10 +75,20 @@ export function searchFlows(ws, query, { k = 5 } = {}) {
 export function planFromFlow(ws, id, { target, deliverable, key_visual } = {}) {
   const f = listFlows(ws).find((x) => x.id === id);
   if (!f) throw new Error(`no flow "${id}" (try: cstack flows search "<outcome>")`);
+  const plan = planDoc(f, { id: `${today()}-${f.id}`, target, deliverable, key_visual });
+  const out = path.join(ws, 'work', 'flows', `${plan.id}.flow.yaml`);
+  if (exists(out)) throw new Error(`${out} already exists; edit it or remove it first`);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  writeAtomic(out, YAML.stringify(plan));
+  return { file: out, stale: f.stale, age_days: f.age_days, source_scope: f.scope };
+}
+
+/** The run plan for one listed flow (status: plan), as planFromFlow writes it; eval props build case plans with it. */
+export function planDoc(f, { id, target, deliverable, key_visual } = {}) {
   const { file, scope, age_days, stale, ...flow } = f;
   const plan = {
     ...flow,
-    id: `${today()}-${f.id}`,
+    id,
     status: 'plan',
     related: [...new Set([...(flow.related ?? []), `flow:${f.id}`])],
     target: { ...(flow.target ?? {}), ...(target ? { description: target } : {}) },
@@ -86,11 +97,7 @@ export function planFromFlow(ws, id, { target, deliverable, key_visual } = {}) {
   if (deliverable) plan.deliverable = { kind: deliverable };
   if (key_visual) plan.deliverable = { ...(plan.deliverable ?? {}), key_visual: true };
   if (plan.deliverable && !plan.deliverable.kind) throw new Error('--key-visual needs a deliverable kind: pass --deliverable <kind>');
-  const out = path.join(ws, 'work', 'flows', `${plan.id}.flow.yaml`);
-  if (exists(out)) throw new Error(`${out} already exists; edit it or remove it first`);
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  writeAtomic(out, YAML.stringify(plan));
-  return { file: out, stale, age_days, source_scope: scope };
+  return plan;
 }
 
 const MAKES = ['generative', 'probe'];
@@ -179,8 +186,8 @@ export function goldRefs(ws) {
 }
 
 const REQUIRE_TEXT = {
-  founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml with owner_approval.status: owner_approved): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
-  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on a references/ or work/references/ item in state/feedback.jsonl): bring the founder references first (taste-search) and record what they say',
+  founder_brief: 'no owner-approved founder brief (briefs/*.founder-brief.yaml approved with `cstack brief approve`, unchanged since, and not reopened): interview the founder first with /brief in founding mode (why it exists, the customer, the brand as a person, assets and inspirations)',
+  reference_reactions: 'no reference packet the owner has reacted to (work/references/*-packet.md, and approve, reject, gold, anti, pairwise or comment feedback on a references/ or work/references/ item in state/feedback.jsonl, given since the latest brief approval): bring the founder references first (taste-search) and record what they say',
 };
 
 // Which of the plan's `requires` the workspace does not meet yet. A requirement the owner waived in the plan is
@@ -210,7 +217,7 @@ function requirementMet(ws, req) {
     return fs.readdirSync(dir).filter((f) => /\.founder-brief\.(ya?ml|json)$/.test(f)).some((f) => {
       try {
         const b = readData(path.join(dir, f));
-        return b?.owner_approval?.status === 'owner_approved' && validateValue('founder-brief', b).ok;
+        return briefApproved(b);
       } catch {
         return false;
       }
@@ -222,7 +229,9 @@ function requirementMet(ws, req) {
     const fb = path.join(ws, 'state', 'feedback.jsonl');
     if (!packet || !exists(fb)) return false;
     const kinds = new Set(['approve', 'reject', 'gold', 'anti', 'pairwise', 'comment']);
-    return fs.readFileSync(fb, 'utf8').split('\n').some((l) => {
+    // reactions given before the latest brief approval were to work made for an older brief (F42)
+    const mark = feedbackMark(ws);
+    return fs.readFileSync(fb, 'utf8').split('\n').filter((l) => l.trim()).slice(mark).some((l) => {
       try {
         const e = JSON.parse(l);
         return kinds.has(e.type) && /^(work\/)?references\//.test(String(e.artifact_ref ?? ''));

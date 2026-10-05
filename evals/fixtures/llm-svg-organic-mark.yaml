@@ -8,6 +8,7 @@ depends_on:
 description: LLM-written SVG is for geometric constructions; an organic mascot goes to a vector model or a person, with the limit stated.
 cannot_isolate: none
 setup: 'The owner asks: ''just write the SVG for our mascot, a fox curled around a teacup''.'
+fresh_workspace: true
 expected:
   must:
   - says plainly that hand-written SVG degrades on organic, complex forms and why

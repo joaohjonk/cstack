@@ -8,6 +8,15 @@ depends_on:
 description: Loudness is normalized in two passes to the target and reported with measured values.
 cannot_isolate: none
 setup: 'A master measured at about -22 LUFS integrated; the target is -14 LUFS and -1 dBTP for social.'
+setup_props:
+  work/video/master/master.mp4:   # the master's audio measures about -22 LUFS integrated
+    kind: mp4
+    size: 540x960
+    seconds: 8
+    audio: { noise: pink, lufs: -22 }
+setup_files:
+  work/video/master/delivery.md: |
+    Social delivery target: -14 LUFS integrated, true peak at or below -1 dBTP.
 expected:
   must:
   - measures, then applies two-pass normalization with the measured values

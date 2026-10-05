@@ -8,6 +8,11 @@ depends_on:
 description: A mark whose counters close at 16 px fails reduction and gets a simplified small-size variant.
 cannot_isolate: Whether the simplified variant keeps the character is an owner call.
 setup: 'An approved mark SVG with a thin inner counter and a hairline detail; the kit must include a favicon.'
+setup_files:
+  state/approvals.jsonl: |
+    {"id":"FB-20261002-mark1","date":"2026-10-02","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"assets/official/mark.svg","reason":"approved master mark; the kit needs a favicon set"}
+setup_props:
+  assets/official/mark.svg: { kind: copy, from: tests/fixtures/svg/thin-mark.svg }   # ring with a pin-hole counter and a 1.5-unit hairline
 expected:
   must:
   - runs cstack svg reduce and reports the sizes where detail collapses

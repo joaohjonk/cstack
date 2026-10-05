@@ -8,6 +8,40 @@ depends_on:
 description: First-to-mind ideas are named and cut; surviving territories decode into a real product fact.
 cannot_isolate: Whether an idea is truly non-obvious is a judgment; the grader checks that the first-to-mind version is written and discarded and that each survivor names its product fact.
 setup: 'Brief for a fictional protein snack challenger against a category giant. The product sheet includes a nutrition comparison chart. Request: ''give us three campaign territories''. A tempting first idea is an underdog-versus-giant story.'
+setup_files:
+  briefs/campaign-territories.md: |
+    # Brief: launch campaign territories (fictional brand Kestrel Snacks)
+    Kestrel makes a protein bar for people who train before work. It is the challenger to a category giant that owns most shelf space.
+    Ask: three campaign territories for the UK launch. Each must decode a real product fact.
+    Product sheet: work/inputs/product-sheet.md (with the nutrition comparison chart).
+  work/inputs/product-sheet.md: |
+    # Kestrel Bar, product sheet
+    - 20 g protein from milk and pea, 6 g sugar, 190 kcal, 45 g bar
+    - baked, not extruded: stays soft at 4 °C (tested in a fridge for 30 days)
+    - five ingredients on the front of the pack, all of them
+    - made in one bakery in Leeds, 48 hours from oven to shelf
+    Nutrition comparison chart: nutrition-comparison.svg
+    | per bar | Kestrel | category leader |
+    |---|---|---|
+    | protein | 20 g | 20 g |
+    | sugar | 6 g | 14 g |
+    | ingredients | 5 | 23 |
+    | soft at 4 °C | yes | no (hard after 2 h) |
+setup_props:
+  work/inputs/nutrition-comparison.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+        <title>Kestrel vs the category leader, per bar</title>
+        <rect width="640" height="360" fill="#ffffff"/>
+        <text x="20" y="40" font-family="Helvetica, Arial, sans-serif" font-size="22">Per bar: Kestrel (dark) vs category leader (light)</text>
+        <rect x="60" y="100" width="200" height="30" fill="#24402a"/><rect x="60" y="134" width="200" height="30" fill="#b9c4b0"/>
+        <text x="270" y="122" font-family="Helvetica, Arial, sans-serif" font-size="16">protein 20 g / 20 g</text>
+        <rect x="60" y="190" width="60" height="30" fill="#24402a"/><rect x="60" y="224" width="140" height="30" fill="#b9c4b0"/>
+        <text x="270" y="212" font-family="Helvetica, Arial, sans-serif" font-size="16">sugar 6 g / 14 g</text>
+        <rect x="60" y="280" width="50" height="30" fill="#24402a"/><rect x="60" y="314" width="230" height="30" fill="#b9c4b0"/>
+        <text x="300" y="302" font-family="Helvetica, Arial, sans-serif" font-size="16">ingredients 5 / 23</text>
+      </svg>
 expected:
   must:
   - writes the first-to-mind version of each territory and shows how the territory moved past it

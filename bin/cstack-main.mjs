@@ -19,6 +19,7 @@ import { buildGuide } from '../scripts/lib/guide.mjs';
 import { imageSize, sizeAudit } from '../scripts/lib/image.mjs';
 import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
+import { approveBrief, reopenBrief } from '../scripts/lib/brief.mjs';
 import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
 import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
@@ -166,6 +167,8 @@ const COMMANDS = {
   'learn candidates': 'learnings eligible for promotion (repeated evidence or strong human correction)',
   'learn promote': 'promote a learning: cstack learn promote <id> --to <target> --by <name> --ws <dir>',
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
+  'brief approve': "record the founder's yes to a founder brief, with a fingerprint the make gate checks: cstack brief approve <briefs/x.founder-brief.yaml> --by <founder>",
+  'brief reopen': 'take an approved founder brief back after a pivot, so make re-gates until it is approved again: cstack brief reopen <file> --reason "<what changed>" [--by <name>]',
   'sheet make': 'contact sheet for stills: cstack sheet make <images|folders...> --out work/sheets/a.html [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
   'sheet import': 'blind picks from a sheet into feedback pairs: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
   'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
@@ -358,6 +361,12 @@ function cmdPrompt(sub) {
       values[String(kv).slice(0, eq)] = String(kv).slice(eq + 1);
     }
     const res = compile(recipe, { values, seed: args.seed, names: canonNames() });
+    // the same schema brand check applies, so a recipe that compiles also passes the workspace check (F29)
+    const sv = validateValue('prompt-recipe', recipe);
+    if (!sv.ok) {
+      res.errors.push(`[prompt-recipe schema] ${sv.errors}`);
+      res.ok = false;
+    }
     if (args.json) json(res);
     else {
       if (res.ok) console.log(res.prompt + '\n');
@@ -743,6 +752,24 @@ function cmdImage(sub) {
 }
 
 // docs/sheets.md: contact sheets for stills and blind pairwise picks
+function cmdBrief(sub) {
+  const file = args._[0];
+  if (!['approve', 'reopen'].includes(sub) || !file) die('usage: cstack brief approve <file> --by <founder> | cstack brief reopen <file> --reason "<what changed>"');
+  const p = path.resolve(file);
+  if (!fs.existsSync(p)) die(`no such brief: ${shown(p)}`);
+  try {
+    if (sub === 'approve') {
+      const b = approveBrief(p, { by: args.by });
+      console.log(`approved ${shown(p)} by ${b.owner_approval.by} on ${b.owner_approval.date} (${b.owner_approval.fingerprint.slice(0, 19)}...; copy kept at ${shown(b.snapshot)}); any later edit needs a new approval before make, and reference reactions count from here`);
+    } else {
+      const b = reopenBrief(p, { reason: args.reason, by: args.by });
+      console.log(`reopened ${shown(p)}: ${b.amendments.at(-1).reason}.${b.changed ? ` Changed since the founder's yes: ${b.changed.length ? b.changed.join(', ') : 'nothing yet'}.` : ' No copy of the approved version was kept, so what changed cannot be shown.'} flows gate --stage make now refuses until the founder approves it again (cstack brief approve), and reactions to earlier references stop counting then`);
+    }
+  } catch (e) {
+    die(e.message);
+  }
+}
+
 async function cmdSheet(sub) {
   if (sub === 'make') {
     const r = makeSheet({ inputs: args._, out: args.out, title: args.title, cols: args.cols, blind: !!args.blind, seed: args.seed, force: !!args.force });
@@ -807,11 +834,27 @@ async function cmdEvalsRun() {
       fn,
     );
   const results = [];
+  const state = {};
+  let recorded = 0;
+  // the summary and the records grow as the suite goes, so a killed or limited run keeps what it graded (F51)
+  const summarize = () => ({ date: today(), mode, out, agent: agent?.join(' ') ?? null, judge: judge?.join(' ') ?? null, fixtures: results.length, of: fixtures.length, pass: results.filter((r) => r.result === 'pass').length, fail: results.filter((r) => r.result === 'fail').length, results: results.map(({ runs, ...x }) => ({ ...x, runs: runs.map(({ files, ...y }) => y) })) });
+  const record = (r) => {
+    for (const rec of evalRecords(r, { judge: judge && cmdLabel(judge), date: today() })) {
+      rec.id = newId('EV');
+      const v = validateValue('eval', rec);
+      if (!v.ok) die(`invalid eval record for ${r.id}: ${v.errors}`);
+      appendJSONL(path.join(ws, 'state', 'evals.jsonl'), rec);
+      recorded++;
+    }
+  };
   for (const fx of fixtures) {
-    const r = await runFixture(fx, { out, mode, runs: args.runs, agent, judge, guard, timeout_s: args.timeout ? Number(args.timeout) : undefined });
+    const r = await runFixture(fx, { out, mode, runs: args.runs, agent, judge, guard, state, timeout_s: args.timeout ? Number(args.timeout) : undefined });
     results.push(r);
+    if (args.record && mode !== 'dry') record(r);
+    if (mode !== 'recorded') writeJSON(path.join(out, 'summary.json'), summarize());
     if (r.aborted) {
-      if (!args.json) console.log(`STOPPED  ${fx.id}: ${r.runs.at(-1).evidence}`);
+      const left = fixtures.slice(fixtures.indexOf(fx)).map((x) => x.id);
+      if (!args.json) console.log(`STOPPED  ${fx.id} (${r.stop_reason ?? 'refused'}): ${r.runs.at(-1)?.evidence ?? ''}\nresume with the same command and these ${left.length} fixture id(s): ${left.join(' ')}`);
       break;
     }
     if (!args.json) {
@@ -822,20 +865,8 @@ async function cmdEvalsRun() {
       }
     }
   }
-  const summary = { date: today(), mode, out, agent: agent?.join(' ') ?? null, judge: judge?.join(' ') ?? null, fixtures: results.length, pass: results.filter((r) => r.result === 'pass').length, fail: results.filter((r) => r.result === 'fail').length, results: results.map(({ runs, ...x }) => ({ ...x, runs: runs.map(({ files, ...y }) => y) })) };
-  if (mode !== 'recorded') writeJSON(path.join(out, 'summary.json'), summary);
-  if (args.record && mode !== 'dry') {
-    let n = 0;
-    for (const r of results)
-      for (const rec of evalRecords(r, { judge: judge && cmdLabel(judge), date: today() })) {
-        rec.id = newId('EV');
-        const v = validateValue('eval', rec);
-        if (!v.ok) die(`invalid eval record for ${r.id}: ${v.errors}`);
-        appendJSONL(path.join(ws, 'state', 'evals.jsonl'), rec);
-        n++;
-      }
-    if (!args.json) console.log(`recorded ${n} eval record(s) in ${shown(path.join(ws, 'state', 'evals.jsonl'))}`);
-  }
+  const summary = summarize();
+  if (args.record && mode !== 'dry' && !args.json) console.log(`recorded ${recorded} eval record(s) in ${shown(path.join(ws, 'state', 'evals.jsonl'))}`);
   if (args.json) json(summary);
   else if (mode === 'dry') console.log(`${summary.fixtures} fixture(s) prepared, nothing called (dry run); prompts and workspaces in ${shown(out)}`);
   else console.log(`${summary.pass}/${summary.fixtures} fixtures pass (${mode}); runs in ${shown(out)}`);
@@ -935,7 +966,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1115,7 +1146,11 @@ switch (cmd) {
     const { mcp, res } = routes();
     if (args.json) json(res);
     else {
-      for (const t of res) console.log(`${t.available ? 'YES' : ' - '}  ${t.name.padEnd(26)} ${t.available ? t.signals.join('; ') : `fallback: ${t.fallback ?? 'none'}`}${t.cli_adapter ? `  [cstack CLI: ${t.cli_adapter}]` : ''}`);
+      for (const t of res) {
+        const mark = t.usable ? 'YES' : t.available ? 'NO ' : ' - ';
+        const why = t.usable ? `${t.signals.join('; ')}${t.agent_use ? `; ${t.agent_use}` : ''}` : t.available ? `connected (${t.signals.join('; ')}), but ${t.agent_use}; fallback: ${t.fallback ?? 'none'}` : `fallback: ${t.fallback ?? 'none'}`;
+        console.log(`${mark}  ${t.name.padEnd(26)} ${why}${t.cli_adapter ? `  [cstack CLI: ${t.cli_adapter}]` : ''}`);
+      }
       if (!mcp.length) console.log('\nnote: MCP servers visible to the agent were not passed (--mcp); MCP-only tools may be under-reported.');
     }
     break;
@@ -1123,7 +1158,7 @@ switch (cmd) {
   case 'providers': {
     // one answer per route, shared with `cstack tools`: the CLI adapter (env keys) and the agent's MCP server
     const { tools } = routes();
-    json(availability().map((p) => (tools.has(p.id) ? { ...p, agent_mcp: tools.get(p.id).available, agent_signals: tools.get(p.id).signals } : p)));
+    json(availability().map((p) => (tools.has(p.id) ? { ...p, agent_mcp: tools.get(p.id).usable, agent_signals: tools.get(p.id).signals } : p)));
     break;
   }
   case 'audit':
@@ -1152,6 +1187,9 @@ switch (cmd) {
     break;
   case 'evals':
     await cmdEvals(argv[0]);
+    break;
+  case 'brief':
+    cmdBrief(argv[0]);
     break;
   case 'sheet':
     await cmdSheet(argv[0]);

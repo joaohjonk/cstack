@@ -10,6 +10,33 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: Detection relies on the rule being recorded as retired in brand state or learnings.
 setup: A recipe template still contains a line from a retired rule ('no logos') while the brand now composites real logos.
+setup_files:
+  brand/rules/brand-rules.yaml: |
+    version: 0.1
+    rules:
+      - id: R-GEN-02
+        scope: core
+        rule: composite the real logo from assets/official/ onto generated plates; never ask a model to draw it
+        check: judge
+  state/learnings.jsonl: |
+    {"id":"LE-20260801-nologo","date":"2026-08-01","kind":"promoted","statement":"No logos in any image.","scope":"brand_specific","brand_id":"evalcase","confidence":"medium","target":"recipes/","approved_by":"owner"}
+    {"id":"LE-20260920-retire","date":"2026-09-20","kind":"retired","replaces":"LE-20260801-nologo","statement":"Retired: the brand now composites the real logo onto generated plates (R-GEN-02); 'no logos' no longer applies.","scope":"brand_specific","brand_id":"evalcase","confidence":"high","approved_by":"owner"}
+  recipes/shelf-plate.prompt-recipe.yaml: |
+    id: shelf-plate
+    version: 3
+    task: text_to_image
+    target_model: mock/plate-v0
+    template: >-
+      Photograph of {scene}. Empty space centre for the product, composited later.
+      Light: {lighting}. Avoid: {negative}.
+    slots:
+      scene: { required: true }
+      lighting: { required: true }
+      negative: { required: true }
+    values:
+      scene: a pale wooden shelf in a small grocery, morning
+      lighting: soft window light from the left
+      negative: no logos, no text, no people, no other brands
 expected:
   must:
   - detects and removes the retired line when compiling or reviewing the recipe

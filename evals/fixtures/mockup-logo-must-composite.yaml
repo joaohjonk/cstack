@@ -10,6 +10,51 @@ depends_on:
 description: A label on a curved pack is composited from the official art with a cylinder unwrap, never generated.
 cannot_isolate: Realism of the light integration is an owner judgment.
 setup: 'Request: ''show our new label on a can, on a kitchen counter, for the launch deck''. Fictional brand. Official label art (SVG) in assets/official/; can diameter and height in the PRODUCT entity; no template; FAL_KEY set; small budget.'
+setup_files:
+  cstack.config.yaml: |
+    # cstack workspace for Evalcase (eval case). FAL_KEY is set in the environment; small budget.
+    brand_id: evalcase
+    created: 2026-10-05
+    budget:
+      currency: USD
+      per_run: 2
+      per_day: 5
+      confirm_over: 0   # every priced call still needs the owner's --confirm
+      allow_unpriced: false
+    providers:
+      preferred_media: fal
+      reference_search: taste-labs
+      verifier: local
+    approvals:
+      final_assets_need_human: true
+      never_self_approve: [logo_marks, claims, packaging_rules]
+    publish: { allowed: false }
+  brand/brand-world.json:
+    brand_id: evalcase
+    entities:
+    - id: PRODUCT_CAN_SPARKLING_330
+      kind: PRODUCT
+      name: Sparkling water can, 330 ml (fictional brand Brightwell)
+      description: Standard 330 ml aluminium can, brushed silver, full-wrap printed label.
+      status: locked
+      canonical_files:
+        - { path: assets/official/can-label.svg, role: vector }
+      immutable_traits:
+        - measured diameter 66 mm
+        - measured height 115 mm
+        - label art only from assets/official/can-label.svg
+setup_props:
+  assets/official/can-label.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2070 1000" width="207mm" height="100mm">
+        <title>Brightwell can wrap, official label art (fictional)</title>
+        <rect width="2070" height="1000" fill="#e8f1f4"/>
+        <rect y="760" width="2070" height="240" fill="#1f6f8b"/>
+        <text x="120" y="420" font-family="Helvetica, Arial, sans-serif" font-size="200" font-weight="700" fill="#1f6f8b">Brightwell</text>
+        <text x="120" y="600" font-family="Helvetica, Arial, sans-serif" font-size="80" fill="#1f6f8b">Sparkling spring water</text>
+        <text x="120" y="900" font-family="Helvetica, Arial, sans-serif" font-size="60" fill="#e8f1f4">330 ml</text>
+      </svg>
 expected:
   must:
   - routes the placement as can or bottle and uses a cylinder placement with radius from the measured diameter

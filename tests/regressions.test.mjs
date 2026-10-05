@@ -89,3 +89,76 @@ test('nested workspaces and experiment runs are schema-governed', () => {
   assert.equal(schemaFor(path.join(ROOT, 'templates/brand-workspace/brand/brand-system.json')), null);
   assert.equal(schemaFor(path.join(ROOT, 'examples/x/experiments/runs/e1/experiment-run.yaml')), 'experiment-run');
 });
+
+test('F29: prompt compile refuses a recipe that brand check would reject', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const { tmpDir } = await import('./tmp.mjs');
+  const fsm = (await import('node:fs')).default;
+  const p = (await import('node:path')).default;
+  const { ROOT } = await import('../scripts/lib/core.mjs');
+  const d = tmpDir('cstack-f29-');
+  const ok = { id: 'r1', version: 1, task: 'text_to_image', template: 'A cup of {tea}.', slots: { tea: { required: true } }, values: { tea: 'green tea' } };
+  const run = (recipe) => {
+    const f = p.join(d, 'r.prompt-recipe.json');
+    fsm.writeFileSync(f, JSON.stringify(recipe));
+    return spawnSync(process.execPath, [p.join(ROOT, 'bin', 'cstack.mjs'), 'prompt', 'compile', f], { encoding: 'utf8' });
+  };
+  const good = run(ok);
+  assert.equal(good.status, 0, good.stdout + good.stderr);
+  const bad = run({ ...ok, mood: 'extra field' });
+  assert.equal(bad.status, 1);
+  assert.match(bad.stdout, /\[prompt-recipe schema\].*mood/);
+});
+
+test('F28: the founder brief holds the product and the founder stance on it', async () => {
+  const { validateValue } = await import('../scripts/lib/schemas.mjs');
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'r' }, customer: { who: 'w', evidence: 'told' }, product: { what: 'canned iced tea', stance: ['no added sugar'], functional: ['adaptogens'], range: ['three flavours, 330 ml'], never: ['artificial sweeteners'] }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
+  assert.equal(validateValue('founder-brief', { ...brief, product: { flavour: 'x' } }).ok, false);
+});
+
+test('F32: brand init creates references/inspiration/ for the inspiration library', () => {
+  const ws = path.join(tmpDir('cstack-f32-'), 'ws');
+  initBrand(ws, { name: 'Inspo Test' });
+  for (const lib of ['gold', 'anti', 'inspiration']) assert.ok(fs.statSync(path.join(ws, 'references', lib)).isDirectory(), lib);
+});
+
+test('F37: an approved founder brief re-gates after an edit or a reopen until it is approved again', async () => {
+  const { approveBrief, reopenBrief, briefApproved } = await import('../scripts/lib/brief.mjs');
+  const file = path.join(tmpDir('cstack-f37-'), 'briefs', 'founding.founder-brief.yaml');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'tea you can carry' }, customer: { who: 'w', evidence: 'told' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  fs.writeFileSync(file, '# founder brief\n' + YAML.stringify(brief));
+  const read = () => YAML.parse(fs.readFileSync(file, 'utf8'));
+  assert.equal(briefApproved(read()), false);
+  approveBrief(file, { by: 'Founder', date: '2026-10-05' });
+  assert.equal(briefApproved(read()), true);
+  assert.match(fs.readFileSync(file, 'utf8'), /^# founder brief/, 'comments survive');
+  // the pivot written into the brief: the fingerprint no longer matches
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('tea you can carry', 'a healthier soda'));
+  assert.equal(briefApproved(read()), false);
+  approveBrief(file, { by: 'Founder' });
+  assert.equal(briefApproved(read()), true);
+  // the pivot said only in conversation: reopen
+  reopenBrief(file, { reason: 'founder pivoted to a mass-market soda', date: '2026-10-06' });
+  const b = read();
+  assert.equal(briefApproved(b), false);
+  assert.equal(b.owner_approval.status, 'reopened');
+  assert.deepEqual(b.amendments.map((a) => [a.reason, a.previous.status]), [['founder pivoted to a mass-market soda', 'owner_approved']]);
+  assert.throws(() => reopenBrief(file, {}), /--reason/);
+  assert.throws(() => approveBrief(file, {}), /--by/);
+  // F43: a brief that is not approved has nothing to reopen
+  assert.throws(() => reopenBrief(file, { reason: 'again' }), /nothing to reopen: .* is reopened/);
+  // F45: the approved version is kept, so a reopen says what changed since the yes
+  const ok = approveBrief(file, { by: 'Founder' });
+  assert.ok(fs.existsSync(ok.snapshot) && ok.snapshot.includes(path.join('state', 'approved-briefs')));
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('evidence: told', 'evidence: observed'));
+  assert.deepEqual(reopenBrief(file, { reason: 'met customers' }).changed, ['customer']);
+});
+
+test('F39, F44: the founder brief holds price position apart from reach, inferred fields, the anchor brand, trend horizon, cohorts and round conflicts', async () => {
+  const { validateValue } = await import('../scripts/lib/schemas.mjs');
+  const brief = { id: 'FB-1', brand_id: 'x', date: '2026-10-05', interview: { rounds: 3, conflicts: [{ about: 'price', earlier: 'round 1: premium niche', later: 'round 3: mass hype at a premium price', kept: 'later' }] }, why_it_exists: { reason: 'r' }, customer: { who: 'w', evidence: 'told', cohorts: ['Gen Z, 16 to 24'] }, market: { price_position: 'premium', reach: 'mass', inferred: ['reach'], price_note: 'mass hype at a premium price', anchor: 'a healthier version of a mass iced tea', trend_horizon: 'flavours rotate each season; the brand holds for years' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } };
+  assert.ok(validateValue('founder-brief', brief).ok, validateValue('founder-brief', brief).errors);
+  assert.equal(validateValue('founder-brief', { ...brief, market: { price_position: 'cheap' } }).ok, false);
+});

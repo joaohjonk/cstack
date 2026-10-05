@@ -54,18 +54,20 @@ test('evals run: tool_used checks commands that ran, and says so when it can onl
   assert.equal(text.result, 'pending', 'an llm grader without a judge leaves the run pending');
 });
 
-test('evals run: the workspace shim logs agent calls and runs this checkout', () => {
+test('evals run: the workspace shim logs agent calls and runs this checkout', async () => {
   const dir = path.join(tmpDir('cstack-evws-'), 'ws');
-  const prep = prepareWorkspace(fx('creative-winner-invariant'), dir);
+  const prep = await prepareWorkspace(fx('creative-winner-invariant'), dir);
   assert.equal(prep.base, 'examples/tessel-kiln', 'the example named in the setup is the starting workspace');
   const env = { ...process.env, PATH: `${prep.bin}${path.delimiter}${process.env.PATH}` };
   assert.equal(spawnSync('cstack', ['help'], { cwd: dir, env }).status, 0);
   spawnSync('cstack', ['help'], { cwd: dir, env: { ...env, CSTACK_EVAL_GRADER: '1' } });
   assert.deepEqual(fs.readFileSync(prep.log, 'utf8').trim().split('\n'), ['cstack help']);
-  const fresh = prepareWorkspace({ id: 'x', setup: 'no example', setup_files: { 'work/post.md': 'approved post' } }, path.join(path.dirname(dir), 'fresh'));
+  const fresh = await prepareWorkspace({ id: 'x', setup: 'no example', setup_files: { 'work/post.md': 'approved post' } }, path.join(path.dirname(dir), 'fresh'));
   assert.equal(fresh.base, 'templates/brand-workspace');
   assert.equal(fs.readFileSync(path.join(fresh.dir, 'work', 'post.md'), 'utf8'), 'approved post');
-  assert.throws(() => prepareWorkspace({ id: 'x', setup_files: { '../out.md': 'x' } }, path.join(path.dirname(dir), 'bad')), /leaves the workspace/);
+  await assert.rejects(prepareWorkspace({ id: 'x', setup_files: { '../out.md': 'x' } }, path.join(path.dirname(dir), 'bad')), /leaves the workspace/);
+  const empty = await prepareWorkspace({ id: 'x', setup: 'like examples/tessel-kiln', fresh_workspace: true }, path.join(path.dirname(dir), 'empty'));
+  assert.equal(empty.base, 'templates/brand-workspace', 'fresh_workspace never infers an example from the setup');
 });
 
 test('evals run: the agent prompt never shows the expected behaviour', () => {
@@ -142,4 +144,28 @@ test('evals run: eval records follow the gates', () => {
   assert.equal(recs[0].decision, 'fix');
   assert.equal(recs[0].evaluator.kind, 'deterministic');
   assert.ok(validateValue('eval', { id: 'EV-1', date: '2026-10-05', ...recs[0] }).ok);
+});
+
+test('evals run: a usage limit stops the suite with a resume list; a failed judge says so; records keep up (F49 to F51)', () => {
+  const tmp = tmpDir('cstack-evlimit-');
+  const owner = path.join(tmp, 'owner');
+  assert.equal(cli(['brand', 'init', owner, '--name', 'Owner']).status, 0);
+  const out = path.join(tmp, 'out');
+  const two = ['evals', 'run', 'make-it-cooler', 'ai-judge-not-owner', '--out', out, '--ws', owner, '--runs', '1', '--cost-per-call', '0', '--record'];
+  // the subscription runs out: the first failure stops the suite instead of marking every fixture ERROR
+  const limited = script(tmp, 'limited.sh', `echo "You're out of usage credits"; exit 1`);
+  const judge = script(tmp, 'judge.sh', `echo '{"verdict": "PASS", "must": [], "must_not": [], "reason": "ok"}'`);
+  const r = cli([...two, '--agent', limited, '--judge', judge]);
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /STOPPED +ai-judge-not-owner \(usage limit\)/);
+  assert.match(r.stdout, /resume with the same command and these 2 fixture id\(s\): ai-judge-not-owner make-it-cooler/);
+  assert.ok(!fs.existsSync(path.join(out, 'make-it-cooler.run1.prompt.txt')));
+  // the agent works but the judge call fails: the run is pending and says why, and its record is written before the suite ends
+  const agent = script(tmp, 'agent.sh', 'echo "Defect: the crop hides the handle. One change: recrop."');
+  const badJudge = script(tmp, 'badjudge.sh', 'echo "boom" >&2; exit 1');
+  const j = cli([...two.slice(0, 3), ...two.slice(4), '--agent', agent, '--judge', badJudge]);
+  assert.match(j.stdout, /llm pending: the judge call failed: judge exit 1: boom/);
+  const summary = JSON.parse(fs.readFileSync(path.join(out, 'summary.json'), 'utf8'));
+  assert.equal(summary.fixtures, 1);
+  assert.equal(readJSONL(path.join(owner, 'state', 'evals.jsonl')).length, 1);
 });

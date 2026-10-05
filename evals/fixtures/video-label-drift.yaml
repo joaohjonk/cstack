@@ -9,6 +9,36 @@ depends_on:
 description: Label drift grows over a clip, so QA checks the first frame, the last frame and every cut against the approved still.
 cannot_isolate: ROI similarity is a coarse alarm; a person or vision check confirms the label.
 setup: 'Two renders of the same 4 s product beat from one approved still. Clean clip keeps the label; planted clip warps the label region only in its last second.'
+setup_files:
+  work/video/beat-02/notes.md: |
+    Two renders of beat 02 (4 s) from the approved still approved-still.png.
+    Label region in the frame (x,y,w,h): 210,420,120,120. clean.mp4 and planted.mp4 came from the same still and prompt.
+setup_props:
+  work/video/beat-02/label.png:
+    kind: png
+    size: 120x120
+    background: '#f3ead8'
+    shapes:
+      - { rect: [0, 0, 120, 24], color: '#1f3a34' }
+      - { rect: [12, 40, 96, 12], color: '#1f3a34' }
+      - { rect: [12, 60, 70, 8], color: '#c9a24a' }
+      - { rect: [12, 76, 84, 8], color: '#c9a24a' }
+      - { rect: [12, 92, 60, 8], color: '#c9a24a' }
+  work/video/beat-02/clean.mp4:
+    kind: mp4
+    size: 540x960
+    seconds: 4
+    overlay: { image: work/video/beat-02/label.png, at: [210, 420] }
+  work/video/beat-02/planted.mp4:   # same beat; the label region goes soft in the last second
+    kind: mp4
+    size: 540x960
+    seconds: 4
+    overlay: { image: work/video/beat-02/label.png, at: [210, 420] }
+    soften: { rect: [210, 420, 120, 120], from: 3, radius: 6 }
+  work/video/beat-02/approved-still.png:
+    kind: frame
+    from: work/video/beat-02/clean.mp4
+    at: 0
 expected:
   must:
   - runs cstack video qa with the approved still and the label ROI on both clips

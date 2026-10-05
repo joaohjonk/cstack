@@ -8,6 +8,7 @@ depends_on:
 description: Section 31 behavior case.
 cannot_isolate: The 'right' artifact is debatable; grader checks that a reframe was considered.
 setup: 'Request: ''we need a TikTok'' for a B2B procurement product with no social presence.'
+fresh_workspace: true
 expected:
   must:
   - questions whether the artifact fits the job and recommends an alternative while keeping the requested one as an option

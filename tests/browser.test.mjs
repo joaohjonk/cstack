@@ -15,7 +15,7 @@ import { contrastRatio } from '../scripts/lib/browser/qa.mjs';
 import { parseSteps } from '../scripts/lib/browser/skills.mjs';
 import { parseBreakpoints } from '../scripts/lib/browser/capture.mjs';
 import { runBrowse } from '../scripts/lib/browser/cli.mjs';
-import { loadEngine, launch } from '../scripts/lib/browser/launch.mjs';
+import { loadEngine, launch, systemChromes } from '../scripts/lib/browser/launch.mjs';
 import { tmpDir } from './tmp.mjs';
 
 const FIX = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'browser');
@@ -152,6 +152,22 @@ const browserTest = (name, fn) =>
     if (skipReason) return t.skip(skipReason);
     await fn(t);
   });
+
+browserTest('F31: shot --out copies the shots to a folder, or to one .png for one breakpoint', async () => {
+  const ws = tmpWs();
+  await runBrowse('shot', { _: [`${base}/`], breakpoints: '375,1440', out: 'refs/shots' }, ws);
+  assert.deepEqual(fs.readdirSync(path.join(ws, 'refs/shots')).sort(), ['shot-1440.png', 'shot-375.png']);
+  await runBrowse('shot', { _: [`${base}/`], breakpoints: '768', out: 'refs/home.png' }, ws);
+  assert.equal(fs.readFileSync(path.join(ws, 'refs/home.png')).subarray(1, 4).toString(), 'PNG');
+  await assert.rejects(runBrowse('shot', { _: [`${base}/`], breakpoints: '375,768', out: 'refs/two.png' }, ws), /names one file/);
+});
+
+test('F31: an installed Chrome is looked for on macOS, including ~/Applications', () => {
+  const mac = systemChromes('darwin', '/Users/x');
+  assert.ok(mac.includes('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'));
+  assert.ok(mac.includes('/Users/x/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'));
+  assert.ok(systemChromes('linux').includes('/usr/bin/google-chrome'));
+});
 
 browserTest('browser: shot writes 3 breakpoint files with sha256 in run.json', async () => {
   const ws = tmpWs();

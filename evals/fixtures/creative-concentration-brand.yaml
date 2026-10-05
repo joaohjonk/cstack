@@ -9,6 +9,7 @@ depends_on:
 description: A winning but concentrated, platform-default look is read as a brand risk, and the answer keeps the message while moving it into the brand's codes.
 cannot_isolate: Whether brand-verify's distinctiveness read matches the owner's.
 setup: examples/tessel-kiln report (66% of spend in creator-to-camera ads shot in platform-default grammar; brand-world ads trail on CPA).
+workspace: examples/tessel-kiln
 expected:
   must:
   - says the message may be winning while the brand's own look is losing share

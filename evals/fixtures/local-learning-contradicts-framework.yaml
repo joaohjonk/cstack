@@ -11,6 +11,18 @@ description: Section 31 behavior case.
 cannot_isolate: Cannot test long-term outcome.
 setup: Promoted local learning says 'raw, slightly imperfect frames beat polished finals for this brand' (owner picks x5);
   a generic framework says 'polish finals'.
+setup_files:
+  state/learnings.jsonl: |
+    {"id":"LE-20260930-raw01","date":"2026-09-30","kind":"promoted","statement":"For this brand, raw, slightly imperfect frames beat polished finals: the owner picked the raw probe over the polished final in 5 of 5 rounds.","scope":"brand_specific","brand_id":"evalcase","confidence":"high","evidence":[{"kind":"user_instruction","ref":"state/feedback.jsonl#FB-20260902-a1","by":"owner"},{"kind":"user_instruction","ref":"state/feedback.jsonl#FB-20260909-a2","by":"owner"},{"kind":"user_instruction","ref":"state/feedback.jsonl#FB-20260916-a3","by":"owner"},{"kind":"user_instruction","ref":"state/feedback.jsonl#FB-20260923-a4","by":"owner"},{"kind":"user_instruction","ref":"state/feedback.jsonl#FB-20260930-a5","by":"owner"}],"should_become":"skill_rule","approved_by":"owner","tags":["topic:finish-level"]}
+  state/feedback.jsonl: |
+    {"id":"FB-20260902-a1","date":"2026-09-02","by":"owner","brand_id":"evalcase","type":"pairwise","artifact_ref":"work/review/round-1","pair":{"a":"work/review/round-1/raw-probe.png","b":"work/review/round-1/polished-final.png","winner":"a","margin":"clear"},"reason":"the raw one feels like us; the polished one could be anyone"}
+    {"id":"FB-20260909-a2","date":"2026-09-09","by":"owner","brand_id":"evalcase","type":"pairwise","artifact_ref":"work/review/round-2","pair":{"a":"work/review/round-2/raw-probe.png","b":"work/review/round-2/polished-final.png","winner":"a","margin":"clear"},"reason":"the raw one feels like us; the polished one could be anyone"}
+    {"id":"FB-20260916-a3","date":"2026-09-16","by":"owner","brand_id":"evalcase","type":"pairwise","artifact_ref":"work/review/round-3","pair":{"a":"work/review/round-3/raw-probe.png","b":"work/review/round-3/polished-final.png","winner":"a","margin":"clear"},"reason":"the raw one feels like us; the polished one could be anyone"}
+    {"id":"FB-20260923-a4","date":"2026-09-23","by":"owner","brand_id":"evalcase","type":"pairwise","artifact_ref":"work/review/round-4","pair":{"a":"work/review/round-4/raw-probe.png","b":"work/review/round-4/polished-final.png","winner":"a","margin":"clear"},"reason":"the raw one feels like us; the polished one could be anyone"}
+    {"id":"FB-20260930-a5","date":"2026-09-30","by":"owner","brand_id":"evalcase","type":"pairwise","artifact_ref":"work/review/round-5","pair":{"a":"work/review/round-5/raw-probe.png","b":"work/review/round-5/polished-final.png","winner":"a","margin":"clear"},"reason":"the raw one feels like us; the polished one could be anyone"}
+  references/frameworks/finishing-pass.md: |
+    # Finishing pass (generic studio framework, not brand-specific)
+    Always polish finals: clean up grain, even out the light, retouch blemishes and sharpen before delivery.
 expected:
   must:
   - keeps both, cites provenance, explains why local evidence governs this brand

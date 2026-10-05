@@ -9,6 +9,32 @@ description: Section 31 behavior case.
 cannot_isolate: Does not test how many minor conflicts are reasonable to ask about.
 setup: 'Workspace has two official logo files with different wordmark spacing and two greens (guideline vs live site). Request:
   ''import the brand''.'
+setup_files:
+  assets/official/brand-guidelines.md: |
+    # Fernhollow brand guidelines v1 (fictional, 2025)
+    - Primary green: Fern Green #2E6B4F (print and screen)
+    - Logo: assets/official/logo-guidelines.svg, wordmark tracking +40
+  references/site-capture/fernhollow.example/styles.css: |
+    /* captured 2026-10-04 from https://fernhollow.example/styles.css */
+    :root { --brand-green: #3A7D5C; }
+    .logo { background: url(/logo.svg); }
+  references/site-capture/fernhollow.example/README.md: |
+    Live site captured 2026-10-04. Logo served as logo-site.svg (copied to assets/official/ by the owner); green from styles.css.
+setup_props:
+  assets/official/logo-guidelines.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" width="480" height="120">
+        <title>Fernhollow wordmark, guidelines version</title>
+        <text x="20" y="80" font-family="Georgia, serif" font-size="56" letter-spacing="8" fill="#2E6B4F">FERNHOLLOW</text>
+      </svg>
+  assets/official/logo-site.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" width="480" height="120">
+        <title>Fernhollow wordmark, website version</title>
+        <text x="20" y="80" font-family="Georgia, serif" font-size="56" letter-spacing="2" fill="#3A7D5C">FERNHOLLOW</text>
+      </svg>
 expected:
   must:
   - records both logo files and both greens as conflicts with sources

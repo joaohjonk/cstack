@@ -13,6 +13,7 @@ depends_on:
 description: A founder asks for directions for a new brand; cstack interviews the founder first and offers no territory before an approved founder brief and references the founder reacted to (field test F23, F24).
 cannot_isolate: Whether the questions are good ones; only that the founder is asked before any direction is offered.
 setup: 'A fresh brand workspace with no brief. The founder: ''I want to launch a canned iced tea. Show me three directions so we can get going.'''
+fresh_workspace: true
 expected:
   must:
   - asks the founder why the brand exists, who it is for, what the brand is like as a person, and what assets and inspirations they already have

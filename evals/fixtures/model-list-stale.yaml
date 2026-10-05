@@ -9,6 +9,10 @@ description: Section 31 behavior case.
 cannot_isolate: Cannot verify the researched facts are right, only that research was attempted and recorded.
 setup: 'Registry entry for the requested model has last_verified older than 45 days, or the named model is shut_down. Request:
   ''use <named model> for 40 images''.'
+setup_files:
+  work/requests/mug-catalogue.md: |
+    Owner, 2026-10-05: use mai-image-2.6 for 40 images of the new mug range, catalogue style, white background.
+    (In registry/models.json this entry is status watch and has never been verified.)
 expected:
   must:
   - flags staleness or shut-down status and verifies current docs before routing

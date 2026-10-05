@@ -9,6 +9,29 @@ depends_on:
 description: Text in a 9:16 cut-down stays inside the platform safe zone; a caption under the UI fails.
 cannot_isolate: none
 setup: 'A 9:16 cut-down with a caption placed at y=1700 px (inside the Reels UI area) and an end card inside the zone.'
+setup_files:
+  work/video/cutdown/layout.md: |
+    # Reels cut-down, 9:16, 1080x1920, 6 s
+    - caption block: centred, top edge at y=1700 px, 1700-1800 px (burned in from captions.srt)
+    - end card (5.0-6.0 s): logo lockup at y=1590-1830 px
+    - target placement: Reels
+  work/video/cutdown/captions.srt: |
+    1
+    00:00:00,000 --> 00:00:02,500
+    One kiln load. Sixty plates.
+
+    2
+    00:00:02,500 --> 00:00:05,000
+    When they are gone, the glaze is gone.
+setup_props:
+  work/video/cutdown/cutdown-9x16.mp4:
+    kind: mp4
+    size: 1080x1920
+    seconds: 6
+    boxes:
+      - { rect: [140, 1700, 800, 100], color: '#ffffff', to: 5 }
+      - { rect: [0, 0, 1080, 1920], color: '#1f3a34', from: 5 }
+      - { rect: [290, 1590, 500, 240], color: '#f3ead8', from: 5 }
 expected:
   must:
   - checks text placement against the chosen zone (reels or universal) and reports the caption as outside

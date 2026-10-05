@@ -9,6 +9,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT, exists, readData, writeAtomic } from './core.mjs';
 import { initBrand } from './brand.mjs';
+import { buildProps } from './evalprops.mjs';
 
 const DEFAULT_TIMEOUT_S = 900;
 
@@ -38,9 +39,9 @@ export function tokenize(line) {
 }
 
 // The workspace a case starts from: `workspace:` in the fixture, else an example the setup names, else a fresh
-// starter workspace for a fictional brand.
+// starter workspace for a fictional brand (always for `fresh_workspace: true`).
 export function baseWorkspace(fx) {
-  const named = fx.workspace ?? String(fx.setup ?? '').match(/\bexamples\/([\w-]+)/)?.[0];
+  const named = fx.workspace ?? (fx.fresh_workspace ? null : String(fx.setup ?? '').match(/\bexamples\/([\w-]+)/)?.[0]);
   if (!named) return null;
   const p = path.join(ROOT, named);
   if (!exists(path.join(p, 'cstack.config.yaml'))) throw new Error(`${fx.id}: workspace "${named}" is not a cstack workspace`);
@@ -49,18 +50,21 @@ export function baseWorkspace(fx) {
 
 const sq = (s) => `'${String(s).replace(/'/g, `'\\''`)}'`;
 
-export function prepareWorkspace(fx, dir) {
+export async function prepareWorkspace(fx, dir) {
   fs.rmSync(dir, { recursive: true, force: true });
   const base = baseWorkspace(fx);
   if (base) fs.cpSync(path.join(ROOT, base), dir, { recursive: true });
   else initBrand(dir, { name: 'Evalcase', id: 'evalcase' });
-  // setup_files: {relative path: text} the case needs on disk (an approved post, a stale model list, ...)
+  // setup_files: {relative path: text} the case needs on disk (an approved post, a stale model list, ...). Plain
+  // writes, not writeAtomic: building the case plays the owner, whose originals belong in assets/official/.
   for (const [rel, text] of Object.entries(fx.setup_files ?? {})) {
     const p = path.resolve(dir, rel);
     if (!p.startsWith(dir + path.sep)) throw new Error(`${fx.id}: setup_files path "${rel}" leaves the workspace`);
     fs.mkdirSync(path.dirname(p), { recursive: true });
-    writeAtomic(p, typeof text === 'string' ? text : JSON.stringify(text, null, 2) + '\n');
+    fs.writeFileSync(p, typeof text === 'string' ? text : JSON.stringify(text, null, 2) + '\n');
   }
+  // setup_props: {relative path: spec} files generated now (GLB, PNG, MP4, PDF, ...): scripts/lib/evalprops.mjs
+  const props = await buildProps(fx, dir);
   // a `cstack` on PATH that runs this checkout and logs each call the agent makes (graders run unlogged)
   const bin = path.join(dir, '.cstack-eval', 'bin');
   fs.mkdirSync(bin, { recursive: true });
@@ -68,7 +72,7 @@ export function prepareWorkspace(fx, dir) {
   const shim = path.join(bin, 'cstack');
   writeAtomic(shim, `#!/bin/sh\n[ -z "$CSTACK_EVAL_GRADER" ] && printf 'cstack %s\\n' "$*" >> ${sq(log)}\nexec ${sq(process.execPath)} ${sq(path.join(ROOT, 'bin', 'cstack.mjs'))} "$@"\n`);
   fs.chmodSync(shim, 0o755);
-  return { dir, base: base ?? 'templates/brand-workspace', bin, log };
+  return { dir, base: base ?? 'templates/brand-workspace', bin, log, props };
 }
 
 export function agentPrompt(fx, ws) {
@@ -181,7 +185,7 @@ function envFor(prep, extra = {}) {
 }
 
 // Graders, deterministic first. Each returns {type, result: pass|fail|pending, evidence}.
-export function gradeRun(fx, { transcript, commands = [], calls = [], wsDir, judgeText, prep }) {
+export function gradeRun(fx, { transcript, commands = [], calls = [], wsDir, judgeText, prep, judgeError = null }) {
   const results = [];
   const graders = [...(fx.graders ?? [])].sort((a, b) => (a.type === 'llm') - (b.type === 'llm'));
   for (const g of graders) {
@@ -212,7 +216,7 @@ export function gradeRun(fx, { transcript, commands = [], calls = [], wsDir, jud
       results.push({ type: g.type, run: g.run, result: r.status === want ? 'pass' : 'fail', evidence: `exit ${r.status ?? r.error}, expected ${want}${tail ? `: ${tail}` : ''}` });
     } else if (g.type === 'llm') {
       if (judgeText == null) {
-        results.push({ type: g.type, result: 'pending', evidence: 'no judge: pass --judge "<command>" or grade by hand' });
+        results.push({ type: g.type, result: 'pending', evidence: judgeError ? `the judge call failed: ${judgeError}` : 'no judge: pass --judge "<command>" or grade by hand' });
         continue;
       }
       const v = parseVerdict(judgeText);
@@ -251,12 +255,13 @@ export async function runFixture(fx, opts) {
       }
       const { text, commands } = normalizeTranscript(raw ?? '');
       let judgeText = readIf(f.judge);
-      if (judgeText == null && opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm')) judgeText = await callJudge(fx, text, f, opts);
-      out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: f.ws, judgeText }) });
+      let judgeError = null;
+      if (judgeText == null && opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm')) ({ text: judgeText, error: judgeError } = await callJudge(fx, text, f, opts));
+      out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: f.ws, judgeText, judgeError }) });
       continue;
     }
     for (const k of ['transcript', 'calls', 'judge', 'judgePrompt']) fs.rmSync(f[k], { force: true });
-    const prep = prepareWorkspace(fx, f.ws);
+    const prep = await prepareWorkspace(fx, f.ws);
     const prompt = agentPrompt(fx, prep.dir);
     writeAtomic(f.prompt, prompt + '\n');
     if (opts.mode === 'dry') {
@@ -268,24 +273,35 @@ export async function runFixture(fx, opts) {
     if (needsAgent) {
       const res = await opts.guard('eval_agent', () => {
         const r = runCommand(opts.agent, { cwd: prep.dir, env: envFor(prep), input: prompt, timeout_s: opts.timeout_s ?? DEFAULT_TIMEOUT_S });
-        if (r.error || r.status !== 0) throw new Error(`agent ${r.error ?? `exit ${r.status}`}: ${r.stderr.trim().slice(0, 300)}`);
+        if (r.error || r.status !== 0) throw new Error(`agent ${r.error ?? `exit ${r.status}`}: ${outputTail(r)}`);
         return { output_ids: [path.basename(f.transcript)], raw: r.stdout };
       });
       if (res.blocked || res.failed) {
-        out.runs.push({ ...run, result: 'error', graders: [], evidence: res.problems?.join('; ') ?? res.row?.error ?? 'agent call failed' });
-        // a budget refusal will not change on the next run: stop the whole suite
-        if (res.blocked) {
+        const why = res.problems?.join('; ') ?? res.row?.error ?? res.error ?? 'agent call failed';
+        out.runs.push({ ...run, result: 'error', graders: [], evidence: why });
+        // a budget refusal or a usage limit will not change on the next run, and an agent that fails twice running with
+        // nothing to say will not either (F49: a limited run marked 23 fixtures ERROR in 4 minutes): stop the whole suite
+        const state = opts.state ?? (opts.state = {});
+        state.failures = (state.failures ?? 0) + 1;
+        if (res.blocked || isLimit(why) || state.failures >= 2) {
           out.aborted = true;
+          out.stop_reason = res.blocked ? 'budget' : isLimit(why) ? 'usage limit' : 'the agent failed twice running';
           break;
         }
         continue;
       }
+      if (opts.state) opts.state.failures = 0;
       writeAtomic(f.transcript, res.raw);
       ({ text, commands } = normalizeTranscript(res.raw));
     }
     if (exists(prep.log)) fs.copyFileSync(prep.log, f.calls);
-    const judgeText = opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm') && needsAgent ? await callJudge(fx, text, f, opts) : null;
-    out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: prep.dir, judgeText, prep }) });
+    const judged = opts.judge && (fx.graders ?? []).some((g) => g.type === 'llm') && needsAgent ? await callJudge(fx, text, f, opts) : null;
+    out.runs.push({ ...run, ...gradeRun(fx, { transcript: text, commands, calls: lines(readIf(f.calls)), wsDir: prep.dir, judgeText: judged?.text ?? null, judgeError: judged?.error ?? null, prep }) });
+    if (judged?.error && isLimit(judged.error)) {
+      out.aborted = true;
+      out.stop_reason = 'usage limit (judge)';
+      break;
+    }
   }
   const tally = (k) => out.runs.filter((r) => r.result === k).length;
   out.passed = tally('pass');
@@ -302,13 +318,19 @@ async function callJudge(fx, transcript, f, opts) {
   writeAtomic(f.judgePrompt, prompt + '\n');
   const res = await opts.guard('eval_judge', () => {
     const r = runCommand(opts.judge, { cwd: opts.out, env: process.env, input: prompt, timeout_s: opts.timeout_s ?? DEFAULT_TIMEOUT_S });
-    if (r.error || r.status !== 0) throw new Error(`judge ${r.error ?? `exit ${r.status}`}: ${r.stderr.trim().slice(0, 300)}`);
+    if (r.error || r.status !== 0) throw new Error(`judge ${r.error ?? `exit ${r.status}`}: ${outputTail(r)}`);
     return { output_ids: [path.basename(f.judge)], raw: r.stdout };
   });
-  if (res.blocked || res.failed) return null;
+  if (res.blocked || res.failed) return { text: null, error: res.problems?.join('; ') ?? res.row?.error ?? res.error ?? 'judge call failed' };
   writeAtomic(f.judge, res.raw);
-  return res.raw;
+  return { text: res.raw, error: null };
 }
+
+// what a failed call said, from either stream (a usage limit can arrive on stdout)
+const outputTail = (r) => [r.stderr, r.stdout].map((x) => String(x ?? '').trim()).filter(Boolean).join(' | ').slice(-300) || 'no output';
+
+/** A subscription or API limit: retrying the next fixture will fail the same way. */
+export const isLimit = (msg) => /usage (limit|credits)|out of (usage )?credits|rate.?limit|quota|\b429\b|too many requests|credit balance/i.test(String(msg ?? ''));
 
 // One eval record (schemas/eval.schema.json) per run: graders become gates; the decision follows the gates.
 // The judge is always a separate process that sees only the case and the transcript, so it is separate from the author.

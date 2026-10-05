@@ -10,6 +10,38 @@ depends_on:
 description: Spec section 35 quality bar, "typography judged only by font choice", as a review case.
 cannot_isolate: The final verdict weighs judgment axes; the grader checks coverage and evidence.
 setup: 'A built landing page (local fixture) uses a fashionable, well-chosen typeface, but body lines run to 110 characters on desktop, leading is 1.2, a heading ends in a one-word line on mobile, and a fallback font renders for the italic.'
+setup_files:
+  work/site/index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Atelier Moro: the autumn glazes</title>
+    <style>
+      /* Display and body: Fraunces, a well-chosen soft serif. Only the roman is served; the italic file was never added. */
+      @font-face { font-family: "Fraunces"; src: local("Fraunces"), local("Georgia"); font-style: normal; }
+      @font-face { font-family: "Fraunces"; src: url(fonts/Fraunces-Italic.woff2) format("woff2"); font-style: italic; }
+      body { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: 18px; line-height: 1.2; color: #2b2622; background: #fbf8f3; }
+      main { padding: 32px 24px; }
+      .story { max-width: 62em; }
+      h1 { font-size: 44px; line-height: 1.1; margin: 0 0 24px; }
+      h2 { font-size: 30px; line-height: 1.15; max-width: 14em; }
+      em { font-style: italic; }
+    </style>
+    </head>
+    <body>
+    <main>
+      <h1>The autumn glazes</h1>
+      <div class="story">
+        <p>Every glaze in the autumn run was mixed in the studio from local feldspar, a little iron and ash from the wood store, then tested on forty tiles before a single plate was dipped, because a glaze that looks right on a tile can still crawl, pinhole or run on a curved rim once it meets the heat of a full kiln.</p>
+        <p>We fire to cone six in an electric kiln and let it cool for two full days. Opening it early cracks the thicker pieces, and the slow cool is what lets the iron come through as the <em>small brown speckle</em> that people ask about at the market every weekend without fail.</p>
+        <h2>Why each piece looks a little different from the next one in the set</h2>
+        <p>Glaze pools where the wall meets the well, thins over the rim and breaks lighter at the edge. That is not a fault we sort out; it is the record of how the piece sat in the kiln, and no two will match exactly, even from the same dip on the same afternoon.</p>
+      </div>
+    </main>
+    </body>
+    </html>
 expected:
   must:
   - runs cstack type qa (or explains why it cannot) before judging

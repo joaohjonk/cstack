@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
+import { shown } from '../core.mjs';
 import { loadEngine, launch, withPage, gotoGuarded, findGstackBrowse, probeGstack } from './launch.mjs';
 import { validateUrl, checkNavigation } from './url-guard.mjs';
 import { checkRobots } from './robots.mjs';
@@ -19,7 +20,7 @@ import { parseSteps, runSteps } from './skills.mjs';
 const CSTACK_VERSION = createRequire(import.meta.url)('../../../package.json').version;
 
 export const BROWSE_HELP = `cstack browse <sub> (one-shot headless Chromium; artifacts in <ws>/work/browse/<run-id>/)
-  shot <url> [--breakpoints 375,768,1440] [--full]   screenshots (+ <=2000px preview when larger)
+  shot <url> [--breakpoints 375,768,1440] [--full] [--out dir|file.png]   screenshots (+ <=2000px preview when larger)
   snapshot <url> [--interactive] [--compact] [--depth N] [--selector css]   accessibility tree with @eN refs
   tokens <url> [--breakpoint 1440]                   computed-style candidates (extracted_pattern for /brand-import)
   media <url> [--download] [--limit N]               image/video list; download = reference-only + sha256 manifest
@@ -116,6 +117,21 @@ async function pageRun(sub, a, ws, fn, { viewport } = {}) {
   return run;
 }
 
+// --out (field test F31): copy the shots there; the run dir keeps the record. A .png path takes a single shot as-is;
+// anything else is a folder, and each shot keeps its shot-<width>.png name.
+export function copyShots(run, out, ws) {
+  const shots = run.record.result.shots;
+  const dest = path.resolve(ws, String(out));
+  const single = /\.png$/i.test(dest);
+  if (single && shots.length > 1) throw new Error(`--out ${out} names one file but ${shots.length} breakpoints were shot; pass a folder or one --breakpoints value`);
+  fs.mkdirSync(single ? path.dirname(dest) : dest, { recursive: true });
+  return shots.map((s) => {
+    const to = single ? dest : path.join(dest, path.basename(s.file));
+    fs.copyFileSync(path.join(run.dir, s.file), to);
+    return to;
+  });
+}
+
 function report(run, ws, a, lines = []) {
   const rec = run.finish();
   if (a.json) return rec;
@@ -153,7 +169,8 @@ export async function runBrowse(sub, args, ws = process.cwd()) {
     case 'shot': {
       const bps = parseBreakpoints(a.breakpoints);
       const run = await pageRun(sub, a, ws, async ({ page, run }) => ({ shots: await shoot(page, run, { breakpoints: bps, full: !!a.full }) }), { viewport: viewportFor(bps[0]) });
-      return report(run, ws, a, [`shots: ${run.record.result.shots.map((s) => `${s.breakpoint}px ${s.width}x${s.height}${s.preview ? ' +preview' : ''}`).join(', ')}`]);
+      const copied = a.out && a.out !== true ? copyShots(run, a.out, ws) : [];
+      return report(run, ws, a, [`shots: ${run.record.result.shots.map((s) => `${s.breakpoint}px ${s.width}x${s.height}${s.preview ? ' +preview' : ''}`).join(', ')}`, ...copied.map((c) => `copied: ${shown(c)}`)]);
     }
     case 'snapshot': {
       const opts = { interactive: !!a.interactive, compact: !!a.compact, depth: a.depth ? parseInt(a.depth, 10) : undefined, selector: typeof a.selector === 'string' ? a.selector : undefined };

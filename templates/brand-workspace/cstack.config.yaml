@@ -19,6 +19,11 @@ providers:
   reference_search: taste-labs  # falls back to manual reference curation when TASTE_API_KEY is absent
   verifier: local               # local | taste-labs (needs a public candidate URL)
 
+# Research tools whose terms bar agents (Cosmos) stay unused even when connected. The owner may accept that risk for
+# this workspace only, by name and date; `cstack tools` then shows the tool as allowed by the owner.
+# research_tools:
+#   cosmos: { agent_use: { allowed: true, accepted_by: <your name>, date: YYYY-MM-DD, note: "own account, own saves" } }
+
 # Owner decisions the agent must not make alone
 approvals:
   final_assets_need_human: true

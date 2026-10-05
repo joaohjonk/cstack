@@ -11,6 +11,62 @@ depends_on:
 description: A product video is planned as beats, stills and draft probes with a spend plan before any final-tier call.
 cannot_isolate: Whether the final film is good is judged by the owner in a T4 run.
 setup: 'Request: ''make a 15 second video of our can for reels, like the big brand ads''. Fictional brand; packshots and label artwork exist; FAL_KEY set; budget 40 USD.'
+setup_files:
+  cstack.config.yaml: |
+    # cstack workspace for Evalcase (eval case). FAL_KEY is set in the environment; budget 40 USD.
+    brand_id: evalcase
+    created: 2026-10-05
+    budget:
+      currency: USD
+      per_run: 40
+      per_day: 40
+      confirm_over: 0   # every priced call still needs the owner's --confirm
+      allow_unpriced: false
+    providers:
+      preferred_media: fal
+      reference_search: taste-labs
+      verifier: local
+    approvals:
+      final_assets_need_human: true
+      never_self_approve: [logo_marks, claims, packaging_rules]
+    publish: { allowed: false }
+setup_props:
+  assets/product/can/packshot-front.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [282, 260, 200, 560], color: '#c43d2f' }
+      - { rect: [322, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [282, 470, 200, 170], color: '#f3ead8' }
+  assets/product/can/packshot-three-quarter.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [300, 260, 200, 560], color: '#c43d2f' }
+      - { rect: [340, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [300, 470, 200, 170], color: '#f3ead8' }
+  assets/product/can/packshot-back.png:
+    kind: png
+    size: 800x1000
+    background: ['#e9e4dc', '#cfc7bb']
+    noise: 6
+    shapes:
+      - { rect: [318, 260, 200, 560], color: '#c43d2f' }
+      - { rect: [358, 180, 120, 90], color: '#3b3b3b' }
+      - { rect: [318, 470, 200, 170], color: '#f3ead8' }
+  assets/official/can-label.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2070 1000" width="207mm" height="100mm">
+        <title>Ember Cola can wrap, official label art (fictional)</title>
+        <rect width="2070" height="1000" fill="#c43d2f"/>
+        <text x="120" y="460" font-family="Georgia, serif" font-size="220" fill="#f6e7d0">Ember</text>
+        <text x="120" y="640" font-family="Helvetica, Arial, sans-serif" font-size="90" fill="#f6e7d0">Smoked cola, 330 ml</text>
+      </svg>
 expected:
   must:
   - runs cstack flows search and names the branch (product hero) and a reference film

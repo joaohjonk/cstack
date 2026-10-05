@@ -9,6 +9,24 @@ depends_on:
 description: Captions, taglines, end cards and logos are composited after generation, never asked of the video model.
 cannot_isolate: none
 setup: 'Brief: a 10 s teaser ending on the tagline and logo, with captions for the voice-over. Fictional brand; official logo SVG and tagline approved.'
+setup_files:
+  briefs/teaser-10s.md: |
+    # Brief: 10 s teaser (fictional brand Northbound Outdoor)
+    Ends on the tagline card and the logo. Voice-over with captions.
+    VO: "Every trail starts at the door. Northbound. Go further."
+  work/copy/tagline.md: |
+    Approved tagline: Go further.
+  state/approvals.jsonl: |
+    {"id":"FB-20261001-tag","date":"2026-10-01","by":"owner","brand_id":"evalcase","type":"approve","artifact_ref":"work/copy/tagline.md","reason":"tagline approved"}
+setup_props:
+  assets/official/logo.svg:
+    kind: svg
+    text: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" width="360" height="120">
+        <title>Northbound logo (fictional)</title>
+        <path d="M20 100 L60 20 L100 100 Z" fill="#1d3b2a"/>
+        <text x="120" y="78" font-family="Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#1d3b2a">Northbound</text>
+      </svg>
 expected:
   must:
   - writes prompts that ask for no on-screen text, captions, logos or watermarks

@@ -14,6 +14,7 @@ cannot_isolate: Cannot isolate whether a good answer came from the brand state o
   case.
 setup: 'A fictional brand workspace with complete approved brand-system (voice, color, typography, claims). Request: ''write
   the hero line and pick the hero color for the autumn landing page''.'
+workspace: examples/tessel-kiln
 expected:
   must:
   - reuses approved voice, color tokens and claims from brand state

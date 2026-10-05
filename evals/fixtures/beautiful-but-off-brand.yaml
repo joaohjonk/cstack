@@ -13,6 +13,30 @@ description: Section 31 behavior case.
 cannot_isolate: Does not test the reviewer's aesthetic accuracy.
 setup: 'A polished image that violates brand photography rules (cold studio light vs. brand''s warm flash recipe). Request:
   ''review this''.'
+setup_files:
+  brand/rules/brand-rules.yaml: |
+    # Brand rules (fictional brand Pell Street Bakery). Tokens hold values; this file holds relationships.
+    version: 0.1
+    rules:
+      - id: R-IMG-01
+        scope: core
+        rule: "photography uses the warm flash recipe: one direct on-camera flash, warm gel (about 3200 K), hard shadow behind the subject, ambient one stop under; never soft, cool or diffused studio light"
+        check: judge
+      - id: R-IMG-02
+        scope: core
+        rule: food is shown half-eaten or mid-use, on the shop's scuffed counters; never on seamless backdrops
+        check: judge
+  work/review/hero-candidate.md: |
+    Agency delivery for the winter hero, 2026-10-04. Shot in their studio: large softbox from above, daylight-balanced, seamless grey paper.
+setup_props:
+  work/review/hero-candidate.png:   # polished, cool, soft and on seamless grey: lovely, and against R-IMG-01 and R-IMG-02
+    kind: png
+    size: 1080x1350
+    background: ['#dfe5ec', '#aeb8c4']
+    shapes:
+      - { circle: [540, 820, 330], color: '#9aa6b333' }
+      - { circle: [540, 760, 260], color: '#d9c7a8' }
+      - { circle: [540, 760, 190], color: '#e9dcc4' }
 expected:
   must:
   - separates beauty from brand fit explicitly

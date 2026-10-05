@@ -8,6 +8,27 @@ depends_on:
 description: A template with unknown licence produces internal previews only; client-facing renders wait for the licence.
 cannot_isolate: none
 setup: 'The owner drops a downloaded tote-bag template folder with no licence file and asks for mockups to send to a retailer.'
+setup_files:
+  incoming/tote-bag-mockup/README.txt: |
+    Tote bag mockup, free download. Place your design on the bag layer.
+    Files: tote.png (scene), print-area.png (mask).
+  incoming/tote-bag-mockup/source.txt: |
+    Downloaded by the owner on 2026-10-04 from a free mockup aggregator site. No licence file came with it.
+setup_props:
+  incoming/tote-bag-mockup/tote.png:
+    kind: png
+    size: 1200x1200
+    background: ['#ebe7e0', '#d2ccc1']
+    noise: 4
+    shapes:
+      - { rect: [360, 380, 480, 560], color: '#efe6d2' }
+      - { ring: [600, 380, 150, 18], color: '#d8ccb4' }
+  incoming/tote-bag-mockup/print-area.png:
+    kind: png
+    size: 1200x1200
+    background: '#000000'
+    shapes:
+      - { rect: [420, 480, 360, 380], color: '#ffffff' }
 expected:
   must:
   - records licence client_use_allowed unknown in template.json

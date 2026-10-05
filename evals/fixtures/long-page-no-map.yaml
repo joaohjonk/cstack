@@ -10,6 +10,8 @@ cannot_isolate: Does not test whether the reviewer's proposed order is the best 
 setup: 'A repository home page of about 3,800 words with no contents list. It repeats its tagline in the hero, a figure,
   a heading and a rules list. The quick start sits about 2,700 px down on a phone. Its figures are 1200 units wide and
   render at 324 px in the mobile column. Request: ''review the home''.'
+setup_props:   # a fictional open-source project's README with its figures (evals/fixtures/props/long-home/)
+  work/site: { kind: copy, from: evals/fixtures/props/long-home }
 expected:
   must:
   - uses page mode with EDITOR and INFORMATION ARCHITECTURE lenses
