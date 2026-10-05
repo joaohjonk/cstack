@@ -152,6 +152,7 @@ const COMMANDS = {
   'video deliver': 'per-channel H.264 + AAC encodes with faststart and a manifest: cstack video deliver <master> [--channels meta,tiktok,youtube,reels] --out <dir>',
   'mockup render': 'composite approved art onto a template package (quad, cylinder, mesh; displacement, shading; licence gate): cstack mockup render --template <dir> --art <file.png|svg> --out <file.png> [--placement id] [--force] [--internal]',
   'mockup verify': 'prove the art survived: inverse-warp each placement to flat art space and diff it (mean, edges, worst-tile SSIM, heatmap): cstack mockup verify --template <dir> --art <file> --render <file.png> [--placement id]; exits 1 on FAIL',
+  'mockup template': 'draw a can template (CC0, no photograph) and print the flat wrap size: cstack mockup template can --out <dir> [--size standard-12oz|sleek-12oz|tall-16oz]',
   'mockup check': 'validate a template package (placements, footprints, layer files, licence): cstack mockup check --template <dir>',
   'svg legibility': 'can a figure be read where it is shown: text size at each display width and text contrast on its ground: cstack svg legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117]; exits 1 on FAIL',
   'svg lint': 'lint marks and icon sets: structure and security, viewBox, complexity, palette, strokes across a set, grid against an icon grammar: cstack svg lint <file|dir...> [--grammar icons.tokens.json] [--palette ...]; exits 1 on FAIL',

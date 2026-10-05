@@ -102,6 +102,8 @@ export function planDoc(f, { id, target, deliverable, key_visual } = {}) {
 }
 
 const MAKES = ['generative', 'probe'];
+const PACK_FLOWS = new Set(['concept-wrap', 'packaging-system', 'mockup-set', 'shelf-test']);
+const PACK_WORDS = /\b(pack|packs|packaging|can|cans|label|labels|wrap|bottle|bottles|box|boxes|pouch|carton)\b/i;
 
 // A flow is followable only if it compared ways of getting there, gates every step, says how each made
 // thing is judged against the target, and names where spending stops. Pure: no file or network access.
@@ -336,6 +338,10 @@ export function gateFlow(ws, file, { stage = 'make', providers = [], skills = nu
     const reviewed = steps.slice(0, firstGen < 0 ? steps.length : firstGen).some((s) => /prompt/i.test(`${s.id} ${s.does}`) && (s.skill === 'creative-review' || s.gate?.type === 'independent_review'));
     if (firstGen >= 0 && !reviewed) warnings.push('make: no prompt review before the first paid generation; have creative-review read the compiled prompts against the territory and the references the founder reacted to before spending (a prompt-review step)');
   }
+  // F73: a pack made by an image model comes back with invented type and a label, not a poster; the pack is flat
+  // artwork with real type (concept-wrap), the model makes only the picture inside it
+  if (at === 0 && generative && !PACK_FLOWS.has(String(sourceFlowRef(flow) ?? '').slice(5) || flow.id) && PACK_WORDS.test(`${flow.target?.description ?? ''} ${(flow.target?.must ?? []).join(' ')}`))
+    warnings.push('make: the target is a pack, and this flow has an image model make it; design the pack as flat artwork with real type (cstack flows plan concept-wrap), let the model make only the picture inside it, and see it on the object with cstack mockup template can and mockup render');
   // requires: a brand from zero starts with the founder, then references the founder reacted to, then territories
   if (at === 0) for (const e of requirementGaps(ws, flow)) (e.waived ? warnings : errors).push(e.message);
   if (at >= 1 && VISUAL.has(d.kind)) {

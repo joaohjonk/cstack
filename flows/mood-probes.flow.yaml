@@ -29,6 +29,7 @@ when:
 not_when:
 - the identity owns its type and colour and needs a hero (brand-hero-photo)
 - a mark is the question (logo-system)
+- the pack itself, since a can, label or box is flat artwork with real type (concept-wrap); probes may supply its picture
 candidates_considered:
 - name: draft-tier generation per territory across two models, one contact sheet per territory
   verdict: chosen

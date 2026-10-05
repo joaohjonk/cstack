@@ -370,3 +370,17 @@ test('prompt compile warns when slots contradict each other, and only then (F70)
   assert.match(r.warnings[1], /close-up.*wide frame/);
   assert.deepEqual(compile({ template: '{a}. {b}', slots: { a: {}, b: {} }, values: { a: 'no logos or text', b: 'soft window light, studio' } }).warnings, []);
 });
+
+test('flows gate: a pack target on a picture flow points at concept-wrap; concept-wrap itself does not warn (F73, F74)', async () => {
+  const { gateFlow } = await import('../scripts/lib/flows.mjs');
+  const w = tmpDir('cstack-f73-');
+  const fal = [{ id: 'fal', kind: 'media', available: true, missing_env: [] }];
+  const opts = { stage: 'make', providers: fal, budget: { per_run: 2, per_day: 5 } };
+  const probes = planFromFlow(w, 'mood-probes', { target: 'the can for a sparkling tea, one per flavour' });
+  assert.match(gateFlow(w, probes.file, opts).warnings.join('\n'), /the target is a pack.*concept-wrap/);
+  const hero = planFromFlow(w, 'brand-hero-photo', { target: 'a hero photo for the home page at phone width' });
+  assert.doesNotMatch(gateFlow(w, hero.file, opts).warnings.join('\n'), /the target is a pack/);
+  const wrap = planFromFlow(w, 'concept-wrap', { target: 'the can for a sparkling tea, one per flavour' });
+  assert.equal(checkFlowFile(w, wrap.file).errors.length, 0);
+  assert.doesNotMatch(gateFlow(w, wrap.file, opts).warnings.join('\n'), /the target is a pack/);
+});

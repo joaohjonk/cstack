@@ -780,7 +780,7 @@
         "media provider"
       ],
       "path": "skills/generate-media/SKILL.md",
-      "tokens": 1321
+      "tokens": 1360
     },
     {
       "slug": "hook-format-lab",
@@ -1021,7 +1021,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/mockup/SKILL.md",
-      "tokens": 1483
+      "tokens": 1522
     },
     {
       "slug": "model-router",
