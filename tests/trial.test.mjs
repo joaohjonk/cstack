@@ -98,6 +98,7 @@ test('trial run, score, import: isolated workspaces, resumable roles, blind shee
   const html = fs.readFileSync(s.attribution, 'utf8');
   assert.doesNotMatch(html, /team-|control|retail-endcap/, 'the sheet shows codes only');
   assert.throws(() => scoreTrial(plan), /key\.json exists/);
+  assert.equal(plan.brand_hash.length, 64);
   const key = JSON.parse(fs.readFileSync(path.join(s.dir, 'key.json'), 'utf8'));
   // the owner says yes to every brand piece and to one control piece; same brand on one pair of two
   const ctlCodes = key.items.filter((i) => i.control).map((i) => i.code);
@@ -113,6 +114,12 @@ test('trial run, score, import: isolated workspaces, resumable roles, blind shee
   assert.deepEqual([r.reviewer_pass.passed, r.reviewer_pass.judged], [8, 12]);
   assert.equal(r.attribution.reviewer_agreement.agree, 8, 'the reviewer failed 4 pieces the owner attributed');
   assert.match(fs.readFileSync(r.report, 'utf8'), /attributed \*\*12 of 12\*\* brand-team pieces/);
+  assert.match(fs.readFileSync(r.report, 'utf8'), /same 3 brand files \(hash /);
+  // a brand edited after the plan: no team starts from a different state
+  fs.writeFileSync(path.join(ws, 'brand', 'brand-system.json'), '{"changed":1}');
+  fs.rmSync(path.join(out, 'runs', 'team-b'), { recursive: true });
+  fs.rmSync(path.join(out, 'trial.state.json'));
+  assert.throws(() => runTrial(plan, { agent: ['fake'], runner: fakeRunner, only: ['team-b'] }), /brand workspace changed since the plan/);
   fs.writeFileSync(tf, JSON.stringify({ kind: 'attribution', taps: [{ code: 'T999', answer: 'yes' }] }));
   assert.throws(() => importTaps(plan, [tf]), /codes this trial's key does not have/);
 });

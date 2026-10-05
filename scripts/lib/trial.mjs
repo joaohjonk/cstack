@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import YAML from 'yaml';
-import { ROOT, exists, readData, readJSON, writeJSON, writeAtomic, sha256File, nowISO, today, walk } from './core.mjs';
+import { ROOT, exists, readData, readJSON, writeJSON, writeAtomic, sha256, sha256File, nowISO, today, walk } from './core.mjs';
 import { validateValue } from './schemas.mjs';
 import { isLimit } from './evalrun.mjs';
 
@@ -88,6 +88,8 @@ export function planTrial({ brand, scenarios = [], teams = 2, control = true, fl
   }
   if (errors.length) return { ok: false, errors };
   const files = brandFiles(path.resolve(brand));
+  // one hash over every file a brand team gets: every brand team starts from byte-identical brand state
+  const brand_hash = sha256(files.map((r) => `${r}\0${sha256File(path.join(path.resolve(brand), r))}`).join('\n'));
   const cfg = readData(path.join(path.resolve(brand), 'cstack.config.yaml')) ?? {};
   const brandName = name && name !== true ? String(name) : cfg.brand_name ?? cfg.brand_id ?? path.basename(path.resolve(brand));
   const teamIds = [...Array.from({ length: nTeams }, (_, i) => `team-${String.fromCharCode(97 + i)}`), ...(control ? ['control'] : [])];
@@ -120,6 +122,7 @@ export function planTrial({ brand, scenarios = [], teams = 2, control = true, fl
     scenarios: chosen.map((s) => s.id),
     roles: ROLES.map((r) => r.id),
     brand_files: files.length,
+    brand_hash,
     units: shares,
   };
   return { ok: !errors.length, errors, warnings, plan };
@@ -157,6 +160,8 @@ export function prepareUnit(plan, u, { force = false } = {}) {
       fs.mkdirSync(path.dirname(to), { recursive: true });
       fs.copyFileSync(path.join(plan.brand, r), to);
     }
+    const now = sha256(brandFiles(plan.brand).map((r) => `${r}\0${sha256File(path.join(plan.brand, r))}`).join('\n'));
+    if (plan.brand_hash && now !== plan.brand_hash) throw new Error(`the brand workspace changed since the plan (brand files hash ${now.slice(0, 12)} vs ${plan.brand_hash.slice(0, 12)}); teams must start from the same brand state: re-plan with --force`);
     const cfgFile = path.join(dir, 'cstack.config.yaml');
     const cfg = readData(cfgFile) ?? {};
     writeAtomic(cfgFile, YAML.stringify({ ...cfg, budget, publish: { allowed: false } }));
@@ -400,7 +405,7 @@ export function importTaps(plan, files = []) {
 
 function reportMD(plan, key, r) {
   const a = r.attribution;
-  const lines = [`# Brand trial: ${plan.brand_name}`, '', `${today()} · ${plan.scenarios.length} scenarios · ${plan.teams.filter((t) => t !== 'control').length} brand teams${plan.teams.includes('control') ? ' and a control team' : ''} · ${key.items.length} applications`, ''];
+  const lines = [`# Brand trial: ${plan.brand_name}`, '', `${today()} · ${plan.scenarios.length} scenarios · ${plan.teams.filter((t) => t !== 'control').length} brand teams${plan.teams.includes('control') ? ' and a control team' : ''} · ${key.items.length} applications`, '', `Every brand team started from the same ${plan.brand_files} brand files (hash ${String(plan.brand_hash ?? 'not recorded').slice(0, 12)}).`, ''];
   if (a) lines.push(`Blind, the owner attributed **${a.brand.yes} of ${a.brand.tapped}** brand-team pieces to the brand (${a.brand.rate}%) against **${a.control.yes} of ${a.control.tapped}** control pieces (${a.control.rate ?? 0}%).${a.lift ? ` Brand work was picked ${a.lift} times as often.` : ''}`);
   if (r.pairs) lines.push(`Two teams that never saw each other's work were judged the same brand in **${r.pairs.same} of ${r.pairs.tapped}** scenarios.`);
   if (r.reviewer_pass.judged) lines.push(`The reviewer passed ${r.reviewer_pass.passed} of ${r.reviewer_pass.judged} brand-team pieces${a?.reviewer_agreement.judged ? ` and agreed with the owner on ${a.reviewer_agreement.agree} of ${a.reviewer_agreement.judged}` : ''}.`);

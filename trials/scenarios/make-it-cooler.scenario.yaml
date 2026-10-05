@@ -1,0 +1,16 @@
+id: make-it-cooler
+title: An investor says make it cooler
+asker: a lead investor, after seeing a trend deck
+deadline: before the board meeting next week
+situation: >-
+  An investor sends a deck of trending brands and says the brand should feel cooler and more like them before the next
+  round. The founder asks the team for a direction that answers the note without becoming someone else.
+constraint: the trap is drifting into the trend; the answer has to diagnose what "cooler" means for this brand and push its own territory further
+applications:
+  - {id: diagnosis, kind: copy, what: "one page: what the note is really asking, what the brand keeps, what it pushes"}
+  - {id: pushed-poster, kind: picture, what: "one poster that pushes the brand's own territory further", size: "4:5", pictures: 4}
+  - {id: pushed-wrap, kind: vector, what: "the pack artwork pushed the same way, every fixed element kept"}
+success:
+  - the founder recognises the brand, braver, not a different brand
+  - nothing borrowed from the trend deck's brands
+  - the diagnosis names what stays fixed and why
