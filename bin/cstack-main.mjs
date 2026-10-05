@@ -27,6 +27,7 @@ import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
 import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
+import { makeSheet, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -38,7 +39,7 @@ import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 const [, , cmd, ...argv] = process.argv;
 
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
-const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record']);
+const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
 // Flags that may repeat: values accumulate in an array.
 const REPEATABLE_FLAGS = new Set(['set']);
 
@@ -161,6 +162,8 @@ const COMMANDS = {
   'learn candidates': 'learnings eligible for promotion (repeated evidence or strong human correction)',
   'learn promote': 'promote a learning: cstack learn promote <id> --to <target> --by <name> --ws <dir>',
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
+  'sheet make': 'contact sheet for stills: cstack sheet make <images|folders...> --out work/sheets/a.html [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
+  'sheet import': 'blind picks from a sheet into feedback pairs: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
   'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
   setup: 'install skills into agent hosts: cstack setup [--host default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro] [--target <project>] [--copy] [--dry-run]   |   --refresh: relink every install this checkout made (cstack update runs it)',
   update: 'update this cstack checkout (fast-forward only; never stashes or resets), reinstall dependencies if they changed, relink every host it was installed into, show what is new: cstack update [--dry-run]   |   --check [--force]: one line when an update exists (skills run this)   |   --snooze   |   --auto on|off   |   --checks on|off',
@@ -703,6 +706,42 @@ async function cmdEvals(sub) {
   console.log(p.text);
 }
 
+// docs/sheets.md: contact sheets for stills and blind pairwise picks
+async function cmdSheet(sub) {
+  if (sub === 'make') {
+    const r = makeSheet({ inputs: args._, out: args.out, title: args.title, cols: args.cols, blind: !!args.blind, seed: args.seed, force: !!args.force });
+    if (args.png) r.png = await renderPNG(r.html, r.html.replace(/\.html$/, '.png'), { force: !!args.force });
+    if (args.json) return json(r);
+    console.log(`wrote ${shown(r.html)} (${r.count} images${r.blind ? `, blind, seed ${r.seed}` : ''})`);
+    if (r.png) console.log(`wrote ${shown(r.png)}`);
+    if (r.blind) console.log(`key in ${shown(r.key)}: do not open it before the picks are in`);
+    console.log('open the sheet, press "Pick pairs", then: cstack sheet import <downloaded picks.json> --sheet <this sheet> --by <name>');
+    return;
+  }
+  if (sub === 'import') {
+    if (!args._[0] || !args.sheet || args.sheet === true) die('usage: cstack sheet import <picks.json> --sheet <sheet.html> --by <name> [--ws dir]');
+    requireWs();
+    const brand = (() => {
+      try {
+        return readData(path.join(ws, 'cstack.config.yaml'))?.brand_id;
+      } catch {
+        return undefined;
+      }
+    })();
+    const recs = importPicks({ picksFile: args._[0], sheet: args.sheet, by: args.by, brand_id: brand ? String(brand) : undefined, ws });
+    for (const rec of recs) {
+      const v = validateValue('feedback-event', rec);
+      if (!v.ok) die(`invalid feedback-event: ${v.errors}`);
+    }
+    for (const rec of recs) appendJSONL(path.join(ws, 'state', 'feedback.jsonl'), rec);
+    if (args.json) return json(recs);
+    const w = recs.filter((r) => ['a', 'b'].includes(r.pair.winner)).length;
+    console.log(`appended ${recs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
+    return;
+  }
+  die('usage: cstack sheet make|import');
+}
+
 // docs/evals.md#running-fixtures. Live calls go through guardedCall on the --ws ledger, like any model call.
 async function cmdEvalsRun() {
   if (args.agent === true || args.judge === true || args.recorded === true || args.out === true) die('--agent, --judge, --recorded and --out need a value');
@@ -860,7 +899,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'sheet', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1077,6 +1116,9 @@ switch (cmd) {
     break;
   case 'evals':
     await cmdEvals(argv[0]);
+    break;
+  case 'sheet':
+    await cmdSheet(argv[0]);
     break;
   case 'setup':
     cmdSetup();

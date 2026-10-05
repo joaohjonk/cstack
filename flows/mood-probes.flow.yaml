@@ -57,15 +57,15 @@ steps:
   gate: {type: deterministic_check, check: cstack flows gate <plan> --stage make passes; cstack spend plan ok}
   compare_to_target: does each probe carry its territory's idea?
 - id: sheets
-  does: one contact sheet per territory, every probe labelled by territory and model; recorded under territories in the plan
+  does: "one contact sheet per territory (cstack sheet make <probes> --out work/sheets/<territory>.html --png), every probe labelled by territory and model, recorded under territories in the plan; plus one blind sheet of all probes (--blind) for the owner"
   kind: deterministic
   gate: {type: deterministic_check, check: cstack flows gate <plan> --stage decide passes}
   compare_to_target: the sheets side by side
 - id: choose
-  does: creative-review lenses on the sheets, then the owner picks a territory or asks for a merged one, critiqued again
+  does: the owner picks pairs on the blind sheet before seeing any review (cstack sheet import), then creative-review lenses on the territory sheets, then the owner picks a territory or asks for a merged one, critiqued again
   kind: human
   skill: creative-review
-  gate: {type: owner, check: the owner picks and the choice is recorded (cstack feedback)}
+  gate: {type: owner, check: "the owner's blind pairs and final pick are recorded (cstack sheet import, cstack feedback)"}
   compare_to_target: the pick against the brief's objective
 cost_ladder: about USD 0.10-0.50 for 24 draft probes; stop after two rounds that do not separate the territories, then rewrite the territories rather than render more
 failure_modes:

@@ -6,7 +6,7 @@ Prioritized by dependency (see the build order in [research/gap-analysis.md](res
 
 1. **T2 fixture runner.** Built: `cstack evals run` ([evals.md](evals.md#running-fixtures)). Still to do: the first live baseline of every T2 fixture (3 runs each) on the owner's machine, and `setup_files` for the fixtures whose setup names files the starter workspace does not have.
 2. **First real-brand run, in the brand's own repo.** Import, one product photoshoot and one landing page, end to end, through installed cstack only. Promote the workflows that survive from `template` to `validated` with a linked run record. Brand data never comes back into cstack; general lessons do, anonymized.
-3. **Pairwise pick capture.** `cstack browse`-rendered contact sheet (or a small local page) that writes `feedback-event` pairs with won-because / lost-because, so calibration data exists.
+3. **Pairwise pick capture.** Built: `cstack sheet make --blind` and `cstack sheet import` ([sheets.md](sheets.md)). Still to do: the first real picks, from the field test's sheets.
 4. **Deterministic product-drift check.** Compare outputs against product masters and against the liked raw before a fix replaces it (SSIM/perceptual diff via Chromium canvas or an optional lib); wire into `product-fidelity` and `image-edit`.
 
 ## P1

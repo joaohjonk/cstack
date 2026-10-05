@@ -135,7 +135,7 @@ These rules are in the shared preamble, the `creative-review` and `brand-verify`
 3. **Judgments stay plural.** The axes are beauty, brand_fit, cultural_vitality, message_clarity, craft, product_truth, commercial_usefulness, novelty and correctness. Each is scored 0–2 or `null` with evidence and an anchor, and they are never summed. A composite exists only if a workflow declares one, and hard gates still block it.
 4. **Judge against a baseline**: brief, reference, incumbent or last approved. Say which in `baseline`.
 5. **An AI judge is never the owner.** A verifier score is evidence about rules and adherence, not taste certification. Owner decisions (approve, reject, gold, anti, pairwise with a reason) go to `cstack feedback` and outrank any judge. When they disagree, the disagreement is logged as a learning candidate, not argued away (fixture `ai-judge-not-owner`).
-6. **Calibrate before trusting.** A taste judge is usable only after it agrees with the owner's own pairwise picks. Pairwise capture is the default so that calibration becomes possible.
+6. **Calibrate before trusting.** A taste judge is usable only after it agrees with the owner's own pairwise picks. Pairwise capture is the default so that calibration becomes possible. Blind pairs come from contact sheets ([sheets.md](sheets.md)).
 
 ## Records
 
