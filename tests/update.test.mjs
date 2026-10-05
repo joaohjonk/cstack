@@ -31,6 +31,8 @@ function fixture(t) {
   write(path.join(work, 'bin', 'cstack.mjs'), "import fs from 'node:fs';\nfs.appendFileSync(new URL('../calls.log', import.meta.url), process.argv.slice(2).join(' ') + '\\n');\nconsole.log('linked 1 skills → somewhere (Stub)');\n");
   write(path.join(work, '.gitignore'), 'calls.log\n');
   g(tmp, 'init', '-q', 'work');
+  // name the branch outright: a git that ignores init.defaultBranch (an old git, a template HEAD) still starts on main (F72)
+  g(work, 'symbolic-ref', 'HEAD', 'refs/heads/main');
   g(work, 'add', '.');
   g(work, 'commit', '-qm', 'one');
   g(tmp, 'clone', '-q', '--bare', 'work', 'origin.git');
