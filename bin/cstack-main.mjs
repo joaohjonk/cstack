@@ -106,7 +106,7 @@ const COMMANDS = {
   route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]; with billed amounts, estimate vs billed',
-  'spend reconcile': 'fetch what the provider billed for each paid request: cstack spend reconcile --provider fal --ws <dir> [--since YYYY-MM-DD] [--dry-run] (needs FAL_ADMIN_KEY or FAL_KEY)',
+  'spend reconcile': 'fetch what a provider billed for each paid request: cstack spend reconcile --provider <id> --ws <dir> [--since YYYY-MM-DD] [--dry-run] (adapters with a billing lookup: fal, which needs FAL_ADMIN_KEY or FAL_KEY)',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
@@ -407,10 +407,11 @@ function cmdRoute() {
 
 async function cmdSpend(sub) {
   if (sub === 'reconcile') {
-    const provider = args.provider && args.provider !== true ? String(args.provider) : die('--provider required (fal)');
-    if (provider !== 'fal') die(`spend reconcile knows fal only; ${provider} has no billing lookup yet`);
-    const { falBilling } = await import('../providers/fal.mjs');
-    const r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => falBilling(id) });
+    const provider = args.provider && args.provider !== true ? String(args.provider) : die('--provider required (any adapter with a billing lookup; fal today)');
+    // provider-neutral: any adapter that exports billing(request_id) can be reconciled; the others say so
+    const adapter = getProvider(provider);
+    if (typeof adapter.billing !== 'function') die(`${provider} has no billing lookup yet, so its rows keep cstack's estimate only; add billing(request_id) to its adapter to reconcile it`);
+    const r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => adapter.billing(id) });
     if (args.json) return json({ ...r, check: billedVsEstimated(ws, { provider }) });
     if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s); nothing fetched`);
     const by = (k) => r.rows.filter((x) => x.status === k).length;
