@@ -63,7 +63,7 @@ cstack providers      # id, interfaces, available, env var names needed
 | `taste-labs` | reference_search, extractor, verifier | `TASTE_API_KEY` (optional `TASTE_API_BASE`) | REST fallback when the host has no Taste Labs MCP. Used by `cstack taste search / extract / verify`. `verify` needs a publicly reachable candidate URL, never localhost. Search and verifier are alpha. |
 | `local-verifier` | verifier | none | Placeholder: points to `/brand-verify` (deterministic gates plus an independent judge); its score stays null |
 | `higgsfield` | media | `HF_API_KEY`, `HF_API_SECRET` | stub |
-| `openai-image` | media | `OPENAI_API_KEY` | stub |
+| `openai-image` | media | `OPENAI_API_KEY` | Images API: `/v1/images/generations` (JSON) and, when the request has input images, `/v1/images/edits` (multipart; local files or data URIs, `inputs.mask` optional). Synchronous: the call happens at submit and the `b64_json` images are written as files. The key goes only to `https://api.openai.com`. Token-billed with no verified price, so a call is unpriced: ask the owner, then `--confirm-unpriced`, or set `budget.allow_unpriced`. |
 | `google` | media | `GEMINI_API_KEY` | stub |
 | `replicate` | media | `REPLICATE_API_TOKEN` | stub |
 
@@ -83,7 +83,7 @@ A stub never pretends. Calling it throws an error naming what is missing, and sk
 }
 ```
 
-Always set `estimated_cost` (an unpriced call is blocked) and `recipe_hash` (it links the output to its recipe).
+Always set `estimated_cost` (an unpriced call is blocked) and `recipe_hash` (it links the output to its recipe). A route priced per token (for example fal's GPT Image 2.5 Sunburst) is estimated only from a request-level `"token_estimate": {"input_text": n, "output_image": n}` (plus `input_image` when the request has images; counts for the whole request); without it the call is unpriced.
 
 ### Adding a provider
 
@@ -98,3 +98,7 @@ Always set `estimated_cost` (an unpriced call is blocked) and `recipe_hash` (it 
 ## Agent hosts
 
 Skills are plain folders, so any host that reads Agent Skills can use them. Install ids, folders and per-host caveats: [skill-authoring.md](skill-authoring.md#host-install).
+
+## Keys in a .env file
+
+If your keys live in a `.env` file, pass `--env-from <file>` to any cstack command instead of sourcing or printing the file. cstack reads only the variables its adapters declare (`FAL_KEY`, `FAL_ADMIN_KEY`, `TASTE_API_KEY`, ...), leaves a variable your shell already set alone, and never prints a value. A malformed line, such as a value with spaces in it, is skipped and reported by line number only.

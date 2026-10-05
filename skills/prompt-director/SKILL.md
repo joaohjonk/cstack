@@ -42,7 +42,7 @@ Locked entities and hard constraints are non-negotiable modules; Shot DNA decisi
 2. **Template + slots**: the long stable instruction lives in one template; variables are named slots (`{shot}`, `{pose}`, `{product_spec}`, `{lighting}`, `{motion}`); variant pools are addressed by index or seed.
 3. **Stable prefix**: brand rules and shared instructions first and identical across a batch; volatile task data last (provider caching where supported; measure, do not assume).
 4. **Less text, stronger references** when the model handles references well: map each reference image to a role; keep words for what images cannot say.
-5. **Specialized compilers**: text-to-image, image edit (describe only the change; protect everything else), image-to-video (motion, camera move, duration; start from an approved still), vector (geometry and constraints, no photo words), typography-aware (prefer composited type), product placement (product lock + integration notes).
+5. **Specialized compilers**: text-to-image, image edit (describe only the change; protect everything else), image-to-video (motion, camera move, duration; start from an approved still), vector (geometry and constraints, no photo words), typography-aware (prefer composited type), product placement (product lock + integration notes), grid exploration (one image of frames; fixed and varying in separate slots; [references/grid-pick-polish.md](references/grid-pick-polish.md)).
 6. **Compile and store**: recipe file with slot values, compiled prompt, hash, target model, parameters, references.
 7. **Refinement**: change one component; `cstack prompt diff` must show one meaningful change (more than one = warning).
 

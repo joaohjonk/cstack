@@ -4,14 +4,15 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import { ROOT, Report, readData, readJSON, writeJSON, exists, rel, shown, readJSONL, appendJSONL, newId, today, nowISO, walk } from '../scripts/lib/core.mjs';
 import { schemaNames, validator, validateTree, validateValue } from '../scripts/lib/schemas.mjs';
 import { listSkills, checkSkill, buildIndex, search, duplicateLines } from '../scripts/lib/skills.mjs';
 import { checkBudgets, ratchet } from '../scripts/lib/budget.mjs';
 import { compile, diffRecipes } from '../scripts/lib/prompt.mjs';
 import { canonNames } from '../scripts/lib/prompt-names.mjs';
-import { route } from '../scripts/lib/router.mjs';
+import { route, leaderboardWarning } from '../scripts/lib/router.mjs';
 import { planBatch, readLedger, spent, loadBudget } from '../scripts/lib/ledger.mjs';
 import { record as recordLineage, summarize as summarizeLineage } from '../scripts/lib/lineage.mjs';
 import { initBrand, checkBrand, applyToBrand, staleArtifacts, brandContext, taskContext, resolveConflict } from '../scripts/lib/brand.mjs';
@@ -21,7 +22,7 @@ import { checkTokens, buildCSS, lintRaw } from '../scripts/lib/tokens.mjs';
 import { detectTools } from '../scripts/lib/tools.mjs';
 import { approveBrief, reopenBrief } from '../scripts/lib/brief.mjs';
 import { listFlows, searchFlows, searchWorkflows, planFromFlow, checkFlow, checkFlowFile, gateFlow, GATE_STAGES } from '../scripts/lib/flows.mjs';
-import { runMedia, listPending, estimateFromRegistry, registryPrice } from '../providers/runner.mjs';
+import { runMedia, listPending, priceRequest, registryPrice } from '../providers/runner.mjs';
 import { availability, getProvider, checkProviderRegistry } from '../providers/index.mjs';
 import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
@@ -36,6 +37,7 @@ import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
 import { checkForUpdate, runUpdate, snooze, setConfig, readConfig, recordInstall, installsToRefresh, stateDir } from '../scripts/lib/update.mjs';
 import { checkLinks } from '../scripts/lib/links.mjs';
+import { loadEnvFile } from '../scripts/lib/envfile.mjs';
 import { report as creativeReport, checkBet, checkFamily, checkPlan, readPerformance, families as taxFamilies } from '../scripts/lib/creative.mjs';
 import { parseCSV, rowsToRecords } from '../providers/evidence/csv.mjs';
 
@@ -73,6 +75,17 @@ const ws = path.resolve(args.ws ?? process.env.CSTACK_WORKSPACE ?? process.cwd()
 if (args.ws !== undefined && (args.ws === true || !fs.existsSync(ws))) {
   console.error(`--ws ${args.ws === true ? '(no value)' : ws}: no such directory`);
   process.exit(1);
+}
+// --env-from <file>: provider keys from a .env file, read here so no shell prints it (F47); values never shown
+if (args['env-from'] !== undefined) {
+  if (args['env-from'] === true || !fs.existsSync(path.resolve(args['env-from']))) {
+    console.error('--env-from needs an existing file');
+    process.exit(1);
+  }
+  const names = [...new Set(availability().flatMap((p) => p.needs ?? []).concat(['FAL_ADMIN_KEY']))];
+  const r = loadEnvFile(path.resolve(args['env-from']), names);
+  const parts = [r.loaded.length ? `loaded ${r.loaded.join(', ')}` : 'loaded nothing', r.skipped.length ? `kept the shell's ${r.skipped.join(', ')}` : '', r.malformed.length ? `skipped malformed line(s) ${r.malformed.join(', ')} (not shown)` : ''].filter(Boolean);
+  console.error(`env: ${parts.join('; ')} from ${path.basename(args['env-from'])}; values are never printed`);
 }
 // Commands that read or write brand state need a real workspace, not whatever folder the shell is in.
 const requireWs = () => {
@@ -169,8 +182,9 @@ const COMMANDS = {
   'evals plan': 'diff-aware eval selection: cstack evals plan [--since <git-ref>] [--files a,b]',
   'brief approve': "record the founder's yes to a founder brief, with a fingerprint the make gate checks: cstack brief approve <briefs/x.founder-brief.yaml> --by <founder>",
   'brief reopen': 'take an approved founder brief back after a pivot, so make re-gates until it is approved again: cstack brief reopen <file> --reason "<what changed>" [--by <name>]',
-  'sheet make': 'contact sheet for stills: cstack sheet make <images|folders...> --out work/sheets/a.html [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
-  'sheet import': 'blind picks from a sheet into feedback pairs: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
+  'sheet make': 'contact sheet for stills, where the owner picks winners: cstack sheet make <images|folders...> --out work/sheets/a.html [--grid 3x3] [--cols 4] [--title "..."] [--blind [--seed N]] [--png] [--force]',
+  'sheet open': 'open a sheet in the default browser and print how to pick: cstack sheet open work/sheets/a.html',
+  'sheet import': 'winners and pairs picked on a sheet into feedback events: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
   'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
   setup: 'install skills into agent hosts: cstack setup [--host default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro] [--target <project>] [--copy] [--dry-run]   |   --refresh: relink every install this checkout made (cstack update runs it)',
   update: 'update this cstack checkout (fast-forward only; never stashes or resets), reinstall dependencies if they changed, relink every host it was installed into, show what is new: cstack update [--dry-run]   |   --check [--force]: one line when an update exists (skills run this)   |   --snooze   |   --auto on|off   |   --checks on|off',
@@ -402,16 +416,25 @@ function cmdRoute() {
   };
   if (args.tier && !['draft', 'final'].includes(args.tier)) die('--tier must be draft (probes) or final');
   if (!req.modality) die('usage: cstack route --modality <m> [--needs a,b] [--task t] [--max-cost n] [--providers fal,openai]');
+  // which adapters exist here and which keys are missing (names only), so the best model's gaps can be named
+  req.adapters = Object.fromEntries(availability(process.env).map((a) => [a.id, { status: a.status, missing_env: a.missing_env }]));
   const res = route(reg, req);
   if (args.json) return json(res);
+  const b = res.best_now;
+  if (b) {
+    console.log(`best now: ${b.model_id} (#${b.rank} ${b.leaderboard}, as of ${b.as_of}${b.fresh ? '' : ', STALE'})`);
+    for (const e of b.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}  ${e.reachable ? 'reachable' : 'NOT reachable'}${e.needs.length ? `; needs ${e.needs.join('; ')}` : ''}`);
+    if (!b.endpoints.length) console.log(`${' '.repeat(6)}no route in the registry: add one (maker API or host) before it can be called`);
+    console.log('');
+  }
   for (const c of res.candidates) {
     console.log(`${String(c.score).padStart(4)}  ${c.model_id.padEnd(34)} ${c.provider.padEnd(12)} ${c.why}`);
     // the id to put in a request's "model", per provider; an unpriced host route is refused until it has a price
-    for (const e of c.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}${e.priced === false ? '  (no price yet: calls are refused as unpriced)' : ''}`);
+    for (const e of c.endpoints) console.log(`${' '.repeat(6)}${e.provider}: ${e.endpoint_id}${e.priced === false ? '  (no price yet: ask the owner, then --confirm-unpriced)' : e.token_priced ? '  (token-priced: give token_estimate, or ask the owner, then --confirm-unpriced)' : ''}`);
   }
   console.log(`\nfallback chain: ${res.chain.join(' → ') || '(none)'}`);
   for (const w of res.warnings) console.log(`WARN ${w}`);
-  console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs for important batches)`);
+  console.log(`registry: ${shown(regPath)} (snapshot; the /model-router skill re-verifies live docs, leaderboard rank and as_of for important batches)`);
 }
 
 async function cmdSpend(sub) {
@@ -435,9 +458,9 @@ async function cmdSpend(sub) {
     const items = readData(path.resolve(args._[0] ?? die('usage: cstack spend plan <items.json> --stop "..."')));
     // items without est are priced the way `generate` prices a call: from the registry, through the host's route
     const price = (i) => {
-      const req = { provider: i.provider, model: i.model, inputs: i.inputs ?? { params: i.params ?? {}, images: i.images } };
-      const est = estimateFromRegistry(req);
-      return est ? { est } : { reason: `${i.provider}/${i.model}: ${registryPrice(req).basis}` };
+      const req = { provider: i.provider, model: i.model, inputs: i.inputs ?? { params: i.params ?? {}, images: i.images }, token_estimate: i.token_estimate };
+      const { estimate, reason } = priceRequest(req);
+      return estimate ? { est: estimate } : { reason: `${i.provider}/${i.model}: ${reason}` };
     };
     const res = planBatch(ws, items, { stop_condition: args.stop, price });
     json(res);
@@ -643,6 +666,10 @@ async function cmdGenerate() {
   if (args['dry-run']) req.dry_run = true;
   if (args['confirm-unpriced']) req.confirm_unpriced = true;
   if (args.confirm) req.confirmed = true;
+  // before a paid image run: say so when the "best model now" data is old or missing (field test F55)
+  const model = registryPrice(req).model;
+  const stale = model?.modality === 'image' ? leaderboardWarning(readJSON(path.join(ROOT, 'registry', 'models.json')), 'image') : null;
+  if (stale) console.error(`WARN ${stale}`);
   const res = await runMedia(ws, req);
   if (args.json) return json(res);
   if (res.would_block) die(`dry run (${req.provider}/${req.model}): a real call would be blocked by budget: ${res.problems.join('; ')}; nothing was paid`);
@@ -772,13 +799,30 @@ function cmdBrief(sub) {
 
 async function cmdSheet(sub) {
   if (sub === 'make') {
-    const r = makeSheet({ inputs: args._, out: args.out, title: args.title, cols: args.cols, blind: !!args.blind, seed: args.seed, force: !!args.force });
+    let r;
+    try {
+      r = makeSheet({ inputs: args._, out: args.out, title: args.title, cols: args.cols, blind: !!args.blind, seed: args.seed, force: !!args.force, grid: args.grid });
+    } catch (e) {
+      die(e.message);
+    }
     if (args.png) r.png = await renderPNG(r.html, r.html.replace(/\.html$/, '.png'), { force: !!args.force });
-    if (args.json) return json(r);
-    console.log(`wrote ${shown(r.html)} (${r.count} images${r.blind ? `, blind, seed ${r.seed}` : ''})`);
+    if (args.json) return json({ ...r, url: pathToFileURL(r.html).href });
+    console.log(`wrote ${shown(r.html)} (${r.count} images${r.grid ? `, ${r.cells} frames in ${r.grid.cols}x${r.grid.rows} grids` : ''}${r.blind ? `, blind, seed ${r.seed}` : ''})`);
     if (r.png) console.log(`wrote ${shown(r.png)}`);
     if (r.blind) console.log(`key in ${shown(r.key)}: do not open it before the picks are in`);
-    console.log('open the sheet, press "Pick pairs", then: cstack sheet import <downloaded picks.json> --sheet <this sheet> --by <name>');
+    console.log(sheetHowTo(r.html));
+    return;
+  }
+  if (sub === 'open') {
+    const html = args._[0] && path.resolve(String(args._[0]));
+    if (!html || !fs.existsSync(html)) die('usage: cstack sheet open <sheet.html>');
+    const opener = process.platform === 'darwin' ? ['open', [html]] : process.platform === 'win32' ? ['cmd', ['/c', 'start', '', html]] : ['xdg-open', [html]];
+    if (!args['print-only']) {
+      try {
+        spawn(opener[0], opener[1], { detached: true, stdio: 'ignore' }).on('error', () => {}).unref();
+      } catch {}
+    }
+    console.log(sheetHowTo(html));
     return;
   }
   if (sub === 'import') {
@@ -798,11 +842,27 @@ async function cmdSheet(sub) {
     }
     for (const rec of recs) appendJSONL(path.join(ws, 'state', 'feedback.jsonl'), rec);
     if (args.json) return json(recs);
-    const w = recs.filter((r) => ['a', 'b'].includes(r.pair.winner)).length;
-    console.log(`appended ${recs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
+    const wins = recs.filter((r) => r.type === 'approve');
+    const pairs = recs.filter((r) => r.type === 'pairwise');
+    const w = pairs.filter((r) => ['a', 'b'].includes(r.pair.winner)).length;
+    console.log(`appended ${wins.length} winner(s) and ${pairs.length} pairwise pick(s) (${w} with a winner) to ${shown(path.join(ws, 'state', 'feedback.jsonl'))}`);
+    for (const r of wins) console.log(`  winner: ${r.artifact_ref}${r.region ? ` (frame at x ${r.region.x}, y ${r.region.y} of the grid)` : ''}${r.reason_codes ? `: ${r.reason_codes.join(', ')}` : ''}${r.reason ? ` ("${r.reason}")` : ''}`);
+    if (wins.length) console.log('next: polish each winner as a single image (flow grid-pick-polish), editing locally; upscale only the finalists');
     return;
   }
-  die('usage: cstack sheet make|import');
+  die('usage: cstack sheet make|open|import');
+}
+
+// F62: the owner could not tell where the boards are picked. Every sheet command says where the page is and what to press.
+function sheetHowTo(html) {
+  return [
+    `pick on the sheet in a browser: ${pathToFileURL(html).href}`,
+    '  (cstack sheet open <sheet> opens it; it is a file on this computer, not a web page)',
+    '  1. click up to three winners, and tick why each won',
+    '  2. press "Download picks.json"',
+    `  3. cstack sheet import <downloaded picks.json> --sheet ${shown(html)} --by <name>`,
+    '  "Pick pairs" on the page is optional, for calibrating the reviewers',
+  ].join('\n');
 }
 
 // docs/evals.md#running-fixtures. Live calls go through guardedCall on the --ws ledger, like any model call.

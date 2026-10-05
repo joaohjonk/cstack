@@ -57,3 +57,7 @@ Animate the mark's own parts deterministically (SVG, Lottie or HTML motion), exp
 ## QA (video-assembly runs it)
 
 First frame, last frame and every cut boundary checked against the approved still (drift grows over the clip); freeze and black detection (stalled AI tails); cut count against the plan; text inside safe zones; loudness and spec. ROI similarity is a coarse alarm: pair it with an independent visual check of the label.
+
+## Image-to-video: prompt the motion
+
+The start image already fixes composition, subject, light and style; the prompt describes what moves, the camera move, pace and duration. Re-describing the still while under-describing the motion is the most common image-to-video failure. Pick the start frame the Grid → Pick → Polish way ([../../prompt-director/references/grid-pick-polish.md](../../prompt-director/references/grid-pick-polish.md)).

@@ -1,0 +1,106 @@
+id: grid-pick-polish
+outcome: one to three finished stills found by exploring a grid of frames cheaply, picking the winners, and spending detail only on them
+aliases:
+- grid pick polish
+- contact sheet workflow
+- explore select refine upscale
+- storyboard grid
+- thumbnailing
+status: researched
+target:
+  description: the owner sees many frames of one idea side by side, picks the best one to three with a reason, and gets those rebuilt and refined one at a time, with upscaling kept for the finalists
+  must:
+  - one anchor (an approved still, a product lock, or the territory's idea) that every frame varies around
+  - the grid prompt states what stays fixed and what varies, in separate slots
+  - the owner picks one to three winners and says why each won, before any reviewer's opinion reaches them
+  - each winner is re-rendered as a single image before any edit; edits change one thing per pass
+  - upscaling only for finalists the owner has seen
+  must_not:
+  - a grid used as the delivered asset, unless a contact sheet or storyboard is the deliverable
+  - regenerating everything to fix one area that a local edit can fix
+  - practitioner names, "in the style of", other brands' marks, or lettering in any frame
+  quality_bar: the owner can say which frame is theirs and why from the sheet alone, and the polished image keeps what made that frame win
+deliverable: {kind: image}
+when:
+- a still (campaign image, hero, editorial frame, key frame for a film) is needed and the composition or moment is still open
+- probes or heroes come back mostly wrong but with one promising frame
+not_when:
+- the brand has no direction yet (mood-probes chooses between territories first)
+- the frame is fixed and only the finish is wrong (image-edit)
+- a mark or type (logo-system, type-system)
+candidates_considered:
+- name: one grid image of 4 or 9 frames per idea on the best current model, winners picked on the sheet, single-image re-render, local edits, upscale last
+  verdict: chosen
+  why: breadth is cheap in one image; picking a frame is faster and more honest than scoring finished images; detail is spent only where the owner chose
+- name: four separate images per idea instead of a grid
+  verdict: fallback
+  why: better per-frame quality and no cropping, at four times the calls; use when the model draws grids badly or fine detail decides the pick
+- name: one polished image per prompt, iterated
+  verdict: rejected
+  why: every round pays for detail on frames nobody chose, and polish hides weak compositions
+steps:
+- id: anchor
+  does: name the anchor and write the grid recipe with `fixed` and `varies` slots, the grid size (2x2 when detail matters, 3x3 for range) and the frame mix
+  kind: research
+  skill: prompt-director
+  gate: {type: auto, check: "cstack prompt compile passes; the compiled prompt names what is fixed and what varies; no names, no style-of, no lettering"}
+  compare_to_target: would two frames from this grid differ only in what `varies` names?
+- id: grid
+  does: one grid image per idea on the best reachable model for the step (cstack route --modality image), at most two rounds
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.055, currency: USD, unit: "per high-quality grid image on fal GPT Image 2.5 Sunburst, observed in the field test 2026-10-05; per-token on fal"}
+  gate: {type: deterministic_check, check: "cstack flows gate <plan> --stage make passes; cstack spend plan ok; cstack image text on each grid, stopping on the first FAIL"}
+  compare_to_target: does each grid hold the anchor while the frames vary?
+- id: sheet
+  does: "cstack sheet make <grids> --grid 3x3 --out work/sheets/<name>.html --png (blind when the grids come from several models), then cstack sheet open for the owner"
+  kind: deterministic
+  gate: {type: deterministic_check, check: the sheet exists and shows every frame numbered}
+  compare_to_target: the frames side by side
+- id: pick
+  does: the owner clicks one to three winners and ticks why each won; cstack sheet import records them as approvals with reason codes and the frame's region
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: "cstack sheet import appended one to three winners for this sheet"}
+  compare_to_target: the winners against the brief's objective
+- id: rebuild
+  does: each winner re-rendered as one standalone image at delivery size, the cropped frame as the composition reference, same subject, world and style
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.055, currency: USD, unit: "per high-quality single image on fal GPT Image 2.5 Sunburst, observed in the field test 2026-10-05; more at larger delivery sizes"}
+  gate: {type: deterministic_check, check: "cstack spend plan ok; cstack image text passes; the owner sees the rebuild next to its frame"}
+  compare_to_target: does the rebuild keep what the owner said won?
+- id: refine
+  does: local edits, one change per pass, describing only the change (image-edit); cstack prompt diff shows one component per pass
+  kind: generative
+  skill: image-edit
+  est_cost: {amount: 0.06, currency: USD, unit: "per edit pass, assumed close to one high-quality image; the edit route's price is not verified yet (cstack spend plan says when it is unpriced)"}
+  gate: {type: auto, check: "one change per pass; stop after three passes that do not improve the named reason"}
+  compare_to_target: the refined image against the rebuild
+- id: finish
+  does: upscale only the finalists, preserving the image; the owner picks the final before anything goes live
+  kind: human
+  skill: creative-review
+  gate: {type: owner, check: "cstack flows gate <plan> --stage final passes; the owner picks"}
+  compare_to_target: the final against its winning frame and a gold reference
+cost_ladder: about USD 0.10-0.25 for two to four grids, about USD 0.05-0.25 per rebuilt winner, edits and upscales only on finalists; stop after two grid rounds with no winner and rewrite the anchor instead
+failure_modes:
+- a grid prompt with no fixed list, so the frames are random rather than comparable
+- 4x4 grids for detail work, where every cell is too small to judge
+- refining the grid cell instead of rebuilding the winner alone
+- upscaling everything, or a creative upscale that adds detail the owner never saw
+- for film, a motion prompt that re-describes the still instead of describing the motion
+evidence:
+- {ref: "owner's method note, 2026-10-05 (Grid → Pick → Polish; explore, decide, polish, expand to film)", kind: run_record, date: 2026-10-05}
+- {ref: "field test findings F62 and F63", kind: run_record, date: 2026-10-05}
+- {ref: "https://fal.ai/models/openai/gpt-image-2.5/sunburst/text-to-image", kind: documented, date: 2026-10-05, note: "per-token pricing on fal; about USD 0.04-0.055 per high-quality image observed"}
+last_verified: 2026-10-05
+stale_after_days: 90
+related:
+- skill:prompt-director
+- skill:generate-media
+- skill:image-edit
+- skill:creative-review
+- flow:mood-probes
+- flow:brand-hero-photo
+- flow:brand-mood-film

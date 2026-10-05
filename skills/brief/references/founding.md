@@ -20,7 +20,7 @@ Push back where an answer is an adjective ("premium", "clean"). Ask what it woul
 
 When a later round contradicts an earlier one, record both answers and which one the brief keeps in `interview.conflicts`, and ask once if it is not clear.
 
-If the founder changes the why, the customer, the product or the brand as a person after approving, run `cstack brief reopen <file> --reason "<what changed, in their words>"` before anything else, then interview again and approve again. An edited brief whose fingerprint no longer matches fails the make gate on its own; a pivot said only in conversation needs the reopen. After the new approval, the founder reacts to references again: reactions given before it no longer count at the make gate.
+If the founder changes the why, the customer, the product or the brand as a person after approving, run `cstack brief reopen <file> --reason "<what changed, in their words>"` before anything else, then interview again and approve again. An edited brief whose fingerprint no longer matches fails the make gate on its own; a pivot said only in conversation needs the reopen. Reactions given before the reopen no longer count at the make gate; the founder reacts to references for the new brief, before or after saying yes again.
 
 ## What waits for it
 

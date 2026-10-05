@@ -54,15 +54,24 @@ const snapshotPath = (file, fp) => {
 };
 
 /**
- * Records the yes: who, when, a fingerprint of the content, and how far state/feedback.jsonl had got, so reactions
- * from before this approval (to work made for an older brief) no longer count at the make gate (F42). Keeps a copy of
- * the approved version under state/approved-briefs/ (F45), so a reopen can say what changed since the yes.
+ * Records the yes: who, when, and a fingerprint of the content. Keeps a copy of the approved version under
+ * state/approved-briefs/ (F45), so a reopen can say what changed since the yes.
+ * feedback_mark is where reactions start to count at the make gate: reactions to work made for an older brief stop
+ * counting (F42), but a founder who reacts to references and then says yes keeps those reactions (F52). So the mark is
+ * where the last pivot happened: the latest reopen, or, when an approved brief was edited and approved again without
+ * one, the previous approval. A first approval counts every reaction.
  */
 export function approveBrief(file, { by, date = today() } = {}) {
   if (!by || by === true) throw new Error('--by <founder> is required: the yes is the founder\'s, by name');
   const ws = wsOf(file);
+  const lines = feedbackLines(ws);
   const next = edit(file, (b) => {
-    b.owner_approval = { status: 'owner_approved', by: String(by), date, fingerprint: briefFingerprint(b), feedback_mark: feedbackLines(ws) };
+    const prev = b.owner_approval ?? {};
+    const fp = briefFingerprint(b);
+    const reopened = prev.status === 'reopened' ? b.amendments?.at(-1)?.feedback_mark : undefined;
+    const editedAfterYes = prev.status === 'owner_approved' && prev.fingerprint && prev.fingerprint !== fp;
+    const mark = reopened ?? (editedAfterYes ? (prev.feedback_lines ?? prev.feedback_mark ?? 0) : (prev.feedback_mark ?? 0));
+    b.owner_approval = { status: 'owner_approved', by: String(by), date, fingerprint: fp, feedback_mark: Math.min(mark, lines), feedback_lines: lines };
     return b;
   });
   const snap = snapshotPath(file, next.owner_approval.fingerprint);
@@ -90,14 +99,14 @@ export function reopenBrief(file, { reason, by, date = today() } = {}) {
   const changed = changedSinceApproval(file, current);
   const next = edit(file, (b) => {
     const prev = b.owner_approval ?? { status: 'draft' };
-    b.amendments = [...(b.amendments ?? []), { date, reason: String(reason), ...(by && by !== true ? { by: String(by) } : {}), previous: { status: prev.status, ...(prev.by ? { by: prev.by } : {}), ...(prev.date ? { date: prev.date } : {}) } }];
+    b.amendments = [...(b.amendments ?? []), { date, reason: String(reason), ...(by && by !== true ? { by: String(by) } : {}), feedback_mark: feedbackLines(wsOf(file)), previous: { status: prev.status, ...(prev.by ? { by: prev.by } : {}), ...(prev.date ? { date: prev.date } : {}) } }];
     b.owner_approval = { status: 'reopened' };
     return b;
   });
   return { ...next, changed };
 }
 
-/** For the make gate: state/feedback.jsonl lines before this index were written before the latest approval. */
+/** For the make gate: state/feedback.jsonl lines before this index were reactions to an older version of the brief. */
 export function feedbackMark(ws) {
   const dir = path.join(ws, 'briefs');
   if (!fs.existsSync(dir)) return 0;

@@ -405,6 +405,11 @@
               }
             },
             "additionalProperties": false
+          },
+          "feedback_mark": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "how many state/feedback.jsonl lines existed when the brief was reopened; reactions before it were to the older brief"
           }
         },
         "additionalProperties": false
@@ -438,7 +443,12 @@
         "feedback_mark": {
           "type": "integer",
           "minimum": 0,
-          "description": "written by `cstack brief approve`: how many state/feedback.jsonl lines existed at approval; the make gate counts only reactions after it"
+          "description": "written by `cstack brief approve`: the state/feedback.jsonl line where reactions start to count at the make gate (the last pivot: the latest reopen, or the previous approval of an edited brief; 0 on a first approval)"
+        },
+        "feedback_lines": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "written by `cstack brief approve`: how many state/feedback.jsonl lines existed at this approval"
         }
       },
       "additionalProperties": false

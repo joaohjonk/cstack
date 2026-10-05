@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-03",
+  "updated": "2026-10-05",
   "note": "Provider adapters in providers/*.mjs. Credentials are environment variable NAMES only; values never live in the repo. Entries with adapter: true must match the adapters registered in providers/index.mjs (checked by `cstack validate` and tests). Model ids and prices live in registry/models.json, not here.",
   "conventions": {
     "kind": "media = image/video generation or edit through the media runner; research = reference search, extraction, verification; local = runs on this machine, costs nothing",
@@ -71,15 +71,16 @@
       "id": "openai-image",
       "name": "OpenAI image",
       "kind": "media",
-      "status": "stub",
+      "status": "live",
       "adapter": true,
-      "module": "providers/stubs.mjs",
+      "module": "providers/openai-image.mjs",
       "interfaces": ["media"],
       "env": ["OPENAI_API_KEY"],
       "operations": ["generate", "edit"],
       "cost": "paid",
       "docs": "https://platform.openai.com/docs/guides/image-generation",
-      "notes": "Documented stub; many teams reach these models through fal instead."
+      "last_verified": "2026-10-05",
+      "notes": "Images API (POST /v1/images/generations, multipart /v1/images/edits), synchronous, b64_json outputs. The key goes only to https://api.openai.com. Token-billed: calls stay unpriced until a per-token price is verified. The same models are also reachable through fal where the registry has a fal route."
     },
     {
       "id": "google",

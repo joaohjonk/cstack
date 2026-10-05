@@ -219,7 +219,12 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   fs.writeFileSync(path.join(w, 'work', 'references', '2026-10-05-tea-packet.md'), '# packet\n');
   assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/, 'a packet nobody reacted to is not enough');
   fs.mkdirSync(path.join(w, 'state'), { recursive: true });
-  fs.writeFileSync(path.join(w, 'state', 'feedback.jsonl'), JSON.stringify({ id: 'FB-1', date: '2026-10-05', by: 'Founder', type: 'gold', artifact_ref: 'references/inspiration/ref-tea-tin.reference.yaml' }) + '\n');
+  const fbl = path.join(w, 'state', 'feedback.jsonl');
+  // F36: one yes to the whole board is not a reaction to references, nor is a single card
+  fs.writeFileSync(fbl, JSON.stringify({ id: 'FB-0', date: '2026-10-05', by: 'Founder', type: 'approve', artifact_ref: 'work/references/2026-10-05-tea-packet.md' }) + '\n');
+  fs.appendFileSync(fbl, JSON.stringify({ id: 'FB-1', date: '2026-10-05', by: 'Founder', type: 'gold', artifact_ref: 'references/inspiration/ref-tea-tin.reference.yaml' }) + '\n');
+  assert.match(gate().errors.join('\n'), /reference packet the owner has reacted to/);
+  fs.appendFileSync(fbl, JSON.stringify({ id: 'FB-2', date: '2026-10-05', by: 'Founder', type: 'anti', artifact_ref: 'references/anti/ref-protein-tub.reference.yaml' }) + '\n');
   assert.deepEqual(gate().errors, []);
   // an owner who chooses to skip a step records it, and the warning travels with the work
   fs.rmSync(bf);
@@ -230,7 +235,7 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   assert.match(waived.warnings.join('\n'), /going ahead without founder brief \(owner waived it 2026-10-05: owner said just go\)/);
 });
 
-test('flows gate: after a pivot and a new approval, reactions from before it no longer count (F42)', async () => {
+test('flows gate: after a pivot and a new approval, reactions from before the pivot no longer count (F42, F52)', async () => {
   const { gateFlow } = await import('../scripts/lib/flows.mjs');
   const { approveBrief, reopenBrief } = await import('../scripts/lib/brief.mjs');
   const w = tmpDir('cstack-f42-');
@@ -244,7 +249,7 @@ test('flows gate: after a pivot and a new approval, reactions from before it no 
   fs.writeFileSync(bf, YAML.stringify({ id: 'FB-1', brand_id: 'x', date: '2026-10-05', why_it_exists: { reason: 'tea you can carry' }, customer: { who: 'w', evidence: 'told' }, brand_as_person: {}, assets_and_inspirations: {}, owner_approval: { status: 'draft' } }));
   approveBrief(bf, { by: 'Founder' });
   const fb = path.join(w, 'state', 'feedback.jsonl');
-  const react = (id) => fs.appendFileSync(fb, JSON.stringify({ id, date: '2026-10-05', by: 'Founder', type: 'approve', artifact_ref: 'work/references/tea-packet.md' }) + '\n');
+  const react = (id) => fs.appendFileSync(fb, JSON.stringify({ id, date: '2026-10-05', by: 'Founder', type: 'pairwise', artifact_ref: `references/inspiration/${id}-a.reference.yaml`, pair: { a: `references/inspiration/${id}-a.reference.yaml`, b: `references/inspiration/${id}-b.reference.yaml`, winner: 'a' } }) + '\n');
   react('FB-a');
   assert.equal(gate(), '');
   // the founder pivots: reopen, rewrite, approve again; the old yes was to a board for the old brief
@@ -254,6 +259,16 @@ test('flows gate: after a pivot and a new approval, reactions from before it no 
   assert.match(gate(), /reference packet the owner has reacted to/);
   react('FB-b');
   assert.equal(gate(), '');
+  // F52: the natural order is react, then say yes; reactions given after the pivot and before the new yes count
+  reopenBrief(bf, { reason: 'a second pivot' });
+  react('FB-c');
+  fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('a healthier soda', 'a sparkling tea'));
+  approveBrief(bf, { by: 'Founder' });
+  assert.equal(gate(), '');
+  // an approved brief edited and approved again without a reopen: reactions before the previous yes stop counting
+  fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('a sparkling tea', 'a still tea'));
+  approveBrief(bf, { by: 'Founder' });
+  assert.match(gate(), /reference packet the owner has reacted to/);
 });
 
 test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
