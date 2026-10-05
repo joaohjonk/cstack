@@ -47,7 +47,7 @@ Deterministic: `cstack audit` (dimensions, unintended reframe), silhouette/outli
 
 ## Decision rules
 
-- Packaging sizes come from the approved `*.pack-spec.yaml`, never a guess; every pack-bearing frame passes `cstack pack check` or is labelled illustrative (F86); a frame showing the product beside or inside its pack also passes `--product-box` against the spec's contents size (F97).
+- Packaging sizes come from the approved `*.pack-spec.yaml`, never a guess; every pack-bearing frame passes `cstack pack check` (with `--product-box` when the product shows too, F97) or is labelled illustrative (F86).
 - Anatomy errors in hands holding the product fail the frame outright.
 - Text, logos and legal copy on product are composited from official art, never generated.
 - Two failed full regenerations on the same defect → switch method (decompose or composite); do not reroll a third time.
