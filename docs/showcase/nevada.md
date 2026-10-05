@@ -51,18 +51,13 @@ The fix was to stop asking an image model to design a pack. The five wraps were 
 
 ## 5. Polish: "all real cool"
 
-The flat wraps went onto tall cans with an image edit model, in three scenes: the lineup, a can lifted out of a car cupholder in morning light, and a crowded fridge shelf from about two metres. The type stayed exactly as designed.
-
-<p align="center">
-  <img src="nevada/can-cupholder.jpg" alt="Drop 01 yuzu lifted out of a car cupholder in morning light." width="49%">
-  <img src="nevada/can-fridge.jpg" alt="A crowded fridge shelf with Nevada cans, seen from about two metres." width="49%">
-</p>
+The flat wraps went onto tall cans with an image edit model, and an independent check then compared every letter on the cans against the flat files. It caught one: an origin line drawn with the wrong accent on two early renders, which the final lineup fixes. The cans also come out a little too tall, so these renders are illustrative; the exact next step is to put the flat wraps on a true 3D can.
 
 The name came last. The founder asked for a state name that recalls the anchor brand, and **Nevada** reads as "never": *Never too sweet.*
 
 ## What it cost
 
-About USD 3 of generated images, on estimates booked in the workspace ledger before each call. Price, sugar and origin numbers on the cans are placeholders.
+About USD 2.32 of generated images for this direction, on estimates booked in the workspace ledger before each call. Price, sugar and origin numbers on the cans are placeholders.
 
 ## What cstack got wrong
 
