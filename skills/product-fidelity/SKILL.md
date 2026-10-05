@@ -47,11 +47,11 @@ Deterministic: `cstack audit` (dimensions, unintended reframe), silhouette/outli
 
 ## Decision rules
 
-- Packaging sizes come from the approved `*.pack-spec.yaml`, never a guess; every pack-bearing frame passes `cstack pack check` (with `--product-box` when the product shows too, F97) or is labelled illustrative (F86).
-- Anatomy errors in hands holding the product fail the frame outright.
+- Packaging sizes come from the approved `*.pack-spec.yaml`, never a guess; every pack-bearing frame passes `cstack pack check` (`--product-box` if the product shows, F97) or is labelled illustrative (F86).
+- Anatomy errors in hands holding the product fail the frame.
 - Text, logos and legal copy on product are composited from official art, never generated.
-- Two failed full regenerations on the same defect → switch method (decompose or composite); do not reroll a third time.
-- A generated output may become a reference for that model's notes (`model_notes`), never a product master.
+- Two failed regenerations on one defect → switch method (decompose or composite), never a third reroll.
+- A generated output may feed that model's notes (`model_notes`), never become a product master.
 - 3D: label from official artwork on its UV island, four-angle overlay against the artwork, bounding box against measured dimensions (`three-d`).
 - Video: drift grows over a clip, so audit the first frame, the last frame and every cut, not only the first (`cstack video qa`).
 
