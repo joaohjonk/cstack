@@ -74,6 +74,8 @@ test('image text --expect: declared on-pack lines pass, missing, garbled or unde
   assert.deepEqual(judgeExpected([w('MERIDIAN'), w('No.'), w('08'), w('$2.99')], lines).missing, ['No. 03'], 'a wrong drop number is caught');
   assert.deepEqual(judgeExpected([w('MERIDIAN'), w('No.'), w('03'), w('$2.99'), w('FRESHH')], lines).stray, ['freshh']);
   assert.deepEqual(readExpected({ expect: ['A'], files: [] }), ['A']);
+  assert.deepEqual(judgeExpected([w('KÖCHI')], ['KŌCHI']).missing, ['KŌCHI'], 'a wrong diacritic is a misspelling, not OCR noise');
+  assert.equal(judgeExpected([w('KŌCHI')], ['Kōchi']).ok, true, 'case is ignored');
   const { d, bin, img } = setup();
   const f = path.join(d, 'on-pack.txt');
   fs.writeFileSync(f, '# lettering on the flat wrap\nMERIDIAN\nNo. 03\n\n$2.99\n');

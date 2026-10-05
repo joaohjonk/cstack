@@ -37,13 +37,16 @@ export function judgeWords(words, t = OCR_DEFAULTS) {
   return { text, confident: confident.map((w) => w.text), glyphs: glyphs.length };
 }
 
-const norm = (x) => String(x).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+// Case and punctuation are ignored; diacritics are not: "KÖCHI" for "KŌCHI" is a misspelling on a pack (field test).
+const norm = (x) => String(x).toLowerCase().normalize('NFC').replace(/[^\p{L}\p{M}\p{N}]+/gu, ' ').trim();
 const tokens = (x) => norm(x).split(' ').filter(Boolean);
 
 // One edit (substitution, insertion, deletion) per token of five or more characters is OCR noise, not a misspelling the
-// eye would catch; shorter tokens (prices, drop numbers) must match exactly.
+// eye would catch; shorter tokens (prices, drop numbers) must match exactly, and so must every accented letter.
+const ASCII = /^[\x00-\x7f]*$/;
 function close(a, b) {
   if (a === b) return true;
+  if (!ASCII.test(a) || !ASCII.test(b)) return false;
   if (Math.min(a.length, b.length) < 5 || Math.abs(a.length - b.length) > 1) return false;
   let i = 0;
   while (i < a.length && a[i] === b[i]) i++;
@@ -96,7 +99,7 @@ export function judgePrompt(file, expected = []) {
       `Look at the image file ${file}. Answer only about what is visibly in the picture.`,
       'The picture is meant to show exactly this lettering, as designed (one line each):',
       ...expected.map((l) => `- ${l}`),
-      'For each line, say whether it appears spelled exactly as written (letters, numbers, symbols). Then say whether any other lettering, numbers, made-up or garbled text, or a logo that is not one of these lines appears.',
+      'For each line, say whether it appears spelled exactly as written (every letter and accent, numbers, symbols; a different accent is a misspelling). Then say whether any other lettering, numbers, made-up or garbled text, or a logo that is not one of these lines appears.',
       'Reply with one JSON object and nothing else: {"text": true|false, "expected": [{"line": "...", "found": true|false}], "unexpected": "short description, or empty when none", "confidence": "low"|"medium"|"high"}',
     ].join('\n');
   return [
