@@ -19,6 +19,7 @@ function brandWs() {
   fs.writeFileSync(path.join(ws, 'references', '.env'), 'FAL_KEY=secret');
   fs.mkdirSync(path.join(ws, 'state'));
   fs.writeFileSync(path.join(ws, 'state', 'cost-ledger.jsonl'), '');
+  fs.writeFileSync(path.join(ws, 'state', 'feedback.jsonl'), '{"verdict":"keep","target":"references/a.reference.yaml"}\n');
   fs.mkdirSync(path.join(ws, 'work'));
   fs.writeFileSync(path.join(ws, 'work', 'draft.png'), 'x');
   return ws;
@@ -65,7 +66,8 @@ test('trial plan: refuses under the floor and over the cap, and splits the cap i
   assert.equal(planTrial({ ...base, scenarios: ['nope'] }).ok, false);
   const files = brandFiles(ws);
   assert.ok(files.includes(path.join('references', 'a.reference.yaml')));
-  assert.ok(!files.some((f) => /\.env|state|work/.test(f)), files.join(', '));
+  assert.ok(files.includes(path.join('state', 'feedback.jsonl')), 'the founder\'s kept and killed reactions go to the brand teams');
+  assert.ok(!files.some((f) => /\.env|ledger|work/.test(f)), files.join(', '));
 });
 
 test('trial run, score, import: isolated workspaces, resumable roles, blind sheets, attribution against control', () => {
@@ -114,7 +116,7 @@ test('trial run, score, import: isolated workspaces, resumable roles, blind shee
   assert.deepEqual([r.reviewer_pass.passed, r.reviewer_pass.judged], [8, 12]);
   assert.equal(r.attribution.reviewer_agreement.agree, 8, 'the reviewer failed 4 pieces the owner attributed');
   assert.match(fs.readFileSync(r.report, 'utf8'), /attributed \*\*12 of 12\*\* brand-team pieces/);
-  assert.match(fs.readFileSync(r.report, 'utf8'), /same 3 brand files \(hash /);
+  assert.match(fs.readFileSync(r.report, 'utf8'), /same 4 brand files \(hash /);
   // a brand edited after the plan: no team starts from a different state
   fs.writeFileSync(path.join(ws, 'brand', 'brand-system.json'), '{"changed":1}');
   fs.rmSync(path.join(out, 'runs', 'team-b'), { recursive: true });

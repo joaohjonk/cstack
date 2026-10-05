@@ -42,8 +42,9 @@ export const ROLES = [
   { id: 'reviewer', skills: ['brand-verify', 'creative-review'], writes: 'trial/review.json', job: 'Check every application against the brand files: deterministic gates first (colour tokens, type, mark clear space, required elements, cstack image text --expect with the copy lines on anything with lettering), then judgment. Allow one fix round by editing or remaking the file. Write {"applications":[{"id","pass":true|false,"gates":[{"name","result","detail"}]}]}.' },
 ];
 
-// What a brand team may see: the brand's system, never its working state, ledgers or secrets.
-const BRAND_PARTS = ['cstack.config.yaml', 'brand', 'assets', 'references', 'recipes', 'briefs'];
+// What a brand team may see: the brand's system and the founder's kept and killed reactions (state/feedback.jsonl,
+// part of the brand's taste), never the rest of its working state, ledgers or secrets.
+const BRAND_PARTS = ['cstack.config.yaml', 'brand', 'assets', 'references', 'recipes', 'briefs', path.join('state', 'feedback.jsonl')];
 const SECRET = /(^|[\\/])(\.env[^\\/]*|.*\.(key|pem|p12))$/i;
 const MAX_FILE = 50 * 1024 * 1024;
 

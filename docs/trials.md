@@ -31,7 +31,8 @@ cstack trial import ~/trials/acme-r1 ~/Downloads/acme-r1-attribution.taps.json ~
   cap is refused too. Each workspace's budget is its share of the cap, so the normal spend gate stops a team that
   overspends.
 - **Isolation.** A brand team's workspace holds `cstack.config.yaml`, `brand/`, `assets/`, `references/`, `recipes/` and
-  `briefs/`. It never holds `state/`, `work/`, `.env` files or keys. The control workspace holds a budget and
+  `briefs/`, plus the founder's kept and killed reactions (`state/feedback.jsonl`), which are part of the brand's taste.
+  It never holds the rest of `state/` (ledgers), `work/`, `.env` files or keys. The control workspace holds a budget and
   `trial/brand.md`.
 - **Roles.** Strategist, art director, challenger (argues for a braver version), the art director again as decider, copywriter, producer, makers and reviewer each run as their own agent session,
   in that order. Each one hands its work on in a file under `trial/`, and every transcript is kept. A stopped run
