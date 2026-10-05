@@ -116,7 +116,7 @@ steps:
   gate: owner
 - id: photoshoot
   skill: campaign-sequence
-  does: 'a photoshoot on the real packs: shot roles, Shot DNA per frame, product truth from the pack spec and owner photos (workflow product-photoshoot); generated plates only around the real pack, labelled illustrative when the pack is redrawn'
+  does: 'a photoshoot on the real packs: shot roles, Shot DNA per frame, product truth from the pack spec and owner photos (workflow product-photoshoot); generated plates only around the real pack, with the verified label composited onto every product frame, never the model''s label (F92); before the pick, the frames are counted by flavour and mood against the brief (cstack spread, F93) and read against the positioning''s register'
   outputs:
   - work/shoot/
   gate: owner
@@ -128,7 +128,7 @@ steps:
   gate: auto
 - id: ads
   skill: asset-factory
-  does: 'a launch ad family from the photoshoot and the line: static ads at the channels'' sizes, one UGC storyboard and a cutdown plan (workflow growth-creative, flow paid-social-cutdowns), each with a bet and a cell'
+  does: 'a launch ad family from the photoshoot and the line: static ads at the channels'' sizes, one UGC storyboard and a cutdown plan (workflow growth-creative, flow paid-social-cutdowns), each with a bet and a cell; the public copy of the round passes cstack claims conflicts, so a fixed-price promise is never shown with two prices (F94)'
   outputs:
   - work/ads/
   gate: owner

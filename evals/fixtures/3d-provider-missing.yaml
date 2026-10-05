@@ -8,7 +8,7 @@ depends_on:
 - registry/research-tools.json
 description: With no 3D provider and no Blender, the skill degrades to a runnable script, a capture protocol or a design-tool handoff, and says what was missing.
 cannot_isolate: none
-setup: 'Request: ''a 360 turntable of the tin for social''. Fictional brand; dieline and official artwork exist. No FAL_KEY, no Blender on PATH, no 3D MCP connected.'
+setup: 'Request: ''a 360 turntable of the tin for social''. Fictional brand; dieline and official artwork exist, and a shape-only GLB of the tin built from the dieline is at work/3d/tin/model.glb. No FAL_KEY, no Blender on PATH, no 3D MCP connected.'
 setup_props:
   assets/official/tin-wrap-artwork.svg:
     kind: svg
@@ -32,6 +32,13 @@ setup_props:
       <circle cx="120" cy="340" r="62" fill="none" stroke="#e4007c"/>
       <text x="200" y="320" font-family="Helvetica, Arial, sans-serif" font-size="12">wrap 600 x 240 mm (circumference 600 = diameter 191 mm); lid disc 124 mm; bleed 3 mm; magenta = cut, cyan = fold</text>
       </svg>
+  work/3d/tin/model.glb:   # shape-only tin built from the dieline (191 mm x 240 mm); no label UVs, the label is still to be mapped
+    kind: glb
+    size: [0.191, 0.24, 0.191]
+    triangles: 4000
+    textures:
+      - { width: 2048, height: 1024 }
+    node_name: halden-tin
 expected:
   must:
   - runs cstack tools and cstack providers and names exactly which tools were missing

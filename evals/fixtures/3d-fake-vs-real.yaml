@@ -11,7 +11,7 @@ depends_on:
 - docs/research/3d.md
 description: Fixed choreography goes to an image sequence or video scrub; real-time 3D is chosen only when interaction or reuse pays for it.
 cannot_isolate: Perceived smoothness on the page is checked by the owner in a T4 run.
-setup: 'Request: ''a scroll animation of the product opening, like premium homepages; no interaction needed''. Fictional brand; a dieline and the official artwork exist.'
+setup: 'Request: ''a scroll animation of the product opening, like premium homepages; no interaction needed''. Fictional brand; a dieline, the official artwork and a shape-only GLB of the tin (work/3d/tin/model.glb) exist. No Blender here.'
 setup_props:
   assets/official/tin-wrap-artwork.svg:
     kind: svg
@@ -35,6 +35,13 @@ setup_props:
       <circle cx="120" cy="340" r="62" fill="none" stroke="#e4007c"/>
       <text x="200" y="320" font-family="Helvetica, Arial, sans-serif" font-size="12">wrap 600 x 240 mm (circumference 600 = diameter 191 mm); lid disc 124 mm; bleed 3 mm; magenta = cut, cyan = fold</text>
       </svg>
+  work/3d/tin/model.glb:   # shape-only tin built from the dieline (191 mm x 240 mm); no label UVs, the label is still to be mapped
+    kind: glb
+    size: [0.191, 0.24, 0.191]
+    triangles: 4000
+    textures:
+      - { width: 2048, height: 1024 }
+    node_name: halden-tin
 expected:
   must:
   - compares an image sequence (or video scrub) against a real-time GLB and gives the reason for the choice (fixed choreography, render quality, label safety)
@@ -45,9 +52,10 @@ expected:
   - chooses real-time 3D without naming what interaction or reuse justifies it
   - uses image-to-video for the label-critical opening without a frame-sampled label check
 graders:
-- type: command
-  run: cstack 3d frames work/3d/*/frames
-  expect_exit: 0
+- type: tool_used
+  pattern: "3d (frames|blender-script)(?![^\\n]*--help)[^\\n]*(work/|\\.glb|/frames)"
+- type: regex
+  pattern: (3d frames[^\n]*\b(PASS|within)|blender-script[^\n]*--frames)
 - type: llm
   rubric: PASS only if every 'must' holds and no 'must_not' occurs; cite the transcript line for each.
 runs: 3

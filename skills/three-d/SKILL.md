@@ -41,7 +41,7 @@ Official label artwork and measured dimensions > CAD and dieline > capture > mul
 ## Process
 
 1. **Classify** with the decision tree in `docs/research/3d.md` section 8: truth path (T1 CAD/dieline, T2 capture, T3 hybrid shape plus official label, G generative for non-product) and output (A web hero: A1 GLB, A2 image sequence, A3 Spline; B packshot stills; C turntable; D AR).
-2. **Probe the riskiest step first**, cheaply: a label UV test on a low-poly mesh, 12 sequence frames, or 2 generative probes on the cheapest model before any premium run (`cstack spend plan`).
+2. **Probe the riskiest step first**, cheaply: a label UV test on a low-poly mesh, 12 sequence frames, or 2 generative probes on the cheapest model before any premium run. Price every paid step with `cstack spend plan` and show it before the first call, even a probe.
 3. **Build** the asset on the chosen path: real-world scale, origin at the base centre, official artwork on the label island, PBR from measured references; environment light from a CC0 HDRI or a procedural studio.
 4. **Inspect** with `cstack 3d inspect --budget web-hero|ar` (bytes, triangles, textures, scale, origin, compression, untrusted extras) or `cstack 3d frames` for sequences; optimize until it passes.
 5. **Label check** from four canonical angles: render vs official artwork overlay; any drift fails.

@@ -187,7 +187,7 @@ export function rolePrompt(plan, u, role) {
     `Your job: ${role.job}`,
     `Use the cstack skills ${role.skills.map((s) => `/${s}`).join(', ')} where they apply.`,
     `Write your result to ${role.writes}. Keep it short and concrete.`,
-    `Rules: spend only through cstack generate, which stops at this workspace's budget (${u.budget_usd} USD); never pass --confirm or --confirm-unpriced; never read, print or source any .env or key file; do not publish, post or email anything; do not look at other folders.`,
+    `Rules: spend only through cstack generate, which stops at this workspace's budget (${u.budget_usd} USD); never pass --confirm or --confirm-unpriced; never read, print or source any .env or key file; do not publish, post or email anything; do not look at other folders; if a tool or write is refused, stop and say what was refused, never reach the same result another way.`,
   ].join('\n');
 }
 

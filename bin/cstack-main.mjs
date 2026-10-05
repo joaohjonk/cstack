@@ -33,6 +33,8 @@ import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/she
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
 import { extendFile } from '../scripts/lib/image/extend.mjs';
+import { spreadCheck, readFrames } from '../scripts/lib/spread.mjs';
+import { claimConflicts } from '../scripts/lib/claims.mjs';
 import { findPackSpecs, approvedSpec, specAspects, specWarnings, checkPack, pdfBoxes } from '../scripts/lib/packspec.mjs';
 import { listScenarios, planTrial, writePlan, readPlan, runTrial, scoreTrial, importTaps } from '../scripts/lib/trial.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
@@ -164,6 +166,8 @@ const COMMANDS = {
   'mockup template': 'draw a can template (CC0, no photograph) and print the flat wrap size: cstack mockup template can --out <dir> --spec <file.pack-spec.yaml> (the real can; --size standard-12oz|sleek-12oz|tall-16oz is typical, a first comp only)',
   'pack check': 'measure pack renders against the real pack (F86): cstack pack check <images|svgs...> --spec <file.pack-spec.yaml> [--box x,y,w,h | --judge "<cmd>"] [--tolerance 0.04] [--json] (exit 1 when off spec, unmeasurable or angled)',
   'pack spec-from-pdf': 'read a print or dieline PDF\'s page boxes (TrimBox = finished size) in mm, to fill a pack spec: cstack pack spec-from-pdf <file.pdf> [--artwork <svg>] (flags artwork of a different size)',
+  spread: 'count campaign frames by what the brief asked to vary, before the pick (F93): cstack spread <frames.yaml|json> --by flavour[,mood] [--expect flavour=a,b,c] [--max-share 0.4] [--json] (exit 1 when one value takes more than its share, a named value is missing, or a frame is unlabelled)',
+  'claims conflicts': 'flag one fixed-price promise shown with two prices in a round (F94): cstack claims conflicts <copy files...> [--json] (exit 1 on a conflict; a price test needs a regional or channel split, or one price at a time)',
   'pack list': 'the pack specs in a workspace and whether each is approved: cstack pack list [--ws <dir>]',
   'mockup check': 'validate a template package (placements, footprints, layer files, licence): cstack mockup check --template <dir>',
   'svg legibility': 'can a figure be read where it is shown: text size at each display width and text contrast on its ground: cstack svg legibility <file|dir...> [--width 324,830] [--min-px 11] [--page #ffffff,#0d1117]; exits 1 on FAIL',
@@ -317,7 +321,8 @@ function cmdValidate() {
       const hit = res.findIndex((re) => re.test(t));
       if (hit >= 0) r.error(rel(f), `contains a term from the private brand denylist (#${hit + 1}); cstack stays brand-agnostic`);
     }
-  }
+  } else if (process.env.CSTACK_REQUIRE_DENYLIST) r.error('private/brand-denylist.txt', 'no brand denylist here and CSTACK_REQUIRE_DENYLIST is set: write the list (or point CSTACK_BRAND_DENYLIST at it) before validating');
+  else r.warn('private/brand-denylist.txt', 'no brand denylist here, so the brand-agnostic check did not run; two scrubs after the fact came from pushes made without it (CI gets it from the BRAND_DENYLIST secret)');
   r.print('cstack validate');
   process.exit(r.ok ? 0 : 1);
 }
@@ -826,6 +831,45 @@ async function cmdImage(sub) {
   if (!r.ok) process.exit(1);
 }
 
+// F93: range is counted before the pick, not remembered after polish
+function cmdSpread() {
+  const f = args._[0] ?? die('usage: cstack spread <frames.yaml|json> --by flavour[,mood] [--expect flavour=a,b,c] [--max-share 0.4]');
+  if (typeof args.by !== 'string') die('--by <field>[,<field>] required: what the brief asked the frames to vary');
+  const expect = {};
+  for (const e of [].concat(args.expect ?? [])) {
+    const m = String(e).match(/^([^=]+)=(.+)$/) ?? die(`--expect takes field=a,b,c, not "${e}"`);
+    expect[m[1].trim()] = m[2].split(',').map((x) => x.trim()).filter(Boolean);
+  }
+  let r;
+  try {
+    r = spreadCheck(readFrames(path.resolve(f)), { by: args.by.split(',').map((x) => x.trim()).filter(Boolean), expect, max_share: args['max-share'] === undefined ? undefined : Number(args['max-share']) });
+  } catch (e) {
+    die(e.message);
+  }
+  if (args.json) json(r);
+  else {
+    for (const x of r.fields) {
+      const counts = Object.entries(x.counts).sort((a, b) => b[1] - a[1]).map(([v, c]) => `${v} ${c}`).join(', ') || 'none';
+      const bad = [...x.over.map((o) => `${o.value} takes ${Math.round(o.share * 100)}% (cap ${Math.round(x.cap * 100)}%)`), ...x.missing.map((m) => `${m} missing`), ...(x.unlabelled ? [`${x.unlabelled} frame(s) without ${x.by}`] : [])];
+      console.log(`${bad.length ? 'FAIL' : 'PASS'} ${x.by}: ${counts}${bad.length ? `; ${bad.join('; ')}` : ''}`);
+    }
+    console.log(`spread over ${r.frames} frames: ${r.ok ? 'PASS' : 'FAIL; remake the over-represented frames as the missing values before anyone picks, and check the register against the brief'}`);
+  }
+  if (!r.ok) process.exit(1);
+}
+
+// F94: a fixed-price promise shown with two prices at once breaks itself
+function cmdClaims(sub) {
+  if (sub !== 'conflicts') die('usage: cstack claims conflicts <copy files...>');
+  if (!args._.length) die('usage: cstack claims conflicts <copy files...> (html, svg, md, txt, json, yaml)');
+  const r = claimConflicts(args._.map((f) => path.resolve(f)));
+  if (args.json) return json(r), r.ok || process.exit(1);
+  for (const [p, seen] of Object.entries(r.prices)) console.log(`${p} promised as fixed in ${seen.length} place(s): ${seen.slice(0, 3).map((x) => `${shown(x.file)} ("${x.said.slice(0, 80)}")`).join('; ')}`);
+  if (!Object.keys(r.prices).length) console.log('no fixed-price promise found');
+  console.log(r.ok ? 'claims conflicts: PASS' : `claims conflicts: FAIL; ${r.conflicts.map((c) => c.join(' and ')).join('; ')} are each promised as the fixed price. Test prices in separate regions or channels, or one at a time, and keep the promise true wherever it is seen`);
+  if (!r.ok) process.exit(1);
+}
+
 // F86: cstack never invents packaging sizes; the real pack is a file, and renders are measured against it
 function cmdPack(sub) {
   try {
@@ -1217,7 +1261,7 @@ function cmdUpdate() {
 }
 
 const two = argv[0] && !argv[0].startsWith('--') ? `${cmd} ${argv[0]}` : null;
-if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video', 'trial', 'pack'].includes(cmd)) {
+if (two && ['brand', 'prompt', 'spend', 'experiment', 'learn', 'creative', 'evals', 'brief', 'sheet', 'image', 'taste', 'tokens', 'browse', 'lint', 'edit', 'type', 'flows', '3d', 'svg', 'mockup', 'video', 'trial', 'pack', 'claims'].includes(cmd)) {
   args._.shift();
 }
 // Unknown flags: a typo like --dryrun must never fall through to a paid call. Known = every flag the
@@ -1453,6 +1497,12 @@ switch (cmd) {
     break;
   case 'pack':
     cmdPack(argv[0]);
+    break;
+  case 'spread':
+    cmdSpread();
+    break;
+  case 'claims':
+    cmdClaims(argv[0]);
     break;
   case 'setup':
     cmdSetup();

@@ -189,7 +189,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/brief/SKILL.md",
-      "tokens": 1751
+      "tokens": 1784
     },
     {
       "slug": "campaign-sequence",
@@ -1376,7 +1376,7 @@
       "mutating": true,
       "required_providers": [],
       "path": "skills/three-d/SKILL.md",
-      "tokens": 1544
+      "tokens": 1562
     },
     {
       "slug": "type-director",
