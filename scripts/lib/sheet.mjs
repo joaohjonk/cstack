@@ -110,7 +110,14 @@ export function makeSheet({ inputs, out, title, cols = 4, blind = false, seed, f
       shown = path.join(filesDir, `${k}${path.extname(f).toLowerCase()}`);
       fs.copyFileSync(f, shown);
     }
-    return { code: k, src: path.relative(dir, shown).split(path.sep).join('/'), source: path.relative(dir, f).split(path.sep).join('/'), file: f, sha256: sha256File(f), width: size?.width ?? null, height: size?.height ?? null };
+    // F79: renders that redraw designed artwork say so on the sheet, so nobody reviews them as the artwork
+    let depicts = null;
+    try {
+      depicts = exists(`${f}.gen.json`) ? JSON.parse(fs.readFileSync(`${f}.gen.json`, 'utf8')).depicts ?? null : null;
+    } catch {
+      /* an unreadable sidecar labels nothing */
+    }
+    return { code: k, src: path.relative(dir, shown).split(path.sep).join('/'), source: path.relative(dir, f).split(path.sep).join('/'), file: f, sha256: sha256File(f), width: size?.width ?? null, height: size?.height ?? null, ...(depicts ? { illustrative: true } : {}) };
   });
   // a grid sheet shows fewer, larger images: each one already holds several frames
   const c = Math.max(1, Math.min(12, Number(cols) || (grid ? 2 : 4)));
@@ -135,7 +142,7 @@ function sheetHTML({ title, cols, blind, items, grid, sheetId }) {
           .join('')}</div>`
       : `<button type="button" class="unit whole" data-unit="${esc(it.code)}" aria-label="${esc(it.code)}"></button>`;
   const cells = items
-    .map((it) => `<figure data-code="${esc(it.code)}"><div class="frame-wrap"><img src="${esc(it.src)}" alt="${esc(it.code)}" loading="lazy">${overlay(it)}</div><figcaption>${esc(it.code)}${it.width ? ` <span>${it.width}×${it.height}</span>` : ''}</figcaption></figure>`)
+    .map((it) => `<figure data-code="${esc(it.code)}"><div class="frame-wrap"><img src="${esc(it.src)}" alt="${esc(it.code)}" loading="lazy">${overlay(it)}</div><figcaption>${esc(it.code)}${it.width ? ` <span>${it.width}×${it.height}</span>` : ''}${it.illustrative ? ' <em class="illus">illustrative render; the flat file is the artwork</em>' : ''}</figcaption></figure>`)
     .join('\n');
   // what can be picked: whole images, or each frame of a grid image
   const units = items.flatMap((it) =>
@@ -165,7 +172,7 @@ figure{margin:0}img{display:block;width:100%;height:auto;background:var(--line)}
 .cells .unit span{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:1px 5px}
 .unit.on{outline:4px solid var(--accent);outline-offset:-4px}
 .unit.on span{background:var(--accent)}
-figcaption{font-size:12px;padding:4px 0;font-weight:600}figcaption span{font-weight:400;color:var(--mute)}
+figcaption{font-size:12px;padding:4px 0;font-weight:600}figcaption .illus{display:block;font-weight:400;font-style:normal}figcaption span{font-weight:400;color:var(--mute)}
 button{font:inherit}
 .btn{padding:8px 12px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on)}

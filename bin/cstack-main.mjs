@@ -31,7 +31,7 @@ import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.m
 import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
 import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
-import { checkText } from '../scripts/lib/textcheck.mjs';
+import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
 import { installHosts, hostIds, loadHosts } from '../scripts/lib/hosts.mjs';
@@ -46,7 +46,7 @@ const [, , cmd, ...argv] = process.argv;
 // Flags that never take a value: they must not swallow the next word (`--strict file.yaml`).
 const BOOLEAN_FLAGS = new Set(['key-visual', 'json', 'workflows', 'dry-run', 'confirm', 'confirm-unpriced', 'strict', 'ratchet', 'check', 'inferred', 'force', 'copy', 'deep', 'full', 'compact', 'interactive', 'internal', 'allow-mutation', 'no-background', 'write', 'refresh', 'snooze', 'all', 'record', 'blind', 'png']);
 // Flags that may repeat: values accumulate in an array.
-const REPEATABLE_FLAGS = new Set(['set']);
+const REPEATABLE_FLAGS = new Set(['set', 'expect', 'expect-file']);
 
 function parseArgs(a) {
   const out = { _: [] };
@@ -120,14 +120,14 @@ const COMMANDS = {
   route: 'rank models (flagship first; --tier draft ranks cheap probe models first): cstack route --modality image --needs image-edit,text-rendering [--task t] [--max-cost 0.2] [--providers fal,openai] [--avoid id,...] [--tier draft|final]',
   'spend plan': 'estimate a batch before paying: cstack spend plan <items.json> --stop "condition" --ws <dir>',
   'spend summary': 'ledger summary for a workspace: --ws <dir> [--since YYYY-MM-DD]; with billed amounts, estimate vs billed',
-  'spend reconcile': 'fetch what a provider billed for each paid request: cstack spend reconcile --provider <id> --ws <dir> [--since YYYY-MM-DD] [--dry-run] (adapters with a billing lookup: fal, which needs FAL_ADMIN_KEY or FAL_KEY)',
+  'spend reconcile': 'fetch what a provider billed for each paid request: cstack spend reconcile --provider <id> --ws <dir> [--since YYYY-MM-DD] [--dry-run] (adapters with a billing lookup: fal, which needs a key with ADMIN scope as FAL_ADMIN_KEY; a key without it stops the run on the first request and writes nothing)',
   generate: 'guarded media call (dedupe, budget, pending jobs, sidecar, size audit): cstack generate --file request.json [--dry-run] [--confirm (owner approved a call above confirm_over)] [--confirm-unpriced]',
   jobs: 'provider jobs still pending (resume, never resubmit)',
   tools: 'which research tools / MCPs are usable (registry/research-tools.json): cstack tools [--mcp "Figma,mobbin"] (pass the MCP server names you can see)',
   providers: 'which providers are usable here (env vars present) and which are stubs; merges registry/providers.json. Pass --mcp "Server,…" (or CSTACK_MCP_SERVERS) to add agent_mcp, the same answer `cstack tools` gives',
   'lint shot-dna': 'warn when Shot DNA lighting is adjectives, not a recipe: cstack lint shot-dna <file...> (no file: every *.shot-dna.* in the repo)',
   'edit paste': 'paste a patch onto a base with a feathered edge, writing a new file: cstack edit paste --base a.png --patch b.png --x N --y N [--feather 8] [--region x,y,w,h] --out c.png',
-  'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--json] (exit 1 when any image shows text)',
+  'image text': 'stop on lettering or logos in generated images: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>] [--json] (exit 1 when any image shows text; with --expect, when a declared line is missing or garbled or undeclared lettering appears)',
   audit: 'check an image against an expected size/aspect: cstack audit <file> --aspect 4:5 | --size 1080x1350',
   taste: 'Taste Labs capability: cstack taste search "intent" [--k 6] | extract <url> | verify --reference <url> --candidate <url>',
   failure: 'append a failure event: cstack failure --file event.json',
@@ -446,15 +446,25 @@ async function cmdSpend(sub) {
     // provider-neutral: any adapter that exports billing(request_id) can be reconciled; the others say so
     const adapter = getProvider(provider);
     if (typeof adapter.billing !== 'function') die(`${provider} has no billing lookup yet, so its rows keep cstack's estimate only; add billing(request_id) to its adapter to reconcile it`);
-    const r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => adapter.billing(id) });
+    if (!args.json) for (const n of adapter.billingNotes?.() ?? []) console.log(`note: ${n}`);
+    const est = (e) => Object.entries(e.by_currency).map(([cur, a]) => `${a} ${cur}`).join(' + ') || 'none';
+    let r;
+    try {
+      r = await reconcile(ws, { provider, since: args.since, dry_run: !!args['dry-run'], lookup: (id) => adapter.billing(id) });
+    } catch (e) {
+      if (!e.fatal) throw e;
+      die(`${e.message}.${e.done ? ` ${e.done} request(s) were answered before it stopped and are kept.` : ''} Billed is unknown for ${e.left} request(s); the ledger's estimates stand.`);
+    }
     if (args.json) return json({ ...r, check: billedVsEstimated(ws, { provider }) });
-    if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s); nothing fetched`);
+    if (args['dry-run']) return console.log(`would ask ${provider} about ${r.asked} request(s), estimated ${est(r.estimate)}${r.estimate.unpriced ? ` plus ${r.estimate.unpriced} unpriced` : ''}; nothing fetched`);
     const by = (k) => r.rows.filter((x) => x.status === k).length;
     console.log(`asked ${provider} about ${r.asked} request(s): ${by('billed')} billed, ${by('not_found')} not billed yet, ${by('error')} failed`);
     for (const x of r.rows.filter((y) => y.status === 'error')) console.log(`  ${x.request_id}: ${x.error}`);
+    if (r.stopped) console.log(`stopped: ${r.stopped}`);
     const c = billedVsEstimated(ws, { provider });
     if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
-    if (by('error')) process.exit(1);
+    else console.log(`billed: unknown so far; cstack's estimate for these ${r.estimate.requests} request(s) is ${est(r.estimate)}${r.estimate.unpriced ? `, plus ${r.estimate.unpriced} unpriced` : ''} (an estimate, not a bill)`);
+    if (by('error') || r.stopped) process.exit(1);
     return;
   }
   if (sub === 'plan') {
@@ -484,7 +494,8 @@ async function cmdSpend(sub) {
     const cur = args.currency ?? 'USD';
     if (args.json) return json({ by, spent: spent(rows, { currency: cur, since: args.since }), billed_vs_estimated: billedVsEstimated(ws, { since: args.since }) });
     for (const [k, v] of Object.entries(by)) console.log(`${k.padEnd(40)} calls ${v.calls}  ok ${v.ok}  failed ${v.failed}  dedup ${v.dedup}  dry ${v.dry}`);
-    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''} (cstack's estimates)`);
+    const byHand = spent(rows.filter((r) => r.price_source === 'request'), { currency: cur, since: args.since });
+    console.log(`spent ${spent(rows, { currency: cur, since: args.since })} ${cur}${args.since ? ` since ${args.since}` : ''} (cstack's estimates${byHand ? `; ${byHand} ${cur} of it from prices entered by hand, not a published price` : ''})`);
     const c = billedVsEstimated(ws, { since: args.since });
     if (c.requests) console.log(`billed ${c.billed} vs estimated ${c.estimated} ${c.currency} over ${c.requests} reconciled request(s): ${c.drift >= 0 ? '+' : ''}${Math.round(c.drift * 100)}% (${c.within ? 'within' : 'outside'} ${c.tolerance * 100}%)`);
     return;
@@ -769,14 +780,23 @@ async function cmdEvals(sub) {
 
 // cstack image text (field test F20): a per-image gate a flow's stop rule can run after each generation
 function cmdImage(sub) {
-  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"]');
+  if (sub !== 'text') die('usage: cstack image text <images|folders...> [--engine auto|tesseract|judge] [--judge "<cmd>"] [--expect "<line>"]... [--expect-file <lines.txt>]');
   if (args.judge === true) die('--judge needs a command');
-  const r = checkText(args._, { engine: args.engine ?? 'auto', judge: args.judge ? tokenize(args.judge) : null });
+  const list = (v) => (v == null ? [] : [].concat(v));
+  if ([...list(args.expect), ...list(args['expect-file'])].includes(true)) die('--expect needs a line of text, --expect-file a file');
+  let expected;
+  try {
+    expected = readExpected({ expect: list(args.expect), files: list(args['expect-file']) });
+    if ((args.expect != null || args['expect-file'] != null) && !expected.length) die('--expect/--expect-file gave no lines; leave both out to check that no text appears at all');
+  } catch (e) {
+    die(e.message);
+  }
+  const r = checkText(args._, { engine: args.engine ?? 'auto', judge: args.judge ? tokenize(args.judge) : null, expected });
   if (args.json) json(r);
   else {
     for (const i of r.images) console.log(`${i.result.toUpperCase().padEnd(5)} ${shown(i.file)}  ${i.evidence}`);
     const bad = r.images.filter((i) => i.result !== 'pass').length;
-    console.log(`image text (${r.engine}${r.thresholds ? ', thresholds uncalibrated' : ''}): ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length})`}`);
+    console.log(`image text (${r.engine}${r.mode === 'expected' ? `, expecting ${r.expected.length} line(s)` : ''}${r.thresholds ? ', thresholds uncalibrated' : ''}): ${r.ok ? 'PASS' : `FAIL (${bad} of ${r.images.length})`}`);
   }
   if (!r.ok) process.exit(1);
 }

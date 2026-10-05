@@ -75,6 +75,14 @@ steps:
   skill: mockup
   gate: {type: deterministic_check, check: "cstack mockup verify passes for every render shown"}
   compare_to_target: does it read as a pack on a shelf, not a poster on a cylinder?
+- id: scene
+  does: optional in-scene shots of the strongest wraps (a can in a hand, on a shelf) through an edit route, each request naming the flat wrap as `depicts` so the render is labelled illustrative on every sheet; the lettering the wrap carries goes in work/pack/<wrap>.on-pack.txt, one line each
+  kind: generative
+  skill: generate-media
+  est_cost: {amount: 0.07, currency: USD, unit: "per edit on fal GPT Image 2.5 Sunburst; fal publishes no edit price, so it is entered by hand and booked as such (F80)"}
+  budget: {amount: 0.5, currency: USD, basis: "three hero scenes and one redo each"}
+  gate: {type: deterministic_check, check: "cstack image text <render> --expect-file work/pack/<wrap>.on-pack.txt passes (every declared line read as written, nothing else); a render that changes the wrap is redone or dropped, never shown as the artwork"}
+  compare_to_target: is it still the same wrap, in a life?
 - id: pick
   does: one sheet of all concepts (cstack sheet make work/pack/renders --out work/sheets/pack.html, blind across territories), the founder picks one to three winners and says why (cstack sheet import)
   kind: human
@@ -89,6 +97,7 @@ failure_modes:
 - composite elements dropped because no lettering may come from the model
 evidence:
 - {ref: "field test findings F73, F74 and F75 (the first pack sheet read as ugly craft; the flat-wrap stage was hand-built)", kind: run_record, date: 2026-10-05}
+- {ref: "field test findings F76 and F79 (designed type failed the no-lettering check; edit renders redrew the pack unlabelled)", kind: run_record, date: 2026-10-05}
 - {ref: "flow packaging-system: rejected generative concept-first packs for print", kind: practitioner, date: 2026-10-05}
 last_verified: 2026-10-05
 stale_after_days: 90

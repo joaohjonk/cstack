@@ -28,7 +28,7 @@ export function listPending(ws) {
 /**
  * runMedia(ws, req, opts)
  * req: {provider, model, operation, inputs: {prompt, images:[paths], params}, recipe_hash, out_dir, out_prefix,
- *       expected_size?: {width,height}|{aspect}, estimated_cost?, skill?, experiment_id?}
+ *       expected_size?: {width,height}|{aspect}, estimated_cost?, skill?, experiment_id?, depicts?: <flat artwork file>}
  * opts: {dry_run, poll_timeout_ms, poll_interval_ms}
  */
 // Estimate from the dated registry's est_unit_cost (per image, second, megapixel or operation); null when unpriced.
@@ -120,6 +120,17 @@ function priceGap(req, u) {
     if (u.sizes && !u.sizes.includes(`${size[0]}x${size[1]}`)) return `${size[0]}x${size[1]} has no verified price (verified only at ${u.sizes.join(', ')})`;
   }
   return null;
+}
+
+// F80: where a call's estimate came from. A price typed into the request (a route fal lists without a published price)
+// is booked as an estimate entered by hand, so spend summary can say how much of the total rests on guesses.
+function priced(req, provider) {
+  if (req.estimated_cost) return { estimated_cost: { ...req.estimated_cost, basis: req.estimated_cost.basis ?? 'entered on the request by hand; not a price cstack verified' }, price_source: 'request' };
+  const fromProvider = provider.estimate?.(req);
+  if (fromProvider) return { estimated_cost: fromProvider, price_source: 'provider' };
+  const fromRegistry = estimateFromRegistry(req);
+  if (fromRegistry) return { estimated_cost: fromRegistry, price_source: 'registry' };
+  return { estimated_cost: null, unpriced_reason: priceRequest(req).reason ?? undefined };
 }
 
 /** {estimate, reason}: the registry estimate for a request, or null and why it has none. */
@@ -224,8 +235,7 @@ export async function runMedia(ws, req, opts = {}) {
     prompt_recipe_hash: req.recipe_hash ?? '',
     params: req.inputs?.params ?? {},
     prompt_hash: req.inputs?.prompt ? hashValue(req.inputs.prompt) : '',
-    estimated_cost: req.estimated_cost ?? provider.estimate?.(req) ?? estimateFromRegistry(req),
-    unpriced_reason: req.estimated_cost ?? provider.estimate?.(req) ? undefined : priceRequest(req).reason ?? undefined,
+    ...priced(req, provider),
     skill: req.skill,
     experiment_id: req.experiment_id,
     dry_run: opts.dry_run ?? req.dry_run,
@@ -317,6 +327,8 @@ export async function runMedia(ws, req, opts = {}) {
         cost: result.cost ?? null,
         created_at: nowISO(),
         skill: req.skill,
+        // F79: a render that redraws designed artwork (a pack in a scene) is an illustration of it, never the artwork
+        ...(req.depicts ? { depicts: { file: req.depicts, sha256: exists(req.depicts) ? sha256File(req.depicts) : null, illustrative: true } } : {}),
       };
       fs.writeFileSync(`${file}.gen.json`, JSON.stringify(sidecar, null, 2) + '\n', { flag: 'wx' });
       outputs.push(path.relative(ws, file));

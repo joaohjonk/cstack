@@ -208,7 +208,7 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   const cold = gate().errors.join('\n');
   assert.match(cold, /no owner-approved founder brief.*founding mode/);
   assert.match(cold, /no reference packet or board the owner has reacted to/);
-  const brief = { id: 'FB-ostrel', brand_id: 'evalcase', date: '2026-10-05', why_it_exists: { reason: 'tea that tastes of the second steep' }, customer: { who: 'people who drink tea at their desk', evidence: 'told' }, brand_as_person: { name: 'UNKNOWN' }, assets_and_inspirations: { inspirations: [{ ref: 'vintage tea tins', what_draws_them: 'one colour, one mark, the leaf named plainly' }] }, owner_approval: { status: 'draft' } };
+  const brief = { id: 'FB-tea', brand_id: 'evalcase', date: '2026-10-05', why_it_exists: { reason: 'tea that tastes of the second steep' }, customer: { who: 'people who drink tea at their desk', evidence: 'told' }, brand_as_person: { name: 'UNKNOWN' }, assets_and_inspirations: { inspirations: [{ ref: 'vintage tea tins', what_draws_them: 'one colour, one mark, the leaf named plainly' }] }, owner_approval: { status: 'draft' } };
   fs.mkdirSync(path.join(w, 'briefs'), { recursive: true });
   const bf = path.join(w, 'briefs', '2026-10-05-founding.founder-brief.yaml');
   fs.writeFileSync(bf, YAML.stringify(brief));
