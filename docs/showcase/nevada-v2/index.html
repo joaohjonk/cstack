@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nevada: cstack, end to end</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b1916;--paper:#f4ecdb;--muted:#6b645a;--line:#d9cfbb;--accent:#e9b51c;--card:#fbf6ea}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f1eadb;--paper:#171512;--muted:#a59d90;--line:#3a352d;--card:#211e19}}
+*{box-sizing:border-box}html{background:var(--paper)}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 Archivo,Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:40px 16px 96px}
+h1{font-weight:900;font-stretch:118%;font-size:clamp(44px,9vw,104px);line-height:.9;letter-spacing:-.02em;margin:0}
+.kicker{font-weight:800;letter-spacing:.14em;font-size:12px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.lede{font-size:clamp(17px,2.3vw,22px);max-width:64ch;margin:18px 0 0}
+section{border-top:2px solid var(--ink);padding:32px 0 8px;margin-top:28px}
+.sec{display:grid;grid-template-columns:72px 1fr;gap:16px}.n{font-weight:900;font-stretch:125%;font-size:42px;line-height:1}
+h2{font-weight:900;font-stretch:105%;font-size:clamp(22px,3vw,30px);margin:0 0 8px;line-height:1.1}
+p{margin:8px 0;max-width:72ch} img{width:100%;display:block;border-radius:2px;background:var(--card)}
+.grid{display:grid;gap:10px;margin-top:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g6{grid-template-columns:repeat(6,1fr)}
+.cap{font-size:13px;color:var(--muted);margin-top:6px}
+.who{display:inline-block;font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;margin:6px 6px 0 0;border:2px solid var(--ink)}
+.led{background:var(--ink);color:var(--paper)}
+.quote{font-weight:700;border-left:4px solid var(--accent);padding-left:12px;margin:12px 0;max-width:72ch}
+.box{background:var(--card);border:1px solid var(--line);padding:14px 16px;margin-top:12px}
+ul{margin:8px 0 0;padding-left:20px;max-width:72ch}li{margin:4px 0}
+table{border-collapse:collapse;width:100%;margin-top:12px;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.fig{background:#f4ecdb;padding:8px;border:1px solid var(--line)}
+@media (max-width:720px){.sec{grid-template-columns:1fr}.g3,.g6{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<div class="kicker">cstack field test · fictional brand · 5 Oct 2026</div>
+<h1>NEVADA</h1>
+<p class="lede">How far does cstack get without a marketing expert in the room? One founder line ("a sparkling tea in cans") became a brief, a pack, a photoshoot, a set of ads with tests, a website and a map of its own process, in one day, for about US$3.91 of image spend. Each step says whether <b>cstack led</b> or <b>followed</b>, and what it got wrong.</p>
+<div class="grid" style="margin-top:28px"><img src="img/pack-lineup.jpg" alt="Five Nevada tall cans rendered in 3D: plain, yuzu white tea, black cherry lime, tamarind chili, lychee rose, each with NEVER TOO SWEET and a sweetness meter."></div>
+<p class="cap">The pack, rendered in 3D straight from the flat artwork: every letter is exact. Price, origins and sizes are placeholders.</p>
+
+<section><div class="sec"><div class="n">0</div><div><h2>The map</h2>
+<div class="fig"><img src="img/fig-a-workflow-map.svg" alt="Workflow map from founder interview to applications, with the gates."></div>
+<p class="cap">Built by cstack from the run's own files: run logs, findings and the ledger.</p></div></div></section>
+
+<section><div class="sec"><div class="n">1</div><div><h2>Founder first</h2><span class="who">followed</span>
+<p>The first attempt jumped to pictures, and the founder stopped it ("you never interrogated me as a builder"). Now <code>/brief</code> interviews the founder before anything is made. The make gate stays shut until the founder approves the brief, and closes again on every pivot.</p>
+<p class="quote">"a better healthier version of the classic value iced tea … a mass hype brand but premium pricing because of premium ingredients … never too sweet"</p></div></div></section>
+
+<section><div class="sec"><div class="n">2</div><div><h2>Then cstack pushes back</h2><span class="who led">led</span>
+<p>Before making anything downstream, cstack wrote a challenge memo: what it would do better than asked, with evidence.</p>
+<ul><li><b>"Never too sweet" becomes a system:</b> a sweetness meter (NOT SWEET · BARELY · A LITTLE) on every can, ad and page. It never passes "a little".</li>
+<li><b>Claims kept legal:</b> "low sugar" isn't an FDA-defined claim, and "0 g sugar" needs "not a low calorie food" beside it. Both came off the fronts (21 CFR 101.60).</li>
+<li><b>Price tested, not assumed:</b> a fixed price printed on the can, with $3.99 on a tall can tested against $2.99 on 16 oz.</li>
+<li><b>Drops with a reason:</b> each flavour drops in its harvest season.</li>
+<li><b>Packaging truth:</b> cstack found that the can shape drawn so far holds about 19–21 fl oz, not the 23.5 printed on it. That's an open owner decision.</li></ul></div></div></section>
+
+<section><div class="sec"><div class="n">3</div><div><h2>Read the category before the ads</h2><span class="who">followed (founder asked)</span><span class="who led">then led</span>
+<p>A competitor scan of public ad libraries (two leading better-for-you sodas, the best-selling value iced tea, a big tea brand) found the category's conventions:</p>
+<ul><li>a sugar number as proof;</li><li>gut and fiber claims;</li><li>"soda, but better";</li><li>dessert framing;</li><li>creator recipes;</li><li>25–30% discounts.</li></ul>
+<p>Every ad below cites what it <b>copies</b> (one number, seasonal drops told as stories), <b>avoids</b> (gut claims, dessert framing, discounts) or <b>owns</b> (Never too sweet + the meter, a price that never changes, tea sold as the drink).</p>
+<table><tr><th>Ad</th><th>Bet · cell</th><th>Copy / avoid / own</th></tr>
+<tr><td>"Iced tea was never supposed to be syrup."</td><td>B1 · myth to correct</td><td>own the meter · our own contrast line · no dessert framing</td></tr>
+<tr><td>"Even the ants agree."</td><td>B1 · unexpected object</td><td>own the meter · a joke instead of a health-stat scare</td></tr>
+<tr><td>"$3.99 ALWAYS" vs "$2.99 ALWAYS"</td><td>B2 · price test</td><td>own the fixed printed price · no discount</td></tr>
+<tr><td>"Why is everyone here at 6 a.m.?" / "Drop 01 is yuzu. Because it's yuzu season."</td><td>B3 · drop story</td><td>copy drops told as stories · own harvest drops with a reason</td></tr></table></div></div></section>
+
+<section><div class="sec"><div class="n">4</div><div><h2>Identity and packaging, with real craft</h2><span class="who led">led</span>
+<p>Colour and type tokens, a NEVER TOO SWEET seal and the meter as vectors, pack v3 with the key line in the top half, and a shelf test. Only the poster pictures were generated; the type is set, not drawn. Spend: <b>$0</b>.</p>
+<div class="grid g2"><img src="img/pack-marks.jpg" alt="Seal and sweetness meter marks"><img src="img/pack-shelf.jpg" alt="Shelf mock with Nevada cans among neutral placeholder cans"></div>
+<p class="cap">Left: the seal and the meter at sizes down to 32 px. Right: a shelf mock with neutral placeholder competitors. At 3 m the meter can't be read yet, which is logged.</p></div></div></section>
+
+<section><div class="sec"><div class="n">5</div><div><h2>A 10-shot campaign, with labels kept true</h2><span class="who led">led</span>
+<p>The shoot ran as a sequence (ICON, WORLD, HUMAN, RITUAL, PRODUCT, DETAIL, CULTURE, WEIRD, PROOF, CLOSER) and as Grid → Pick → Polish: cheap grids first, picks with reasons, then polish.</p>
+<p>The image model got the can's label wrong in 4 of 7 frames ("22.5 FL OZ", "$3.98"). So no model-drawn label was kept: every can wears the exact label pasted from the 3D render, with the scene's light carried over.</p>
+<div class="grid g3"><img src="img/shoot-s01-icon.jpg" alt="ICON: tall yuzu can in sun"><img src="img/shoot-s03-human.jpg" alt="HUMAN: a laughing person with the can"><img src="img/shoot-s04-ritual.jpg" alt="RITUAL: can in a car cupholder at sunrise"><img src="img/shoot-s06-detail.jpg" alt="DETAIL: sparkling yuzu tea with ice"><img src="img/shoot-s08-weird.jpg" alt="WEIRD: ants walk past the can to a sugar cube"><img src="img/shoot-s10-closer.jpg" alt="CLOSER: black cherry lime can with fruit"></div>
+<p class="cap">Six of ten frames. The independent review said "fix first": too much yuzu, a calm wellness look rather than mass hype, a weak PRODUCT frame. Those notes are recorded, not hidden.</p></div></div></section>
+
+<section><div class="sec"><div class="n">6</div><div><h2>Ads: three bets, each with a test</h2><span class="who led">led</span>
+<p>Each bet has a tension, an audience, a hook family and one controlled experiment. Type is set in HTML from the brand tokens, never drawn by a model.</p>
+<div class="grid g3"><img src="img/ad-B1-A-feed.jpg" alt="Ad: Iced tea was never supposed to be syrup"><img src="img/ad-B1-B-feed.jpg" alt="Ad: Even the ants agree"><img src="img/ad-B2-A-feed.jpg" alt="Ad: $3.99 always"><img src="img/ad-B2-B-feed.jpg" alt="Ad: $2.99 always, 16 fl oz"><img src="img/ad-B3-A-feed.jpg" alt="Ad: Why is everyone here at 6 a.m.?"><img src="img/ad-B3-B-feed.jpg" alt="Ad: Drop 01 is yuzu because it's yuzu season"></div>
+<div class="grid" style="margin-top:10px"><img src="img/video-storyboard.jpg" alt="Six-panel video storyboard for bet 1"></div>
+<p class="cap">No video clip was made. No video route was priced, and a video model would redraw the label, which this brand forbids.</p></div></div></section>
+
+<section><div class="sec"><div class="n">7</div><div><h2>The website, built from the tokens</h2><span class="who led">led</span>
+<p>A one-page site with the 3D can as the hero (drag to turn, exact artwork), the meter, the drops with a harvest calendar, and where to buy. It passed cstack's type, token and accessibility checks at 375, 768 and 1440 px. An independent review first said fix (dead buy buttons, a false FAQ line), then promote.</p>
+<div class="grid g2"><img src="img/site-1440.jpg" alt="Website at desktop width"><img src="img/site-375.jpg" alt="Website at phone width" style="max-width:375px;margin:0 auto"></div></div></div></section>
+
+<section><div class="sec"><div class="n">8</div><div><h2>The process, measured</h2>
+<div class="grid g2"><div class="fig"><img src="img/fig-b-gates.svg" alt="Gates that stopped the run"></div><div class="fig"><img src="img/fig-c-verdicts.svg" alt="Founder verdicts over time against reviewer scores"></div><div class="fig"><img src="img/fig-d-spend.svg" alt="Spend by step"></div><div class="fig"><img src="img/fig-e-fixed.svg" alt="What cstack got wrong and what was fixed"></div></div>
+<table><tr><th>Step</th><th>Est. image spend</th></tr>
+<tr><td>First, wrong-order run (before the founder interview)</td><td>$0.26</td></tr>
+<tr><td>Brand direction: explore, posters, on-can (GPT Image 2.5 Sunburst)</td><td>$2.32</td></tr>
+<tr><td>Downstream: identity, pack, 3D, site, figures</td><td>$0.00</td></tr>
+<tr><td>Downstream: 10-shot campaign (ads reuse it)</td><td>$1.32</td></tr>
+<tr><td><b>Total</b></td><td><b>$3.91</b></td></tr></table>
+<p class="cap">Estimates from cstack's ledger at fal's listed prices. Billed cost could not be reconciled without a fal admin key.</p></div></div></section>
+
+<section><div class="sec"><div class="n">9</div><div><h2>Where it still needs a human</h2>
+<ul><li><b>Taste and register:</b> reviewers rated the campaign "calm premium wellness", while the founder asked for "mass hype". Only the owner can settle that.</li>
+<li><b>Product facts:</b> can size, origins, a sensory panel for the meter, and supplier proof for "real yuzu".</li>
+<li><b>The test plan:</b> two "ALWAYS" prices can't run in public at once. It needs a regional split.</li>
+<li><b>cstack's own gaps,</b> all logged as findings: no flow for process figures; a text check that can't take the expected words; nothing flags work made from files that changed under it; a model router that still ranks a model the owner banned.</li></ul>
+<p class="cap">Fictional brand for demonstration. No real company's artwork, marks or photographs appear. References and competitor ads were used as evidence only and are not reproduced.</p></div></div></section>
+</div></body></html>
