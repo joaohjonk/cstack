@@ -230,7 +230,7 @@ test('flows gate: territory probes for a brand from zero wait for the founder br
   assert.match(waived.warnings.join('\n'), /going ahead without founder brief \(owner waived it 2026-10-05: owner said just go\)/);
 });
 
-test('flows gate: after a pivot and a new approval, reactions from before it no longer count (F42)', async () => {
+test('flows gate: after a pivot and a new approval, reactions from before the pivot no longer count (F42, F52)', async () => {
   const { gateFlow } = await import('../scripts/lib/flows.mjs');
   const { approveBrief, reopenBrief } = await import('../scripts/lib/brief.mjs');
   const w = tmpDir('cstack-f42-');
@@ -254,6 +254,16 @@ test('flows gate: after a pivot and a new approval, reactions from before it no 
   assert.match(gate(), /reference packet the owner has reacted to/);
   react('FB-b');
   assert.equal(gate(), '');
+  // F52: the natural order is react, then say yes; reactions given after the pivot and before the new yes count
+  reopenBrief(bf, { reason: 'a second pivot' });
+  react('FB-c');
+  fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('a healthier soda', 'a sparkling tea'));
+  approveBrief(bf, { by: 'Founder' });
+  assert.equal(gate(), '');
+  // an approved brief edited and approved again without a reopen: reactions before the previous yes stop counting
+  fs.writeFileSync(bf, fs.readFileSync(bf, 'utf8').replace('a sparkling tea', 'a still tea'));
+  approveBrief(bf, { by: 'Founder' });
+  assert.match(gate(), /reference packet the owner has reacted to/);
 });
 
 test('flows gate: a plan made before its library flow gained requires still owes them (F26)', async () => {
