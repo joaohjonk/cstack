@@ -76,3 +76,33 @@ test('flows gate: a pack render without an approved pack spec stops at make (F86
   fs.writeFileSync(path.join(w, 'brand', 'bar.pack-spec.yaml'), YAML.stringify(bar));
   assert.doesNotMatch(gateFlow(w, file, opts).errors.join('\n'), /pack spec/);
 });
+
+test('pack spec: real-pack fields validate, and mismatches, changed sources and estimates are flagged for the owner', async () => {
+  const { specWarnings } = await import('../scripts/lib/packspec.mjs');
+  const w = tmpDir('cstack-pack-');
+  fs.writeFileSync(path.join(w, 'print.pdf'), '%PDF-1.4 sample');
+  const sha = (await import('node:crypto')).createHash('sha256').update(fs.readFileSync(path.join(w, 'print.pdf'))).digest('hex');
+  const full = {
+    ...bar,
+    artwork_mm: { width: 70, height: 96 },
+    film_width_mm: 170,
+    repeat_mm: 100,
+    panels: [{ name: 'back', width_mm: 50 }, { name: 'front', width_mm: 70, visible: true }, { name: 'back', width_mm: 50 }],
+    seals: [{ where: 'ends', mm: 8, style: 'serrated' }],
+    contents: { what: 'the bar', length_mm: { min: 80, max: 82 }, source: 'measured' },
+    cartons: [{ id: 'six-box', count: 6, arrangement: '2 x 3', inner_mm: { length: 150, width: 90, height: 40 }, faces: { front: 'pack face' }, status: 'testing', estimated: true, source: 'carton practice' }],
+    source: { kind: 'print-file', file: 'print.pdf', sha256: sha },
+    immutable_traits: ['seal positions'],
+    forbidden_drift: ['pack drawn taller'],
+  };
+  const v = validateValue('pack-spec', full);
+  assert.ok(v.ok, v.errors);
+  const warns = specWarnings(full, { ws: w });
+  assert.equal(warns.length, 3, warns.join('\n'));
+  assert.match(warns[0], /70 x 96 mm, 1[23](\.\d)?% off .* owner decision/);
+  assert.match(warns[1], /repeat 100 mm matches neither side/);
+  assert.match(warns[2], /carton six-box is estimated/);
+  fs.writeFileSync(path.join(w, 'print.pdf'), '%PDF-1.4 changed');
+  assert.ok(specWarnings(full, { ws: w }).some((x) => /changed since the sizes were read/.test(x)));
+  assert.deepEqual(specWarnings({ ...full, artwork_mismatch: 'owner: re-lay the face to 70 x 85', cartons: [], source: { kind: 'print-file' } }), [], 'a recorded owner decision clears the flag');
+});

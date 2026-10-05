@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import { exists, readData, walk } from './core.mjs';
 import { imageSize } from './image.mjs';
 
@@ -49,6 +50,33 @@ const ratio = (s) => (s?.width > 0 && s?.height > 0 ? s.height / s.width : null)
 /** {front, flat}: height:width of the pack's front face and of its flat print size, from the spec. */
 export function specAspects(spec) {
   return { front: ratio(spec.front_mm), flat: ratio(spec.flat_mm) };
+}
+
+/**
+ * specWarnings(spec, {ws}) -> [string]: what the owner still has to decide or confirm before renders rely on the spec.
+ *   artwork laid out at a different front proportion than the print file (a 70 x 96 face for a 70 x 85 front)
+ *   a machine repeat that matches neither side of the flat print size
+ *   a source file whose hash no longer matches the one recorded
+ *   estimated sizes, on the pack or on a carton
+ */
+export function specWarnings(spec, { ws = null } = {}) {
+  const out = [];
+  const tol = Number(spec.tolerance ?? DEFAULT_TOLERANCE);
+  const front = ratio(spec.front_mm);
+  const art = ratio(spec.artwork_mm);
+  if (art && front && pctOff(art, front) > tol * 100 && !spec.artwork_mismatch)
+    out.push(`artwork is laid out at ${spec.artwork_mm.width} x ${spec.artwork_mm.height} mm, ${pctOff(art, front)}% off the ${spec.front_mm.width} x ${spec.front_mm.height} mm front: an owner decision (re-lay the face, or change the machine repeat); record it in artwork_mismatch`);
+  const f = spec.flat_mm;
+  if (spec.repeat_mm && f && ![f.width, f.height].some((side) => Math.abs(side - spec.repeat_mm) / spec.repeat_mm <= tol) && !spec.artwork_mismatch)
+    out.push(`machine repeat ${spec.repeat_mm} mm matches neither side of the ${f.width} x ${f.height} mm flat print size: an owner decision; record it in artwork_mismatch`);
+  if (spec.source?.sha256 && spec.source.file) {
+    const file = path.isAbsolute(spec.source.file) || !ws ? spec.source.file : path.join(ws, spec.source.file);
+    if (exists(file) && crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') !== spec.source.sha256)
+      out.push(`${spec.source.file} changed since the sizes were read (sha256 differs): re-read it and ask the owner to confirm`);
+  }
+  if (spec.estimated) out.push(`sizes are estimated${spec.estimated_note ? ` (${spec.estimated_note})` : ''}: renders say so`);
+  for (const c of spec.cartons ?? []) if (c.estimated || c.status === 'testing') out.push(`carton ${c.id} is ${c.estimated ? 'estimated' : 'in testing'}${c.source ? ` (${c.source})` : ''}: renders of it say so`);
+  return out;
 }
 
 // SVG document size: width/height attributes in a length unit, else the viewBox

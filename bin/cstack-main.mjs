@@ -32,7 +32,7 @@ import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/li
 import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
-import { findPackSpecs, approvedSpec, specAspects, checkPack, pdfBoxes } from '../scripts/lib/packspec.mjs';
+import { findPackSpecs, approvedSpec, specAspects, specWarnings, checkPack, pdfBoxes } from '../scripts/lib/packspec.mjs';
 import { listScenarios, planTrial, writePlan, readPlan, runTrial, scoreTrial, importTaps } from '../scripts/lib/trial.mjs';
 import { healthReport } from '../scripts/lib/health.mjs';
 import { promoteLearning, learningCandidates } from '../scripts/lib/learn.mjs';
@@ -820,7 +820,8 @@ function cmdPack(sub) {
       for (const f of all) {
         const s = readData(f);
         const a = specAspects(s);
-        console.log(`${approvedSpec(s) ? 'APPROVED' : 'NOT YET '} ${shown(f)}  ${s.format} ${s.front_mm?.width}x${s.front_mm?.height} mm front${s.flat_mm ? `, ${s.flat_mm.width}x${s.flat_mm.height} mm flat` : ''} (h:w ${a.front?.toFixed(3)}) from ${s.source?.kind}${s.source?.file ? ` ${s.source.file}` : ''}`);
+        console.log(`${approvedSpec(s) ? 'APPROVED' : 'NOT YET '} ${shown(f)}  ${s.format} ${s.front_mm?.width}x${s.front_mm?.height} mm front${s.flat_mm ? `, ${s.flat_mm.width}x${s.flat_mm.height} mm flat` : ''} (h:w ${a.front?.toFixed(3)}) from ${s.source?.kind}${s.source?.file ? ` ${s.source.file}` : ''}${s.estimated ? ' (ESTIMATED)' : ''}`);
+        for (const w of specWarnings(s, { ws })) console.log(`  WARN ${w}`);
       }
       return;
     }
@@ -829,6 +830,7 @@ function cmdPack(sub) {
       const spec = readData(path.resolve(args.spec));
       const v = validateValue('pack-spec', spec);
       if (!v.ok) die(`${args.spec} is not a valid pack spec: ${v.errors}`);
+      for (const w of specWarnings(spec, { ws })) console.log(`WARN ${w}`);
       if (!approvedSpec(spec)) console.log(`WARN ${args.spec} is not approved (approval ${spec.approval?.status}, source ${spec.source?.kind}): the owner confirms the sizes before they decide anything`);
       if (args.judge === true) die('--judge needs a command');
       const box = typeof args.box === 'string' ? args.box.split(',').map(Number) : null;
