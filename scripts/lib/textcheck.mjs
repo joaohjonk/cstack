@@ -8,6 +8,7 @@
 // garbled, fails. The brand's own mark is not a stray logo there.
 // The OCR thresholds are researched defaults, not calibrated against the owner's verdicts yet.
 import fs from 'node:fs';
+import { lastJsonObject } from './jsonscan.mjs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { collectImages } from './sheet.mjs';
@@ -110,17 +111,7 @@ export function judgePrompt(file, expected = []) {
 }
 
 export function parseJudge(out) {
-  const s = String(out ?? '');
-  for (let end = s.lastIndexOf('}'); end !== -1; end = s.lastIndexOf('}', end - 1))
-    for (let start = s.lastIndexOf('{', end); start !== -1; start = s.lastIndexOf('{', start - 1)) {
-      try {
-        const v = JSON.parse(s.slice(start, end + 1));
-        if (typeof v?.text === 'boolean') return v;
-      } catch {
-        /* keep looking */
-      }
-    }
-  return null;
+  return lastJsonObject(out, (v) => typeof v.text === 'boolean');
 }
 
 function judge(file, argv, expected) {

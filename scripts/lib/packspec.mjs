@@ -6,6 +6,7 @@
 //   a picture: the pack's box in the frame, from --box or a judge command, against the front aspect
 // A pack seen at an angle cannot be measured from a box; it is reported unverifiable and stays labelled illustrative.
 import fs from 'node:fs';
+import { lastJsonObject } from './jsonscan.mjs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
@@ -127,17 +128,7 @@ function productVerdict(packBox, productBox, scale, tol) {
 }
 
 function parseBox(out) {
-  const s = String(out ?? '');
-  for (let end = s.lastIndexOf('}'); end !== -1; end = s.lastIndexOf('}', end - 1))
-    for (let start = s.lastIndexOf('{', end); start !== -1; start = s.lastIndexOf('{', start - 1)) {
-      try {
-        const v = JSON.parse(s.slice(start, end + 1));
-        if (typeof v?.view === 'string') return v;
-      } catch {
-        /* keep looking */
-      }
-    }
-  return null;
+  return lastJsonObject(out, (v) => typeof v.view === 'string');
 }
 
 const pctOff = (got, want) => Math.round((Math.abs(got - want) / want) * 1000) / 10;

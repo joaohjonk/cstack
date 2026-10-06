@@ -5,6 +5,7 @@
 // Every run leaves <out>/<id>.run<N>.{prompt.txt,transcript.txt,calls.log,judge.txt,ws/}, and `--recorded <out>`
 // regrades that folder without calling anything, so a live baseline can be re-read and CI can test the graders.
 import fs from 'node:fs';
+import { lastJsonObject } from './jsonscan.mjs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT, exists, readData, writeAtomic } from './core.mjs';
@@ -155,23 +156,12 @@ export function judgePrompt(fx, grader, transcript) {
 
 // The last JSON object in the reply that carries a PASS/FAIL verdict; anything else is no verdict (pending).
 export function parseVerdict(text) {
-  const s = String(text ?? '');
-  for (let end = s.lastIndexOf('}'); end !== -1; end = s.lastIndexOf('}', end - 1)) {
-    for (let start = s.lastIndexOf('{', end); start !== -1; start = s.lastIndexOf('{', start - 1)) {
-      try {
-        const v = JSON.parse(s.slice(start, end + 1));
-        if (v && /^(PASS|FAIL)$/i.test(String(v.verdict))) {
-          const verdict = String(v.verdict).toUpperCase();
-          // a PASS that admits a missed must or an occurred must_not is a FAIL
-          const broken = (v.must ?? []).some((m) => m?.held === false) || (v.must_not ?? []).some((m) => m?.occurred === true);
-          return { verdict: broken ? 'FAIL' : verdict, reason: v.reason ?? '', must: v.must ?? [], must_not: v.must_not ?? [], overruled: broken && verdict === 'PASS' };
-        }
-      } catch {
-        /* not this span */
-      }
-    }
-  }
-  return null;
+  const v = lastJsonObject(text, (o) => /^(PASS|FAIL)$/i.test(String(o.verdict)));
+  if (!v) return null; // a malformed reply stays pending (F98: the old scan spun forever on one)
+  const verdict = String(v.verdict).toUpperCase();
+  // a PASS that admits a missed must or an occurred must_not is a FAIL
+  const broken = (v.must ?? []).some((m) => m?.held === false) || (v.must_not ?? []).some((m) => m?.occurred === true);
+  return { verdict: broken ? 'FAIL' : verdict, reason: v.reason ?? '', must: v.must ?? [], must_not: v.must_not ?? [], overruled: broken && verdict === 'PASS' };
 }
 
 function runCommand(line, { cwd, env, input, timeout_s }) {

@@ -169,3 +169,16 @@ test('evals run: a usage limit stops the suite with a resume list; a failed judg
   assert.equal(summary.fixtures, 1);
   assert.equal(readJSONL(path.join(owner, 'state', 'evals.jsonl')).length, 1);
 });
+
+test('a malformed judge reply (no closing brace) is pending, not a hang (F98)', async () => {
+  const { lastJsonObject } = await import('../scripts/lib/jsonscan.mjs');
+  const truncated = '{"verdict": "PASS", "reason": "the agent did the thing", "must": [{"id": "m1", "held": true}]';
+  const t0 = Date.now();
+  assert.equal(parseVerdict(truncated), null);
+  assert.equal(parseVerdict('}'), null);
+  assert.equal(parseVerdict('{'), null);
+  assert.equal(lastJsonObject('{"a":1}', (v) => v.b), null);
+  assert.ok(Date.now() - t0 < 2000, 'the scan ends');
+  assert.equal(parseVerdict(`prose first\n${truncated}}\nand after`).verdict, 'PASS');
+  assert.equal(parseVerdict('{"verdict":"FAIL"} {"verdict":"PASS"}').verdict, 'PASS', 'the last object wins');
+});
