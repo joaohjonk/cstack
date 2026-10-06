@@ -5,6 +5,7 @@
 // Every run leaves <out>/<id>.run<N>.{prompt.txt,transcript.txt,calls.log,judge.txt,ws/}, and `--recorded <out>`
 // regrades that folder without calling anything, so a live baseline can be re-read and CI can test the graders.
 import fs from 'node:fs';
+import { lastJsonObject } from './jsonscan.mjs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { ROOT, exists, readData, writeAtomic } from './core.mjs';
@@ -40,6 +41,21 @@ export function tokenize(line) {
 
 // The workspace a case starts from: `workspace:` in the fixture, else an example the setup names, else a fresh
 // starter workspace for a fictional brand (always for `fresh_workspace: true`).
+/**
+ * ancestorInstructions(dir): CLAUDE.md or .claude/CLAUDE.md in any folder above dir. An agent CLI reads those as
+ * project instructions whatever its settings flags say, so an eval run under the owner's home folder carries the
+ * owner's personal context (paths, key locations, habits) into every case and the baseline measures the wrong thing
+ * (F99). Live runs refuse such an --out; a folder outside the home (/Users/Shared, /var/tmp, a scratch disk) is clean.
+ */
+export function ancestorInstructions(dir) {
+  const found = [];
+  let d = path.resolve(dir);
+  for (let parent = path.dirname(d); parent !== d; d = parent, parent = path.dirname(d)) {
+    for (const f of [path.join(parent, 'CLAUDE.md'), path.join(parent, '.claude', 'CLAUDE.md')]) if (exists(f)) found.push(f);
+  }
+  return found;
+}
+
 export function baseWorkspace(fx) {
   const named = fx.workspace ?? (fx.fresh_workspace ? null : String(fx.setup ?? '').match(/\bexamples\/([\w-]+)/)?.[0]);
   if (!named) return null;
@@ -155,23 +171,12 @@ export function judgePrompt(fx, grader, transcript) {
 
 // The last JSON object in the reply that carries a PASS/FAIL verdict; anything else is no verdict (pending).
 export function parseVerdict(text) {
-  const s = String(text ?? '');
-  for (let end = s.lastIndexOf('}'); end !== -1; end = s.lastIndexOf('}', end - 1)) {
-    for (let start = s.lastIndexOf('{', end); start !== -1; start = s.lastIndexOf('{', start - 1)) {
-      try {
-        const v = JSON.parse(s.slice(start, end + 1));
-        if (v && /^(PASS|FAIL)$/i.test(String(v.verdict))) {
-          const verdict = String(v.verdict).toUpperCase();
-          // a PASS that admits a missed must or an occurred must_not is a FAIL
-          const broken = (v.must ?? []).some((m) => m?.held === false) || (v.must_not ?? []).some((m) => m?.occurred === true);
-          return { verdict: broken ? 'FAIL' : verdict, reason: v.reason ?? '', must: v.must ?? [], must_not: v.must_not ?? [], overruled: broken && verdict === 'PASS' };
-        }
-      } catch {
-        /* not this span */
-      }
-    }
-  }
-  return null;
+  const v = lastJsonObject(text, (o) => /^(PASS|FAIL)$/i.test(String(o.verdict)));
+  if (!v) return null; // a malformed reply stays pending (F98: the old scan spun forever on one)
+  const verdict = String(v.verdict).toUpperCase();
+  // a PASS that admits a missed must or an occurred must_not is a FAIL
+  const broken = (v.must ?? []).some((m) => m?.held === false) || (v.must_not ?? []).some((m) => m?.occurred === true);
+  return { verdict: broken ? 'FAIL' : verdict, reason: v.reason ?? '', must: v.must ?? [], must_not: v.must_not ?? [], overruled: broken && verdict === 'PASS' };
 }
 
 function runCommand(line, { cwd, env, input, timeout_s }) {

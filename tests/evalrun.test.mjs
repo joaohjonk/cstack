@@ -169,3 +169,34 @@ test('evals run: a usage limit stops the suite with a resume list; a failed judg
   assert.equal(summary.fixtures, 1);
   assert.equal(readJSONL(path.join(owner, 'state', 'evals.jsonl')).length, 1);
 });
+
+test('a malformed judge reply (no closing brace) is pending, not a hang (F98)', async () => {
+  const { lastJsonObject } = await import('../scripts/lib/jsonscan.mjs');
+  const truncated = '{"verdict": "PASS", "reason": "the agent did the thing", "must": [{"id": "m1", "held": true}]';
+  const t0 = Date.now();
+  assert.equal(parseVerdict(truncated), null);
+  assert.equal(parseVerdict('}'), null);
+  assert.equal(parseVerdict('{'), null);
+  assert.equal(lastJsonObject('{"a":1}', (v) => v.b), null);
+  assert.ok(Date.now() - t0 < 2000, 'the scan ends');
+  assert.equal(parseVerdict(`prose first\n${truncated}}\nand after`).verdict, 'PASS');
+  assert.equal(parseVerdict('{"verdict":"FAIL"} {"verdict":"PASS"}').verdict, 'PASS', 'the last object wins');
+});
+
+test('a live run under a CLAUDE.md is refused: the agent would read it as project instructions (F99)', async () => {
+  const { ancestorInstructions } = await import('../scripts/lib/evalrun.mjs');
+  const home = tmpDir('cstack-home-');
+  fs.mkdirSync(path.join(home, '.claude'));
+  fs.writeFileSync(path.join(home, '.claude', 'CLAUDE.md'), '# personal\n');
+  const runs = path.join(home, 'evals', 'runs');
+  fs.mkdirSync(runs, { recursive: true });
+  assert.deepEqual(ancestorInstructions(runs), [path.join(home, '.claude', 'CLAUDE.md')]);
+  const clean = tmpDir('cstack-clean-');
+  assert.deepEqual(ancestorInstructions(clean).filter((f) => f.startsWith(clean)), []);
+  const r = spawnSync('node', [CLI, 'evals', 'run', 'make-it-cooler', '--agent', 'true', '--out', runs, '--ws', clean], { encoding: 'utf8', cwd: ROOT });
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stderr + r.stdout, /sits under .*CLAUDE\.md.*F99/);
+  const dry = spawnSync('node', [CLI, 'evals', 'run', 'make-it-cooler', '--dry-run', '--out', runs], { encoding: 'utf8', cwd: ROOT });
+  assert.equal(dry.status, 0, dry.stdout + dry.stderr);
+  assert.match(dry.stderr, /WARN .*sits under/);
+});

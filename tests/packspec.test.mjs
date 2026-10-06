@@ -135,3 +135,26 @@ test('pack check: the band edge is strict, and a story version is made from the 
   assert.match(meta.derived_from.sha256, /^[0-9a-f]{64}$/);
   assert.notEqual(spawnSync(process.execPath, [CLI, 'image', 'extend', path.join(d, 'ad.png'), '--aspect', '9:16', '--out', path.join(d, 'story.png')], { encoding: 'utf8' }).status, 0, 'refuses to overwrite without --force');
 });
+
+test('pack check: the product beside its pack is measured too (F97)', () => {
+  const d = tmpDir('cstack-pack-');
+  fs.writeFileSync(path.join(d, 'open.png'), encodePNG({ width: 400, height: 400, data: Buffer.alloc(400 * 400 * 4, 255) }));
+  const sized = { ...bar, contents: { what: 'the bar', length_mm: { min: 88, max: 92, source: 'measured' }, width_mm: { min: 30, max: 30 }, height_mm: { min: 15, max: 18 } } };
+  const pack = [20, 20, 120, 220]; // 60 x 110 at 2 px per mm
+  const good = checkPack([path.join(d, 'open.png')], { spec: sized, box: pack, productBox: [200, 100, 60, 180] }).images[0];
+  assert.equal(good.result, 'pass', good.evidence);
+  assert.equal(good.product.measured, 0.818);
+  const small = checkPack([path.join(d, 'open.png')], { spec: sized, box: pack, productBox: [200, 100, 50, 144] }).images[0];
+  assert.equal(small.result, 'fail', 'a bar drawn 20% too small for its pack fails');
+  assert.match(small.evidence, /product to pack/);
+  const none = checkPack([path.join(d, 'open.png')], { spec: bar, box: pack, productBox: [200, 100, 60, 180] }).images[0];
+  assert.equal(none.result, 'unverifiable', 'no contents size in the spec means no product check, never a pass');
+  const est = checkPack([path.join(d, 'open.png')], { spec: { ...sized, contents: { ...sized.contents, estimated: true } }, box: pack, productBox: [200, 100, 60, 180] }).images[0];
+  assert.equal(est.result, 'pass');
+  assert.match(est.evidence, /an estimate/);
+  assert.equal(checkPack([path.join(d, 'open.png')], { spec: sized, box: pack }).images[0].product, undefined, 'no product box, no product verdict');
+  fs.writeFileSync(path.join(d, 'bar.pack-spec.yaml'), YAML.stringify(sized));
+  const cli = spawnSync('node', [CLI, 'pack', 'check', path.join(d, 'open.png'), '--spec', path.join(d, 'bar.pack-spec.yaml'), '--box', pack.join(','), '--product-box', '200,100,50,144'], { encoding: 'utf8', cwd: d, env: { ...process.env, CSTACK_WS: d } });
+  assert.equal(cli.status, 1, cli.stdout + cli.stderr);
+  assert.match(cli.stdout, /FAIL/);
+});
