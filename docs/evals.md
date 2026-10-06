@@ -26,8 +26,8 @@ cstack evals run make-it-cooler --dry-run                     # build the case a
 cstack evals run --all --ws ~/brands/evals --cost-per-call 0 \
   --agent "claude -p --setting-sources project --strict-mcp-config --mcp-config '{\"mcpServers\":{}}' --output-format stream-json --verbose --permission-mode acceptEdits --allowedTools Bash Read Write Edit Glob Grep" \
   --judge "claude -p --setting-sources project --strict-mcp-config --mcp-config '{\"mcpServers\":{}}'" \
-  --out runs/2026-10-05 --record                              # live: 3 runs per fixture, graded, recorded
-cstack evals run --all --recorded runs/2026-10-05             # regrade a saved run; calls nothing
+  --out /Users/Shared/cstack-evals/2026-10-05 --record        # live: 3 runs per fixture, graded, recorded; outside the home folder (F99)
+cstack evals run --all --recorded /Users/Shared/cstack-evals/2026-10-05   # regrade a saved run; calls nothing
 cstack evals run --since main --agent "codex exec" --ws ...   # the fixtures `evals plan` selects
 ```
 
@@ -50,7 +50,7 @@ A run is `pass` when every grader passes, `fail` when any fails, `pending` when 
 | `--dry-run` / `--agent "<cmd>"` / `--recorded <dir>` | the mode; T0 fixtures run their commands without an agent |
 | `--judge "<cmd>"` | grades `llm` graders; without it they stay pending for a person |
 | `--runs N` | overrides the fixture's `runs` |
-| `--out <dir>` | where runs go (default: a new folder in the system temp dir) |
+| `--out <dir>` | where runs go (default: a new folder in the system temp dir). A live run refuses a folder with a `CLAUDE.md` or `.claude/CLAUDE.md` above it: the agent reads those as project instructions whatever its flags say, and the baseline then measures the owner's context, not cstack (F99). Keep runs outside the home folder, or pass `--allow-parent-instructions` to measure with it on purpose |
 | `--ws <dir>` | the workspace whose ledger books each agent and judge call and whose `state/evals.jsonl` takes records |
 | `--cost-per-call <USD>` | the owner's estimate per call; `0` for an agent on a flat subscription. Without it calls are unpriced and follow the usual unpriced rules (`--confirm-unpriced`) |
 | `--record` | appends one `eval` record per graded run (gates from the graders, `decision` from the result) |

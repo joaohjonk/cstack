@@ -41,6 +41,21 @@ export function tokenize(line) {
 
 // The workspace a case starts from: `workspace:` in the fixture, else an example the setup names, else a fresh
 // starter workspace for a fictional brand (always for `fresh_workspace: true`).
+/**
+ * ancestorInstructions(dir): CLAUDE.md or .claude/CLAUDE.md in any folder above dir. An agent CLI reads those as
+ * project instructions whatever its settings flags say, so an eval run under the owner's home folder carries the
+ * owner's personal context (paths, key locations, habits) into every case and the baseline measures the wrong thing
+ * (F99). Live runs refuse such an --out; a folder outside the home (/Users/Shared, /var/tmp, a scratch disk) is clean.
+ */
+export function ancestorInstructions(dir) {
+  const found = [];
+  let d = path.resolve(dir);
+  for (let parent = path.dirname(d); parent !== d; d = parent, parent = path.dirname(d)) {
+    for (const f of [path.join(parent, 'CLAUDE.md'), path.join(parent, '.claude', 'CLAUDE.md')]) if (exists(f)) found.push(f);
+  }
+  return found;
+}
+
 export function baseWorkspace(fx) {
   const named = fx.workspace ?? (fx.fresh_workspace ? null : String(fx.setup ?? '').match(/\bexamples\/([\w-]+)/)?.[0]);
   if (!named) return null;

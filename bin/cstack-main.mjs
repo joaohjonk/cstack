@@ -28,7 +28,7 @@ import { lintShotDNA, lintShotDNATree } from '../scripts/lib/lint.mjs';
 import { guardedCall } from '../scripts/lib/ledger.mjs';
 import { experimentInit, experimentLog, experimentStatus } from '../scripts/lib/experiment.mjs';
 import { evalPlan, checkFixtures, loadFixtures } from '../scripts/lib/evalplan.mjs';
-import { runFixture, selectFixtures, evalRecords, tokenize } from '../scripts/lib/evalrun.mjs';
+import { runFixture, selectFixtures, evalRecords, tokenize, ancestorInstructions } from '../scripts/lib/evalrun.mjs';
 import { makeSheet, makeBoard, importPicks, renderPNG } from '../scripts/lib/sheet.mjs';
 import { reconcile, billedVsEstimated } from '../scripts/lib/billing.mjs';
 import { checkText, readExpected } from '../scripts/lib/textcheck.mjs';
@@ -203,7 +203,7 @@ const COMMANDS = {
   'sheet board': 'a reference board the founder reacts on (keep or kill, with why): cstack sheet board references/ --out work/sheets/refs.html [--cols 3] [--title "..."]; import writes gold and anti feedback',
   'sheet open': 'open a sheet in the default browser and print how to pick: cstack sheet open work/sheets/a.html',
   'sheet import': 'winners and pairs picked on a sheet into feedback events: cstack sheet import <picks.json> --sheet work/sheets/a.html --by <name> [--ws dir]',
-  'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]',
+  'evals run': 'run T2 fixtures: cstack evals run <id...>|--all|--since <ref> (--dry-run | --agent "<cmd>" [--judge "<cmd>"] | --recorded <dir>) [--runs N] [--out <dir>] [--record]; a live --out under a CLAUDE.md is refused (F99)',
   setup: 'install skills into agent hosts: cstack setup [--host default|auto|all|agents|claude-code|codex|cursor|gemini-cli|opencode|copilot|factory|kiro] [--target <project>] [--copy] [--dry-run]   |   --refresh: relink every install this checkout made (cstack update runs it)',
   update: 'update this cstack checkout (fast-forward only; never stashes or resets), reinstall dependencies if they changed, relink every host it was installed into, show what is new: cstack update [--dry-run]   |   --check [--force]: one line when an update exists (skills run this)   |   --snooze   |   --auto on|off   |   --checks on|off',
 };
@@ -1115,6 +1115,12 @@ async function cmdEvalsRun() {
   if (mode === 'live' && !args.agent && fixtures.some((f) => f.tier !== 'T0')) die('live runs need --agent "<cmd>" (for example --agent "claude -p --output-format stream-json --verbose"); or pass --dry-run, or --recorded <dir>');
   const out = path.resolve(mode === 'recorded' ? args.recorded : args.out ?? path.join(fs.realpathSync(os.tmpdir()), `cstack-evals-${nowISO().replace(/[:.]/g, '-')}`));
   if (mode === 'recorded' && !exists(out)) die(`--recorded ${out}: no such folder`);
+  const above = mode === 'recorded' ? [] : ancestorInstructions(out); // a regrade runs no agent
+  if (above.length) {
+    const msg = `${out} sits under ${above.join(', ')}: an agent reads those as project instructions whatever its flags say, so every case would carry that context (F99). Use --out outside the home folder (/Users/Shared, /var/tmp)`;
+    if (mode === 'live' && !args['allow-parent-instructions']) die(`${msg}, or pass --allow-parent-instructions to measure with it on purpose`);
+    console.error(`WARN ${msg}`);
+  }
   fs.mkdirSync(out, { recursive: true });
   const agent = args.agent ? tokenize(args.agent) : null;
   const judge = args.judge ? tokenize(args.judge) : null;
